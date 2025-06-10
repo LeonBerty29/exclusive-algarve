@@ -4,7 +4,6 @@ import type { Metadata } from "next";
 //   Geist_Mono,
 // } from "next/font/google";
 import "./globals.css";
-import NavBar from "@/components/layout/navbar";
 import { poppins } from "@/fonts";
 import Footer from "@/components/layout/footer";
 
