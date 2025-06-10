@@ -67,11 +67,11 @@ const AboutUs = () => {
                         </p>
                     </div>
 
-                    <Image src='/images/recent-listing-3.png' width={450} height={450} alt='about-us' className='object-cover w-full h-72 md:w-[50%]  xl:h-[390px] md:h-auto' />
+                    <Image priority src='/images/recent-listing-3.png' width={450} height={450} alt='about-us' className='object-cover w-full h-72 md:w-[50%]  xl:h-[390px] md:h-auto' />
                 </div>
 
                 <div className='flex items-center gap-y-5 justify-between py-5 md:py-8 flex-wrap'>
-                    <Image src='/images/recent-listing-3.png' width={450} height={450} alt='about-us' className='object-cover w-full h-72 md:w-[50%]  xl:h-[390px] md:h-auto order-2 md:prder-1' />
+                    <Image priority src='/images/recent-listing-3.png' width={450} height={450} alt='about-us' className='object-cover w-full h-72 md:w-[50%]  xl:h-[390px] md:h-auto order-2 md:prder-1' />
 
                     <div className='w-full md:w-[50%] lg:min-w-[unset] md:pl-8 lg:pl-14 order-1 md:order-2'>
                         <h1 className='text-2xl lg:text-3xl font-normal sm:max-w-70 mb-6'>MEET <br /> THE TEAM</h1>
