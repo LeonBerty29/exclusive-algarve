@@ -22,7 +22,7 @@ export default function NavBar({colorChange = false}: {colorChange?: boolean}) {
 
   const navLinks = [
     { href: "/", label: "Home" },
-    { href: "/search", label: "Properties" },
+    { href: "/properties", label: "Properties" },
     { href: "/about-us", label: "About Us" },
     { href: "/blog", label: "Blog" },
   ];
