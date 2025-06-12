@@ -36,6 +36,22 @@ interface PropertyVideoPlayerProps {
   showPlaylist?: boolean;
 }
 
+// Types for ReactPlayer
+interface ReactPlayerInstance {
+  seekTo: (amount: number, type?: "seconds" | "fraction") => void;
+  getCurrentTime: () => number;
+  getSecondsLoaded: () => number;
+  getDuration: () => number;
+  getInternalPlayer: () => HTMLVideoElement | null;
+}
+
+interface ProgressState {
+  played: number;
+  playedSeconds: number;
+  loaded: number;
+  loadedSeconds: number;
+}
+
 export function PropertyVideoPlayer({
   videos,
   className = "",
@@ -51,7 +67,7 @@ export function PropertyVideoPlayer({
   const [duration, setDuration] = useState(0);
   const [seeking, setSeeking] = useState(false);
 
-  const playerRef = useRef<any>(null);
+  const playerRef = useRef<ReactPlayerInstance>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const currentVideo = videos[currentVideoIndex];
@@ -60,7 +76,7 @@ export function PropertyVideoPlayer({
     setPlaying(!playing);
   };
 
-  const handleProgress = (state: any) => {
+  const handleProgress = (state: ProgressState) => {
     if (!seeking) {
       setPlayed(state.played);
     }

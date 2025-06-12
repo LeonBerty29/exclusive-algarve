@@ -34,7 +34,6 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { ContactSection } from "@/components/shared/contact-section";
 import DiscoverSection from "@/components/home/discover-section";
-import { Card, CardContent } from "@/components/ui/card";
 import { ProductCard } from "@/components/product/product-card";
 import { Home as HomeType } from "@/types";
 
