@@ -18,7 +18,7 @@ export function ContactSection({
     backgroundColor,
     title = 'HAVE ANY QUESTION ?',
     description = 'Exclusive Algarve Villas has won various awards over the years, from "Best Real Estate Agency Website" to "Best Real Estate Agency Portugal" by the International Property Awards in London. Furthermore has also won an award in 2019 by Best Luxury Real Estate Agency 2019 by Build Magazine.',
-    imageSrc = '/images/lifestyle-img5.png',
+    imageSrc = '/images/team/team.png',
     imageAlt = 'photo of exclusive algarve team members',
     highlightText = '"Best Real Estate Agency Portugal"',
     formTitle = true
