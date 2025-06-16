@@ -182,9 +182,9 @@ export function PropertyVideoPlayer({
           />
 
           {/* Custom Controls Overlay */}
-          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-2 sm:p-4">
             {/* Progress Bar */}
-            <div className="mb-3">
+            <div className="mb-2 sm:mb-3">
               <input
                 type="range"
                 min={0}
@@ -200,15 +200,16 @@ export function PropertyVideoPlayer({
 
             {/* Control Buttons */}
             <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center space-x-2 sm:space-x-3">
                 <button
                   onClick={handlePlayPause}
                   className="text-white hover:text-blue-400 transition-colors"
                 >
-                  {playing ? <Pause size={24} /> : <Play size={24} />}
+                  {playing ? <Pause size={20} className="sm:w-6 sm:h-6" /> : <Play size={20} className="sm:w-6 sm:h-6" />}
                 </button>
 
-                <div className="flex items-center space-x-2">
+                {/* Volume Controls - Hidden on mobile */}
+                <div className="hidden sm:flex items-center space-x-2">
                   <button
                     onClick={toggleMute}
                     className="text-white hover:text-blue-400 transition-colors"
@@ -226,25 +227,26 @@ export function PropertyVideoPlayer({
                   />
                 </div>
 
-                <div className="text-white text-sm">
+                <div className="text-white text-xs sm:text-sm">
                   {formatTime(played * duration)} / {formatTime(duration)}
                 </div>
               </div>
 
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-1 sm:space-x-2">
+                {/* Previous/Next buttons - Hidden on mobile */}
                 {videos.length > 1 && (
                   <>
                     <button
                       onClick={handlePrevious}
                       disabled={currentVideoIndex === 0}
-                      className="text-white hover:text-blue-400 disabled:text-gray-500 transition-colors text-sm px-2 py-1 rounded"
+                      className="hidden sm:block text-white hover:text-blue-400 disabled:text-gray-500 transition-colors text-sm px-2 py-1 rounded"
                     >
                       Previous
                     </button>
                     <button
                       onClick={handleNext}
                       disabled={currentVideoIndex === videos.length - 1}
-                      className="text-white hover:text-blue-400 disabled:text-gray-500 transition-colors text-sm px-2 py-1 rounded"
+                      className="hidden sm:block text-white hover:text-blue-400 disabled:text-gray-500 transition-colors text-sm px-2 py-1 rounded"
                     >
                       Next
                     </button>
@@ -255,9 +257,9 @@ export function PropertyVideoPlayer({
                   className="text-white hover:text-blue-400 transition-colors"
                 >
                   {isFullscreen ? (
-                    <Minimize size={20} />
+                    <Minimize size={18} className="sm:w-5 sm:h-5" />
                   ) : (
-                    <Maximize size={20} />
+                    <Maximize size={18} className="sm:w-5 sm:h-5" />
                   )}
                 </button>
               </div>
@@ -265,8 +267,8 @@ export function PropertyVideoPlayer({
           </div>
 
           {/* Video Title Overlay */}
-          <div className="absolute top-4 left-4 right-4">
-            <h3 className="text-white text-lg font-semibold bg-black/50 px-3 py-1 rounded">
+          <div className="absolute top-2 left-2 right-2 sm:top-4 sm:left-4 sm:right-4">
+            <h3 className="text-white text-sm sm:text-lg font-semibold bg-black/50 px-2 py-1 sm:px-3 rounded">
               {currentVideo.title}
             </h3>
           </div>
@@ -276,24 +278,24 @@ export function PropertyVideoPlayer({
       {/* Video Playlist */}
       {showPlaylist && videos.length > 1 && (
         <div className="mt-4">
-          <h4 className="text-lg font-semibold mb-3">Property Videos</h4>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          <h4 className="text-base sm:text-lg font-semibold mb-3">Property Videos</h4>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3">
             {videos.map((video, index) => (
               <button
                 key={video.id}
                 onClick={() => handleVideoSelect(index)}
-                className={`relative p-3 rounded-lg border-2 transition-all text-left ${
+                className={`relative p-2 sm:p-3 rounded-lg border-2 transition-all text-left ${
                   index === currentVideoIndex
                     ? "border-blue-500 bg-blue-50"
                     : "border-gray-200 hover:border-gray-300 bg-white"
                 }`}
               >
-                <div className="flex items-center space-x-3">
-                  <div className="w-16 h-12 bg-gray-200 rounded flex items-center justify-center flex-shrink-0">
-                    <Play size={16} className="text-gray-500" />
+                <div className="flex items-center space-x-2 sm:space-x-3">
+                  <div className="w-12 h-9 sm:w-16 sm:h-12 bg-gray-200 rounded flex items-center justify-center flex-shrink-0">
+                    <Play size={14} className="sm:w-4 sm:h-4 text-gray-500" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-medium text-sm truncate">
+                    <p className="font-medium text-xs sm:text-sm truncate">
                       {video.title}
                     </p>
                     {video.duration && (
@@ -325,6 +327,17 @@ export function PropertyVideoPlayer({
           background: #3b82f6;
           cursor: pointer;
           border: 2px solid white;
+        }
+        
+        @media (max-width: 640px) {
+          .slider::-webkit-slider-thumb {
+            width: 14px;
+            height: 14px;
+          }
+          .slider::-moz-range-thumb {
+            width: 14px;
+            height: 14px;
+          }
         }
       `}</style>
     </div>
