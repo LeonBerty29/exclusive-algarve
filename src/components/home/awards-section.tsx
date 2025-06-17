@@ -1,6 +1,7 @@
 import React from 'react'
 import { Button } from '../ui/button'
 import CarouselSliderVertical from '../carousel-slider-vertical'
+import Link from 'next/link'
 
 const AwardsSection = () => {
     return (
@@ -10,8 +11,10 @@ const AwardsSection = () => {
                 <h2 className='text-4xl font-normal max-w-lg mb-12 text-primary'>
                     The best luxury lifestyle agency in Algarve
                 </h2>
-                <Button className='bg-black text-white rounded-none py-5 text-sm font-normal'>
-                    CONTACT US NOW
+                <Button asChild className='bg-black text-white rounded-none py-5 text-sm font-normal'>
+                    <Link href="/contact">
+                        CONTACT US NOW
+                    </Link>
                 </Button>
             </div>
             <div className='flex gap-4'>
