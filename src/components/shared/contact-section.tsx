@@ -10,7 +10,7 @@ interface ContactSectionProps {
     imageSrc?: string;
     imageAlt?: string;
     highlightText?: string;
-    formTitle?: boolean;
+    formTitle?: boolean;    
 }
 
 export function ContactSection({
@@ -18,7 +18,7 @@ export function ContactSection({
     backgroundColor,
     title = 'HAVE ANY QUESTION ?',
     description = 'Exclusive Algarve Villas has won various awards over the years, from "Best Real Estate Agency Website" to "Best Real Estate Agency Portugal" by the International Property Awards in London. Furthermore has also won an award in 2019 by Best Luxury Real Estate Agency 2019 by Build Magazine.',
-    imageSrc = '/images/team/team.png',
+    imageSrc = '/images/team/team-image.jpg',
     imageAlt = 'photo of exclusive algarve team members',
     highlightText = '"Best Real Estate Agency Portugal"',
     formTitle = true
@@ -44,8 +44,7 @@ export function ContactSection({
                                     <Image
                                         src={imageSrc}
                                         alt={imageAlt}
-                                        width={100}
-                                        height={100}
+                                        fill
                                         className='w-full h-full object-cover'
                                     />
                                 </div>

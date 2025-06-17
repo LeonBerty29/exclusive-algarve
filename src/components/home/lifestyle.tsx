@@ -21,13 +21,13 @@ const LifeStyle = () => {
     },
     {
       id: "image2",
-      src: "/images/lifestyle-img2.png",
+      src: "/images/lifestyle/lifestyle-img-2.jpg",
       alt: "Gallery Image 2",
       title: "Urban Architecture",
     },
     {
       id: "image3",
-      src: "/images/lifestyle-img3.png",
+      src: "/images/lifestyle/lifestyle-img-3.jpg",
       alt: "Gallery Image 3",
       title: "Nature Scene",
     },
@@ -39,13 +39,13 @@ const LifeStyle = () => {
     },
     {
       id: "image5",
-      src: "/images/lifestyle-img5.png",
+      src: "/images/lifestyle/lifestyle-img-5.jpg",
       alt: "Gallery Image 5",
       title: "Mountain Range",
     },
     {
       id: "image6",
-      src: "/images/lifestyle-img6.png",
+      src: "/images/lifestyle/lifestyle-img-6.jpg",
       alt: "Gallery Image 6",
       title: "City Lights",
     },

@@ -14,13 +14,13 @@ import { RecentListingType } from "@/types";
 const recentListings: RecentListingType[] = [
   {
     id: "qwqwqwqwqwqw-235",
-    imageUrl: "/images/team/bart-van-linden.webp",
+    imageUrl: "/images/team/bart-2.jpg",
     name: "Bart Van Linden",
     position: "Director",
   },
   {
     id: "qwqwqwqwqwqw-237",
-    imageUrl: "/images/team/marcela-boturao.webp",
+    imageUrl: "/images/team/marcela-2.jpg",
     name: "Marcela Boturao",
     position: "Director",
   },
