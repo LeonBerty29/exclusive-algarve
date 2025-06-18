@@ -7,6 +7,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { PropertyInfo } from "./property-info";
 import { FloorPlanTab } from "./floor-plan";
 import { LocationTab } from "./location-tab";
+import PropertyFeatures from "../property-details/PropertyFeatures";
 
 const ScrollableTabs = () => {
   const description = `<p>This gated condominium is ideally located 3 minutes by car from the center of the village, the beaches and the shops.<br> In the village of Ferragudo, in a residential area composed exclusively of villas, it benefits from an unobstructed view and incom- parable luminosity, a privileged, calm and soothing environment, close to the communication axes.<p><br>
@@ -141,7 +142,7 @@ const ScrollableTabs = () => {
           >
             <div className="min-h-32  p-4">
               <PropertyInfo />
-              {/* <PropertyFeatures /> */}
+              <PropertyFeatures />
             </div>
           </TabsContent>
 

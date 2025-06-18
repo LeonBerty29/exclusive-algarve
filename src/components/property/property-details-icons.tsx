@@ -5,7 +5,7 @@ import { LiaExpandArrowsAltSolid } from "react-icons/lia";
 
 const PropertyDetailsIcons = () => {
   return (
-    <div className="flex items-center gap-x-24 gap-y-6 flex-wrap mt-5 mb-14">
+    <div className="items-center grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8  mt-5 mb-14">
       <div className="flex gap-3 items-center">
         <div className="flex items-center gap-3 justify-center border border-gray-500 bg-gray-200 p-4">
           <FaBed className="h-6 w-6 text-gray-500" />
