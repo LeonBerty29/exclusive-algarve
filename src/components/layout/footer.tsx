@@ -54,7 +54,7 @@ const Footer = () => {
                     </Link>
                   </li>
                   <li>
-                    <Link href="/Properties" className="text-xs font-light">
+                    <Link href="/properties" className="text-xs font-light">
                       Properties
                     </Link>
                   </li>
