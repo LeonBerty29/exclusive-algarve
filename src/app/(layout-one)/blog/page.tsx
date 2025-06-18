@@ -200,7 +200,7 @@ const Blog = () => {
     ]
 
     return (
-        <div className='pt-24'>
+        <div className='pt-10'>
             <div className='lg:container mx-auto px-6 sm:px-8 md:px-10 lg:px-12'>
                 <div className='flex items-center gap-2 justify-between py-5 md:py-8 flex-wrap'>
                     <div className='w-full md:w-[47%]'>

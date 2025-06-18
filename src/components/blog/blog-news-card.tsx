@@ -17,7 +17,7 @@ export function BlogNewsCard({ blog }: { blog: Blog }) {
                 </div>
 
                 <div className="py-2">
-                    <p className="text-neutral-900 flex items-center justify-between text-sm">
+                    <p className="text-neutral-900 flex items-center justify-between text-xs md:text-sm">
                         <span>
                             <span>{blog.readTime}</span> min read
                         </span>
@@ -27,11 +27,11 @@ export function BlogNewsCard({ blog }: { blog: Blog }) {
                 </div>
 
                 <div>
-                    <h3 className="text-neutral-900 font-medium text-lg mb-2 leading-tight">
+                    <h3 className="text-neutral-900 font-medium text-sm md:text-base lg:text-lg mb-2 leading-tight">
                         {blog.title}
                     </h3>
 
-                    <p className="text-gray-400 text-sm">{blog.author}</p>
+                    <p className="text-gray-400 text-xs md:text-sm">{blog.author}</p>
                 </div>
             </Link>
         </>
