@@ -71,7 +71,7 @@ const AboutUs = () => {
   ];
   return (
     <>
-      <div className="max-w-[1350px] mx-auto px-6 md:px-12 lg:px-14 pt-24 pb-12">
+      <div className="lg:container mx-auto px-6 md:px-12 lg:px-14 pt-24 pb-12">
         <div className="flex items-center gap-y-5 justify-between py-5 md:py-8 flex-wrap">
           <div className="w-full md:w-[50%] md:pr-8 lg:pr-14">
             <h1 className="text-2xl lg:text-3xl font-normal sm:max-w-70 mb-6">
@@ -123,7 +123,7 @@ const AboutUs = () => {
       </div>
 
       <div className="bg-neutral-800 text-white">
-        <div className="max-w-[1350px] mx-auto px-6 md:px-12 lg:px-14 py-14">
+        <div className="lg:container mx-auto px-6 md:px-12 lg:px-14 py-14">
           <div className="flex items-center gap-y-5 justify-between py-5 md:py-8 flex-wrap">
             <div className="w-full lg:w-[50%] md:pr-8 lg:pr-14">
               <h2 className="text-xl lg:text-2xl font-normal sm:max-w-70 mb-6">
@@ -197,7 +197,7 @@ const AboutUs = () => {
         </div>
       </div>
 
-      <div className="max-w-[1350px] mx-auto px-6 md:px-12 lg:px-14 py-20">
+      <div className="lg:container mx-auto px-6 md:px-12 lg:px-14 py-20">
         <h3 className="text-center text-2xl lg:text-2xl font-normal mb-6">
           WE ARE PROUD OF OUR
           <br />
