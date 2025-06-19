@@ -7,7 +7,7 @@ import Image from "next/image";
 const Footer = () => {
   return (
     <div className="bg-neutral-900">
-      <div className="text-white container mx-auto px-6 sm:px-8 md:px-10 lg:px-12 py-12 md:py-14 xl:py-20 !pb-0">
+      <div className="text-white 2xl:container mx-auto px-6 sm:px-8 md:px-10 lg:px-14 py-12 md:py-14 xl:py-20 !pb-0">
         <div className="flex items-start gap-28 flex-wrap gap-y-12">
           <div className="flex-1 min-w-0 sm:min-w-[380px] md:min-w-[500px] lg:min-w-[600px]">
             <h3 className="mb-10 font-light text-xl md:text-2xl lg:text-3xl">
