@@ -24,7 +24,7 @@ export default function NavBar({colorChange = false}: {colorChange?: boolean}) {
     { href: "/", label: "Home" },
     { href: "/properties", label: "Properties" },
     { href: "/about-us", label: "About Us" },
-    { href: "/blog", label: "Blog" },
+    { href: "/blogs", label: "Blog" },
   ];
 
   const isActiveLink = (href: string) => {

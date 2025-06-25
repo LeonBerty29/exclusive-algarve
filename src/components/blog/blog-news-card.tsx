@@ -6,7 +6,7 @@ export function BlogNewsCard({ blog }: { blog: Blog }) {
 
     return (
         <>
-            <Link href={`/blog/${blog.slug}`} className="w-full">
+            <Link href={`/blogs/${blog.slug}`} className="w-full">
                 <div className="relative w-full h-48">
                     <Image
                         src={blog.image}

@@ -6,6 +6,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { poppins } from "@/fonts";
 import Footer from "@/components/layout/footer";
+import StoryblokProvider from "@/components/story-provider";
 
 
 // const geistSans = Geist({
@@ -29,6 +30,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
+    <StoryblokProvider>
     <html lang="en">
       <body
         className={`${poppins.className} antialiased`}
@@ -40,5 +42,6 @@ export default function RootLayout({
         <Footer />
       </body>
     </html>
+    </StoryblokProvider>
   );
 }
