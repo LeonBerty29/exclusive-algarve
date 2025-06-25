@@ -8,13 +8,10 @@ import { Button } from "@/components/ui/button";
 
 export function ResponsiveBlogNewsGrid({ blogs = [] }: { blogs?: Blog[] }) {
   const [currentPage, setCurrentPage] = useState(1);
-  const [displayedBlogs, setDisplayedBlogs] = useState<Blog[]>([]);
   const [isMobile, setIsMobile] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [hasMore, setHasMore] = useState(true);
 
-  const blogsPerPage = 12;
-  const blogsPerLoadMobile = 8; // Load fewer blogs at a time on mobile
+  const blogsPerPage = 4; // Show 4 blogs at a time for both mobile and desktop
 
   // Detect screen size
   useEffect(() => {
@@ -27,54 +24,34 @@ export function ResponsiveBlogNewsGrid({ blogs = [] }: { blogs?: Blog[] }) {
     return () => window.removeEventListener("resize", checkScreenSize);
   }, []);
 
-  // Initialize displayed blogs based on device type
-  useEffect(() => {
-    if (!blogs || blogs.length === 0) return;
+  // Calculate current blogs to display
+  const totalPages = Math.ceil(blogs.length / blogsPerPage);
+  const startIndex = (currentPage - 1) * blogsPerPage;
+  const endIndex = startIndex + blogsPerPage;
+  const currentBlogs = blogs.slice(startIndex, endIndex);
+  
+  // For mobile: calculate how many blogs to show (cumulative)
+  const blogsToShowMobile = currentPage * blogsPerPage;
+  const displayedBlogs = isMobile 
+    ? blogs.slice(0, Math.min(blogsToShowMobile, blogs.length))
+    : currentBlogs;
 
-    if (isMobile) {
-      // Mobile: Start with first batch
-      setDisplayedBlogs(blogs.slice(0, blogsPerLoadMobile));
-      setHasMore(blogs.length > blogsPerLoadMobile);
-    } else {
-      // Desktop: Show current page
-      const startIndex = (currentPage - 1) * blogsPerPage;
-      const endIndex = startIndex + blogsPerPage;
-      setDisplayedBlogs(blogs.slice(startIndex, endIndex));
-    }
-  }, [blogs, currentPage, isMobile, blogsPerPage, blogsPerLoadMobile]);
+  const hasMore = isMobile 
+    ? blogsToShowMobile < blogs.length
+    : currentPage < totalPages;
 
-  // Load more blogs for mobile
+  // Load more blogs for mobile (increment page)
   const loadMoreBlogs = useCallback(() => {
-    if (isLoading || !hasMore || !isMobile || !blogs || blogs.length === 0)
-      return;
+    if (isLoading || !hasMore || !isMobile) return;
 
     setIsLoading(true);
 
     // Simulate loading delay (remove this in production if you don't need it)
     setTimeout(() => {
-      const currentLength = displayedBlogs.length;
-      const nextBatch = blogs.slice(
-        currentLength,
-        currentLength + blogsPerLoadMobile
-      );
-
-      if (nextBatch.length > 0) {
-        setDisplayedBlogs((prev) => [...prev, ...nextBatch]);
-        setHasMore(currentLength + nextBatch.length < blogs.length);
-      } else {
-        setHasMore(false);
-      }
-
+      setCurrentPage(prev => prev + 1);
       setIsLoading(false);
     }, 500);
-  }, [
-    blogs,
-    displayedBlogs.length,
-    isLoading,
-    hasMore,
-    isMobile,
-    blogsPerLoadMobile,
-  ]);
+  }, [isLoading, hasMore, isMobile]);
 
   // Early return if no blogs
   if (!blogs || blogs.length === 0) {
@@ -86,8 +63,6 @@ export function ResponsiveBlogNewsGrid({ blogs = [] }: { blogs?: Blog[] }) {
   }
 
   // Desktop pagination handlers
-  const totalPages = Math.ceil(blogs.length / blogsPerPage);
-
   const goToNextPage = () => {
     setCurrentPage((prev) => Math.min(prev + 1, totalPages));
   };
@@ -137,7 +112,7 @@ export function ResponsiveBlogNewsGrid({ blogs = [] }: { blogs?: Blog[] }) {
   };
 
   return (
-    <div className="2xl:container w-full mx-auto px-6 sm:px-8 md:px-10 lg:px-14">
+    <div className="2xl:container w-full mx-auto px-6 sm:px-8 md:px-10 lg:px-14 py-10">
       <div className="flex items-center gap-2 justify-between py-5 md:py-8 lg:py-16 flex-wrap">
         <div className="w-full md:w-[47%]">
           <h1 className="text-2xl lg:text-3xl font-normal">
@@ -156,6 +131,7 @@ export function ResponsiveBlogNewsGrid({ blogs = [] }: { blogs?: Blog[] }) {
           </p>
         </div>
       </div>
+      
       {/* Blog Grid */}
       <BlogNewsGrid blogs={displayedBlogs} />
 
@@ -179,8 +155,14 @@ export function ResponsiveBlogNewsGrid({ blogs = [] }: { blogs?: Blog[] }) {
         </div>
       )}
 
-      {/* Mobile: End of content message */}
-      {isMobile && !hasMore && displayedBlogs.length > 0 && <></>}
+      {/* Mobile: Show current progress */}
+      {/* {isMobile && (
+        <div className="flex justify-center mt-4">
+          <p className="text-sm text-gray-500">
+            Showing {Math.min(blogsToShowMobile, blogs.length)} of {blogs.length} blogs
+          </p>
+        </div>
+      )} */}
 
       {/* Desktop: Pagination Controls */}
       {!isMobile && totalPages > 1 && (
@@ -230,6 +212,15 @@ export function ResponsiveBlogNewsGrid({ blogs = [] }: { blogs?: Blog[] }) {
           </Button>
         </div>
       )}
+
+      {/* Desktop: Show current page info */}
+      {/* {!isMobile && totalPages > 1 && (
+        <div className="flex justify-center mt-4">
+          <p className="text-sm text-gray-500">
+            Page {currentPage} of {totalPages} • Showing {startIndex + 1}-{Math.min(endIndex, blogs.length)} of {blogs.length} blogs
+          </p>
+        </div>
+      )} */}
     </div>
   );
 }
