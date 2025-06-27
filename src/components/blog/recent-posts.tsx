@@ -1,0 +1,57 @@
+"use client";
+import { formatDateString } from "@/utils";
+import { ISbStoryData } from "@storyblok/react";
+import Link from "next/link";
+import { useParams } from "next/navigation";
+
+export function RecentPosts({
+  blogs,
+}: {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  blogs: ISbStoryData<any>[];
+}) {
+  const params = useParams();
+  const currentSlug = params.slug as string;
+  const recentPosts = blogs
+    .slice(0, 4)
+    .filter((blog) => blog.slug !== currentSlug);
+
+  return (
+    <>
+      {recentPosts.slice(0, 3).length > 0 && (
+        <div className="sm:min-w-[400px] lg:w-[400px]">
+          <h2 className="text-2xl mb-6">Recent Post</h2>
+          <div className="grid sm:grid-cols-2 lg:flex lg:flex-wrap gap-4 lg:flex-col">
+            {recentPosts.slice(0, 3).map((blog) => (
+              <Link
+                key={blog.slug}
+                href={`/blogs/${blog.slug}`}
+                className="w-full min-h-32 bg-gray-200 p-4 rounded-xl"
+              >
+                <div className="py-2">
+                  <p className="text-neutral-900 flex items-center justify-between text-[10px]">
+                    <span>
+                      <span>{blog.content.read_time_in_minutes}</span> min read
+                    </span>
+
+                    <span className="text-muted-foreground/85">
+                      {formatDateString(blog.created_at)}
+                    </span>
+                  </p>
+                </div>
+
+                <div>
+                  <h3 className="line-clamp-2 text-neutral-900 font-medium text-sm md:text-base mb-2 leading-tight">
+                    {blog.content.title}
+                  </h3>
+
+                  <p className="text-gray-400 text-xs">{blog.content.author}</p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+    </>
+  );
+}

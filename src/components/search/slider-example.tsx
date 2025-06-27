@@ -11,7 +11,7 @@ export function SliderExample() {
 
     const handleChange = (newValues: [number, number]): void => {
         setSliderValues(newValues);
-        console.log('New values:', newValues);
+        // console.log('New values:', newValues);
     };
 
     return (

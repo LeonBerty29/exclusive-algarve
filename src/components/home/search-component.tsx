@@ -50,16 +50,16 @@ export default function HeroSearch() {
 
     const handleSearch = () => {
         // Handle search logic here
-        console.log({
-            region: selectedRegion,
-            type: selectedType,
-            priceRange: selectedPriceRange,
-            bedrooms: selectedBedrooms,
-            bathrooms: selectedBathrooms,
-            pool: selectedPool,
-            garage: selectedGarage,
-            query: searchQuery
-        });
+        // console.log({
+        //     region: selectedRegion,
+        //     type: selectedType,
+        //     priceRange: selectedPriceRange,
+        //     bedrooms: selectedBedrooms,
+        //     bathrooms: selectedBathrooms,
+        //     pool: selectedPool,
+        //     garage: selectedGarage,
+        //     query: searchQuery
+        // });
     };
 
     const handleAdvancedToggle = () => {

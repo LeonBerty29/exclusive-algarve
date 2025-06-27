@@ -18,7 +18,7 @@ export default function RegionSelect() {
 
 
     const handleItemSelect = (item: string): void => {
-        console.log(`Selected item: ${item}`);
+        // console.log(`Selected item: ${item}`);
         setSelectedItems(prev => {
             if (prev.includes(item)) {
                 return prev.filter(i => i !== item);
