@@ -7,58 +7,8 @@ import { Blog as BlogType } from "@/types";
 import Image from "next/image";
 import React from "react";
 import { renderRichText, StoryblokRichTextNode } from "@storyblok/react";
-
-// export default BlogArticlePage;
-
-// function BlogDetails() {
-//   return (
-//     <>
-//       <div className="text-xs md:text-sm mb-10">
-//         <p className="mb-14">
-//           Since its establishment in 2006, Exclusive Algarve Villas has become
-//           synonymous with excellence in the luxury real estate sector. Operating
-//           from strategically located offices in Lagos, Lagoa, and Vilamoura, the
-//           brokerage offers a meticulously curated portfolio of high-end
-//           properties, including oceanfront villas, modern contemporary homes,
-//           golf resort residences, and investment projects.
-//           <br />
-//           With a team of multilingual property professionals fluent in
-//           Portuguese, English, Dutch, French, German, Spanish, and Italian, the
-//           company ensures fluent communication and personalized service for its
-//           global clientele. Buyers benefit from a tailored property search
-//           process, while sellers enjoy access to an elite network of qualified
-//           buyers, reducing unnecessary viewings and optimizing results.
-//         </p>
-
-//         <p className="text-lg font-semibold mb-4">1. Vilamoura</p>
-//         <div className="flex gap-4 flex-wrap mb-5">
-//           <Image
-//             src={"/images/lifestyle-img6.png"}
-//             alt="Arial view of Lisbon city"
-//             width={400}
-//             height={300}
-//             className="object-cover min-w-[300px] flex-1"
-//           />
-//           <Image
-//             src={"/images/lifestyle-img6.png"}
-//             alt="Arial view of Lisbon city"
-//             width={400}
-//             height={300}
-//             className="object-cover min-w-[300px] flex-1"
-//           />
-//         </div>
-//         <p>
-//           With a team of multilingual property professionals fluent in
-//           Portuguese, English, Dutch, French, German, Spanish, and Italian, the
-//           company ensures fluent communication and personalized service for its
-//           global clientele. Buyers benefit from a tailored property search
-//           process, while sellers enjoy access to an elite network of qualified
-//           buyers, reducing unnecessary viewings and optimizing results.
-//         </p>
-//       </div>
-//     </>
-//   );
-// }
+import { fetchAllBlogs } from "@/data/blogs";
+import { RecentPosts } from "../blog/recent-posts";
 
 function RelatedArticles() {
   const blogs: BlogType[] = [
@@ -100,7 +50,7 @@ function RelatedArticles() {
   );
 }
 
-export const Blog = (props: {
+export const Blog = async (props: {
   blok: {
     title: string;
     banner_image: {
@@ -111,9 +61,11 @@ export const Blog = (props: {
     body: StoryblokRichTextNode<string | TrustedHTML>;
   };
 }) => {
+  // console.log(props)
+  const blogs = await fetchAllBlogs();
   return (
     <main className="2xl:container w-full mx-auto px-6 sm:px-8 md:px-10 lg:px-14 py-10">
-      <div className="flex flex-col gap-6 xl:flex-row">
+      <div className="flex flex-col gap-6 lg:flex-row">
         <div className="flex-1">
           <div className="relative w-full h-96">
             <Image
@@ -138,7 +90,7 @@ export const Blog = (props: {
           </div>
 
           <div
-            className="prose md:prose-lg mt-16 max-w-none"
+            className="prose md:prose-sm mt-16 max-w-none"
             dangerouslySetInnerHTML={{
               __html: renderRichText(props?.blok?.body)!,
             }}
@@ -180,12 +132,7 @@ export const Blog = (props: {
           <RelatedArticles />
         </div>
 
-        <div className="sm:min-w-[400px]">
-          <h2 className="text-2xl mb-6">Recent Post</h2>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:flex xl:flex-wrap gap-4 xl:flex-col">
-            {/* <BlogNewsCard blog={[]} /> */}
-          </div>
-        </div>
+        <RecentPosts blogs={blogs} />
       </div>
     </main>
   );

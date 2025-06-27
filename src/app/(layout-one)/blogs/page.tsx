@@ -1,56 +1,15 @@
 import { Skeleton } from "@/components/ui/skeleton";
-import { getStoryblokApi } from "@/lib/storyblok";
+import { fetchAllBlogs } from "@/data/blogs";
+import { formatDateString } from "@/utils";
 import Image from "next/image";
 import Link from "next/link";
 // import { Blog as BlogType } from "@/types";
 import { Suspense } from "react";
 
-const fetchAllBlogs = async () => {
-  const client = getStoryblokApi();
-  const response = await client.getStories({
-    content_type: "blog",
-    version: "draft",
-  });
-  return response.data.stories;
-};
+
 
 // Date formatting function
-function formatDateString(dateString: string) {
-  // Parse the ISO 8601 date string (e.g., "2025-06-25T06:25:36.344Z")
-  const inputDate = new Date(dateString);
-  const today = new Date();
-  const yesterday = new Date();
-  yesterday.setDate(today.getDate() - 1);
 
-  // Convert to local date for comparison (ignoring time)
-  const inputDateOnly = new Date(
-    inputDate.getFullYear(),
-    inputDate.getMonth(),
-    inputDate.getDate()
-  );
-  const todayOnly = new Date(
-    today.getFullYear(),
-    today.getMonth(),
-    today.getDate()
-  );
-  const yesterdayOnly = new Date(
-    yesterday.getFullYear(),
-    yesterday.getMonth(),
-    yesterday.getDate()
-  );
-
-  if (inputDateOnly.getTime() === todayOnly.getTime()) {
-    return "today";
-  } else if (inputDateOnly.getTime() === yesterdayOnly.getTime()) {
-    return "yesterday";
-  } else {
-    // Format as YYYY/MM/DD using local date
-    const year = inputDate.getFullYear();
-    const month = String(inputDate.getMonth() + 1).padStart(2, "0");
-    const day = String(inputDate.getDate()).padStart(2, "0");
-    return `${year}/${month}/${day}`;
-  }
-}
 
 export default function BlogPage() {
   return (
@@ -88,14 +47,14 @@ export default function BlogPage() {
 
 async function GetAndDisplayBlogs() {
   const blogs = await fetchAllBlogs();
-  console.log(blogs[0]);
+  // console.log(blogs[0]);
   return (
     <>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {blogs?.map((blog) => (
           <div key={blog.content._uid}>
             <Link href={`/blogs/${blog.slug}`} className="w-full">
-              <div className="relative w-full h-48">
+              <div className="relative w-full aspect-video">
                 <Image
                   src={blog.content.banner_image.filename}
                   alt={blog.content.banner_image.alt || blog.content.title}
@@ -105,23 +64,23 @@ async function GetAndDisplayBlogs() {
               </div>
 
               <div className="py-2">
-                <p className="text-neutral-900 flex items-center justify-between text-xs md:text-sm">
+                <p className="text-neutral-900 flex items-center justify-between text-[11px]">
                   <span>
                     <span>{blog.content.read_time_in_minutes}</span> min read
                   </span>
 
                   <span className="text-muted-foreground/85">
-                    {formatDateString(blog.content.date)}
+                    {formatDateString(blog.created_at)}
                   </span>
                 </p>
               </div>
 
               <div>
-                <h3 className="text-neutral-900 font-medium text-sm md:text-base lg:text-lg mb-2 leading-tight">
+                <h3 className="line-clamp-2 text-neutral-900 font-medium text-sm md:text-base mb-2 leading-tight">
                   {blog.content.title}
                 </h3>
 
-                <p className="text-gray-400 text-xs md:text-sm">
+                <p className="text-gray-400 text-xs">
                   {blog.content.author}
                 </p>
               </div>
