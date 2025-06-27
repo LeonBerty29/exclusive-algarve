@@ -4,11 +4,21 @@ import { notFound } from "next/navigation";
 
 export const fetchAllBlogs = async () => {
   const client = getStoryblokApi();
-  const response = await client.getStories({
-    content_type: "blog",
-    version: "draft",
-  });
-  return response.data.stories;
+  try {
+    const response = await client.getStories({
+      content_type: "blog",
+      version: process.env.NODE_ENV === "development" ? "draft" : "published",
+    });
+    return response.data.stories;
+  } catch (error: unknown) {
+    console.log(error);
+
+    if (error instanceof Error) {
+      throw error;
+    } else {
+      throw new Error(`Failed to fetch blog page: ${String(error)}`);
+    }
+  }
 };
 
 export const fetchBlogPage = async (slug: string) => {
@@ -40,7 +50,7 @@ export const fetchBlogPage = async (slug: string) => {
   const client = getStoryblokApi();
   try {
     const response = await client.getStory(`blogs/${slug}`, {
-      version: "draft",
+      version: process.env.NODE_ENV === "development" ? "draft" : "published",
     });
     return response.data.story;
   } catch (error: unknown) {

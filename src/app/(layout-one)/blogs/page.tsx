@@ -3,13 +3,7 @@ import { fetchAllBlogs } from "@/data/blogs";
 import { formatDateString } from "@/utils";
 import Image from "next/image";
 import Link from "next/link";
-// import { Blog as BlogType } from "@/types";
 import { Suspense } from "react";
-
-
-
-// Date formatting function
-
 
 export default function BlogPage() {
   return (
