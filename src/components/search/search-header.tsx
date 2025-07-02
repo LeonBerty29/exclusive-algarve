@@ -58,7 +58,7 @@ const SearchHeader = () => {
                     </Button>
 
                     <div className="flex-col items-center gap-2 hidden sm:flex">
-                        <Image src="/images/search-header-icon.png" alt="" width={25} height={25} />
+                        {/* <Image src="/images/search-header-icon.png" alt="" width={25} height={25} /> */}
                         <p className="text-xs text-center"><b>3,550</b> Properties for sale with <span className="text-primary font-semibold">Algarve Villa</span></p>
                     </div>
 

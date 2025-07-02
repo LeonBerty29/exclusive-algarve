@@ -6,8 +6,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
 import { SearchSelectBox } from "@/components/search/search-select-box";
 import RegionSelect from "@/components/search/region-select";
 import { SliderExample } from "@/components/search/slider-example";
@@ -24,18 +22,9 @@ const SideFilters = () => {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <form>
-            <Label htmlFor="search" className="sr-only text-xs">
-              Search
-            </Label>
-            <div className="relative mb-4">
-              <SearchSelectBox />
-            </div>
-
-            <Button className="w-full bg-primary text-white rounded-none hover:opacity-80">
-              Search
-            </Button>
-          </form>
+          <div className="relative mb-4">
+            <SearchSelectBox />
+          </div>
         </CardContent>
       </Card>
 
@@ -47,11 +36,9 @@ const SideFilters = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
-            <div className="relative mb-4">
-              <SliderExample />
-            </div>
-          </form>
+          <div className="relative mb-4">
+            <SliderExample />
+          </div>
         </CardContent>
       </Card>
 
@@ -60,11 +47,9 @@ const SideFilters = () => {
           <CardTitle className="text-sm">Region</CardTitle>
         </CardHeader>
         <CardContent>
-          <form>
-            <div className="relative mb-4">
-              <RegionSelect />
-            </div>
-          </form>
+          <div className="relative mb-4">
+            <RegionSelect />
+          </div>
         </CardContent>
       </Card>
 
@@ -73,11 +58,9 @@ const SideFilters = () => {
           <CardTitle className="text-sm">Types of properties</CardTitle>
         </CardHeader>
         <CardContent>
-          <form>
-            <div className="relative mb-4">
-              <PropertyTypes />
-            </div>
-          </form>
+          <div className="relative mb-4">
+            <PropertyTypes />
+          </div>
         </CardContent>
       </Card>
 
@@ -86,11 +69,9 @@ const SideFilters = () => {
           <CardTitle className="text-sm">Status & Tags</CardTitle>
         </CardHeader>
         <CardContent>
-          <form>
-            <div className="relative mb-4">
-              <StatusTags />
-            </div>
-          </form>
+          <div className="relative mb-4">
+            <StatusTags />
+          </div>
         </CardContent>
       </Card>
     </>

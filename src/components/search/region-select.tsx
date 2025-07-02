@@ -1,5 +1,6 @@
 'use client'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import {
     Command,
     CommandInput,
@@ -11,39 +12,58 @@ import { CommandItem } from '@/components/ui/command-two';
 import { Check } from "lucide-react";
 import { cn } from '@/lib/utils';
 
-
 export default function RegionSelect() {
-    const [selectedItems, setSelectedItems] = useState<string[]>([]);
+    const router = useRouter();
+    const searchParams = useSearchParams();
     const [hovering, setHovering] = useState<string>('');
 
-
-    const handleItemSelect = (item: string): void => {
-        // console.log(`Selected item: ${item}`);
-        setSelectedItems(prev => {
-            if (prev.includes(item)) {
-                return prev.filter(i => i !== item);
-            } else {
-                return [...prev, item];
-            }
-        });
+    // Get initial selected regions from URL
+    const getInitialRegions = (): string[] => {
+        const locations = searchParams.get('location');
+        return locations ? locations.split(',') : [];
     };
 
+    const [selectedItems, setSelectedItems] = useState<string[]>(getInitialRegions);
 
+    // Update URL when selections change
+    const updateURL = (newSelections: string[]) => {
+        const params = new URLSearchParams(searchParams.toString());
+        
+        if (newSelections.length > 0) {
+            params.set('location', newSelections.join(','));
+        } else {
+            params.delete('location');
+        }
+        
+        // Reset to first page when region changes
+        params.delete('page');
+        
+        router.push(`?${params.toString()}`, { scroll: false });
+    };
 
+    const handleItemSelect = (item: string): void => {
+        const newSelections = selectedItems.includes(item)
+            ? selectedItems.filter(i => i !== item)
+            : [...selectedItems, item];
+            
+        setSelectedItems(newSelections);
+        updateURL(newSelections);
+    };
 
-
+    // Sync with URL params when they change externally
+    useEffect(() => {
+        setSelectedItems(getInitialRegions());
+    }, [searchParams]);
 
     const regions = ['Central Algarve', 'West Algarve', 'East Algarve', 'Almancil', 'Alvor', 'Faro', 'Lagoa'];
 
-
     return (
-        <div className="w-full  bg-white">
-
-
+        <div className="w-full bg-white">
             <Command className="border-none [&_[cmdk-input-wrapper]]:bg-gray-100 [&_[cmdk-input-wrapper]]:border-0 [&_[cmdk-input-wrapper]]:rounded-none rounded-none">
                 <CommandInput
                     className="border-none bg-gray-100 rounded-none"
                     inputContainerColor="bg-gray-100"
+                    placeholder="Search regions..."
                 />
                 <CommandList>
                     <CommandEmpty>No results found.</CommandEmpty>
@@ -56,7 +76,9 @@ export default function RegionSelect() {
                                 onSelect={() => handleItemSelect(region)}
                                 className={cn(
                                     "flex items-center justify-between hover:bg-red-200",
-                                    region === hovering && "hover:bg-slate-50", selectedItems.includes(region) && "font-bold text-primary hover:text-primary [&_[cmdk-item][data-selected]]:text-primary", region === hovering && selectedItems.includes(region) && "text-primary"
+                                    region === hovering && "hover:bg-slate-50", 
+                                    selectedItems.includes(region) && "font-bold text-primary hover:text-primary [&_[cmdk-item][data-selected]]:text-primary", 
+                                    region === hovering && selectedItems.includes(region) && "text-primary"
                                 )}
                                 onMouseEnter={() => { setHovering(region) }}
                                 onMouseLeave={() => { setHovering('') }}
@@ -73,4 +95,3 @@ export default function RegionSelect() {
         </div>
     );
 }
-
