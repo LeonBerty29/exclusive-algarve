@@ -9,7 +9,6 @@ import {
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 import { Button } from "../ui/button"
-import Image from "next/image"
 import { ListFilter, ListFilterPlus } from "lucide-react"
 import {
     Select,

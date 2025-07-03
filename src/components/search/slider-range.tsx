@@ -6,6 +6,7 @@ interface RangeSliderProps {
     min?: number;
     max?: number;
     defaultValue?: [number, number];
+    value?: [number, number]; // Add controlled value prop
     step?: number;
     label?: string;
     valueLabelDisplay?: 'on' | 'off';
@@ -18,6 +19,7 @@ export const RangeSlider: React.FC<RangeSliderProps> = ({
     min = 0,
     max = 100,
     defaultValue = [2000, 80000],
+    value, // Accept controlled value
     step = 1,
     label = '',
     valueLabelDisplay = 'on',
@@ -25,12 +27,23 @@ export const RangeSlider: React.FC<RangeSliderProps> = ({
     className = '',
     currency = 'USD'
 }) => {
-    const [values, setValues] = useState<[number, number]>(defaultValue);
+    const [values, setValues] = useState<[number, number]>(value || defaultValue);
     const [inputValues, setInputValues] = useState<[string, string]>(['', '']);
     const [isEditing, setIsEditing] = useState<[boolean, boolean]>([false, false]);
     const [isDragging, setIsDragging] = useState<boolean>(false);
     const [activeThumb, setActiveThumb] = useState<number>(0);
     const trackRef = useRef<HTMLDivElement>(null);
+
+    // Sync with controlled value prop
+    useEffect(() => {
+        if (value) {
+            setValues(value);
+        }
+    }, [value]);
+
+    useEffect(() => {
+        setValues(defaultValue);
+    }, [defaultValue]);
 
     // Format number to display format (e.g., 50000 -> "50k")
     const formatDisplayValue = (value: number): string => {
@@ -88,7 +101,12 @@ export const RangeSlider: React.FC<RangeSliderProps> = ({
         }
 
         const validatedValues: [number, number] = [val1, val2];
-        setValues(validatedValues);
+        
+        // Only update internal state if not controlled
+        if (!value) {
+            setValues(validatedValues);
+        }
+        
         if (onChange) onChange(validatedValues);
     };
 
