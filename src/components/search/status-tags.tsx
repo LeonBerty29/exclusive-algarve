@@ -1,5 +1,6 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   Star,
   Video,
@@ -9,13 +10,10 @@ import {
   Check,
 } from "lucide-react";
 
-interface StatusTagsProps {
-  onPropertyChange?: (property: string, checked: boolean) => void;
-}
-
 interface StatusTag {
   key: string;
   label: string;
+  urlParam: string; // URL parameter name
   icon: React.ComponentType<{
     className?: string;
     color?: string;
@@ -25,19 +23,30 @@ interface StatusTag {
   fillColor?: string | undefined;
 }
 
-const StatusTags: React.FC<StatusTagsProps> = ({ onPropertyChange }) => {
-  const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({
-    exclusive: false,
-    new: false,
-    withVideo: false,
-    sold: false,
-    reserved: false,
-  });
+const StatusTags: React.FC = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  // Get initial values from URL params
+  const getInitialCheckedItems = (): Record<string, boolean> => {
+    return {
+      exclusive: searchParams.get("is_featured") === "true",
+      new: searchParams.get("new") === "true",
+      withVideo: searchParams.get("with_video") === "true",
+      sold: searchParams.get("sold") === "true",
+      reserved: searchParams.get("reserved") === "true",
+    };
+  };
+
+  const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>(
+    getInitialCheckedItems
+  );
 
   const properties: StatusTag[] = [
     {
       key: "exclusive",
       label: "Exclusive",
+      urlParam: "is_featured",
       icon: Star,
       fill: true,
       fillColor: "#FFAB00",
@@ -45,6 +54,7 @@ const StatusTags: React.FC<StatusTagsProps> = ({ onPropertyChange }) => {
     {
       key: "new",
       label: "New",
+      urlParam: "new",
       icon: ShieldCheck,
       fill: true,
       fillColor: "#000",
@@ -52,46 +62,80 @@ const StatusTags: React.FC<StatusTagsProps> = ({ onPropertyChange }) => {
     {
       key: "withVideo",
       label: "With Video",
+      urlParam: "with_video",
       icon: Video,
       fill: true,
       fillColor: "#E83F3F",
     },
-    { key: "sold", label: "Sold", icon: ShoppingBag },
-    { key: "reserved", label: "Reserved", icon: Clock },
+    {
+      key: "sold",
+      label: "Sold",
+      urlParam: "sold",
+      icon: ShoppingBag,
+    },
+    {
+      key: "reserved",
+      label: "Reserved",
+      urlParam: "reserved",
+      icon: Clock,
+    },
   ];
+
+  // Update URL when status changes
+  const updateURL = (propertyKey: string, checked: boolean) => {
+    const params = new URLSearchParams(searchParams.toString());
+    const property = properties.find((p) => p.key === propertyKey);
+
+    if (property) {
+      if (checked) {
+        params.set(property.urlParam, "true");
+      } else {
+        params.delete(property.urlParam);
+      }
+
+      // Reset to first page when status changes
+      params.delete("page");
+
+      router.push(`?${params.toString()}`, { scroll: false });
+    }
+  };
 
   const handleToggle = (propertyKey: string) => {
     const newChecked = !checkedItems[propertyKey];
+
     setCheckedItems((prev) => ({
       ...prev,
       [propertyKey]: newChecked,
     }));
 
-    // Call the callback function if provided
-    if (onPropertyChange) {
-      onPropertyChange(propertyKey, newChecked);
-    }
+    updateURL(propertyKey, newChecked);
   };
 
+  // Sync with URL params when they change externally
+  useEffect(() => {
+    setCheckedItems(getInitialCheckedItems());
+  }, [searchParams]);
+
   return (
-    <div className="w-full flex gap-3 flex-wrap ">
+    <div className="w-full flex gap-3 flex-wrap">
       {properties.map((property) => {
         const isChecked = checkedItems[property.key];
         const IconComponent = property.icon;
 
         // Determine icon color based on state
-        const iconColor = isChecked 
-          ? "white" 
-          : property.fill 
-          ? property.fillColor 
+        const iconColor = isChecked
+          ? "white"
+          : property.fill
+          ? property.fillColor
           : "currentColor";
 
         // For icons that should be filled, use fill prop
-        const iconFill = property.fill && !isChecked 
-          ? property.fillColor 
-          : isChecked 
-          ? "white" 
-          : "none";
+        const iconFill =
+          property.fill && !isChecked
+            ? property.fillColor
+            : isChecked
+            ? "white"
+            : "none";
 
         return (
           <div
@@ -130,16 +174,6 @@ const StatusTags: React.FC<StatusTagsProps> = ({ onPropertyChange }) => {
           </div>
         );
       })}
-
-      {/* <div className="mt-6 p-3 bg-gray-50 rounded-lg">
-        <h4 className="font-medium text-gray-700 mb-2">Current Selection:</h4>
-        <div className="text-sm text-gray-600">
-          {Object.entries(checkedItems)
-            .filter(([_, checked]) => checked)
-            .map(([key, _]) => properties.find((p) => p.key === key)?.label)
-            .join(", ") || "None selected"}
-        </div>
-      </div> */}
     </div>
   );
 };
