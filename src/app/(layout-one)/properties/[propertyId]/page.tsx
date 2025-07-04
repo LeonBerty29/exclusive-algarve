@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Calendar, HeartIcon, } from "lucide-react";
+import { Calendar, HeartIcon } from "lucide-react";
 import ScrollableTabs from "@/components/property/scrollable-tabs";
 import PropertyDetailsIcons from "@/components/property/property-details-icons";
 
@@ -18,6 +18,7 @@ import PropertyImageGrid from "@/components/property-details/propert-image-grid"
 import SimilarProperties from "@/components/property-details/similar-properties";
 import ContactAgentForm from "@/components/property-details/contact-agent-form";
 import { getCurrencySymbol } from "@/components/shared/price-format";
+import { getProperty } from "@/data/properties";
 
 interface Props {
   params: Promise<{ propertyId: string }>;
@@ -25,15 +26,18 @@ interface Props {
 
 const page = async (props: Props) => {
   const { propertyId } = await props.params;
+  const response = await getProperty(propertyId);
+  const property = response.data;
+
+  // console.log(property);
 
   const details = {
-    refCode: "EAV-000",
-    location: "Ferragudo (Lagoa)",
-    privateArea: 98,
-    grossArea: 172,
-    plotSize: 203,
+    refCode: property.reference,
+    location: `${property.location.zone}, ${property.location.municipality}`,
+    privateArea: property.features.private_area,
+    grossArea: property.features.construction_area,
+    plotSize: property.features.plot_size,
   };
-
 
   return (
     <>
@@ -43,21 +47,16 @@ const page = async (props: Props) => {
             <Breadcrumb>
               <BreadcrumbList>
                 <BreadcrumbItem>
-                  {/* <BreadcrumbLink href="/"> */}
                   <Link href="/">Home</Link>
-                  {/* </BreadcrumbLink> */}
                 </BreadcrumbItem>
                 <BreadcrumbSeparator className="text-primary" />
                 <BreadcrumbItem>
-                  {/* <BreadcrumbLink href="/"> */}
                   <Link href="/properties">Properties</Link>
-                  {/* </BreadcrumbLink> */}
                 </BreadcrumbItem>
                 <BreadcrumbSeparator className="text-primary" />
-
                 <BreadcrumbItem>
                   <BreadcrumbPage className="font-semibold">
-                    {propertyId}
+                    {property.reference}
                   </BreadcrumbPage>
                 </BreadcrumbItem>
               </BreadcrumbList>
@@ -76,11 +75,13 @@ const page = async (props: Props) => {
 
           <div className="flex items-center justify-between flex-wrap gap-x-14 gap-y-4">
             <div className="flex items-center gap-x-16 gap-y-4 flex-wrap">
-              <h1 className="font-medium max-w-lg lg:text-lg">Luxury Condominium, 2 bedroom apartment with pool, 
-              close to the beach, for sale Ferragudo, Algarve</h1>
+              <h1 className="font-medium max-w-lg lg:text-lg">
+                {property.title}
+              </h1>
 
               <p className="font-medium text-primary">
-                {getCurrencySymbol("EUR")} 1520000
+                {getCurrencySymbol(property.currency)}{" "}
+                {property.price.toLocaleString()}
               </p>
             </div>
 
@@ -92,12 +93,15 @@ const page = async (props: Props) => {
 
         <div className="mt-10">
           <div className="2xl:container px-6 sm:px-8 md:px-10 lg:px-14 mx-auto min-h-full">
-            <PropertyImageGrid />
+            <PropertyImageGrid assets={property.assets} />
 
             <div className="gap-x-6 flex flex-col lg:flex-row mb-8">
               <div className="w-full lg:flex-1 pt-4">
-                <PropertyDetailsIcons />
-                <ScrollableTabs />
+                <PropertyDetailsIcons
+                  features={property.features}
+                  propertyType={property.typology.name}
+                />
+                <ScrollableTabs property={property} />
               </div>
 
               <div className="w-full lg:flex lg:w-[37%] xl:w-[30%] flex-col pt-4">
@@ -125,7 +129,9 @@ const page = async (props: Props) => {
                       </p>
                     </div>
                     <div>
-                      <span className="text-xs text-gray-500">Gross Area</span>
+                      <span className="text-xs text-gray-500">
+                        Construction Area
+                      </span>
                       <p className="font-bold text-base">
                         {details.grossArea} m<sup>2</sup>
                       </p>
@@ -145,11 +151,10 @@ const page = async (props: Props) => {
                 </div>
 
                 <div className="bg-black text-white w-full p-6">
-                 <ContactAgentForm />
+                  <ContactAgentForm />
                 </div>
               </div>
             </div>
-            
           </div>
         </div>
 

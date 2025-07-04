@@ -1,18 +1,25 @@
 import React from "react";
 import { FaBed } from "react-icons/fa";
-import { MdAreaChart, MdBathtub, MdOutlinePool } from "react-icons/md";
+import { MdAreaChart, MdBathtub } from "react-icons/md";
 import { LiaExpandArrowsAltSolid } from "react-icons/lia";
+import { CalendarDays, Home } from "lucide-react";
+import { Property } from "@/types/property";
 
-const PropertyDetailsIcons = () => {
+
+const PropertyDetailsIcons = ({
+  features,
+  propertyType
+}: {features: Property['features'], propertyType: string}) => {
   return (
-    <div className="items-center grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8  mt-5 mb-14">
+    <div className="items-center grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8 mt-5 mb-14">
       <div className="flex gap-3 items-center">
         <div className="flex items-center gap-3 justify-center border border-gray-500 bg-gray-200 p-4">
           <FaBed className="h-6 w-6 text-gray-500" />
         </div>
-
-        <div className="sapce-y-2">
-          <span className="font-semibold text-lg">03</span>
+        <div className="space-y-2">
+          <span className="font-semibold text-lg">
+            {features.bedrooms}
+          </span>
           <p className="text-xs text-gray-700">Bedrooms</p>
         </div>
       </div>
@@ -21,9 +28,10 @@ const PropertyDetailsIcons = () => {
         <div className="flex items-center gap-3 justify-center border border-gray-500 bg-gray-200 p-4">
           <MdBathtub className="h-6 w-6 text-gray-500" />
         </div>
-
-        <div className="sapce-y-2">
-          <span className="font-semibold text-lg">02</span>
+        <div className="space-y-2">
+          <span className="font-semibold text-lg">
+            {features.bathrooms}
+          </span>
           <p className="text-xs text-gray-700">Bathrooms</p>
         </div>
       </div>
@@ -32,10 +40,9 @@ const PropertyDetailsIcons = () => {
         <div className="flex items-center gap-3 justify-center border border-gray-500 bg-gray-200 p-4">
           <MdAreaChart className="h-6 w-6 text-gray-500" />
         </div>
-
-        <div className="sapce-y-2">
+        <div className="space-y-2">
           <span className="font-semibold text-lg">
-            100m<sup>2</sup>
+            {features.private_area}m<sup>2</sup>
           </span>
           <p className="text-xs text-gray-700">Private area</p>
         </div>
@@ -45,10 +52,9 @@ const PropertyDetailsIcons = () => {
         <div className="flex items-center gap-3 justify-center border border-gray-500 bg-gray-200 p-4">
           <LiaExpandArrowsAltSolid className="h-6 w-6 text-gray-500" />
         </div>
-
-        <div className="sapce-y-2">
+        <div className="space-y-2">
           <span className="font-semibold text-lg">
-            203m<sup>2</sup>
+            {features.plot_size}m<sup>2</sup>
           </span>
           <p className="text-xs text-gray-700">Plot size</p>
         </div>
@@ -56,12 +62,25 @@ const PropertyDetailsIcons = () => {
 
       <div className="flex gap-3 items-center">
         <div className="flex items-center gap-3 justify-center border border-gray-500 bg-gray-200 p-4">
-          <MdOutlinePool className="h-6 w-6 text-gray-500" />
+          <Home className="h-6 w-6 text-gray-500" />
         </div>
+        <div className="space-y-2">
+          <span className="font-semibold text-lg">
+            {propertyType}
+          </span>
+          <p className="text-xs text-gray-700">Property Type</p>
+        </div>
+      </div>
 
-        <div className="sapce-y-2">
-          <span className="font-semibold text-lg">3X5m</span>
-          <p className="text-xs text-gray-700">pool</p>
+      <div className="flex gap-3 items-center">
+        <div className="flex items-center gap-3 justify-center border border-gray-500 bg-gray-200 p-4">
+          <CalendarDays className="h-6 w-6 text-gray-500" />
+        </div>
+        <div className="space-y-2">
+          <span className="font-semibold text-lg">
+            {features.construction_year}
+          </span>
+          <p className="text-xs text-gray-700">Built Year</p>
         </div>
       </div>
     </div>

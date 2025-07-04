@@ -18,18 +18,11 @@ import {
   CarouselPrevious,
 } from "../ui/carousel";
 import Image from "next/image";
+import { PropertyImage } from "@/types/property";
+import { getProxiedImageUrl } from "@/lib/utils";
 
-const PropertyImagesModal = () => {
-  const propertyImage = [
-    "/images/property-main-img.png",
-    "/images/property-img-2.png",
-    "/images/property-img-3.png",
-    "/images/property-main-img.png",
-    "/images/property-img-2.png",
-    "/images/property-img-3.png",
-  ];
-
-  const totalImages = propertyImage.length;
+const PropertyImagesModal = ({ images }: { images: PropertyImage[] }) => {
+  const totalImages = images.length;
   const remainingPhotos = totalImages - 3;
 
   return (
@@ -55,11 +48,11 @@ const PropertyImagesModal = () => {
           <div className="flex items-center justify-center min-h-[60vh] p-4">
             <Carousel className="w-full max-w-4xl">
               <CarouselContent>
-                {propertyImage.map((image, index) => (
+                {images.map((image, index) => (
                   <CarouselItem key={index}>
                     <div className="relative w-full h-[500px] md:h-[600px]">
                       <Image
-                        src={image}
+                        src={getProxiedImageUrl(image.url)}
                         alt={`Property image ${index + 1}`}
                         fill
                         className="object-contain w-auto h-auto"

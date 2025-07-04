@@ -10,6 +10,7 @@ import {
   Maximize,
   Minimize,
 } from "lucide-react";
+import { PropertyVideo } from "@/types/property";
 
 // Dynamically import ReactPlayer to avoid SSR issues
 const ReactPlayer = dynamic(() => import("react-player/lazy"), {
@@ -21,13 +22,7 @@ const ReactPlayer = dynamic(() => import("react-player/lazy"), {
   ),
 });
 
-interface PropertyVideo {
-  id: string;
-  url: string;
-  title: string;
-  thumbnail?: string;
-  duration?: string;
-}
+
 
 interface PropertyVideoPlayerProps {
   videos: PropertyVideo[];
@@ -298,9 +293,9 @@ export function PropertyVideoPlayer({
                     <p className="font-medium text-xs sm:text-sm truncate">
                       {video.title}
                     </p>
-                    {video.duration && (
+                    {/* {video.duration && (
                       <p className="text-xs text-gray-500">{video.duration}</p>
-                    )}
+                    )} */}
                   </div>
                 </div>
               </button>

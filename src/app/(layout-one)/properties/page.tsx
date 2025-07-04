@@ -1,22 +1,27 @@
 import { ProductCard } from "@/components/product/product-card";
+import { PropertiesPagination } from "@/components/property/properties-pagination";
 import SearchHeader from "@/components/search/search-header";
 import SideFilters from "@/components/search/side-filters";
-import { getPropertiesWithAll } from "@/data/properties";
+import {
+  // getPropertiesWithAll,
+  getPropertiesWithAllPaginated,
+} from "@/data/properties";
 import { PropertySearchParams } from "@/types/property";
 import Link from "next/link";
 import { Suspense } from "react";
+import { PROPERTIES_PER_PAGE } from "@/config/constants";
 
 // interface PropertiesPageProps {
 //   searchParams: PropertySearchParams;
 // }
 
 type Params = {
-  [x: string]: string | string[]
+  [x: string]: string | string[];
 };
 
-interface PageProps  {
+interface PageProps {
   params?: Promise<Params>;
-  searchParams: Promise<PropertySearchParams>
+  searchParams: Promise<PropertySearchParams>;
 }
 
 export default async function PropertiesPage(props: PageProps) {
@@ -53,16 +58,22 @@ export default async function PropertiesPage(props: PageProps) {
   };
 
   // Fetch properties from API
-  const propertiesResponse = await getPropertiesWithAll(apiParams);
+  // const propertiesResponse = await getPropertiesWithAll(apiParams);
+  const propertiesResponse = await getPropertiesWithAllPaginated(
+    apiParams,
+    PROPERTIES_PER_PAGE
+  );
+
+  console.log(propertiesResponse.meta);
 
   return (
     <>
       <div className="pt-24 w-full">
         <div className="mb-4 w-full">
           <SearchHeader
-            // totalResults={propertiesResponse.meta.total}
-            // currentPage={propertiesResponse.meta.current_page}
-            // totalPages={propertiesResponse.meta.last_page}
+          // totalResults={propertiesResponse.meta.total}
+          // currentPage={propertiesResponse.meta.current_page}
+          // totalPages={propertiesResponse.meta.last_page}
           />
         </div>
 
@@ -74,25 +85,29 @@ export default async function PropertiesPage(props: PageProps) {
               </Suspense>
             </div>
 
-            <div className="lg:pl-6 flex-1 md:min-w-[400px] grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
-              {propertiesResponse.data.length > 0 ? (
-                propertiesResponse.data.map((property) => (
-                  <div key={property.id} className="">
-                    <Link
-                      href={`/properties/${property.id}`}
-                      className="block"
-                    >
-                      <ProductCard property={property} />
-                    </Link>
+            <div className="lg:pl-6 flex-1 md:min-w-[400px]">
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
+                {propertiesResponse.data.length > 0 ? (
+                  propertiesResponse.data.map((property) => (
+                    <div key={property.id} className="">
+                      <Link
+                        href={`/properties/${property.id}`}
+                        className="block"
+                      >
+                        <ProductCard property={property} />
+                      </Link>
+                    </div>
+                  ))
+                ) : (
+                  <div className="col-span-full text-center py-12">
+                    <p className="text-gray-500 text-lg">
+                      No properties found matching your criteria.
+                    </p>
                   </div>
-                ))
-              ) : (
-                <div className="col-span-full text-center py-12">
-                  <p className="text-gray-500 text-lg">
-                    No properties found matching your criteria.
-                  </p>
-                </div>
-              )}
+                )}
+              </div>
+
+              <PropertiesPagination apiParams={apiParams} />
             </div>
           </div>
         </div>
