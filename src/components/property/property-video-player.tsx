@@ -277,7 +277,7 @@ export function PropertyVideoPlayer({
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3">
             {videos.map((video, index) => (
               <button
-                key={video.id}
+                key={`${video.id}--${index}`}
                 onClick={() => handleVideoSelect(index)}
                 className={`relative p-2 sm:p-3 rounded-lg border-2 transition-all text-left ${
                   index === currentVideoIndex
