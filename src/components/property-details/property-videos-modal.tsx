@@ -1,18 +1,28 @@
 import {
-    Dialog,
-    DialogClose,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-  } from "@/components/ui/dialog";
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Button } from "../ui/button";
 import { Play } from "lucide-react";
 import PropertyVideoDetails from "../property/property-video-details";
+import { PropertyVideo } from "@/types/property";
 
-const ProperyVideosModal = () => {
+interface PropertyVideosModalProps {
+  videos: PropertyVideo[];
+}
+
+const ProperyVideosModal: React.FC<PropertyVideosModalProps> = ({ videos }) => {
+  // Don't render the modal if no videos are available
+  if (!videos || videos.length === 0) {
+    return null;
+  }
+
   return (
     <>
       <Dialog>
@@ -21,7 +31,7 @@ const ProperyVideosModal = () => {
             <Play className="w-6 h-6 text-black ml-1" fill="black" />
           </Button>
         </DialogTrigger>
-        <DialogContent className="w-fit mx-auto !max-w-full !top-16 !bottom-0 !left-0 !right-0 !translate-x-0 !translate-y-0 overflow-y-auto !bg-white">
+        <DialogContent className="mx-auto !max-w-full !top-16 !bottom-0 !left-0 !right-0 !translate-x-0 !translate-y-0 overflow-y-auto !bg-white">
           <DialogHeader>
             <DialogTitle className="sr-only">Property Video player</DialogTitle>
             <DialogDescription className="sr-only">
@@ -29,7 +39,7 @@ const ProperyVideosModal = () => {
             </DialogDescription>
           </DialogHeader>
           <div>
-            <PropertyVideoDetails />
+            <PropertyVideoDetails videos={videos} />
           </div>
           <DialogFooter className="sm:justify-start">
             <DialogClose asChild>

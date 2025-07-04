@@ -10,6 +10,7 @@ import {
   type CarouselApi,
 } from "@/components/ui/carousel";
 import Image from "next/image";
+import { getProxiedImageUrl } from "@/lib/utils";
 
 export default function ProductImageCarousel({
   imagePaths,
@@ -60,11 +61,6 @@ export default function ProductImageCarousel({
 
   const handleMouseLeave = () => {
     setIsPaused(false);
-  };
-
-  // Helper to generate proxied image URL
-  const getProxiedImageUrl = (originalUrl: string) => {
-    return `/api/image-proxy?url=${encodeURIComponent(originalUrl)}`;
   };
 
   return (

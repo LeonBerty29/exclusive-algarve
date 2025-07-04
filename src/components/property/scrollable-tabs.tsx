@@ -7,14 +7,14 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { PropertyInfo } from "./property-info";
 import { FloorPlanTab } from "./floor-plan";
 import { LocationTab } from "./location-tab";
-import PropertyFeatures from "../property-details/PropertyFeatures";
+import { PropertyFeatures } from "../property-details/PropertyFeatures";
+import { Property } from "@/types/property";
 
-const ScrollableTabs = () => {
-  const description = `<p>This gated condominium is ideally located 3 minutes by car from the center of the village, the beaches and the shops.<br> In the village of Ferragudo, in a residential area composed exclusively of villas, it benefits from an unobstructed view and incom- parable luminosity, a privileged, calm and soothing environment, close to the communication axes.<p><br>
-      <p>This secure complexe consists of 38 apartments with one to three bedrooms spread over two buildings, and offering high-end services, making quality of life and comfort its priorities.</p><br>
-      <p>The entire design of the residence is based on one essential objective, the quality of life of its inhabitants.</p><br>
-      <p>It benefits from an ideal exposure, its hallways serve 2 to 3 apartments maximum which are generally apartments with double expositions, the intimate secluded terraces benefit from an unobstructed view. Designed to ensure comfort and well-being, the apartments all have generous interior and exterior surfaces, an optimized interior layout and quality equipment.</p>
-      `;
+interface ScrollableTabsProps {
+  property: Property;
+}
+
+const ScrollableTabs = ({ property }: ScrollableTabsProps) => {
   const [activeTab, setActiveTab] = useState<string>("desc");
   const [showLeftArrow, setShowLeftArrow] = useState<boolean>(false);
   const [showRightArrow, setShowRightArrow] = useState<boolean>(true);
@@ -131,18 +131,20 @@ const ScrollableTabs = () => {
             value={"desc"}
             className="mt-4 p-4 border rounded-md px-8"
           >
-            <div className="min-h-32  p-4 space-y-6">
-              <PropertyInfo />
-              <DescriptionContent description={description} />
+            <div className="min-h-32 p-4 space-y-6">
+              <PropertyInfo property={property} />
+              <DescriptionContent description={property.description} />
             </div>
           </TabsContent>
           <TabsContent
             value={"features"}
             className="mt-4 p-4 border rounded-md px-8"
           >
-            <div className="min-h-32  p-4">
-              <PropertyInfo />
-              <PropertyFeatures />
+            <div className="min-h-32 p-4">
+              <PropertyInfo property={property} />
+              <PropertyFeatures
+                additionalFeatures={property.additional_features}
+              />
             </div>
           </TabsContent>
 
@@ -150,9 +152,11 @@ const ScrollableTabs = () => {
             value={"fplan"}
             className="mt-4 p-4 border rounded-md px-8"
           >
-            <div className="min-h-32  p-4">
-              <PropertyInfo />
-              <FloorPlanTab />
+            <div className="min-h-32 p-4">
+              <PropertyInfo property={property} />
+              <FloorPlanTab
+              // floorPlans={property.assets.images.floor_plans}
+              />
             </div>
           </TabsContent>
 
@@ -160,9 +164,12 @@ const ScrollableTabs = () => {
             value={"location"}
             className="mt-4 p-4 border rounded-md px-8"
           >
-            <div className="min-h-32  p-4">
-              <PropertyInfo />
-              <LocationTab />
+            <div className="min-h-32 p-4">
+              <PropertyInfo property={property} />
+              <LocationTab
+              // location={property.location}
+              // additionalFeatures={property.additional_features}
+              />
             </div>
           </TabsContent>
         </Tabs>
@@ -175,9 +182,6 @@ export default ScrollableTabs;
 
 const DescriptionContent = ({ description }: { description: string }) => {
   return (
-    <div
-      dangerouslySetInnerHTML={{ __html: description }}
-      className="!text-sm"
-    />
+    <div className="!text-sm prose prose-sm max-w-none">{description}</div>
   );
 };

@@ -116,6 +116,18 @@ export interface PropertyListResponse {
   };
 }
 
+export interface PropertyResponse {
+  data: Property;
+  meta: {
+    current_page: number;
+    last_page: number;
+    per_page: number;
+    total: number;
+    from: number;
+    to: number;
+  };
+}
+
 export interface PropertySearchParams {
   search?: string;
   location?: string;
