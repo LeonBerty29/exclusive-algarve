@@ -1,57 +1,70 @@
-import { Blog } from "@/types";
 import { Button } from "../ui/button";
-import { BlogNewsGrid } from "../blog/blog-news-grid";
+import { fetchAllBlogs } from "@/data/blogs";
+import Link from "next/link";
+import Image from "next/image";
+import { formatDateString } from "@/utils";
+import { Suspense } from "react";
+import { LoadingBlogs } from "../blog/loading-blogs";
 
-const LatestNews = () => {
-  const blogs: Blog[] = [
-    {
-      slug: "ciwkjwncwnkncw909",
-      image: "/images/blog-img.png",
-      title: "How to get the best luxury property in Algarve",
-      author: "Marcela Boturao",
-      readTime: 6,
-      date: "03.24.2025",
-    },
-    {
-      slug: "ciwkjwncwnkncw1010",
-      image: "/images/blog-img.png",
-      title: "The best restaurants in Algarve for a perfect dinner",
-      author: "Rodrigo Boturao",
-      readTime: 6,
-      date: "03.24.2025",
-    },
-    {
-      slug: "ciwkjwncwnkncw1011",
-      image: "/images/blog-img.png",
-      title: "The best beaches in Algarve for a relaxing day",
-      author: "Leticia Boturao",
-      readTime: 6,
-      date: "03.24.2025",
-    },
-    {
-      slug: "ciwkjwncwnkncw1012",
-      image: "/images/blog-img.png",
-      title: "The best golf courses in Algarve for a perfect round",
-      author: "Marcelo Boturao",
-      readTime: 6,
-      date: "03.24.2025",
-    },
-  ]
-
+const LatestNews = async () => {
   return (
     <div className="lg:container mx-auto px-6 sm:px-8 md:px-10 lg:px-12">
       <div className="flex items-center justify-between gap-4 flex-wrap mb-10">
         <h2 className="text-2xl sm:text-3xl">Our Latest News</h2>
-        <Button className="rounded-none bg-black text-white">
-          Read More
+        <Button asChild className="rounded-none bg-black text-white">
+          <Link href="/blogs">Read More</Link>
         </Button>
       </div>
-      <BlogNewsGrid blogs={blogs} />
+      <Suspense fallback={<LoadingBlogs />}>
+        <RecentBlogsGrid />
+      </Suspense>
     </div>
   );
 };
 
 export default LatestNews;
 
+async function RecentBlogsGrid() {
+  const blogs = await fetchAllBlogs();
+  const recentBlogs = blogs.slice(0, 4);
+  return (
+    <>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        {recentBlogs?.map((blog) => (
+          <div key={blog.content._uid}>
+            <Link href={`/blogs/${blog.slug}`} className="w-full">
+              <div className="relative w-full aspect-video">
+                <Image
+                  src={blog.content.banner_image.filename}
+                  alt={blog.content.banner_image.alt || blog.content.title}
+                  fill
+                  className="object-cover"
+                />
+              </div>
 
+              <div className="py-2">
+                <p className="text-neutral-900 flex items-center justify-between text-[11px]">
+                  <span>
+                    <span>{blog.content.read_time_in_minutes}</span> min read
+                  </span>
 
+                  <span className="text-muted-foreground/85">
+                    {formatDateString(blog.created_at)}
+                  </span>
+                </p>
+              </div>
+
+              <div>
+                <h3 className="line-clamp-2 text-neutral-900 font-medium text-sm md:text-base mb-2 leading-tight">
+                  {blog.content.title}
+                </h3>
+
+                <p className="text-gray-400 text-xs">{blog.content.author}</p>
+              </div>
+            </Link>
+          </div>
+        ))}
+      </div>
+    </>
+  );
+}
