@@ -9,9 +9,8 @@ import {
 } from "@/components/ui/carousel";
 import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
-import { RecentListingType } from "@/types";
 
-const recentListings: RecentListingType[] = [
+const teamMembers = [
   {
     id: "qwqwqwqwqwqw-235",
     imageUrl: "/images/team/bart-2.jpg",
@@ -106,9 +105,9 @@ const MeetTheTeam = () => {
           className="max-w-[400px] mx-auto w-full sm:max-w-full sm:mx-0 relative"
         >
           <CarouselContent>
-            {recentListings.map((recentListing) => (
+            {teamMembers.map((teamMember) => (
               <CarouselItem
-                key={recentListing.id}
+                key={teamMember.id}
                 className="basis-[90%] sm:basis-[313px]"
               >
                 <div className="">
@@ -116,18 +115,18 @@ const MeetTheTeam = () => {
                     <CardContent className="flex flex-col items-center justify-center w-full p-0">
                       <div className="w-full relative h-[450px]">
                         <Image
-                          src={recentListing.imageUrl}
-                          alt={`${recentListing.name} - ${recentListing.position}`}
+                          src={teamMember.imageUrl}
+                          alt={`${teamMember.name} - ${teamMember.position}`}
                           fill
                           className="object-cover object-top"
                         />
                       </div>
                       <div className="mt-4 text-center">
                         <h3 className="text-lg font-medium text-neutral-900 mb-1">
-                          {recentListing.name}
+                          {teamMember.name}
                         </h3>
                         <p className="text-sm text-neutral-600">
-                          {recentListing.position}
+                          {teamMember.position}
                         </p>
                       </div>
                     </CardContent>
