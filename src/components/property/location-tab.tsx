@@ -58,7 +58,7 @@ export const LocationTab = () => {
       />
 
       <div className="pt-4">
-        <p className="text-sm text-mainYellowColor font-semibold mb-5">
+        <p className="text-sm text-primary font-semibold mb-5">
           DRIVING DISTANCE
         </p>
 

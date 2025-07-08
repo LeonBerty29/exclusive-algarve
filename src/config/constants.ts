@@ -1,1 +1,1 @@
-export const PROPERTIES_PER_PAGE = 3;
+export const PROPERTIES_PER_PAGE = 9;

@@ -151,7 +151,7 @@ export const PropertyFeatures = ({
   return (
     <div className="pt-5 w-full max-w-full">
       <section className="mb-8">
-        <p className="text-base font-bold text-mainYellowColor mb-4">
+        <p className="text-base font-bold text-primary mb-4">
           PROPERTY FEATURES
         </p>
         {propertyFeatures.length > 0 ? (
@@ -198,7 +198,7 @@ export const PropertyFeatures = ({
       </section>
 
       <section>
-        <p className="text-base font-bold text-mainYellowColor mb-4">
+        <p className="text-base font-bold text-primary mb-4">
           AMENITIES
         </p>
 

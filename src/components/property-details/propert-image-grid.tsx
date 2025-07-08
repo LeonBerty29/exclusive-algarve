@@ -92,7 +92,7 @@ const PropertyImageGrid: React.FC<PropertyImageGridProps> = ({ assets }) => {
         <div className="relative w-full flex-1 min-w-full sm:min-w-[300px] sm:h-[400px]">
           {propertyImages[1] && (
             <Image
-              src={propertyImages[1].url}
+              src={getProxiedImageUrl(propertyImages[1]?.url)}
               alt={propertyImages[1].title || "Property image"}
               fill
               className="object-cover"
@@ -109,7 +109,7 @@ const PropertyImageGrid: React.FC<PropertyImageGridProps> = ({ assets }) => {
         <div className="relative w-full flex-1 min-w-full sm:min-w-[300px] sm:h-[400px]">
           {propertyImages[2] && (
             <Image
-              src={propertyImages[2].url}
+              src={getProxiedImageUrl(propertyImages[2]?.url)}
               alt={propertyImages[2].title || "Property image"}
               fill
               className="object-cover"
