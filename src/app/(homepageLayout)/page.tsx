@@ -7,6 +7,8 @@ import MeetTheTeam from "@/components/home/meet-the-team";
 import HouseView from "@/components/home/house-view";
 import LifeStyle from "@/components/home/lifestyle";
 import DiscoverSection from "@/components/home/discover-section";
+import { Suspense } from "react";
+import { RecentListingLoading } from "@/components/home/recent-listing-loading";
 
 export default function Home() {
   return (
@@ -23,7 +25,9 @@ export default function Home() {
         <LifeStyle />
       </div>
       <div className="bg-neutral-800">
-        <RecentListing />
+        <Suspense fallback={<RecentListingLoading />}>
+          <RecentListing />
+        </Suspense>
       </div>
       <div className="mt-8">
         <MeetTheTeam />
@@ -40,9 +44,6 @@ export default function Home() {
       <div className="pt-10">
         <DiscoverSection />
       </div>
-
-
-
     </div>
   );
 }

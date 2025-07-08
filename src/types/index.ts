@@ -8,13 +8,6 @@ export type Blog = {
   blogDetails?: React.ReactNode;
 };
 
-export type RecentListingType = {
-  id: string;
-  imageUrl: string;
-  name?: string;
-  position?: string;
-};
-
 export type Home = {
   imagePaths: string[];
   description: string;

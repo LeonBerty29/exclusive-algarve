@@ -208,7 +208,7 @@ const page = async (props: Props) => {
                 <div className="w-full border p-5 mb-6">
                   <p className="text-xs text-gray-500 mb-5">
                     Ref Code:{" "}
-                    <span className="text-sm font-bold text-mainYellowColor">
+                    <span className="text-sm font-bold text-primary">
                       {details.refCode}
                     </span>
                   </p>

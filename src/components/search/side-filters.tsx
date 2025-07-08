@@ -6,11 +6,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { SearchSelectBox } from "@/components/search/search-select-box";
 import RegionSelect from "@/components/search/region-select";
 import { SliderExample } from "@/components/search/slider-example";
 import { PropertyTypes } from "@/components/property/property-types";
 import StatusTags from "./status-tags";
+import { SearchInput } from "./search-input";
 
 const SideFilters = () => {
   return (
@@ -23,7 +23,7 @@ const SideFilters = () => {
         </CardHeader>
         <CardContent>
           <div className="relative mb-4">
-            <SearchSelectBox />
+            <SearchInput />
           </div>
         </CardContent>
       </Card>
