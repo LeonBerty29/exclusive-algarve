@@ -86,7 +86,7 @@ export default function ProductImageCarousel({
                     priority
                   />
                   {/* Shadow overlay */}
-                  <div className="absolute inset-0 bg-black/50 z-10"></div>
+                  {/* <div className="absolute inset-0 bg-black/50 z-10"></div> */}
                 </div>
               </div>
             </CarouselItem>

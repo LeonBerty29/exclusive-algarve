@@ -182,6 +182,6 @@ export default ScrollableTabs;
 
 const DescriptionContent = ({ description }: { description: string }) => {
   return (
-    <div className="!text-sm prose prose-sm max-w-none">{description}</div>
+    <div className="!text-xs prose prose-sm max-w-none">{description}</div>
   );
 };

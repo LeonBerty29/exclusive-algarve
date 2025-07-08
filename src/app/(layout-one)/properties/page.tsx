@@ -10,6 +10,11 @@ import { PropertySearchParams } from "@/types/property";
 import Link from "next/link";
 import { Suspense } from "react";
 import { PROPERTIES_PER_PAGE } from "@/config/constants";
+import {
+  PaginationSkeleton,
+  PropertiesGridSkeleton,
+  SearchHeaderSkeleton,
+} from "@/components/property/loading-states";
 
 // interface PropertiesPageProps {
 //   searchParams: PropertySearchParams;
@@ -57,61 +62,109 @@ export default async function PropertiesPage(props: PageProps) {
     language: searchParams.language || "en",
   };
 
+  // Create a key based on the search parameters that affect the data
+  const suspenseKey = JSON.stringify({
+    search: apiParams.search,
+    location: apiParams.location,
+    municipality: apiParams.municipality,
+    district: apiParams.district,
+    min_price: apiParams.min_price,
+    max_price: apiParams.max_price,
+    currency: apiParams.currency,
+    type: apiParams.type,
+    min_bedrooms: apiParams.min_bedrooms,
+    max_bedrooms: apiParams.max_bedrooms,
+    min_bathrooms: apiParams.min_bathrooms,
+    max_bathrooms: apiParams.max_bathrooms,
+    min_area: apiParams.min_area,
+    max_area: apiParams.max_area,
+    min_plot_size: apiParams.min_plot_size,
+    max_plot_size: apiParams.max_plot_size,
+    construction_year_from: apiParams.construction_year_from,
+    construction_year_to: apiParams.construction_year_to,
+    energy_class: apiParams.energy_class,
+    agency_id: apiParams.agency_id,
+    is_featured: apiParams.is_featured,
+    show_price: apiParams.show_price,
+    sort_by: apiParams.sort_by,
+    sort_direction: apiParams.sort_direction,
+    per_page: apiParams.per_page,
+    page: apiParams.page,
+  });
+
   // Fetch properties from API
   // const propertiesResponse = await getPropertiesWithAll(apiParams);
-  const propertiesResponse = await getPropertiesWithAllPaginated(
-    apiParams,
-    PROPERTIES_PER_PAGE
-  );
 
-  console.log(propertiesResponse.meta);
+  // console.log(propertiesResponse.meta);
 
   return (
     <>
       <div className="pt-24 w-full">
         <div className="mb-4 w-full">
-          <SearchHeader
-          // totalResults={propertiesResponse.meta.total}
-          // currentPage={propertiesResponse.meta.current_page}
-          // totalPages={propertiesResponse.meta.last_page}
-          />
+          <Suspense fallback={<SearchHeaderSkeleton />}>
+            <SearchHeader
+            // totalResults={propertiesResponse.meta.total}
+            // currentPage={propertiesResponse.meta.current_page}
+            // totalPages={propertiesResponse.meta.last_page}
+            />
+          </Suspense>
         </div>
 
         <div className="2xl:container px-6 sm:px-8 md:px-10 lg:px-14 mx-auto">
           <div className="max-w-[400px] mx-auto sm:max-w-full sm:mx-0 flex items-start flex-wrap pb-8">
             <div className="w-80 max-h-[calc(100vh-6rem)] overflow-y-auto sticky top-24 hidden lg:block">
-              <Suspense fallback={<div>Loading filters...</div>}>
-                <SideFilters />
-              </Suspense>
+              <SideFilters />
             </div>
 
             <div className="lg:pl-6 flex-1 md:min-w-[400px]">
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
-                {propertiesResponse.data.length > 0 ? (
-                  propertiesResponse.data.map((property) => (
-                    <div key={property.id} className="">
-                      <Link
-                        href={`/properties/${property.id}`}
-                        className="block"
-                      >
-                        <ProductCard property={property} />
-                      </Link>
-                    </div>
-                  ))
-                ) : (
-                  <div className="col-span-full text-center py-12">
-                    <p className="text-gray-500 text-lg">
-                      No properties found matching your criteria.
-                    </p>
-                  </div>
-                )}
-              </div>
-
-              <PropertiesPagination apiParams={apiParams} />
+              <Suspense
+                key={`${suspenseKey} --properties`}
+                fallback={<PropertiesGridSkeleton />}
+              >
+                <PropertieList apiParams={apiParams} />
+              </Suspense>
+              <Suspense
+                key={`${suspenseKey} --pagination`}
+                fallback={<PaginationSkeleton />}
+              >
+                <PropertiesPagination apiParams={apiParams} />
+              </Suspense>
             </div>
           </div>
         </div>
       </div>
     </>
+  );
+}
+
+async function PropertieList({
+  apiParams,
+}: {
+  apiParams: PropertySearchParams;
+}) {
+  const propertiesResponse = await getPropertiesWithAllPaginated(
+    apiParams,
+    PROPERTIES_PER_PAGE
+  );
+
+  const properties = propertiesResponse.data;
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
+      {properties.length > 0 ? (
+        properties.map((property) => (
+          <div key={property.id} className="">
+            <Link href={`/properties/${property.id}`} className="block">
+              <ProductCard property={property} />
+            </Link>
+          </div>
+        ))
+      ) : (
+        <div className="col-span-full text-center py-12">
+          <p className="text-gray-500 text-lg">
+            No properties found matching your criteria.
+          </p>
+        </div>
+      )}
+    </div>
   );
 }
