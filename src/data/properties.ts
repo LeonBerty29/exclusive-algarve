@@ -4,6 +4,7 @@ import {
   PropertyResponse,
   PropertySearchParams,
 } from "@/types/property";
+import { cache } from "react";
 
 function createBasicAuthHeader(): string {
   const credentials = btoa(
@@ -75,13 +76,13 @@ export async function getProperties(
   return apiRequest<PropertyListResponse>(endpoint);
 }
 
-export async function getProperty(
-  propertyId: string
-): Promise<PropertyResponse> {
-  const endpoint = `/properties/${propertyId}`;
+export const getProperty = cache(
+  async (propertyId: string): Promise<PropertyResponse> => {
+    const endpoint = `/properties/${propertyId}`;
 
-  return apiRequest<PropertyResponse>(endpoint);
-}
+    return apiRequest<PropertyResponse>(endpoint);
+  }
+);
 
 /**
  * Fetches a single property by ID
