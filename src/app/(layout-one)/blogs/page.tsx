@@ -1,4 +1,4 @@
-import { Skeleton } from "@/components/ui/skeleton";
+import { LoadingBlogs } from "@/components/blog/loading-blogs";
 import { fetchAllBlogs } from "@/data/blogs";
 import { formatDateString } from "@/utils";
 import Image from "next/image";
@@ -82,21 +82,6 @@ async function GetAndDisplayBlogs() {
           </div>
         ))}
       </div>
-    </>
-  );
-}
-
-function LoadingBlogs() {
-  const arr = [1, 2, 3, 4];
-  return (
-    <>
-      {
-        <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {arr.map((_, index) => (
-            <Skeleton className="w-full h-60" key={`loadingBlogs--${index}`} />
-          ))}
-        </div>
-      }
     </>
   );
 }
