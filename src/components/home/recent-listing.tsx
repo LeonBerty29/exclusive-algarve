@@ -37,7 +37,7 @@ const RecentListing = async () => {
               <div className="">
                 <Card className="p-0 bg-transparent border-none rounded-none">
                   <CardContent className="flex items-center justify-center w-full p-0">
-                    <div className="w-full relative h-60 sm:h-54 xl:h-70">
+                    <div className="w-full relative h-60 sm:h-54 xl:h-70 overflow-hidden">
                       <Link href={`/properties/${property.id}`}>
                         <Image
                           src={getProxiedImageUrl(
@@ -48,7 +48,7 @@ const RecentListing = async () => {
                             "Recent Listing"
                           }
                           fill
-                          className="object-cover"
+                          className="object-cover hover:scale-110 transition-all duration-300"
                         />
                       </Link>
                     </div>

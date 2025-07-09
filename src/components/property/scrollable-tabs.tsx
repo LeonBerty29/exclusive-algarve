@@ -4,7 +4,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { PropertyInfo } from "./property-info";
+// import { PropertyInfo } from "./property-info";
 import { FloorPlanTab } from "./floor-plan";
 import { LocationTab } from "./location-tab";
 import { PropertyFeatures } from "../property-details/PropertyFeatures";
@@ -132,7 +132,7 @@ const ScrollableTabs = ({ property }: ScrollableTabsProps) => {
             className="mt-4 p-4 border rounded-md px-8"
           >
             <div className="min-h-32 p-4 space-y-6">
-              <PropertyInfo property={property} />
+              {/* <PropertyInfo property={property} /> */}
               <DescriptionContent description={property.description} />
             </div>
           </TabsContent>
@@ -141,7 +141,7 @@ const ScrollableTabs = ({ property }: ScrollableTabsProps) => {
             className="mt-4 p-4 border rounded-md px-8"
           >
             <div className="min-h-32 p-4">
-              <PropertyInfo property={property} />
+              {/* <PropertyInfo property={property} /> */}
               <PropertyFeatures
                 additionalFeatures={property.additional_features}
               />
@@ -152,11 +152,9 @@ const ScrollableTabs = ({ property }: ScrollableTabsProps) => {
             value={"fplan"}
             className="mt-4 p-4 border rounded-md px-8"
           >
-            <div className="min-h-32 p-4">
-              <PropertyInfo property={property} />
-              <FloorPlanTab
-              // floorPlans={property.assets.images.floor_plans}
-              />
+            <div className="p-4">
+              {/* <PropertyInfo property={property} /> */}
+              <FloorPlanTab floorPlans={property.assets.images.floor_plans} pdfBrochure={property.assets.pdf_brochure} />
             </div>
           </TabsContent>
 
@@ -165,10 +163,10 @@ const ScrollableTabs = ({ property }: ScrollableTabsProps) => {
             className="mt-4 p-4 border rounded-md px-8"
           >
             <div className="min-h-32 p-4">
-              <PropertyInfo property={property} />
+              {/* <PropertyInfo property={property} /> */}
               <LocationTab
-              // location={property.location}
-              // additionalFeatures={property.additional_features}
+                latitude={property.location.latitude}
+                longitude={property.location.longitude}
               />
             </div>
           </TabsContent>
@@ -182,6 +180,6 @@ export default ScrollableTabs;
 
 const DescriptionContent = ({ description }: { description: string }) => {
   return (
-    <div className="!text-xs prose prose-sm max-w-none">{description}</div>
+    <div className="!text-sm prose prose-sm max-w-none">{description}</div>
   );
 };

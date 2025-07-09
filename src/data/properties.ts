@@ -1,6 +1,7 @@
 import {
   Property,
   PropertyListResponse,
+  PropertyMetadata,
   PropertyResponse,
   PropertySearchParams,
 } from "@/types/property";
@@ -67,20 +68,30 @@ function buildQueryString(params: PropertySearchParams): string {
 /**
  * Fetches a paginated list of properties with optional filtering and sorting
  */
-export async function getProperties(
-  params: PropertySearchParams = {}
-): Promise<PropertyListResponse> {
-  const queryString = buildQueryString(params);
-  const endpoint = `/properties${queryString}`;
 
-  return apiRequest<PropertyListResponse>(endpoint);
-}
+export const getProperties = cache(
+  async (params: PropertySearchParams = {}): Promise<PropertyListResponse> => {
+    const queryString = buildQueryString(params);
+    const endpoint = `/properties${queryString}`;
 
-export const getProperty = cache(
-  async (propertyId: string): Promise<PropertyResponse> => {
-    const endpoint = `/properties/${propertyId}`;
+    return apiRequest<PropertyListResponse>(endpoint);
+  }
+);
 
-    return apiRequest<PropertyResponse>(endpoint);
+export const getProperty = async (
+  propertyId: string
+): Promise<PropertyResponse> => {
+  const endpoint = `/properties/${propertyId}`;
+
+  return apiRequest<PropertyResponse>(endpoint);
+};
+
+export const getMetadata = cache(
+  async (params?: PropertySearchParams): Promise<PropertyMetadata> => {
+    const queryString = params ? buildQueryString(params) : "";
+    const endpoint = `/metadata${queryString}`;
+
+    return apiRequest<PropertyMetadata>(endpoint);
   }
 );
 

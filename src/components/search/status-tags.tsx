@@ -3,10 +3,10 @@ import React, { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   Star,
-  Video,
-  ShieldCheck,
-  ShoppingBag,
-  Clock,
+  // Video,
+  // ShieldCheck,
+  // ShoppingBag,
+  // Clock,
   Check,
 } from "lucide-react";
 
@@ -29,12 +29,9 @@ const StatusTags: React.FC = () => {
 
   // Get initial values from URL params
   const getInitialCheckedItems = (): Record<string, boolean> => {
+    const featuredParam = searchParams.get("is_featured");
     return {
-      exclusive: searchParams.get("is_featured") === "true",
-      new: searchParams.get("new") === "true",
-      withVideo: searchParams.get("with_video") === "true",
-      sold: searchParams.get("sold") === "true",
-      reserved: searchParams.get("reserved") === "true",
+      featured: featuredParam === "true",
     };
   };
 
@@ -44,40 +41,12 @@ const StatusTags: React.FC = () => {
 
   const properties: StatusTag[] = [
     {
-      key: "exclusive",
-      label: "Exclusive",
+      key: "featured",
+      label: "Featured",
       urlParam: "is_featured",
       icon: Star,
       fill: true,
       fillColor: "#FFAB00",
-    },
-    {
-      key: "new",
-      label: "New",
-      urlParam: "new",
-      icon: ShieldCheck,
-      fill: true,
-      fillColor: "#000",
-    },
-    {
-      key: "withVideo",
-      label: "With Video",
-      urlParam: "with_video",
-      icon: Video,
-      fill: true,
-      fillColor: "#E83F3F",
-    },
-    {
-      key: "sold",
-      label: "Sold",
-      urlParam: "sold",
-      icon: ShoppingBag,
-    },
-    {
-      key: "reserved",
-      label: "Reserved",
-      urlParam: "reserved",
-      icon: Clock,
     },
   ];
 
@@ -90,13 +59,14 @@ const StatusTags: React.FC = () => {
       if (checked) {
         params.set(property.urlParam, "true");
       } else {
+        // Remove the parameter entirely when unchecked (false)
         params.delete(property.urlParam);
       }
 
       // Reset to first page when status changes
       params.delete("page");
 
-      router.push(`?${params.toString()}`, { scroll: false });
+      router.replace(`?${params.toString()}`, { scroll: false });
     }
   };
 
@@ -113,7 +83,10 @@ const StatusTags: React.FC = () => {
 
   // Sync with URL params when they change externally
   useEffect(() => {
-    setCheckedItems(getInitialCheckedItems());
+    const featuredParam = searchParams.get("is_featured");
+    setCheckedItems({
+      featured: featuredParam === "true",
+    });
   }, [searchParams]);
 
   return (
@@ -157,7 +130,7 @@ const StatusTags: React.FC = () => {
                 {...(property.fill && { fill: iconFill })}
               />
               <span
-                className={`font-medium ${
+                className={`font-medium text-sm ${
                   isChecked ? "text-white" : "text-gray-800"
                 }`}
               >

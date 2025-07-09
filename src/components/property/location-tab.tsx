@@ -1,14 +1,18 @@
-import Image from "next/image";
 import React from "react";
 import { PiCityThin } from "react-icons/pi";
 import { TbBeach } from "react-icons/tb";
 import { IoRestaurantOutline } from "react-icons/io5";
 import { IoGolfOutline } from "react-icons/io5";
 import { PiAirplaneLight } from "react-icons/pi";
+import { HomeMap } from "./location-map";
 
-export const LocationTab = () => {
-  const imgSrc = "/images/location-tab.png";
-
+export const LocationTab = ({
+  latitude,
+  longitude,
+}: {
+  latitude: number;
+  longitude: number;
+}) => {
   interface DrivingDistanceInfo {
     destination: string;
     minutes: number;
@@ -49,13 +53,7 @@ export const LocationTab = () => {
 
   return (
     <div>
-      <Image
-        src={imgSrc}
-        alt="floorplan"
-        height={300}
-        width={300}
-        className="object-contain !h-auto !w-full"
-      />
+      <HomeMap locationValue={[latitude, longitude]} />
 
       <div className="pt-4">
         <p className="text-sm text-primary font-semibold mb-5">

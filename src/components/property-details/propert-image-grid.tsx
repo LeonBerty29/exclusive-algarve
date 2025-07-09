@@ -41,7 +41,7 @@ const PropertyImageGrid: React.FC<PropertyImageGridProps> = ({ assets }) => {
                   className="text-[11px] font-semibold w-full rounded-none bg-white text-black !px-6 hover:text-white hover:bg-black transition-all"
                 >
                   <LiaEdit className="h-3 w-3" />
-                  VIEW FLOOR PLAN
+                  REQUEST INFORMATIONS
                 </Button>
               </div>
             )}

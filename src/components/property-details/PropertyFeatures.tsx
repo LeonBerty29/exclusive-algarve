@@ -158,7 +158,7 @@ export const PropertyFeatures = ({
           <div className="w-full max-w-full">
             <Carousel
               opts={{
-                align: "start",
+                // align: "start",
               }}
               className="w-full"
             >
@@ -168,8 +168,8 @@ export const PropertyFeatures = ({
                     key={index}
                     className="w-auto sm:basis-1/2 lg:basis-1/3"
                   >
-                    <div className="p-1">
-                      <Card className="border-none rounded-none shadow-none bg-transparent w-fit">
+                    <div className="p-1 w-full">
+                      <Card className="border-none rounded-none shadow-none bg-transparent w-full">
                         <CardContent className="p-0">
                           <div className="text-center flex flex-col gap-1 items-center">
                             {feature.icon}
