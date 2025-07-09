@@ -138,7 +138,7 @@ const FilterTags = () => {
                 )}`
               : searchParams.get("min_price")
               ? `${searchParams.get("min_price")}+`
-              : `Up to ${searchParams.get("max_price")}`}
+              : `<= ${searchParams.get("max_price")}`}
           </span>
           <Button
             size="sm"

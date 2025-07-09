@@ -1,5 +1,8 @@
 import { Button } from "@/components/ui/button";
-import { Calendar, HeartIcon } from "lucide-react";
+import {
+  // Calendar,
+  HeartIcon,
+} from "lucide-react";
 import ScrollableTabs from "@/components/property/scrollable-tabs";
 import PropertyDetailsIcons from "@/components/property/property-details-icons";
 
@@ -131,13 +134,13 @@ const page = async (props: Props) => {
 
   // console.log(property);
 
-  const details = {
-    refCode: property.reference,
-    location: `${property.location.zone}, ${property.location.municipality}`,
-    privateArea: property.features.private_area,
-    grossArea: property.features.construction_area,
-    plotSize: property.features.plot_size,
-  };
+  // const details = {
+  //   refCode: property.reference,
+  //   location: `${property.location.zone}, ${property.location.municipality}`,
+  //   privateArea: property.features.private_area,
+  //   grossArea: property.features.construction_area,
+  //   plotSize: property.features.plot_size,
+  // };
 
   return (
     <>
@@ -205,7 +208,7 @@ const page = async (props: Props) => {
               </div>
 
               <div className="w-full lg:flex lg:w-[37%] xl:w-[30%] flex-col pt-4">
-                <div className="w-full border p-5 mb-6">
+                {/* <div className="w-full border p-5 mb-6">
                   <p className="text-xs text-gray-500 mb-5">
                     Ref Code:{" "}
                     <span className="text-sm font-bold text-primary">
@@ -248,7 +251,7 @@ const page = async (props: Props) => {
                     <Calendar />
                     BOOK A VISIT
                   </Button>
-                </div>
+                </div> */}
 
                 <div className="bg-black text-white w-full p-6">
                   <ContactAgentForm />

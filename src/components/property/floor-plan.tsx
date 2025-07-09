@@ -1,35 +1,74 @@
 import Image from "next/image";
 import React from "react";
-import { Separator } from "@/components/ui/separator";
 import { ArrowDownToLine } from "lucide-react";
 import { Button } from "../ui/button";
+import { PropertyImage } from "@/types/property";
+import { getProxiedImageUrl } from "@/lib/utils";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
-export const FloorPlanTab = () => {
-  const imgSrc = "/images/property-floor-plan-image.png";
+export const FloorPlanTab = ({
+  floorPlans,
+  pdfBrochure,
+}: {
+  floorPlans: PropertyImage[];
+  pdfBrochure: string;
+}) => {
+  const handleDownload = () => {
+    const link = document.createElement("a");
+    link.href = pdfBrochure;
+    link.download = "property-floor-plan.pdf";
+    link.style.display = "none";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div>
-      <div className="px-3">
-        <Image
-          src={imgSrc}
-          alt="floor plan"
-          height={300}
-          width={300}
-          className="object-contain !h-auto !w-full"
-        />
-      </div>
+      {floorPlans.length > 1 && (
+        <div className="px-3 relative w-full mb-6">
+          <Carousel className="w-full">
+            <CarouselContent>
+              {floorPlans.map((floorPlan, index) => (
+                <CarouselItem key={`${index}--floorPlan`}>
+                  <div className="relative w-full aspect-video">
+                    <Image
+                      src={getProxiedImageUrl(floorPlan.url)}
+                      alt={floorPlan.title}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="left-4" />
+            <CarouselNext className="right-4" />
+          </Carousel>
+        </div>
+      )}
 
-      <Separator className="bg-gray-300 mb-5" />
+      {pdfBrochure && (
+        <div className="flex items-center justify-between gap-3">
+          <p className="text-sm md:text-lg text-primary font-semibold">
+            Property Floor Plan
+          </p>
 
-      <div className="flex items-center justify-between gap-3">
-        <p className="text-sm md:text-lg text-primary font-semibold">
-          Property Floor Plan
-        </p>
-
-        <Button className="text-xs rounded-none bg-black text-white px-6">
-          DOWNLOAD
-          <ArrowDownToLine />
-        </Button>
-      </div>
+          <Button
+            onClick={handleDownload}
+            className="text-xs rounded-none bg-black text-white px-6"
+          >
+            DOWNLOAD
+            <ArrowDownToLine />
+          </Button>
+        </div>
+      )}
     </div>
   );
 };

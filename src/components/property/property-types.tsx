@@ -1,114 +1,102 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Checkbox } from "@/components/ui/checkbox-two";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
+import { PropertyMetadata } from "@/types/property";
 
-interface ItemsType {
-  id: string;
-  label: string;
-  total: number;
-}
-
-const items: ItemsType[] = [
-  {
-    id: "Villa",
-    label: "Modern Villas",
-    total: 30,
-  },
-  {
-    id: "Villa",
-    label: "Villa",
-    total: 4,
-  },
-  {
-    id: "Townhouse",
-    label: "Townhouse",
-    total: 100,
-  },
-  {
-    id: "Apartment",
-    label: "Apartment",
-    total: 10,
-  },
-  {
-    id: "Plot",
-    label: "Plot",
-    total: 26,
-  },
-];
-
-export function PropertyTypes() {
+export function PropertyTypes({
+  typologies,
+}: {
+  typologies: PropertyMetadata["typologies"];
+}) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // Get initial selected type from URL (single value)
-  const getInitialType = (): string => {
-    return searchParams.get("type") || "";
-  };
+  // Get initial selected types from URL (comma-separated values)
+  const getInitialTypes = useCallback((): string[] => {
+    const typologyParam = searchParams.get("typology");
+    if (!typologyParam) return [];
+    return typologyParam.split(",").filter(Boolean);
+  }, [searchParams]);
 
-  const [selectedItem, setSelectedItem] = useState<string>(getInitialType);
+  const [selectedItems, setSelectedItems] = useState<string[]>(getInitialTypes);
 
   // Update URL when selection changes
-  const updateURL = (newSelection: string) => {
+  const updateURL = (newSelection: string[]) => {
     const params = new URLSearchParams(searchParams.toString());
 
-    if (newSelection) {
-      params.set("type", newSelection);
+    if (newSelection.length > 0) {
+      params.set("typology", newSelection.join(","));
     } else {
-      params.delete("type");
+      params.delete("typology");
     }
 
     // Reset to first page when type changes
     params.delete("page");
 
-    router.push(`?${params.toString()}`, { scroll: false });
+    router.replace(`?${params.toString()}`, { scroll: false });
   };
 
   const handleCheckboxChange = (itemId: string, checked: boolean | string) => {
-    const newSelection = checked ? itemId : "";
-    setSelectedItem(newSelection);
+    let newSelection: string[];
+
+    if (checked) {
+      // Add to selection if not already present
+      newSelection = selectedItems.includes(itemId)
+        ? selectedItems
+        : [...selectedItems, itemId];
+    } else {
+      // Remove from selection
+      newSelection = selectedItems.filter((id) => id !== itemId);
+    }
+
+    setSelectedItems(newSelection);
     updateURL(newSelection);
   };
 
   // Sync with URL params when they change externally
   useEffect(() => {
-    setSelectedItem(getInitialType());
-  }, [searchParams]);
+    setSelectedItems(getInitialTypes());
+  }, [getInitialTypes]);
 
   return (
     <div className="space-y-4">
-      {items.map((item, index) => (
+      {typologies.map((typology, index) => (
         <div
-          key={`${item.id}-${index}`}
+          key={`${typology.id}-${index}`}
           className="flex justify-between items-center"
         >
           <div className="flex items-center space-x-3">
             <Checkbox
-              id={`${item.id}-${index}`}
-              checked={selectedItem === item.id}
+              id={`${typology.id}-${index}`}
+              checked={selectedItems.includes(typology.id.toString())}
               onCheckedChange={(checked) =>
-                handleCheckboxChange(item.id, checked)
+                handleCheckboxChange(typology.id.toString(), checked)
               }
               className={cn(
                 "rounded-[3px] data-[state=checked]:!bg-primary data-[state=checked]:!border-primary bg-gray-400/70 border-gray-400/70",
-                selectedItem === item.id && "font-bold bg-primary"
+                selectedItems.includes(typology.id.toString()) &&
+                  "font-bold bg-primary"
               )}
               alwaysShowCheck={true}
               checkIconColor="white"
             />
             <Label
-              htmlFor={`${item.id}-${index}`}
+              htmlFor={`${typology.id}-${index}`}
               className={cn(
                 "text-sm font-normal text-neutral-500",
-                selectedItem === item.id && "font-bold text-primary"
+                selectedItems.includes(typology.id.toString()) &&
+                  "font-bold text-primary"
               )}
             >
-              {item.label}
+              {typology.name}
             </Label>
           </div>
-          <span className="text-sm font-bold">{item.total}</span>
+          <span className="text-sm font-bold">
+            {/* You'll need to add total count to your typology data */}
+          </span>
         </div>
       ))}
     </div>

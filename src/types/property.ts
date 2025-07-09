@@ -137,7 +137,7 @@ export interface PropertySearchParams {
   min_price?: number;
   max_price?: number;
   currency?: "EUR" | "USD" | "GBP";
-  type?: string;
+  typology?: number;
   min_bedrooms?: number;
   max_bedrooms?: number;
   min_bathrooms?: number;
@@ -248,4 +248,8 @@ export interface PropertyComparison {
     construction_year: string[];
     location: string[];
   };
+}
+
+export interface PropertyMetadata {
+  typologies: { id: number; name: string }[];
 }
