@@ -23,6 +23,7 @@ import ContactAgentForm from "@/components/property-details/contact-agent-form";
 import { getCurrencySymbol } from "@/components/shared/price-format";
 import { getProperty } from "@/data/properties";
 import { Metadata } from "next";
+import BookVisitDialog from "@/components/shared/booking-dialog";
 
 interface Props {
   params: Promise<{ propertyId: string }>;
@@ -188,9 +189,11 @@ const page = async (props: Props) => {
               </p>
             </div>
 
-            <Button className="bg-black text-white hover:bg-black/85 transition-all">
+            {/* <Button className="bg-black text-white hover:bg-black/85 transition-all">
               Book a visit
-            </Button>
+            </Button> */}
+
+            <BookVisitDialog />
           </div>
         </div>
 
