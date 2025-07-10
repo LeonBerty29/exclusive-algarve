@@ -253,3 +253,18 @@ export interface PropertyComparison {
 export interface PropertyMetadata {
   typologies: { id: number; name: string }[];
 }
+
+export interface Ranges {
+  price: {
+    min: number;
+    max: number;
+  };
+  bedrooms: {
+    min: number;
+    max: number;
+  };
+  bathrooms: {
+    min: number;
+    max: number;
+  };
+}

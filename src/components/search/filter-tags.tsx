@@ -26,6 +26,7 @@ const FilterTags = () => {
   const removeFilter = (filterKey: string) => {
     const params = new URLSearchParams(searchParams.toString());
     params.delete(filterKey);
+    params.delete("page")
     router.replace(`/properties?${params.toString()}`);
   };
 

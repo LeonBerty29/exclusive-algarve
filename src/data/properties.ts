@@ -4,6 +4,7 @@ import {
   PropertyMetadata,
   PropertyResponse,
   PropertySearchParams,
+  Ranges,
 } from "@/types/property";
 import { cache } from "react";
 
@@ -94,6 +95,11 @@ export const getMetadata = cache(
     return apiRequest<PropertyMetadata>(endpoint);
   }
 );
+export const getRanges = cache(async (): Promise<Ranges> => {
+  const endpoint = `/metadata/ranges`;
+
+  return apiRequest<Ranges>(endpoint);
+});
 
 /**
  * Fetches a single property by ID
