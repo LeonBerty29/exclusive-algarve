@@ -7,12 +7,14 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import RegionSelect from "@/components/search/region-select";
-import { SliderExample } from "@/components/search/slider-example";
+import { PriceSlider } from "@/components/search/price-slider";
 import { PropertyTypes } from "@/components/property/property-types";
 import StatusTags from "./status-tags";
 import { SearchInput } from "./search-input";
-import { getMetadata } from "@/data/properties";
+import { getMetadata, getRanges } from "@/data/properties";
 import { Skeleton } from "../ui/skeleton";
+import { BedroomsRangeSelect } from "./bedrooms-range-select";
+import { BathroomsRangeSelect } from "./bathrooms-range-select";
 // import { Landmark } from "lucide-react";
 
 const SideFilters = () => {
@@ -40,7 +42,30 @@ const SideFilters = () => {
         </CardHeader>
         <CardContent>
           <div className="relative mb-4">
-            <SliderExample />
+            <Suspense fallback={<LoadingListPriceSlider />}>
+              <ListPriceSlider />
+            </Suspense>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card className="flex flex-col mb-6 rounded-none">
+        <CardHeader>
+          <CardTitle className="text-sm">Bedrooms</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="relative mb-4">
+            <ListBedroomsRangeSelect />
+          </div>
+        </CardContent>
+      </Card>
+      <Card className="flex flex-col mb-6 rounded-none">
+        <CardHeader>
+          <CardTitle className="text-sm">Bedrooms</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="relative mb-4">
+            <ListBathroomsRangeSelect />
           </div>
         </CardContent>
       </Card>
@@ -92,6 +117,24 @@ async function ListPropertyTypes() {
   return <PropertyTypes typologies={typologies} />;
 }
 
+async function ListPriceSlider() {
+  const ranges = await getRanges();
+  const priceRange = ranges.price;
+  return <PriceSlider priceRange={priceRange} />;
+}
+
+export async function ListBedroomsRangeSelect() {
+  const ranges = await getRanges();
+  const bedroomRange = ranges.bedrooms; // Fixed: was using ranges.price
+  return <BedroomsRangeSelect bedroomRange={bedroomRange} />;
+}
+
+export async function ListBathroomsRangeSelect() {
+  const ranges = await getRanges();
+  const bathroomRange = ranges.bathrooms;
+  return <BathroomsRangeSelect bathroomRange={bathroomRange} />;
+}
+
 function PropertyTypesLoading() {
   return (
     <div className="space-y-4">
@@ -113,6 +156,66 @@ function PropertyTypesLoading() {
           <Skeleton className="w-6 h-4" />
         </div>
       ))}
+    </div>
+  );
+}
+
+function LoadingListPriceSlider() {
+  return (
+    <div className="w-full max-w-md mx-auto p-4">
+      {/* Label skeleton */}
+      <Skeleton className="h-4 w-20 mb-2" />
+
+      {/* Slider container */}
+      <div className="relative pt-6 pb-6">
+        {/* Track background skeleton */}
+        <div className="w-full h-1 bg-gray-200 rounded-full">
+          {/* Colored rail skeleton */}
+          <Skeleton
+            className="absolute h-1 rounded-full"
+            style={{ left: "25%", width: "50%" }}
+          />
+        </div>
+
+        {/* Left Thumb skeleton */}
+        <div
+          className="absolute top-1/2 transform -translate-y-1/2 -translate-x-1/2 w-4 h-4"
+          style={{ left: "25%" }}
+        >
+          <Skeleton className="w-4 h-4 rounded-full" />
+          {/* Tooltip skeleton */}
+          <div className="absolute -top-7 left-1/2 transform -translate-x-1/2">
+            <Skeleton className="h-6 w-16 rounded" />
+          </div>
+        </div>
+
+        {/* Right Thumb skeleton */}
+        <div
+          className="absolute top-1/2 transform -translate-y-1/2 -translate-x-1/2 w-4 h-4"
+          style={{ left: "75%" }}
+        >
+          <Skeleton className="w-4 h-4 rounded-full" />
+          {/* Tooltip skeleton */}
+          <div className="absolute -top-7 left-1/2 transform -translate-x-1/2">
+            <Skeleton className="h-6 w-16 rounded" />
+          </div>
+        </div>
+      </div>
+
+      {/* Input Fields skeleton */}
+      <div className="mt-6 flex items-center justify-center gap-4">
+        <div className="flex items-center">
+          <Skeleton className="w-20 h-10" />
+          <Skeleton className="ml-2 w-4 h-4" />
+        </div>
+
+        <span className="text-gray-400">—</span>
+
+        <div className="flex items-center">
+          <Skeleton className="w-20 h-10" />
+          <Skeleton className="ml-2 w-4 h-4" />
+        </div>
+      </div>
     </div>
   );
 }

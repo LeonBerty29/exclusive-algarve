@@ -4,6 +4,8 @@ import { MdAreaChart, MdBathtub, MdOutlineTimeline } from "react-icons/md";
 import { LiaExpandArrowsAltSolid } from "react-icons/lia";
 import { Home } from "lucide-react";
 import { Property } from "@/types/property";
+import { BiArea } from "react-icons/bi";
+import { GiElectric } from "react-icons/gi";
 
 const PropertyDetailsIcons = ({
   features,
@@ -12,7 +14,7 @@ const PropertyDetailsIcons = ({
   features: Property["features"];
   propertyType: string;
 }) => {
-  console.log(typeof features.bathrooms);
+  // console.log(typeof features.bathrooms);
   return (
     <div className="items-center grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8 mt-5 mb-14">
       {(features.bedrooms || features.bedrooms !== 0) && (
@@ -56,7 +58,7 @@ const PropertyDetailsIcons = ({
       {(features.private_area || features.private_area !== 0) && (
         <div className="flex gap-3 items-center">
           <div className="flex items-center gap-3 justify-center border border-gray-500 bg-gray-200 p-4">
-            <MdAreaChart className="h-6 w-6 text-gray-500" />
+            <BiArea className="h-6 w-6 text-gray-500" />
           </div>
           <div className="space-y-2">
             <span className="font-semibold text-lg">
@@ -98,7 +100,7 @@ const PropertyDetailsIcons = ({
       {features.energy_class && (
         <div className="flex gap-3 items-center">
           <div className="flex items-center gap-3 justify-center border border-gray-500 bg-gray-200 p-4">
-            <MdAreaChart className="h-6 w-6 text-gray-500" />
+            <GiElectric className="h-6 w-6 text-gray-500" />
           </div>
           <div className="space-y-2">
             <span className="font-semibold text-lg">

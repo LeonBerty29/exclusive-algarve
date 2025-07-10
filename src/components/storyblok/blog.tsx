@@ -1,7 +1,5 @@
 import { BlogNewsCard } from "@/components/blog/blog-news-card";
-import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Textarea } from "@/components/ui/textarea";
 import { Timer } from "lucide-react";
 import { Blog as BlogType } from "@/types";
 import Image from "next/image";
@@ -97,34 +95,6 @@ export const Blog = async (props: {
           ></div>
 
           <Separator className="my-6" />
-
-          <div className="space-y-5 mb-18">
-            <div className="flex gap-3 items-center">
-              <Image
-                src={"/images/team-member-1.png"}
-                alt="team member"
-                height={40}
-                width={40}
-                className="rounded-full object-cover h-10 w-10"
-              />
-
-              <p className="text-sm font-semibold">Marcos Verrati</p>
-            </div>
-
-            <form className="space-y-3">
-              <Textarea
-                placeholder="Leave your comment here"
-                className="bg-gray-100 border-gray-200 focus:border-gray-300 focus:ring-gray-300"
-                rows={4}
-              />
-              <Button
-                type="submit"
-                className="bg-black hover:bg-primary text-white flex ml-auto"
-              >
-                SUBMIT
-              </Button>
-            </form>
-          </div>
 
           <h3 className="text-2xl xl:text-3xl font-normal mb-5">
             Related Articles

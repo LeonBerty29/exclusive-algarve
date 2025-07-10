@@ -2,13 +2,12 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { RangeSlider } from "./slider-range";
+import { Ranges } from "@/types/property";
+import { PRICE_SLIDER_STEP } from "@/config/constants";
 
-const DEFAULT_VALUES: [number, number] = [1000, 50000];
-const MIN_PRICE = 1000;
-const MAX_PRICE = 5000000;
 const CURRENCY = "EUR";
 
-export function SliderExample() {
+export function PriceSlider({ priceRange }: { priceRange: Ranges["price"] }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const previousValuesRef = useRef<[number, number] | undefined>(undefined);
@@ -18,8 +17,8 @@ export function SliderExample() {
     const maxPrice = searchParams.get("max_price");
 
     return [
-      minPrice ? parseInt(minPrice) : DEFAULT_VALUES[0],
-      maxPrice ? parseInt(maxPrice) : DEFAULT_VALUES[1],
+      minPrice ? parseInt(minPrice) : priceRange.min,
+      maxPrice ? parseInt(maxPrice) : priceRange.min + PRICE_SLIDER_STEP, // This is correct - initial max value
     ];
   });
 
@@ -33,20 +32,20 @@ export function SliderExample() {
       const params = new URLSearchParams(searchParams.toString());
 
       // Only set params if they're different from defaults
-      if (newValues[0] !== DEFAULT_VALUES[0]) {
+      if (newValues[0] !== priceRange.min) {
         params.set("min_price", newValues[0].toString());
       } else {
         params.delete("min_price");
       }
 
-      if (newValues[1] !== DEFAULT_VALUES[1]) {
+      // FIXED: Compare against the initial default value, not priceRange.max
+      if (newValues[1] !== priceRange.min + PRICE_SLIDER_STEP) {
         params.set("max_price", newValues[1].toString());
       } else {
         params.delete("max_price");
       }
 
-      // FIXED: Only reset to first page when price VALUES actually change
-      // Check if the values are different from the previous ones
+      // Only reset to first page when price VALUES actually change
       const previousValues = previousValuesRef.current;
       const valuesChanged =
         !previousValues ||
@@ -54,7 +53,6 @@ export function SliderExample() {
         previousValues[1] !== newValues[1];
 
       if (valuesChanged && previousValues) {
-        // Only delete page if this is a user-initiated price change
         params.delete("page");
       }
 
@@ -69,7 +67,7 @@ export function SliderExample() {
     }, 500);
 
     return () => clearTimeout(timeoutId);
-  }, [sliderValues, searchParams, router]);
+  }, [sliderValues, searchParams, router, priceRange.min]);
 
   // Sync with URL params when they change externally
   useEffect(() => {
@@ -77,15 +75,15 @@ export function SliderExample() {
     const maxPrice = searchParams.get("max_price");
 
     const newValues: [number, number] = [
-      minPrice ? parseInt(minPrice) : DEFAULT_VALUES[0],
-      maxPrice ? parseInt(maxPrice) : DEFAULT_VALUES[1],
+      minPrice ? parseInt(minPrice) : priceRange.min,
+      maxPrice ? parseInt(maxPrice) : priceRange.min + PRICE_SLIDER_STEP, // FIXED: Use initial default value
     ];
 
     // Only update state if values actually changed
     if (newValues[0] !== sliderValues[0] || newValues[1] !== sliderValues[1]) {
       setSliderValues(newValues);
     }
-  }, [searchParams]); // Removed sliderValues from dependency to prevent infinite loops
+  }, [searchParams, priceRange.min]); // Added priceRange.min to dependencies
 
   return (
     <div className="max-w-md mx-auto p-4">
@@ -94,9 +92,9 @@ export function SliderExample() {
         valueLabelDisplay="on"
         label="Price Range"
         onChange={handleChange}
-        min={MIN_PRICE}
-        max={MAX_PRICE}
-        step={100}
+        min={priceRange.min}
+        max={priceRange.max} // This is correct - the slider can go up to priceRange.max
+        step={PRICE_SLIDER_STEP}
         currency={CURRENCY}
       />
     </div>

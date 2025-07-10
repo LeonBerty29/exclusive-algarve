@@ -1,1 +1,2 @@
-export const PROPERTIES_PER_PAGE = 9;
+export const PROPERTIES_PER_PAGE = 25;
+export const PRICE_SLIDER_STEP = 500000;
