@@ -59,6 +59,7 @@ export function DualRangeSelect({
         <MinRangeSelect
           options={options}
           value={minValue}
+          maxValue={Number(maxValue)}
           onChange={handleMinChange}
           label={minLabel}
         />
@@ -67,6 +68,7 @@ export function DualRangeSelect({
         <MaxRangeSelect
           options={options}
           value={maxValue}
+          minValue={Number(minValue)}
           onChange={handleMaxChange}
           label={maxLabel}
         />

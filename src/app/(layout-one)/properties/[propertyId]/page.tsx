@@ -21,112 +21,112 @@ import PropertyImageGrid from "@/components/property-details/propert-image-grid"
 import SimilarProperties from "@/components/property-details/similar-properties";
 import ContactAgentForm from "@/components/property-details/contact-agent-form";
 import { getCurrencySymbol } from "@/components/shared/price-format";
-import { getProperty } from "@/data/properties";
-import { Metadata } from "next";
+// import { Metadata } from "next";
 import BookVisitDialog from "@/components/shared/booking-dialog";
+import { getProperty } from "@/data/property";
 
 interface Props {
   params: Promise<{ propertyId: string }>;
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { propertyId } = await params;
+// export async function generateMetadata({ params }: Props): Promise<Metadata> {
+//   const { propertyId } = await params;
 
-  try {
-    const response = await getProperty(propertyId);
-    const property = response.data;
+//   try {
+//     const response = await getProperty(propertyId);
+//     const property = response.data;
 
-    if (!property) {
-      return {
-        title: "Property Not Found",
-        description: "The requested property could not be found.",
-      };
-    }
+//     if (!property) {
+//       return {
+//         title: "Property Not Found",
+//         description: "The requested property could not be found.",
+//       };
+//     }
 
-    const baseUrl =
-      process.env.NEXT_PUBLIC_BASE_URL || "https://yourdomain.com";
-    const propertyUrl = `${baseUrl}${property.seo.slugs.en}`;
-    const price = `${getCurrencySymbol(
-      property.currency
-    )}${property.price.toLocaleString()}`;
-    const location = `${property.location.zone}, ${property.location.municipality}, ${property.location.country}`;
+//     const baseUrl =
+//       process.env.NEXT_PUBLIC_BASE_URL || "https://yourdomain.com";
+//     const propertyUrl = `${baseUrl}${property.seo.slugs.en}`;
+//     const price = `${getCurrencySymbol(
+//       property.currency
+//     )}${property.price.toLocaleString()}`;
+//     const location = `${property.location.zone}, ${property.location.municipality}, ${property.location.country}`;
 
-    // Create a more detailed description
-    const description =
-      property.seo.description ||
-      `${property.typology.name} for sale in ${location}. ${price}. ${property.features.private_area}m² private area, ${property.features.plot_size}m² plot size. Reference: ${property.reference}`;
+//     // Create a more detailed description
+//     const description =
+//       property.seo.description ||
+//       `${property.typology.name} for sale in ${location}. ${price}. ${property.features.private_area}m² private area, ${property.features.plot_size}m² plot size. Reference: ${property.reference}`;
 
-    return {
-      title: property.seo.title,
-      description: description,
-      keywords: property.seo.keywords?.join(", "),
+//     return {
+//       title: property.seo.title,
+//       description: description,
+//       keywords: property.seo.keywords?.join(", "),
 
-      // Open Graph tags
-      openGraph: {
-        title: property.seo.title,
-        description: description,
-        url: propertyUrl,
-        siteName: "Your Property Site",
-        images: [
-          {
-            url:
-              property.assets.images.gallery[0]?.url ||
-              "/default-property-image.jpg",
-            width: 1200,
-            height: 630,
-            alt: property.title,
-          },
-        ],
-        locale: "en_US",
-        type: "website",
-      },
+//       // Open Graph tags
+//       openGraph: {
+//         title: property.seo.title,
+//         description: description,
+//         url: propertyUrl,
+//         siteName: "Your Property Site",
+//         images: [
+//           {
+//             url:
+//               property.assets.images.gallery[0]?.url ||
+//               "/default-property-image.jpg",
+//             width: 1200,
+//             height: 630,
+//             alt: property.title,
+//           },
+//         ],
+//         locale: "en_US",
+//         type: "website",
+//       },
 
-      // Twitter Card tags
-      twitter: {
-        card: "summary_large_image",
-        title: property.seo.title,
-        description: description,
-        images: [
-          property.assets.images.gallery[0]?.url ||
-            "/default-property-image.jpg",
-        ],
-      },
+//       // Twitter Card tags
+//       twitter: {
+//         card: "summary_large_image",
+//         title: property.seo.title,
+//         description: description,
+//         images: [
+//           property.assets.images.gallery[0]?.url ||
+//             "/default-property-image.jpg",
+//         ],
+//       },
 
-      // Additional meta tags
-      robots: {
-        index: true,
-        follow: true,
-        googleBot: {
-          index: true,
-          follow: true,
-          "max-video-preview": -1,
-          "max-image-preview": "large",
-          "max-snippet": -1,
-        },
-      },
+//       // Additional meta tags
+//       robots: {
+//         index: true,
+//         follow: true,
+//         googleBot: {
+//           index: true,
+//           follow: true,
+//           "max-video-preview": -1,
+//           "max-image-preview": "large",
+//           "max-snippet": -1,
+//         },
+//       },
 
-      // Canonical URL
-      alternates: {
-        canonical: propertyUrl,
-      },
+//       // Canonical URL
+//       alternates: {
+//         canonical: propertyUrl,
+//       },
 
-      // Other meta tags
-      other: {
-        "property:price:amount": property.price.toString(),
-        "property:price:currency": property.currency,
-        "property:location": location,
-        "property:type": property.typology.name,
-        "property:reference": property.reference,
-      },
-    };
-  } catch (error) {
-    console.error("Error generating metadata:", error);
-    return {
-      title: "Property Details",
-      description: "View property details and information.",
-    };
-  }
-}
+//       // Other meta tags
+//       other: {
+//         "property:price:amount": property.price.toString(),
+//         "property:price:currency": property.currency,
+//         "property:location": location,
+//         "property:type": property.typology.name,
+//         "property:reference": property.reference,
+//       },
+//     };
+//   } catch (error) {
+//     console.error("Error generating metadata:", error);
+//     return {
+//       title: "Property Details",
+//       description: "View property details and information.",
+//     };
+//   }
+// }
 
 const page = async (props: Props) => {
   const { propertyId } = await props.params;
