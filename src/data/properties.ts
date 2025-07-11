@@ -76,6 +76,12 @@ export const getProperties = cache(
   }
 );
 
+export const getFeaturedProperties = cache(
+  async (params: PropertySearchParams = {}): Promise<PropertyListResponse> => {
+    return getProperties(params);
+  }
+);
+
 /**
  * Fetches a single property by ID
  */

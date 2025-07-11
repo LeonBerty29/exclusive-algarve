@@ -150,7 +150,7 @@ export interface PropertySearchParams {
   construction_year_to?: string;
   energy_class?: string[];
   agency_id?: number;
-  is_featured?: boolean;
+  featured?: boolean;
   show_price?: boolean;
   include?: string; // 'assets', 'additional_features', 'seo', etc.
   sort_by?:
