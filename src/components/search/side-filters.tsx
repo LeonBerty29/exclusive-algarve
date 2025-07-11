@@ -11,10 +11,10 @@ import { PriceSlider } from "@/components/search/price-slider";
 import { PropertyTypes } from "@/components/property/property-types";
 import StatusTags from "./status-tags";
 import { SearchInput } from "./search-input";
-import { getMetadata, getRanges } from "@/data/properties";
 import { Skeleton } from "../ui/skeleton";
 import { BedroomsRangeSelect } from "./bedrooms-range-select";
 import { BathroomsRangeSelect } from "./bathrooms-range-select";
+import { getMetadata, getRanges } from "@/data/properties-metada";
 // import { Landmark } from "lucide-react";
 
 const SideFilters = () => {

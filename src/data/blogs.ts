@@ -54,13 +54,12 @@ export const fetchBlogPage = async (slug: string) => {
     });
     return response.data.story;
   } catch (error: unknown) {
-    console.log(error);
-
     const errorStatus = getErrorStatus(error);
 
     if (errorStatus === 404) {
       notFound();
     }
+    console.log(error);
 
     // Re-throw the error with proper typing
     if (error instanceof Error) {

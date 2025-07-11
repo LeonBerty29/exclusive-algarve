@@ -1,10 +1,7 @@
 import {
   Property,
   PropertyListResponse,
-  PropertyMetadata,
-  PropertyResponse,
   PropertySearchParams,
-  Ranges,
 } from "@/types/property";
 import { cache } from "react";
 
@@ -78,28 +75,6 @@ export const getProperties = cache(
     return apiRequest<PropertyListResponse>(endpoint);
   }
 );
-
-export const getProperty = async (
-  propertyId: string
-): Promise<PropertyResponse> => {
-  const endpoint = `/properties/${propertyId}`;
-
-  return apiRequest<PropertyResponse>(endpoint);
-};
-
-export const getMetadata = cache(
-  async (params?: PropertySearchParams): Promise<PropertyMetadata> => {
-    const queryString = params ? buildQueryString(params) : "";
-    const endpoint = `/metadata${queryString}`;
-
-    return apiRequest<PropertyMetadata>(endpoint);
-  }
-);
-export const getRanges = cache(async (): Promise<Ranges> => {
-  const endpoint = `/metadata/ranges`;
-
-  return apiRequest<Ranges>(endpoint);
-});
 
 /**
  * Fetches a single property by ID

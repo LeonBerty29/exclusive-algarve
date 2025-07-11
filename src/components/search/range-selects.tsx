@@ -6,27 +6,28 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { JSX } from "react";
 
 interface RangeSelectProps {
+  displayOptions: JSX.Element[];
   options: number[];
   value?: string;
   onChange: (value: string) => void;
   label?: string;
   placeholder?: string;
   reversed?: boolean;
+  minValue?: number;
+  maxValue?: number;
 }
 
 // Base RangeSelect component
 export function RangeSelect({
-  options,
+  displayOptions,
   value,
   onChange,
   label,
   placeholder = "Select",
-  reversed = false,
-}: RangeSelectProps) {
-  const displayOptions = reversed ? [...options].reverse() : options;
-
+}: Omit<RangeSelectProps, "options">) {
   return (
     <div className="flex flex-col space-y-2">
       {label && (
@@ -36,13 +37,7 @@ export function RangeSelect({
         <SelectTrigger className="w-full">
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
-        <SelectContent>
-          {displayOptions.map((option) => (
-            <SelectItem key={option} value={option.toString()}>
-              {option}
-            </SelectItem>
-          ))}
-        </SelectContent>
+        <SelectContent>{displayOptions}</SelectContent>
       </Select>
     </div>
   );
@@ -52,11 +47,26 @@ export function MinRangeSelect({
   options,
   value,
   onChange,
+  maxValue,
   label = "Min",
-}: Omit<RangeSelectProps, "reversed" | "placeholder">) {
+}: Omit<RangeSelectProps, "displayOptions" | "placeholder">) {
+  const displayOptions = options.map((option) => {
+    if (maxValue && option > maxValue) {
+      return (
+        <SelectItem key={option} value={option.toString()} disabled>
+          {option}
+        </SelectItem>
+      );
+    }
+    return (
+      <SelectItem key={option} value={option.toString()}>
+        {option}
+      </SelectItem>
+    );
+  });
   return (
     <RangeSelect
-      options={options}
+      displayOptions={displayOptions}
       value={value}
       onChange={onChange}
       label={label}
@@ -68,12 +78,27 @@ export function MinRangeSelect({
 export function MaxRangeSelect({
   options,
   value,
+  minValue,
   onChange,
   label = "Max",
-}: Omit<RangeSelectProps, "reversed" | "placeholder">) {
+}: Omit<RangeSelectProps, "displayOptions" | "placeholder">) {
+  const displayOptions = [...options].reverse().map((option) => {
+    if (minValue && option < minValue) {
+      return (
+        <SelectItem key={option} value={option.toString()} disabled>
+          {option}
+        </SelectItem>
+      );
+    }
+    return (
+      <SelectItem key={option} value={option.toString()}>
+        {option}
+      </SelectItem>
+    );
+  });
   return (
     <RangeSelect
-      options={options}
+      displayOptions={displayOptions}
       value={value}
       onChange={onChange}
       label={label}
