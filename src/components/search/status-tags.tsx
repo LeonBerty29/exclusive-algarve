@@ -29,7 +29,7 @@ const StatusTags: React.FC = () => {
 
   // Get initial values from URL params
   const getInitialCheckedItems = (): Record<string, boolean> => {
-    const featuredParam = searchParams.get("is_featured");
+    const featuredParam = searchParams.get("featured");
     return {
       featured: featuredParam === "true",
     };
@@ -43,7 +43,7 @@ const StatusTags: React.FC = () => {
     {
       key: "featured",
       label: "Featured",
-      urlParam: "is_featured",
+      urlParam: "featured",
       icon: Star,
       fill: true,
       fillColor: "#FFAB00",
@@ -83,7 +83,7 @@ const StatusTags: React.FC = () => {
 
   // Sync with URL params when they change externally
   useEffect(() => {
-    const featuredParam = searchParams.get("is_featured");
+    const featuredParam = searchParams.get("featured");
     setCheckedItems({
       featured: featuredParam === "true",
     });

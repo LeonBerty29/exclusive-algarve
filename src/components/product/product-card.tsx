@@ -25,7 +25,7 @@ export const ProductCard = ({ property }: Props) => {
     property.assets?.images?.gallery?.map((img) => img.url) || [];
 
   // Compose location string
-  const location = `${property.location.zone}, ${property.location.municipality}, ${property.location.district}`;
+  const location = `${property.location.district}, ${property.location.municipality}, ${property.location.zone}`;
 
   // Hardcoded placeholders for missing fields (adjust as needed)
   const favorite = false; // placeholder favorite status
