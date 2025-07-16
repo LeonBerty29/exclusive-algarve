@@ -58,8 +58,14 @@ export interface Property {
     videos: PropertyVideo[] | null;
     virtual_tours: VirtualTour[];
   };
+  driving_distances: DrivingDistance[];
   created_at: string;
   updated_at: string;
+}
+
+export interface DrivingDistance {
+  label: string;
+  value: number;
 }
 
 export interface AdditionalFeature {
@@ -264,6 +270,10 @@ export interface Ranges {
     max: number;
   };
   bathrooms: {
+    min: number;
+    max: number;
+  };
+  private_area: {
     min: number;
     max: number;
   };

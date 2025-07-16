@@ -5,13 +5,16 @@ import { IoRestaurantOutline } from "react-icons/io5";
 import { IoGolfOutline } from "react-icons/io5";
 import { PiAirplaneLight } from "react-icons/pi";
 import { HomeMap } from "./location-map";
+import { DrivingDistance } from "@/types/property";
 
 export const LocationTab = ({
   latitude,
   longitude,
+  drivingDistances,
 }: {
   latitude: number;
   longitude: number;
+  drivingDistances: DrivingDistance[];
 }) => {
   interface DrivingDistanceInfo {
     destination: string;
@@ -82,6 +85,33 @@ export const LocationTab = ({
                   </li>
                 );
               })}
+            </ul>
+          )}
+        </div>
+        <div className="flex gap-6 flex-wrap mt-6">
+          {drivingDistances.length > 0 && (
+            <ul className="flex gap-8 flex-wrap">
+              {drivingDistances.map(
+                (drivingDistance: DrivingDistance, index) => {
+                  // const IconComponent = info.icon;
+                  return (
+                    <li
+                      key={`drivingDistanceInfo--${index}`}
+                      className="flex gap-2 "
+                    >
+                      {/* <IconComponent className="h-8 w-8 text-gray-600" /> */}
+                      <div className="flex flex-col">
+                        <span className="text-xs text-gray-500">
+                          {drivingDistance.label}
+                        </span>
+                        <span className="text-sm font-bold">
+                          {drivingDistance.value} min
+                        </span>
+                      </div>
+                    </li>
+                  );
+                }
+              )}
             </ul>
           )}
         </div>

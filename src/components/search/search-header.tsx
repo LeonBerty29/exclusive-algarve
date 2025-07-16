@@ -22,7 +22,7 @@ import SideFilters from "./side-filters";
 import FilterTags from "./filter-tags";
 import SortBy from "./sort-by";
 
-const SearchHeader = () => {
+const SearchHeader = ({suspenseKey}: {suspenseKey: string}) => {
   return (
     <>
       <div className="mb-5 2xl:container px-6 sm:px-8 md:px-10 lg:px-14 mx-auto w-full">
@@ -90,7 +90,7 @@ const SearchHeader = () => {
                     <div className="flex lg:hidden items-center gap-5 flex-wrap mb-6">
                       <FilterTags />
                     </div>
-                    <SideFilters />
+                    <SideFilters suspenseKey={suspenseKey} />
                   </div>
 
                   <p>khkh</p>
