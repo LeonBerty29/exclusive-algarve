@@ -103,9 +103,10 @@ export default async function PropertiesPage(props: PageProps) {
         <div className="mb-4 w-full">
           <Suspense fallback={<SearchHeaderSkeleton />}>
             <SearchHeader
-            // totalResults={propertiesResponse.meta.total}
-            // currentPage={propertiesResponse.meta.current_page}
-            // totalPages={propertiesResponse.meta.last_page}
+              suspenseKey={suspenseKey}
+              // totalResults={propertiesResponse.meta.total}
+              // currentPage={propertiesResponse.meta.current_page}
+              // totalPages={propertiesResponse.meta.last_page}
             />
           </Suspense>
         </div>
@@ -113,7 +114,7 @@ export default async function PropertiesPage(props: PageProps) {
         <div className="2xl:container px-6 sm:px-8 md:px-10 lg:px-14 mx-auto">
           <div className="max-w-[400px] mx-auto sm:max-w-full sm:mx-0 flex items-start flex-wrap pb-8">
             <div className="w-80 max-h-[calc(100vh-6rem)] overflow-y-auto sticky top-24 hidden lg:block">
-              <SideFilters />
+              <SideFilters suspenseKey={suspenseKey} />
             </div>
 
             <div className="lg:pl-6 flex-1 md:min-w-[400px]">

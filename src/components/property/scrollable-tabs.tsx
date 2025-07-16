@@ -167,6 +167,7 @@ const ScrollableTabs = ({ property }: ScrollableTabsProps) => {
               <LocationTab
                 latitude={property.location.latitude}
                 longitude={property.location.longitude}
+                drivingDistances={property.driving_distances}
               />
             </div>
           </TabsContent>

@@ -1,2 +1,3 @@
 export const PROPERTIES_PER_PAGE = 25;
 export const PRICE_SLIDER_STEP = 500000;
+export const AREA_SLIDER_STEP = 100;
