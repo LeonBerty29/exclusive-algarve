@@ -14,9 +14,10 @@ const GoldenVisaProgram = () => {
                     <Image
                         src="/images/house-view.png"
                         alt="Algarve home"
-                        width={1920}
-                        height={1080}
+                        width={1513}
+                        height={622}
                         className=" h-full w-full object-cover"
+                        priority
                     />
 
                     <div className="absolute left-0 right-0 bottom-0 top-0 z-20 flex justify-center">

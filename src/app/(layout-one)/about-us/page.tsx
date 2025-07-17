@@ -104,13 +104,13 @@ const AboutUs = () => {
             width={646}
             height={403}
             alt="about-us"
-            className="object-cover w-full h-72 md:w-[50%]  xl:h-[390px] md:h-auto order-2 md:prder-1"
+            className="object-cover w-full h-72 md:w-[50%] xl:h-[390px] md:h-auto order-2 md:order-1"
           />
 
           <div className="w-full md:w-[50%] lg:min-w-[unset] md:pl-8 lg:pl-14 order-1 md:order-2">
-            <h1 className="text-2xl lg:text-3xl font-normal sm:max-w-70 mb-6">
+            <h2 className="text-2xl lg:text-3xl font-normal sm:max-w-70 mb-6">
               MEET <br /> THE TEAM
-            </h1>
+            </h2>
             <p className="text-neutral-700 text-sm xl:text-base mb-5 md:mb-0">
               Directors Marcela Boturao & Bart van Linden would like to welcome
               you to meet the team of Exclusive Algarve Villas. Both Marcela and

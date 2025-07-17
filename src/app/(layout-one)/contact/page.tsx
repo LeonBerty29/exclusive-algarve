@@ -24,7 +24,7 @@ const ContactPage = () => {
                         </Button>
                     </div>
 
-                    <Image src='/images/book-a-meeting.png' width={450} height={450} alt='about-us' className='object-cover w-full h-72 md:w-[50%] lg:w-[47%] 2xl:w-[44%] xl:h-[390px] md:h-auto' />
+                    <Image priority src='/images/book-a-meeting.png' width={450} height={450} alt='about-us' className='object-cover w-full h-72 md:w-[50%] lg:w-[47%] 2xl:w-[44%] xl:h-[390px] md:h-auto' />
                 </div>
             </div>
 

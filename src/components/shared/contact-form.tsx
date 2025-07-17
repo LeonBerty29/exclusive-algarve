@@ -65,7 +65,7 @@ export function ContactForm({ theme = 'dark', formTitle = true, titleStyling = "
         <div className="w-full">
             {formTitle &&
                 <h2 className={cn('text-xl lg:text-2xl mb-6 font-semibold', theme === 'dark' ? 'text-white' : 'text-black', titleStyling)}>
-                    Contact Us
+                    CONTACT US
                 </h2>
             }
             <div className="space-y-4">
