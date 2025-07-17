@@ -6,64 +6,43 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { Button } from "../ui/button";
+import { getSimilarProperties } from "@/data/property";
+import { ProductCard } from "../product/product-card";
 
-const SimilarProperties = () => {
-  // const home: HomeType = {
-  //   imagePaths: [
-  //     "/images/lifestyle-img1.png",
-  //     "/images/lifestyle-img2.png",
-  //     "/images/lifestyle-img3.png",
-  //     "/images/lifestyle-img4.png",
-  //     "/images/lifestyle-img5.png",
-  //   ],
-  //   description:
-  //     " your private 1-bedroom villa in Seminyak, featuring a lush garden, refreshing pool, and serene ambiance. This stylish retreat boasts a fully equipped kitchen, an elegant living room, and a spacious ensuite bedroom, perfect for a relaxing getaway. Enjoy total privacy while being just minutes from Seminyak’s vibrant dining, shopping, and beach clubs.",
-  //   location: "Lisbon",
-  //   price: 5000000,
-  //   userId: "1",
-  //   favorite: false,
-  //   favoriteId: "EAV-3956-fav",
-  //   homeId: "EAV-3956",
-  //   exclusive: true,
-  //   tag: {
-  //     name: "Reserved",
-  //     slug: "rsv",
-  //   },
-  //   grossArea: 28520,
-  //   plotSize: 453,
-  //   amenities: {
-  //     bedrooms: 5,
-  //     garage: 1,
-  //     bathrooms: 2,
-  //   },
-  //   liveVideo: true,
-  // };
+const SimilarProperties = async ({
+  similarPropertiesId,
+}: {
+  similarPropertiesId: number[];
+}) => {
+  const propertiesResponse = await getSimilarProperties(similarPropertiesId);
+  const properties = propertiesResponse.data;
+
   return (
     <>
-      <Carousel className="w-full flex gap-x-20 gap-y-8 flex-col lg:flex-row">
-        <div className="space-y-5 max-w-[150px]">
-          <div className="flex gap-3 items-center">
+      <Carousel className="w-full flex gap-x-20 gap-y-8 flex-col lg:flex-row relative lg:pl-[220px]">
+        <div className="flex gap-5 justify-between flex-col max-w-[180px] h-full lg:absolute lg:top-0 lg:left-0 lg:bottom-0">
+          <div className="flex gap-3 items-center order-4 lg:order-1">
             <CarouselPrevious className="!static rounded-none !top-0 left-0! translate-x-0 translate-y-0 bg-primary text-white border-primary" />
             <CarouselNext className="!static rounded-none !top-0 left-0! translate-x-0 translate-y-0 bg-primary text-white border-primary" />
           </div>
 
-          <h3 className="text-2xl font-medium">
+          <h3 className="text-3xl font-medium order-2">
             SIMILAR <span className="text-primary">PROPERTIES</span> OF{" "}
             <span className="text-primary">INTEREST</span>
           </h3>
 
-          <Button className="bg-black text-white hover:opacity-85 w-full text-xs">
+          <Button className="bg-black text-white hover:opacity-85 w-full text-xs order-3">
             VIEW ALL PROPERTIES
           </Button>
         </div>
         <CarouselContent className="-ml-1">
-          {Array.from({ length: 5 }).map((_, index) => (
+          {properties.map((property, index) => (
             <CarouselItem
               key={index}
               className="pl-1 sm:basis-1/2 xl:basis-1/3"
             >
-              <div className="p-1 max-w-[400px] mx-auto sm:max-w-full">
-                {/* <ProductCard home={home} /> */}
+              <div className="p-1 py-0 max-w-[400px] mx-auto sm:max-w-full">
+                <ProductCard property={property} />
               </div>
             </CarouselItem>
           ))}

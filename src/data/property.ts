@@ -1,4 +1,4 @@
-import { PropertyResponse } from "@/types/property";
+import { PropertyListResponse, PropertyResponse } from "@/types/property";
 import { notFound } from "next/navigation";
 
 function createBasicAuthHeader(): string {
@@ -87,4 +87,14 @@ export const getProperty = async (
   const endpoint = `/properties/${propertyId}`;
 
   return apiRequest<PropertyResponse>(endpoint);
+};
+
+export const getSimilarProperties = async (
+  propertyIds: number[]
+): Promise<PropertyListResponse> => {
+  
+  const ids = propertyIds.join(",");
+  const endpoint = `/properties?ids=${ids}`;
+
+  return apiRequest<PropertyListResponse>(endpoint);
 };

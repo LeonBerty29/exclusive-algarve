@@ -173,7 +173,7 @@ const BookVisitDialog: React.FC = () => {
   };
 
   return (
-    <div className="p-8">
+    <div className="">
       <Dialog>
         <DialogTrigger asChild>
           <Button className="bg-black text-white hover:bg-black/85 transition-all">
