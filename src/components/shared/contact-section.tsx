@@ -46,6 +46,7 @@ export function ContactSection({
                                         alt={imageAlt}
                                         fill
                                         className='w-full h-full object-cover'
+                                        priority
                                     />
                                 </div>
                             )

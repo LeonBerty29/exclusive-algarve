@@ -16,7 +16,7 @@ const YearlyPropertyTaxes = () => {
                         </p>
                     </div>
 
-                    <Image src='/images/property-taxes-banner.png' width={646} height={484} alt='about-us' className='object-contain w-full h-72 md:w-[50%] lg:w-[47%] 2xl:w-[44%] xl:h-[390px] md:h-auto' />
+                    <Image priority src='/images/property-taxes-banner.png' width={646} height={484} alt='about-us' className='object-contain w-full h-72 md:w-[50%] lg:w-[47%] 2xl:w-[44%] xl:h-[390px] md:h-auto' />
                 </div>
             </div>
             <div className='lg:container mx-auto px-6 md:px-12 lg:px-14 py-14 xl:pb-20'>
