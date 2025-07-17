@@ -59,6 +59,7 @@ export interface Property {
     virtual_tours: VirtualTour[];
   };
   driving_distances: DrivingDistance[];
+  similar_properties: number[];
   created_at: string;
   updated_at: string;
 }
