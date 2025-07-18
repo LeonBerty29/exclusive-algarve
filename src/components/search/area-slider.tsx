@@ -16,7 +16,7 @@ export function AreaSlider({ areaRange }: { areaRange: Ranges["private_area"] })
 
     return [
       minArea ? parseInt(minArea) : areaRange.min,
-      maxArea ? parseInt(maxArea) : areaRange.min + AREA_SLIDER_STEP, // This is correct - initial max value
+      maxArea ? parseInt(maxArea) : areaRange.max, // This is correct - initial max value
     ];
   });
 
@@ -37,7 +37,7 @@ export function AreaSlider({ areaRange }: { areaRange: Ranges["private_area"] })
       }
 
       // FIXED: Compare against the initial default value, not areaRange.max
-      if (newValues[1] !== areaRange.min + AREA_SLIDER_STEP) {
+      if (newValues[1] !== areaRange.max) {
         params.set("max_area", newValues[1].toString());
       } else {
         params.delete("max_area");
@@ -74,7 +74,7 @@ export function AreaSlider({ areaRange }: { areaRange: Ranges["private_area"] })
 
     const newValues: [number, number] = [
       minArea ? parseInt(minArea) : areaRange.min,
-      maxArea ? parseInt(maxArea) : areaRange.min + AREA_SLIDER_STEP, // FIXED: Use initial default value
+      maxArea ? parseInt(maxArea) : areaRange.max // FIXED: Use initial default value
     ];
 
     // Only update state if values actually changed
@@ -93,6 +93,7 @@ export function AreaSlider({ areaRange }: { areaRange: Ranges["private_area"] })
         min={areaRange.min}
         max={areaRange.max} // This is correct - the slider can go up to areaRange.max
         step={AREA_SLIDER_STEP}
+        customSymbol="m²"
       />
     </div>
   );

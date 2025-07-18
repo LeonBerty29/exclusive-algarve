@@ -8,6 +8,7 @@ import {
 import { Button } from "../ui/button";
 import { getSimilarProperties } from "@/data/property";
 import { ProductCard } from "../product/product-card";
+import Link from "next/link";
 
 const SimilarProperties = async ({
   similarPropertiesId,
@@ -41,9 +42,9 @@ const SimilarProperties = async ({
               key={index}
               className="pl-1 sm:basis-1/2 xl:basis-1/3"
             >
-              <div className="p-1 py-0 max-w-[400px] mx-auto sm:max-w-full">
+              <Link href={`/properties/${property.id}`} className="p-1 py-0 max-w-[400px] mx-auto sm:max-w-full block">
                 <ProductCard property={property} />
-              </div>
+              </Link>
             </CarouselItem>
           ))}
         </CarouselContent>

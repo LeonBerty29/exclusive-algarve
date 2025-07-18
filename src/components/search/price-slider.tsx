@@ -18,7 +18,7 @@ export function PriceSlider({ priceRange }: { priceRange: Ranges["price"] }) {
 
     return [
       minPrice ? parseInt(minPrice) : priceRange.min,
-      maxPrice ? parseInt(maxPrice) : priceRange.min + PRICE_SLIDER_STEP, // This is correct - initial max value
+      maxPrice ? parseInt(maxPrice) : priceRange.max, // This is correct - initial max value
     ];
   });
 
@@ -39,7 +39,7 @@ export function PriceSlider({ priceRange }: { priceRange: Ranges["price"] }) {
       }
 
       // FIXED: Compare against the initial default value, not priceRange.max
-      if (newValues[1] !== priceRange.min + PRICE_SLIDER_STEP) {
+      if (newValues[1] !== priceRange.max) {
         params.set("max_price", newValues[1].toString());
       } else {
         params.delete("max_price");
@@ -76,7 +76,7 @@ export function PriceSlider({ priceRange }: { priceRange: Ranges["price"] }) {
 
     const newValues: [number, number] = [
       minPrice ? parseInt(minPrice) : priceRange.min,
-      maxPrice ? parseInt(maxPrice) : priceRange.min + PRICE_SLIDER_STEP, // FIXED: Use initial default value
+      maxPrice ? parseInt(maxPrice) : priceRange.max // FIXED: Use initial default value
     ];
 
     // Only update state if values actually changed

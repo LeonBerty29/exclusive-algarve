@@ -13,6 +13,7 @@ interface RangeSliderProps {
   onChange?: ((values: [number, number]) => void) | null;
   className?: string;
   currency?: string;
+  customSymbol?: string;
 }
 
 export const RangeSlider: React.FC<RangeSliderProps> = ({
@@ -26,6 +27,7 @@ export const RangeSlider: React.FC<RangeSliderProps> = ({
   onChange = null,
   className = "",
   currency = "USD",
+  customSymbol,
 }) => {
   const [values, setValues] = useState<[number, number]>(value || defaultValue);
   const [inputValues, setInputValues] = useState<[string, string]>(["", ""]);
@@ -284,6 +286,7 @@ export const RangeSlider: React.FC<RangeSliderProps> = ({
                 amount={values[0]}
                 currency={currency}
                 className="font-normal text-xs"
+                customSymbol={customSymbol}
               />
             </span>
           )}
@@ -305,6 +308,7 @@ export const RangeSlider: React.FC<RangeSliderProps> = ({
                 amount={values[1]}
                 currency={currency}
                 className="font-normal text-xs"
+                customSymbol={customSymbol}
               />
             </span>
           )}
@@ -327,7 +331,7 @@ export const RangeSlider: React.FC<RangeSliderProps> = ({
             max={max}
           />
           <span className="ml-2 text-sm text-gray-500">
-            {getCurrencySymbol(currency)}
+            {customSymbol || getCurrencySymbol(currency)}
           </span>
         </div>
 
@@ -347,7 +351,7 @@ export const RangeSlider: React.FC<RangeSliderProps> = ({
             max={max}
           />
           <span className="ml-2 text-sm text-gray-500">
-            {getCurrencySymbol(currency)}
+            {customSymbol || getCurrencySymbol(currency)}
           </span>
         </div>
       </div>
