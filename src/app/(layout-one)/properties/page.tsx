@@ -113,11 +113,11 @@ export default async function PropertiesPage(props: PageProps) {
 
         <div className="2xl:container px-6 sm:px-8 md:px-10 lg:px-14 mx-auto">
           <div className="max-w-[400px] mx-auto sm:max-w-full sm:mx-0 flex items-start flex-wrap pb-8">
-            <div className="w-80 max-h-[calc(100vh-6rem)] overflow-y-auto sticky top-24 hidden lg:block">
+            <div className="w-80 max-h-[calc(100vh-6rem)] overflow-y-auto sticky top-24 hidden xl:block">
               <SideFilters suspenseKey={suspenseKey} />
             </div>
 
-            <div className="lg:pl-6 flex-1 md:min-w-[400px]">
+            <div className="xl:pl-6 flex-1 md:min-w-[400px]">
               <Suspense
                 key={`${suspenseKey} --properties`}
                 fallback={<PropertiesGridSkeleton />}
@@ -150,7 +150,7 @@ async function PropertieList({
 
   const properties = propertiesResponse.data;
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
       {properties.length > 0 ? (
         properties.map((property) => (
           <div key={property.id} className="">

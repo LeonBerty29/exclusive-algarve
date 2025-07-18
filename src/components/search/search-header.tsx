@@ -42,13 +42,13 @@ const SearchHeader = ({suspenseKey}: {suspenseKey: string}) => {
 
       <div className="bg-black py-5 text-white">
         <div className="2xl:container px-6 sm:px-8 md:px-10 lg:px-14 mx-auto w-full flex flex-wrap sm:flex-nowrap items-center justify-between gap-3">
-          <Button className="px-7 text-white text-xs sm:text-sm">
+          <Button className="px-7 text-white text-xs sm:text-sm hidden lg:block">
             ALL PROPERTIES
           </Button>
 
           <div className="flex-col items-center gap-2 hidden sm:flex">
             {/* <Image src="/images/search-header-icon.png" alt="" width={25} height={25} /> */}
-            <p className="text-xs text-center">
+            <p className="text-sm lg:text-base text-center">
               <b>3,550</b> Properties for sale with{" "}
               <span className="text-primary font-semibold">Algarve Villa</span>
             </p>
@@ -71,7 +71,7 @@ const SearchHeader = ({suspenseKey}: {suspenseKey: string}) => {
           <FilterTags />
         </div>
 
-        <div className="lg:hidden ml-auto">
+        <div className="xl:hidden ml-auto">
           <Sheet>
             <SheetTrigger className="bg-black text-white px-4 py-2 flex items-center gap-2">
               Filters <ListFilterPlus className="w-4 h-4" />

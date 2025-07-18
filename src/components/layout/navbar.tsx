@@ -14,8 +14,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
+import { BookMeeting } from "../shared/book-a-meeting";
 
-export default function NavBar({colorChange = false}: {colorChange?: boolean}) {
+export default function NavBar({
+  colorChange = false,
+}: {
+  colorChange?: boolean;
+}) {
   const scrolled = useScroll(50);
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -46,26 +51,26 @@ export default function NavBar({colorChange = false}: {colorChange?: boolean}) {
   // Prevent body scroll when mobile menu is open
   useEffect(() => {
     if (isMobileMenuOpen) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "unset";
     }
 
     return () => {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "unset";
     };
   }, [isMobileMenuOpen]);
 
   return (
     <>
       <div
-        className={`fixed top-0 flex w-full justify-center  ${scrolled
-          ? "border-b border-gray-200 bg-white/95 backdrop-blur-md"
-          : "bg-white/0"
-          } z-50 transition-all duration-300`}
+        className={`fixed top-0 flex w-full justify-center  ${
+          scrolled
+            ? "border-b border-gray-200 bg-white/95 backdrop-blur-md"
+            : "bg-white/0"
+        } z-50 transition-all duration-300`}
       >
         <div className="2xl:container w-full mx-auto px-6 sm:px-8 md:px-10 lg:px-14 flex h-16 items-center justify-between">
-
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center space-x-8">
             {navLinks.map((link) => (
@@ -74,7 +79,11 @@ export default function NavBar({colorChange = false}: {colorChange?: boolean}) {
                 href={link.href}
                 className={cn(
                   "text-sm font-medium transition-colors hover:text-gray-900",
-                  scrolled  ? "text-gray-600" : colorChange ? "text-white" : "text-gray-600",
+                  scrolled
+                    ? "text-gray-600"
+                    : colorChange
+                    ? "text-white"
+                    : "text-gray-600",
                   isActiveLink(link.href) && "text-primary"
                 )}
               >
@@ -87,7 +96,11 @@ export default function NavBar({colorChange = false}: {colorChange?: boolean}) {
           <div className="flex items-center z-50">
             <Link href="/" className="text-xl font-bold text-gray-900">
               <Image
-                src={scrolled || !colorChange ? "/images/eav-logo-dark.svg" : "/images/eav-logo.png"}
+                src={
+                  scrolled || !colorChange
+                    ? "/images/eav-logo-dark.svg"
+                    : "/images/eav-logo.png"
+                }
                 alt="Logo"
                 width={70}
                 height={50}
@@ -97,13 +110,23 @@ export default function NavBar({colorChange = false}: {colorChange?: boolean}) {
           </div>
 
           {/* Desktop Right Section */}
-          <div className={cn(
-            "hidden lg:flex items-center space-x-4",
-            scrolled ? "text-gray-600" : colorChange ? "text-white" : "text-gray-600"
-          )}>
+          <div
+            className={cn(
+              "hidden lg:flex items-center space-x-4",
+              scrolled
+                ? "text-gray-600"
+                : colorChange
+                ? "text-white"
+                : "text-gray-600"
+            )}
+          >
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="flex items-center space-x-1">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="flex items-center space-x-1"
+                >
                   <Globe className="h-4 w-4" />
                   <span className="text-sm">ENG</span>
                   <ChevronDown className="h-3 w-3" />
@@ -119,13 +142,7 @@ export default function NavBar({colorChange = false}: {colorChange?: boolean}) {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            <Button
-              variant="outline"
-              className="rounded-none border-gray-300 bg-transparent hover:bg-gray-50 text-sm font-light"
-              asChild
-            >
-              <Link href="/book-meeting">BOOK A MEETING</Link>
-            </Button>
+            <BookMeeting />
             <Button
               className="rounded-none bg-black hover:bg-black/90 text-white px-6 text-sm font-light"
               asChild
@@ -138,7 +155,11 @@ export default function NavBar({colorChange = false}: {colorChange?: boolean}) {
           <div className="flex lg:hidden items-center space-x-3">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="flex items-center space-x-1">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="flex items-center space-x-1"
+                >
                   <Globe className="h-4 w-4" />
                   <span className="text-xs">ENG</span>
                 </Button>
@@ -172,11 +193,11 @@ export default function NavBar({colorChange = false}: {colorChange?: boolean}) {
 
       {/* Mobile Menu */}
       <div
-        className={`fixed inset-0 left-1/4 bg-white z-40 lg:hidden transition-transform duration-300 ease-in-out ${isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
-          }`}
+        className={`fixed inset-0 left-1/4 bg-white z-40 lg:hidden transition-transform duration-300 ease-in-out ${
+          isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
+        }`}
       >
         <div className="pt-20 px-6 h-full flex flex-col">
-
           {/* Mobile Navigation Links */}
           <nav className="flex-1">
             <div className="space-y-1">
@@ -185,13 +206,16 @@ export default function NavBar({colorChange = false}: {colorChange?: boolean}) {
                   key={link.href}
                   href={link.href}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className={`block text-sm font-light py-4 transition-colors ${isActiveLink(link.href)
-                    ? "text-primary border-l-2 border-primary pl-4"
-                    : "text-gray-700 hover:text-gray-900 pl-0"
-                    }`}
+                  className={`block text-sm font-light py-4 transition-colors ${
+                    isActiveLink(link.href)
+                      ? "text-primary border-l-2 border-primary pl-4"
+                      : "text-gray-700 hover:text-gray-900 pl-0"
+                  }`}
                   style={{
                     animationDelay: `${index * 0.1}s`,
-                    animation: isMobileMenuOpen ? 'slideInLeft 0.3s ease-out forwards' : 'none'
+                    animation: isMobileMenuOpen
+                      ? "slideInLeft 0.3s ease-out forwards"
+                      : "none",
                   }}
                 >
                   {link.label}
@@ -208,7 +232,10 @@ export default function NavBar({colorChange = false}: {colorChange?: boolean}) {
               className="w-full rounded-none border-gray-300 bg-transparent hover:bg-gray-50 text-sm font-light h-12"
               asChild
             >
-              <Link href="/book-meeting" onClick={() => setIsMobileMenuOpen(false)}>
+              <Link
+                href="/book-meeting"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
                 BOOK A MEETING
               </Link>
             </Button>

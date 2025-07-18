@@ -127,7 +127,7 @@ const ContactAgentForm = () => {
 
         <Button
           type="submit"
-          className="w-full bg-white text-black hover:bg-gray-100 rounded-none py-3 mt-6 relative flex items-center justify-center"
+          className="w-full bg-white text-black hover:bg-primary hover:text-white rounded-none py-3 mt-6 relative flex items-center justify-center border border-primary"
         >
           <span className="absolute left-1/2 transform -translate-x-1/2 font-semibold">
             REQUEST INFORMATIONS

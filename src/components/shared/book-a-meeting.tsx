@@ -34,6 +34,9 @@ interface FormData {
   date: Date | null;
   time: string;
   message: string;
+  meetingType: "onsite" | "virtual";
+  onsiteLocation: string;
+  virtualPlatform: string;
   acceptTerms: boolean;
 }
 
@@ -44,12 +47,14 @@ interface FormErrors {
   date?: string;
   time?: string;
   message?: string;
+  onsiteLocation?: string;
+  virtualPlatform?: string;
   acceptTerms?: string;
 }
 
 type FormField = keyof FormData;
 
-const BookVisitDialog: React.FC = () => {
+export const BookMeeting: React.FC = () => {
   const [formData, setFormData] = useState<FormData>({
     name: "",
     phone: "",
@@ -57,6 +62,9 @@ const BookVisitDialog: React.FC = () => {
     date: null,
     time: "",
     message: "",
+    meetingType: "onsite",
+    onsiteLocation: "",
+    virtualPlatform: "",
     acceptTerms: false,
   });
 
@@ -75,6 +83,14 @@ const BookVisitDialog: React.FC = () => {
     "5:00 PM",
   ];
 
+  const onsiteLocations: string[] = [
+    "Vilamoura office",
+    "Lagoa (carvoeiro) office",
+    "Lagos office",
+  ];
+
+  const virtualPlatforms: string[] = ["Google meet", "Zoom"];
+
   const handleInputChange = <T extends FormField>(
     field: T,
     value: FormData[T]
@@ -85,7 +101,7 @@ const BookVisitDialog: React.FC = () => {
     }));
 
     // Clear error when user starts typing
-    if (errors[field]) {
+    if (errors[field as keyof FormErrors]) {
       setErrors((prev) => ({
         ...prev,
         [field]: undefined,
@@ -118,6 +134,14 @@ const BookVisitDialog: React.FC = () => {
       newErrors.time = "Time is required";
     }
 
+    if (formData.meetingType === "onsite" && !formData.onsiteLocation) {
+      newErrors.onsiteLocation = "Please select an office location";
+    }
+
+    if (formData.meetingType === "virtual" && !formData.virtualPlatform) {
+      newErrors.virtualPlatform = "Please select a virtual platform";
+    }
+
     if (!formData.acceptTerms) {
       newErrors.acceptTerms = "You must accept the terms and conditions";
     }
@@ -139,6 +163,9 @@ const BookVisitDialog: React.FC = () => {
         date: null,
         time: "",
         message: "",
+        meetingType: "onsite",
+        onsiteLocation: "",
+        virtualPlatform: "",
         acceptTerms: false,
       });
     }
@@ -158,12 +185,29 @@ const BookVisitDialog: React.FC = () => {
 
   const handleDateSelect = (date: Date | undefined): void => {
     handleInputChange("date", date || null);
-    // Close the popover when a date is selected
     setIsDatePopoverOpen(false);
   };
 
   const handleTimeSelect = (value: string): void => {
     handleInputChange("time", value);
+  };
+
+  const handleMeetingTypeChange = (type: "onsite" | "virtual"): void => {
+    handleInputChange("meetingType", type);
+    // Clear the other location type when switching
+    if (type === "onsite") {
+      handleInputChange("virtualPlatform", "");
+    } else {
+      handleInputChange("onsiteLocation", "");
+    }
+  };
+
+  const handleOnsiteLocationSelect = (value: string): void => {
+    handleInputChange("onsiteLocation", value);
+  };
+
+  const handleVirtualPlatformSelect = (value: string): void => {
+    handleInputChange("virtualPlatform", value);
   };
 
   const isDateDisabled = (date: Date): boolean => {
@@ -176,13 +220,16 @@ const BookVisitDialog: React.FC = () => {
     <div className="">
       <Dialog>
         <DialogTrigger asChild>
-          <Button className="bg-primary text-lg px-8 py-6 text-white hover:bg-black/85 transition-all">
-            Book Visit
+          <Button
+            variant="outline"
+            className="rounded-none border-gray-300 bg-transparent hover:bg-gray-50 text-sm font-light"
+          >
+            BOOK A MEETING
           </Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-md">
           <DialogHeader className="pb-5">
-            <DialogTitle>Book Visit</DialogTitle>
+            <DialogTitle>Book A Meeting</DialogTitle>
           </DialogHeader>
 
           <div className="space-y-4">
@@ -294,6 +341,104 @@ const BookVisitDialog: React.FC = () => {
               )}
             </div>
 
+            {/* Meeting Type Selection */}
+            <div>
+              <Label className="text-sm font-medium mb-3 block">
+                Meeting Type
+              </Label>
+              <div className="flex space-x-4">
+                <label className="flex items-center space-x-2">
+                  <input
+                    type="radio"
+                    name="meetingType"
+                    value="onsite"
+                    checked={formData.meetingType === "onsite"}
+                    onChange={() => handleMeetingTypeChange("onsite")}
+                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
+                  />
+                  <span className="text-sm">On-site meeting</span>
+                </label>
+                <label className="flex items-center space-x-2">
+                  <input
+                    type="radio"
+                    name="meetingType"
+                    value="virtual"
+                    checked={formData.meetingType === "virtual"}
+                    onChange={() => handleMeetingTypeChange("virtual")}
+                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
+                  />
+                  <span className="text-sm">Virtual meeting</span>
+                </label>
+              </div>
+            </div>
+
+            {/* Conditional Location/Platform Selection */}
+            {formData.meetingType === "onsite" && (
+              <div>
+                <Label className="sr-only" htmlFor="onsiteLocation">
+                  Office Location *
+                </Label>
+                <Select
+                  value={formData.onsiteLocation}
+                  onValueChange={handleOnsiteLocationSelect}
+                >
+                  <SelectTrigger
+                    className={
+                      errors.onsiteLocation ? "border-red-500 w-full" : "w-full"
+                    }
+                  >
+                    <SelectValue placeholder="Select office location*" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {onsiteLocations.map((location: string) => (
+                      <SelectItem key={location} value={location}>
+                        {location}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {errors.onsiteLocation && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.onsiteLocation}
+                  </p>
+                )}
+              </div>
+            )}
+
+            {formData.meetingType === "virtual" && (
+              <div>
+                <Label className="sr-only" htmlFor="virtualPlatform">
+                  Virtual Platform *
+                </Label>
+                <Select
+                  value={formData.virtualPlatform}
+                  onValueChange={handleVirtualPlatformSelect}
+                >
+                  <SelectTrigger
+                    className={
+                      errors.virtualPlatform
+                        ? "border-red-500 w-full"
+                        : "w-full"
+                    }
+                  >
+                    <SelectValue placeholder="Select virtual platform*" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {virtualPlatforms.map((platform: string) => (
+                      <SelectItem key={platform} value={platform}>
+                        {platform}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {errors.virtualPlatform && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.virtualPlatform}
+                  </p>
+                )}
+              </div>
+            )}
+
             <div>
               <Label className="sr-only" htmlFor="message">
                 Message
@@ -302,7 +447,7 @@ const BookVisitDialog: React.FC = () => {
                 id="message"
                 value={formData.message}
                 onChange={handleInputChangeEvent("message")}
-                placeholder="Enter any additional information"
+                placeholder="Enter any additional information & questions"
                 rows={3}
               />
             </div>
@@ -345,5 +490,3 @@ const BookVisitDialog: React.FC = () => {
     </div>
   );
 };
-
-export default BookVisitDialog;

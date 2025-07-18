@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Checkbox } from "@/components/ui/checkbox-two";
 import { Label } from "@/components/ui/label";
@@ -15,11 +15,11 @@ export function PropertyTypes({
   const searchParams = useSearchParams();
 
   // Get initial selected types from URL (comma-separated values)
-  const getInitialTypes = useCallback((): string[] => {
+  const getInitialTypes = (): string[] => {
     const typologyParam = searchParams.get("typology");
     if (!typologyParam) return [];
     return typologyParam.split(",").filter(Boolean);
-  }, [searchParams]);
+  };
 
   const [selectedItems, setSelectedItems] = useState<string[]>(getInitialTypes);
 
@@ -58,8 +58,12 @@ export function PropertyTypes({
 
   // Sync with URL params when they change externally
   useEffect(() => {
-    setSelectedItems(getInitialTypes());
-  }, [getInitialTypes]);
+    const typologyParam = searchParams.get("typology");
+    const currentTypes = typologyParam
+      ? typologyParam.split(",").filter(Boolean)
+      : [];
+    setSelectedItems(currentTypes);
+  }, [searchParams.toString()]); // Convert to string for stable comparison
 
   return (
     <div className="space-y-4">

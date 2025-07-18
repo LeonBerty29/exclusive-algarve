@@ -64,7 +64,7 @@ export const FloorPlanTab = ({
             onClick={handleDownload}
             className="text-xs rounded-none bg-black text-white px-6"
           >
-            DOWNLOAD
+            Download Brochure
             <ArrowDownToLine />
           </Button>
         </div>
