@@ -1,3 +1,4 @@
+import { MultiStepPropertyForm } from "@/components/buying-process/property-request-multistep-form";
 import Image from "next/image";
 import React from "react";
 import { TbBulbFilled } from "react-icons/tb";
@@ -369,13 +370,17 @@ const page = () => {
                     Portugal.If you have any questions about the buying process
                     and would like to be contacted by a member of our sales
                     team, please leave your name and contact details below and
-                    we will get in touch with yo
+                    we will get in touch with you.
                   </p>
                 </div>
               </div>
             </div>
           </div>
         </div>
+      </div>
+
+      <div className="2xl:container pt-0 py-14 px-6 sm:px-8 md:px-10 lg:px-14 mx-auto py-14">
+        <MultiStepPropertyForm />
       </div>
     </>
   );

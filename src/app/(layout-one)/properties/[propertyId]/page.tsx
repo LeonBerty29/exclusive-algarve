@@ -145,7 +145,6 @@ const PageContent = async (props: Props) => {
   const { propertyId } = await props.params;
   const response = await getProperty(propertyId);
   const property = response.data;
-  console.log(property.similar_properties);
 
   return (
     <>
