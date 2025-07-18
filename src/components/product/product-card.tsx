@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+// import { cn } from "@/lib/utils";
 import { PiCarLight } from "react-icons/pi";
 import { MdOutlineShower } from "react-icons/md";
 // import { Play } from 'lucide-react';
@@ -34,7 +34,7 @@ export const ProductCard = ({ property }: Props) => {
   const homeId = property.id;
   const reference = property.reference;
   const exclusive = property.agency.name === "EAV";
-  const tag = { slug: "rsv", name: "Reserved" }; // placeholder tag
+  // const tag = { slug: "rsv", name: "Reserved" }; // placeholder tag
   const grossArea = property.features.private_area;
   const plotSize = property.features.plot_size;
   const amenities = {
@@ -58,20 +58,20 @@ export const ProductCard = ({ property }: Props) => {
         <div className="z-10 absolute top-2 left-2 right-2 flex items-center justify-between gap-3">
           <>
             <div className="flex items-center gap-[6px]">
-              <div className="min-w-fit rounded-none bg-gray-200 text-black text-[10px] px-2 py-1 h-fit flex gap-2 items-center justify-center">
+              <div className="min-w-fit rounded-none bg-gray-200 text-black text-sm px-2 py-2 h-fit flex gap-2 items-center justify-center">
                 <IoMdPricetag fill="none" strokeWidth={20} />
                 {reference}
               </div>
-              {tag && (
+              {/* {tag && (
                 <div
                   className={cn(
-                    "min-w-fit rounded-none text-white text-[11px] px-2 py-1 h-fit flex items-center justify-center",
+                    "min-w-fit rounded-none text-white text-sm px-2 py-1 h-fit flex items-center justify-center",
                     tag.slug === "rsv" ? "bg-[#17BF62]" : "bg-red-700"
                   )}
                 >
                   {tag.name}
                 </div>
-              )}
+              )} */}
             </div>
 
             {favorite ? (
@@ -104,7 +104,7 @@ export const ProductCard = ({ property }: Props) => {
               currency={currency}
               amountStyle="text-primary"
               formatAmount={false}
-              className="gap-1 text-primary"
+              className="gap-1 text-primary text-xl"
             />
           ) : (
             <span className="text-base font-semibold flex items-center gap-1 text-primary">
@@ -113,19 +113,18 @@ export const ProductCard = ({ property }: Props) => {
           )}
         </div>
 
-        <p className="text-neutral-700 text-sm line-clamp-2">
-          {property.description}
-        </p>
+        <div
+          dangerouslySetInnerHTML={{ __html: property.description }}
+          className="text-neutral prose lg:prose-base line-clamp-2"
+        />
 
         <Separator className="mt-2" />
 
         <div className="flex flex-wrap lg:flex-nowrap justify-between gap-2">
           <div className="w-[47%]">
             <div>
-              <p className="text-[11px] font-light text-gray-400 mb-3">
-                Location
-              </p>
-              <p className="text-[11px] font-semibold text-black line-clamp-1">
+              <p className="text-sm font-light text-gray-400 mb-3">Location</p>
+              <p className="text-sm font-semibold text-black line-clamp-1">
                 {location}
               </p>
             </div>
@@ -133,18 +132,16 @@ export const ProductCard = ({ property }: Props) => {
 
           <div className="w-[52%] max-w-[140px] min-w[128px] flex gap-2 justify-between">
             <div className="flex-1 max-w-fit">
-              <p className="text-[11px] font-light text-gray-400 mb-3">
+              <p className="text-sm font-light text-gray-400 mb-3">
                 Gross Area
               </p>
-              <p className="text-[11px] text-black font-semibold">
+              <p className="text-sm text-black font-semibold">
                 {grossArea} <sup>m²</sup>
               </p>
             </div>
             <div className="flex-1 max-w-fit">
-              <p className="text-[11px] font-light text-gray-400 mb-3">
-                Plot Size
-              </p>
-              <p className="text-[11px] font-semibold text-black">
+              <p className="text-sm font-light text-gray-400 mb-3">Plot Size</p>
+              <p className="text-sm font-semibold text-black">
                 {plotSize} <sup>m²</sup>
               </p>
             </div>
@@ -153,21 +150,21 @@ export const ProductCard = ({ property }: Props) => {
 
         <div className="flex flex-wrap lg:flex-nowrap justify-between pt-1 gap-2">
           <div className="w-[47%]">
-            <div className="flex items-center gap-3 h-[40px]">
-              <div className="flex items-center text-xs gap-[5px]">
-                <MdOutlineLocalHotel className="h-[18px] w-[18px] text-gray-500" />
+            <div className="flex items-center gap-4 h-[40px]">
+              <div className="flex items-center text-sm gap-2">
+                <MdOutlineLocalHotel className="h-6 w-6 text-gray-500" />
                 <span className="font-semibold">{amenities.bedrooms}</span>
               </div>
-              <div className="flex items-center text-xs gap-[5px]">
+              <div className="flex items-center text-sm gap-2">
+                <MdOutlineShower className="h-6 w-6 text-gray-500" />
+                <span className="font-semibold">{amenities.bathrooms}</span>
+              </div>
+              <div className="flex items-center text-sm gap-2">
                 <PiCarLight
-                  className="h-[18px] w-[18px] fill-none text-gray-800"
+                  className="h-6 w-6 fill-none text-gray-800"
                   strokeWidth={6}
                 />
                 <span className="font-semibold">{amenities.garage}</span>
-              </div>
-              <div className="flex items-center text-xs gap-[5px]">
-                <MdOutlineShower className="h-[18px] w-[18px] text-gray-500" />
-                <span className="font-semibold">{amenities.bathrooms}</span>
               </div>
             </div>
           </div>
