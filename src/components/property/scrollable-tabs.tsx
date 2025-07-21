@@ -9,6 +9,7 @@ import { FloorPlanTab } from "./floor-plan";
 import { LocationTab } from "./location-tab";
 import { PropertyFeatures } from "../property-details/PropertyFeatures";
 import { Property } from "@/types/property";
+import { Button } from "../ui/button";
 
 interface ScrollableTabsProps {
   property: Property;
@@ -28,6 +29,16 @@ const ScrollableTabs = ({ property }: ScrollableTabsProps) => {
       setShowRightArrow(scrollLeft < scrollWidth - clientWidth - 5); // Hide right arrow when near the end
     }
   }, []);
+
+  const handleDownload = () => {
+    const link = document.createElement("a");
+    link.href = property.assets.pdf_brochure;
+    link.download = "property-floor-plan.pdf";
+    link.style.display = "none";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   useEffect(() => {
     // Initial check
@@ -99,12 +110,21 @@ const ScrollableTabs = ({ property }: ScrollableTabsProps) => {
                 >
                   Features
                 </TabsTrigger>
-                <TabsTrigger
-                  value={"fplan"}
-                  className="whitespace-nowrap mx-1 first:ml-0 last:mr-0"
-                >
-                  Floor Plan
-                </TabsTrigger>
+                {property.assets.images.floor_plans.length > 0 ? (
+                  <TabsTrigger
+                    value={"fplan"}
+                    className="whitespace-nowrap mx-1 first:ml-0 last:mr-0"
+                  >
+                    Floor Plan
+                  </TabsTrigger>
+                ) : (
+                  <Button
+                    onClick={handleDownload}
+                    className="text-xs rounded-none bg-black text-white px-6"
+                  >
+                    DOnload Brochure
+                  </Button>
+                )}
                 <TabsTrigger
                   value={"location"}
                   className="whitespace-nowrap mx-1 first:ml-0 last:mr-0"
@@ -154,7 +174,10 @@ const ScrollableTabs = ({ property }: ScrollableTabsProps) => {
           >
             <div className="p-4">
               {/* <PropertyInfo property={property} /> */}
-              <FloorPlanTab floorPlans={property.assets.images.floor_plans} pdfBrochure={property.assets.pdf_brochure} />
+              <FloorPlanTab
+                floorPlans={property.assets.images.floor_plans}
+                pdfBrochure={property.assets.pdf_brochure}
+              />
             </div>
           </TabsContent>
 

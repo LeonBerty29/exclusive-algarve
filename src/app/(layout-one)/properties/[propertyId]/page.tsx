@@ -179,13 +179,13 @@ const PageContent = async (props: Props) => {
           </div>
         </div>
 
-        <div className="flex items-center justify-between flex-wrap gap-x-14 gap-y-4">
+        <div className="flex items-center justify-between flex-wrap gap-x-9 gap-y-4">
           <div className="flex items-center gap-x-16 gap-y-4 flex-wrap">
-            <h1 className="font-medium max-w-lg lg:text-lg">
+            <h1 className="font-medium max-w-2xl lg:text-2xl">
               {property.title}
             </h1>
 
-            <p className="font-medium text-primary">
+            <p className="font-medium text-primary text-2xl">
               {getCurrencySymbol(property.currency)}{" "}
               {property.price.toLocaleString()}
             </p>

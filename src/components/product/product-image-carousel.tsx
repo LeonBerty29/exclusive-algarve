@@ -73,15 +73,14 @@ export default function ProductImageCarousel({
       <Carousel className="w-full" opts={{ loop: true }} setApi={setApi}>
         <CarouselContent className="ml-0">
           {imagePaths?.slice(0, 4).map((item: string, index: number) => (
-            <CarouselItem key={`${item}--${index}`} className="p-0 h-[220px]">
+            <CarouselItem key={`${item}--${index}`} className="p-0">
               <div className="relative w-full h-full">
                 {/* Image layer */}
-                <div className="relative w-full h-full overflow-hidden">
+                <div className="relative w-full aspect-video overflow-hidden">
                   <Image
                     src={getProxiedImageUrl(item)}
                     alt="Image of our property"
-                    width={400}
-                    height={400}
+                    fill
                     className="w-full h-full object-cover"
                     priority
                   />
