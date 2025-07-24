@@ -1,23 +1,10 @@
 import type { Metadata } from "next";
-// import {
-//   Geist,
-//   Geist_Mono,
-// } from "next/font/google";
 import "./globals.css";
 import { poppins } from "@/fonts";
 import Footer from "@/components/layout/footer";
 import StoryblokProvider from "@/components/story-provider";
-
-
-// const geistSans = Geist({
-//   variable: "--font-geist-sans",
-//   subsets: ["latin"],
-// });
-
-// const geistMono = Geist_Mono({
-//   variable: "--font-geist-mono",
-//   subsets: ["latin"],
-// });
+import { SessionProvider } from "next-auth/react";
+import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
   title: "Exclusive Algarve",
@@ -31,17 +18,16 @@ export default function RootLayout({
 }>) {
   return (
     <StoryblokProvider>
-    <html lang="en">
-      <body
-        className={`${poppins.className} antialiased`}
-      >
-        <main className="w-full">
-          {children}
-        </main>
+      <html lang="en">
+        <SessionProvider>
+          <body className={`${poppins.className} antialiased`}>
+            <main className="w-full">{children}</main>
 
-        <Footer />
-      </body>
-    </html>
+            <Footer />
+            <Toaster />
+          </body>
+        </SessionProvider>
+      </html>
     </StoryblokProvider>
   );
 }

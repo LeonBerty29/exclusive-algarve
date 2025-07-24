@@ -6,6 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 export function SearchInput() {
+
+  // console.log("Rendering <SearchInput />")
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -48,6 +50,7 @@ export function SearchInput() {
     const currentSearch = searchParams.get("search") || "";
     setSearchValue(currentSearch);
   }, [searchParams]);
+  
 
   return (
     <div className="flex flex-col items-center gap-5">

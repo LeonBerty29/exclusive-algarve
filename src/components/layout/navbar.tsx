@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import { BookMeeting } from "../shared/book-a-meeting";
+import NavbarUserAuth from "../auth/navbar-user-auth";
 
 export default function NavBar({
   colorChange = false,
@@ -143,12 +144,7 @@ export default function NavBar({
             </DropdownMenu>
 
             <BookMeeting />
-            <Button
-              className="rounded-none bg-black hover:bg-black/90 text-white px-6 text-sm font-light"
-              asChild
-            >
-              <Link href="/sign-in">SIGN IN</Link>
-            </Button>
+            <NavbarUserAuth />
           </div>
 
           {/* Mobile/Tablet Right Section */}
@@ -244,7 +240,7 @@ export default function NavBar({
               className="w-full rounded-none bg-black hover:bg-black/90 text-white text-sm font-light h-12"
               asChild
             >
-              <Link href="/sign-in" onClick={() => setIsMobileMenuOpen(false)}>
+              <Link href="/login" onClick={() => setIsMobileMenuOpen(false)}>
                 SIGN IN
               </Link>
             </Button>
