@@ -1,10 +1,20 @@
 import { RegisterForm } from "@/components/auth/register-form";
 import React from "react";
 
-const RegisterPage = () => {
+interface SearchParams {
+  callbackUrl: string;
+}
+
+interface LoginPageProps {
+  searchParams: Promise<SearchParams>;
+}
+
+const RegisterPage = async ({ searchParams }: LoginPageProps) => {
+  const params = await searchParams;
+  const callbackUrl = params.callbackUrl;
   return (
-    <div>
-      <RegisterForm />
+    <div className="flex items-center justify-center min-h-screen">
+      <RegisterForm callbackUrl={callbackUrl} />
     </div>
   );
 };

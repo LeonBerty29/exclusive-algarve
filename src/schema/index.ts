@@ -18,12 +18,18 @@ export const RegisterSchema = z.object({
   }).min(8, {
     message: "Password must be at least 8 characters"
   }),
-  // confirmPassword: z.string().min(1, {
-  //   message: "Password is required"
-  // }).min(8, {
-  //   message: "Password must be at least 8 characters long"
-  // }),
-  name: z.string().min(1, {
-    message: "Name is required"
-  })
-})
+  password_confirmation: z.string().min(1, {
+    message: "Password confirmation is required"
+  }).min(8, {
+    message: "Password must be at least 8 characters long"
+  }),
+  first_name: z.string().min(1, {
+    message: "First Name is required"
+  }),
+  last_name: z.string().min(1, {
+    message: "Last Name is required"
+  }),
+}).refine((data) => data.password === data.password_confirmation, {
+  message: "Passwords don't match",
+  path: ["password_confirmation"], // This will show the error on the password_confirmation field
+});

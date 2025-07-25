@@ -122,7 +122,7 @@ const ScrollableTabs = ({ property }: ScrollableTabsProps) => {
                     onClick={handleDownload}
                     className="text-xs rounded-none bg-black text-white px-6"
                   >
-                    DOnload Brochure
+                    Download Brochure
                   </Button>
                 )}
                 <TabsTrigger

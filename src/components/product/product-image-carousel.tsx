@@ -23,18 +23,23 @@ export default function ProductImageCarousel({
   const [current, setCurrent] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const carouselRef = useRef(null);
-  console.log("Rendering <ProductImageCarousel/>")
+  const currentRef = useRef(0);
+  console.log("Rendering <ProductImageCarousel/>");
 
   useEffect(() => {
     if (!api) return;
 
     const onSelect = () => {
-      setCurrent(api.selectedScrollSnap());
+      currentRef.current = api.selectedScrollSnap();
+      // Only update state when needed for UI updates
+      setCurrent(currentRef.current);
     };
 
     api.on("select", onSelect);
 
-    setCurrent(api.selectedScrollSnap());
+    // Initialize current position
+    currentRef.current = api.selectedScrollSnap();
+    setCurrent(currentRef.current);
 
     return () => {
       api.off("select", onSelect);
@@ -78,7 +83,7 @@ export default function ProductImageCarousel({
             <CarouselItem key={`${item}--${index}`} className="p-0">
               <div className="relative w-full h-full">
                 {/* Image layer */}
-                <div className="relative w-full aspect-video overflow-hidden">
+                <div className="relative w-full aspect-square md:aspect-video overflow-hidden">
                   <Image
                     src={getProxiedImageUrl(item)}
                     alt="Image of our property"

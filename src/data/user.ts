@@ -110,6 +110,7 @@ async function apiRequest<T>(
         `API Error: ${response.status} ${response.statusText} - ${errorText}`,
         {
           cause: response,
+          
         }
       );
     }
@@ -118,7 +119,7 @@ async function apiRequest<T>(
   } catch (error: unknown) {
     const errorStatus = getErrorStatus(error);
 
-    console.log({ errorStatus });
+    // console.log({ errorStatus });
 
     if (errorStatus === 404) {
       notFound();
@@ -128,13 +129,15 @@ async function apiRequest<T>(
       throw error;
     }
 
-    console.error(error);
+    // console.error(error);
     // Re-throw the error with proper typing
-    if (error instanceof Error) {
-      throw error;
-    } else {
-      throw new Error(`Failed to fetch from API: ${String(error)}`);
-    }
+    // if (error instanceof Error) {
+    //   throw error;
+    // } else {
+    //   throw new Error(`Failed to fetch from API: ${String(error)}`);
+    // }
+
+    throw error;
   }
 }
 
@@ -144,10 +147,14 @@ export const registerUser = async (
 ): Promise<RegisterResponse> => {
   const endpoint = `/user/register`;
 
-  return apiRequest<RegisterResponse>(endpoint, {
-    method: "POST",
-    body: JSON.stringify(userData),
-  });
+  try {
+    return apiRequest<RegisterResponse>(endpoint, {
+      method: "POST",
+      body: JSON.stringify(userData),
+    });
+  } catch (error) {
+    throw error;
+  }
 };
 
 export const loginUser = async (
