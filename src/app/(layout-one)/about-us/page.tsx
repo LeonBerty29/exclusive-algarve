@@ -1,65 +1,11 @@
 import Image from "next/image";
 import React from "react";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
-import { Card, CardContent } from "@/components/ui/card";
-
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import DiscoverSection from "@/components/home/discover-section";
 import { ContactSection } from "@/components/shared/contact-section";
+import ClientTestimonial from "@/components/about-us/client-testimonial";
 
 const AboutUs = () => {
-  const testimonials = [
-    {
-      id: "qwqwqwqwqwqw-232",
-      name: "Conrad",
-      message:
-        "We recently bought a house in Lagos through Exclusive Algarve Villas. Our agents were Melissa and Carolina. When buying a property I have high expectations and both Melissa and Carolina showed their professionalism and skills that helped the whole process go smoothly. They did what they said they would do, and they were also lovely people to work with, and that's important. I highly recommend them.",
-      imageUrl: "/images/recent-listing-1.png",
-      date: "May 2025",
-    },
-    {
-      id: "qwqwqwqwqwqw-235",
-      name: "Frans",
-      message:
-        "We were very happy with the honest, open and professional help from EAVillas to sell our house. For both us and the buyers it was a stress free proces, thanks to them. Also great after sales service to complete the positive experience. Much better agency than the prime international agencies.",
-      imageUrl: "/images/recent-listing-2.png",
-      date: "February 2025",
-    },
-    {
-      id: "qwqwqwqwqwqw-237",
-      name: "Hanam Najma",
-      message:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec ante vel ante bibendum facilisis. Nullam nec ante vel ante bibendum facilisis.",
-      imageUrl: "/images/recent-listing-3.png",
-      date: "June 2025",
-    },
-    {
-      id: "qwqwqwqwqwqw-765",
-      name: "John",
-      message:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec ante vel ante bibendum facilisis. Nullam nec ante vel ante bibendum facilisis.",
-      imageUrl: "/images/recent-listing-3.png",
-      date: "October 2025",
-    },
-    {
-      id: "qwqwqwqwqwqw-6321",
-      name: "Ofon",
-      message:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec ante vel ante bibendum facilisis. Nullam nec ante vel ante bibendum facilisis.",
-      imageUrl: "/images/recent-listing-3.png",
-    },
-  ];
 
   const images = [
     "/images/awards/awards-badge.jpg",
@@ -122,80 +68,7 @@ const AboutUs = () => {
         </div>
       </div>
 
-      <div className="bg-neutral-800 text-white">
-        <div className="lg:container mx-auto px-6 md:px-12 lg:px-14 py-14">
-          <div className="flex items-center gap-y-5 justify-between py-5 md:py-8 flex-wrap">
-            <div className="w-full lg:w-[50%] md:pr-8 lg:pr-14">
-              <h2 className="text-xl lg:text-2xl font-normal sm:max-w-70 mb-6">
-                OUR <span className="text-primary">CLIENTS</span> <br />{" "}
-                TESTIMONIALS
-              </h2>
-              <p className="text-white/70 text-sm xl:text-base mb-5">
-                Exclusive Algarve Villas has won various awards over the years,
-                from &quot;Best Real Estate Agency Website&quot; to{" "}
-                <span className="text-white">
-                  &quot;Best Real Estate Agency Portugal&quot;
-                </span>{" "}
-                by the International Property Awards in London. Furthermore has
-                also won an award in 2019 by Best Luxury Real Estate Agency 2019
-                by Build Magazine.
-              </p>
-            </div>
-
-            <div className="lg:pl-3 w-full lg:w-[50%]">
-              <Carousel
-                className="w-full"
-                opts={{
-                  align: "start",
-                  loop: false,
-                  slidesToScroll: 1,
-                }}
-              >
-                <CarouselContent className="-ml-2">
-                  {testimonials.map((testimonial, index) => (
-                    <CarouselItem key={index} className="pl-2 md:basis-1/2">
-                      <div className="p-1">
-                        <Card className="rounded-none p-0">
-                          <CardContent className="flex flex-col gap-6 justify-between aspect-square p-4 rounded-none">
-                            <div className="flex-1 overflow-y-auto">
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <p className="text-sm text-neutral-800 line-clamp-[9]">
-                                    {testimonial.message}
-                                  </p>
-                                </TooltipTrigger>
-                                <TooltipContent className="max-w-[500px] p-5">
-                                  <p className="text-sm text-neutral-800">
-                                    {testimonial.message}
-                                  </p>
-                                </TooltipContent>
-                              </Tooltip>
-                            </div>
-
-                            <div className="flex items-center justify-between gap-4">
-                              <p className="text-xs text-neutral-800 line-clamp-1">
-                                {testimonial.date}
-                              </p>
-                              <p className="text-xs text-black line-clamp-1 font-semibold uppercase">
-                                {testimonial.name}
-                              </p>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      </div>
-                    </CarouselItem>
-                  ))}
-                </CarouselContent>
-
-                <div className="mt-18 flex items-center justify-end gap-3">
-                  <CarouselPrevious className="static rounded-none text-black" />
-                  <CarouselNext className="static rounded-none text-black" />
-                </div>
-              </Carousel>
-            </div>
-          </div>
-        </div>
-      </div>
+      <ClientTestimonial />
 
       <div className="lg:container mx-auto px-6 md:px-12 lg:px-14 py-20">
         <h3 className="text-center text-2xl lg:text-2xl font-normal mb-6">
