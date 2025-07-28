@@ -107,7 +107,7 @@ export const ProductCard = ({ property }: Props) => {
               className="gap-1 text-primary text-xl"
             />
           ) : (
-            <span className="text-base font-semibold flex items-center gap-1 text-primary">
+            <span className="text-xl font-semibold flex items-center gap-1 text-primary">
               Contact for price
             </span>
           )}

@@ -82,7 +82,7 @@ const GoldenVisaProgram = () => {
 
             </div>
 
-            <div className='bg-gray-200'>
+            <div className='bg-gray-100'>
                 <div className='lg:container mx-auto px-6 md:px-12 lg:px-14 py-14 xl:pb-20'>
                     <h3 className='text-center mb-5 max-w-md mx-auto font-semibold text-2xl'>Mandatory Online pre-registration is available</h3>
 

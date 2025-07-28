@@ -12,6 +12,8 @@ import {
 import Image from "next/image";
 import { getProxiedImageUrl } from "@/lib/utils";
 
+const AUTO_PLAY_INTERVAL = 3000;
+
 export default function ProductImageCarousel({
   imagePaths,
 }: {
@@ -20,19 +22,24 @@ export default function ProductImageCarousel({
   const [api, setApi] = useState<CarouselApi | null>(null);
   const [current, setCurrent] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
-  const autoPlayInterval = 3000;
   const carouselRef = useRef(null);
+  const currentRef = useRef(0);
+  // console.log("Rendering <ProductImageCarousel/>");
 
   useEffect(() => {
     if (!api) return;
 
     const onSelect = () => {
-      setCurrent(api.selectedScrollSnap());
+      currentRef.current = api.selectedScrollSnap();
+      // Only update state when needed for UI updates
+      setCurrent(currentRef.current);
     };
 
     api.on("select", onSelect);
 
-    setCurrent(api.selectedScrollSnap());
+    // Initialize current position
+    currentRef.current = api.selectedScrollSnap();
+    setCurrent(currentRef.current);
 
     return () => {
       api.off("select", onSelect);
@@ -44,10 +51,10 @@ export default function ProductImageCarousel({
 
     const interval = setInterval(() => {
       api.scrollNext();
-    }, autoPlayInterval);
+    }, AUTO_PLAY_INTERVAL);
 
     return () => clearInterval(interval);
-  }, [api, isPaused, autoPlayInterval]);
+  }, [api, isPaused]);
 
   const goToSlide = (index: number) => {
     if (api) {
@@ -76,7 +83,7 @@ export default function ProductImageCarousel({
             <CarouselItem key={`${item}--${index}`} className="p-0">
               <div className="relative w-full h-full">
                 {/* Image layer */}
-                <div className="relative w-full aspect-video overflow-hidden">
+                <div className="relative w-full aspect-square md:aspect-video overflow-hidden">
                   <Image
                     src={getProxiedImageUrl(item)}
                     alt="Image of our property"

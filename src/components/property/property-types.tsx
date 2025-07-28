@@ -11,6 +11,7 @@ export function PropertyTypes({
 }: {
   typologies: PropertyMetadata["typologies"];
 }) {
+  // console.log("Rendering <PropertyTypes />");
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -63,7 +64,7 @@ export function PropertyTypes({
       ? typologyParam.split(",").filter(Boolean)
       : [];
     setSelectedItems(currentTypes);
-  }, [searchParams.toString()]); // Convert to string for stable comparison
+  }, [searchParams]); // Convert to string for stable comparison
 
   return (
     <div className="space-y-4">

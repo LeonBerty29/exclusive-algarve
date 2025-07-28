@@ -29,6 +29,8 @@ export const RangeSlider: React.FC<RangeSliderProps> = ({
   currency = "USD",
   customSymbol,
 }) => {
+
+  // console.log("Rendering <RangeSlider/>")
   const [values, setValues] = useState<[number, number]>(value || defaultValue);
   const [inputValues, setInputValues] = useState<[string, string]>(["", ""]);
   const [isEditing, setIsEditing] = useState<[boolean, boolean]>([

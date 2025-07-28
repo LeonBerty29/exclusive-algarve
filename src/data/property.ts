@@ -44,7 +44,7 @@ async function apiRequest<T>(
 
     // Check for 404 specifically
     if (response.status === 404) {
-      console.log(response.status);
+      // console.log(response.status);
       throw new Error(`API Error: ${response.status} ${response.statusText}`, {
         cause: response,
       });
@@ -65,7 +65,7 @@ async function apiRequest<T>(
   } catch (error: unknown) {
     const errorStatus = getErrorStatus(error);
 
-    console.log({ errorStatus });
+    // console.log({ errorStatus });
 
     if (errorStatus === 404) {
       notFound();
