@@ -167,7 +167,7 @@ export default function HeroSection() {
           <HeroSearch />
         </div>
 
-        <Button className="bg-primary text-white hover:bg-primary/80 transition-all !mx-auto block">
+        <Button className="bg-white text-black hover:bg-black hover:text-white transition-all !mx-auto block">
           <Link href="/properties">ALL PROPERTIES</Link>
         </Button>
       </div>
