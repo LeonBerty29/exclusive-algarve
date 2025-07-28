@@ -30,7 +30,7 @@ export const RangeSlider: React.FC<RangeSliderProps> = ({
   customSymbol,
 }) => {
 
-  console.log("Rendering <RangeSlider/>")
+  // console.log("Rendering <RangeSlider/>")
   const [values, setValues] = useState<[number, number]>(value || defaultValue);
   const [inputValues, setInputValues] = useState<[string, string]>(["", ""]);
   const [isEditing, setIsEditing] = useState<[boolean, boolean]>([

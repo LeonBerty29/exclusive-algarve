@@ -23,18 +23,28 @@ export default {
 
           const response = await loginUser(loginData);
 
-          console.log({ response });
+          // console.log({ response });
 
           if (response.client && response.token) {
-            return {
+            const user = {
               id: response.client.id.toString(),
               email: response.client.email,
               name: `${response.client.first_name} ${response.client.last_name}`,
-              first_name: response.client.first_name,
-              last_name: response.client.last_name,
+              firstName: response.client.first_name,
+              lastName: response.client.last_name,
               accessToken: response.token,
-              user: response.client,
+              reference: response.client.reference,
+              // user: {
+              //   id: response.client.id.toString(),
+              //   email: response.client.email,
+              //   name: `${response.client.first_name} ${response.client.last_name}`,
+              //   firstName: response.client.first_name,
+              //   lastName: response.client.last_name,
+              //   reference: response.client.reference,
+              // },
             };
+
+            return user;
           }
 
           return null;

@@ -50,8 +50,8 @@ export const register = async (
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.log({ errorText });
-      console.log(response);
+      // console.log({ errorText });
+      // console.log(response);
 
       if (errorText || response.status === 422) {
         const error = {

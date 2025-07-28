@@ -1,18 +1,19 @@
 import NextAuth from "next-auth";
-import { getUserProfile, User } from "./data/user";
+import { getUserProfile } from "./data/user";
 import authConfig from "./auth.config";
+// import { CustomUser } from "./next-auth";
+import { JWT } from "next-auth/jwt";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   callbacks: {
     async jwt({ token, user }) {
       // If user is signing in, add the access token to the JWT
 
-      console.log({ tokenUser: user });
       if (user) {
-        console.log({ user });
-        token.accessToken = (user as any).accessToken;
-        token.user = (user as any).user;
-        console.log({ token });
+        // console.log({ user });
+        token.accessToken = user.accessToken;
+        token.user = user;
+        // console.log({ token });
       }
 
       // Check if token is still valid by making a test request
@@ -24,6 +25,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             // Update user data from the me endpoint
             const userData = response;
             token.user = {
+              ...token.user,
               id: userData.client.id.toString(),
               email: userData.client.email,
               name: `${userData.client.first_name} ${userData.client.last_name}`,
@@ -41,20 +43,27 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             }
           }
 
-          throw error
+          throw error;
         }
       }
+
+      // console.log({ tokenUser: user });
+      // console.log({ token });
       return token;
     },
     async session({ session, token }) {
       // Add the access token and user data to the session
-      console.log("Session");
-      console.log({ session });
-      console.log({ sessionToken: token });
+
       if (token.accessToken) {
-        (session as any).accessToken = token.accessToken;
-        (session as any).user = token.user;
+        session.accessToken = token.accessToken as string;
+        session.user = {
+          ...session.user,
+          ...(token.user as JWT["user"]),
+        };
       }
+
+      // console.log({ sessionSion: session });
+      // console.log({ sessionToken: token });
 
       return session;
     },
@@ -70,18 +79,18 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 });
 
 // Helper function to get the current user from session
-export async function getCurrentUser(): Promise<User | null> {
-  const session = await auth();
+// export async function getCurrentUser(): Promise<User | null> {
+//   const session = await auth();
 
-  if (!session?.accessToken) {
-    return null;
-  }
+//   if (!session?.accessToken) {
+//     return null;
+//   }
 
-  try {
-    const response = await getUserProfile((session as any).accessToken);
-    return response.client;
-  } catch (error) {
-    console.error("Failed to get current user:", error);
-    return null;
-  }
-}
+//   try {
+//     const response = await getUserProfile((session as any).accessToken);
+//     return response.client;
+//   } catch (error) {
+//     console.error("Failed to get current user:", error);
+//     return null;
+//   }
+// }

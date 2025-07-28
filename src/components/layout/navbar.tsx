@@ -194,6 +194,11 @@ export default function NavBar({
         }`}
       >
         <div className="pt-20 px-6 h-full flex flex-col">
+          {/* Mobile User Auth - Added at the top */}
+          <div className="pb-6 border-b border-gray-200 mb-6">
+            <NavbarUserAuth />
+          </div>
+
           {/* Mobile Navigation Links */}
           <nav className="flex-1">
             <div className="space-y-1">

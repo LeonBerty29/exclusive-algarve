@@ -24,7 +24,7 @@ export default function ProductImageCarousel({
   const [isPaused, setIsPaused] = useState(false);
   const carouselRef = useRef(null);
   const currentRef = useRef(0);
-  console.log("Rendering <ProductImageCarousel/>");
+  // console.log("Rendering <ProductImageCarousel/>");
 
   useEffect(() => {
     if (!api) return;

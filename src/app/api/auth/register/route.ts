@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 export async function POST(request: NextRequest) {
   try {
     const body: RegisterRequest = await request.json();
-    
+
     // Validate required fields
     if (!body.email || !body.password || !body.first_name || !body.last_name) {
       return NextResponse.json(
@@ -22,13 +22,14 @@ export async function POST(request: NextRequest) {
     }
 
     const response = await registerUser(body);
-    
+
     return NextResponse.json(response, { status: 201 });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Registration error:", error);
-    return NextResponse.json(
-      { message: error.message || "Registration failed" },
-      { status: 400 }
-    );
+
+    const errorMessage =
+      error instanceof Error ? error.message : "Registration failed";
+
+    return NextResponse.json({ message: errorMessage }, { status: 400 });
   }
 }

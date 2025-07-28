@@ -21,10 +21,9 @@ import { Button } from "../ui/button";
 // import { login } from "@/actions/login";
 import { FormError } from "./form-error";
 import { FormSuccess } from "./form-success";
-import { AuthError } from "next-auth";
 // import { signIn } from "@/auth";
+import { login } from "@/actions/login";
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
-import { signIn } from "next-auth/react";
 // import { toast } from "sonner";
 
 export const LoginForm = ({
@@ -50,41 +49,19 @@ export const LoginForm = ({
     setSuccess("");
 
     startTransition(() => {
-      // login(values, callbackUrl).then((data) => {
-      //   setError(data?.error);
-      //   setSuccess(data?.success);
-      // });
+      login(
+        values
+        //  callbackUrl
+      ).then((data) => {
+        setError(data?.error);
+        setSuccess(data?.success);
 
-      try {
-        signIn("credentials", {
-          email: values.email,
-          password: values.password,
-          redirectTo: callbackUrl || DEFAULT_LOGIN_REDIRECT,
-        });
-
-        // return { success: "Login successful!" };
-        setSuccess("Login successful!");
-      } catch (error) {
-        if (error instanceof AuthError) {
-          switch (error.type) {
-            case "CredentialsSignin":
-              // return { error: "Invalid credentials" };
-              setError("Invalid credentials");
-            default:
-              // return {
-              //   error:
-              //     "Something went wrong. Please check your internet connection and try again",
-              // };
-              setError(
-                "Something went wrong. Please check your internet connection and try again"
-              );
-          }
+        if (data?.success) {
+          const link = document.createElement("a");
+          link.href = callbackUrl || DEFAULT_LOGIN_REDIRECT;
+          link.click();
         }
-
-        console.log(error);
-
-        throw error;
-      }
+      });
     });
   };
 

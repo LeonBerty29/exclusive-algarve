@@ -107,7 +107,7 @@ export const RegisterForm = ({
 
             console.log(error);
 
-            throw error;
+            // throw error;
           }
         }
       });

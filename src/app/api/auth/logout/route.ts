@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { logoutUser } from "@/data/user";
 
-export async function POST(request: NextRequest) {
+export async function POST() {
   try {
     const session = await auth();
 
@@ -13,14 +13,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    await logoutUser((session as any).accessToken);
+    await logoutUser(session.accessToken);
 
     return NextResponse.json({ message: "Successfully logged out" });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Logout error:", error);
-    return NextResponse.json(
-      { message: error.message || "Logout failed" },
-      { status: 400 }
-    );
+
+    const errorMessage =
+      error instanceof Error ? error.message : "Logout failed";
+
+    return NextResponse.json({ message: errorMessage }, { status: 400 });
   }
 }

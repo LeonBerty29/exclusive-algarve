@@ -14,10 +14,10 @@ const page = async () => {
 
   const userProfileResponse = await getUserProfile(accessToken);
   const userProfile = userProfileResponse.client;
-  console.log({ session });
+  // console.log({ session });
 
-  console.log({ userProfile });
-  console.log("Session In page", session);
+  // console.log({ userProfile });
+  // console.log("Session In page", session);
 
   return (
     <ProtectedRoute>
