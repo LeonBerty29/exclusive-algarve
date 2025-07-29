@@ -149,7 +149,7 @@ const ScrollableTabs = ({ property }: ScrollableTabsProps) => {
           {/* Tab contents */}
           <TabsContent
             value={"desc"}
-            className="mt-4 p-4 border rounded-md px-8"
+            className="mt-4 p-4 border rounded-md px-2 md:px-8"
           >
             <div className="min-h-32 p-4 space-y-6">
               {/* <PropertyInfo property={property} /> */}
@@ -158,7 +158,7 @@ const ScrollableTabs = ({ property }: ScrollableTabsProps) => {
           </TabsContent>
           <TabsContent
             value={"features"}
-            className="mt-4 p-4 border rounded-md px-8"
+            className="mt-4 p-4 border rounded-md px-2 md:px-8"
           >
             <div className="min-h-32 p-4">
               {/* <PropertyInfo property={property} /> */}
@@ -170,7 +170,7 @@ const ScrollableTabs = ({ property }: ScrollableTabsProps) => {
 
           <TabsContent
             value={"fplan"}
-            className="mt-4 p-4 border rounded-md px-8"
+            className="mt-4 p-4 border rounded-md px-2 md:px-8"
           >
             <div className="p-4">
               {/* <PropertyInfo property={property} /> */}
@@ -183,7 +183,7 @@ const ScrollableTabs = ({ property }: ScrollableTabsProps) => {
 
           <TabsContent
             value={"location"}
-            className="mt-4 p-4 border rounded-md px-8"
+            className="mt-4 p-4 border rounded-md px-2 md:px-8"
           >
             <div className="min-h-32 p-4">
               {/* <PropertyInfo property={property} /> */}

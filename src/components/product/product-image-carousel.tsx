@@ -47,7 +47,7 @@ export default function ProductImageCarousel({
             <CarouselItem key={`${item}--${index}`} className="p-0">
               <div className="relative w-full h-full">
                 {/* Image layer */}
-                <div className="relative w-full aspect-square md:aspect-video overflow-hidden">
+                <div className="relative w-full aspect-4/3 md:aspect-video overflow-hidden">
                   <Image
                     src={getProxiedImageUrl(item)}
                     alt="Image of our property"

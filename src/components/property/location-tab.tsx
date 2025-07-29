@@ -4,8 +4,8 @@ import { TbBeach } from "react-icons/tb";
 import { IoRestaurantOutline } from "react-icons/io5";
 import { IoGolfOutline } from "react-icons/io5";
 import { PiAirplaneLight } from "react-icons/pi";
-import { HomeMap } from "./location-map";
 import { DrivingDistance } from "@/types/property";
+import { GoogleMap } from "../shared/google-maps";
 
 export const LocationTab = ({
   latitude,
@@ -56,7 +56,7 @@ export const LocationTab = ({
 
   return (
     <div>
-      <HomeMap locationValue={[latitude, longitude]} />
+      <GoogleMap longitude={longitude} latitude={latitude} />
 
       <div className="pt-4">
         <p className="text-sm text-primary font-semibold mb-5">
