@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -17,95 +17,74 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import { UserProfileSchema } from "@/schema";
+import { updateProfile } from "@/actions/update-profile";
 
-// Zod schema for form validation
-const userProfileSchema = z.object({
-  firstName: z
-    .string()
-    .min(1, "First name is required")
-    .min(2, "First name must be at least 2 characters")
-    .max(50, "First name must be less than 50 characters"),
-  lastName: z
-    .string()
-    .min(1, "Last name is required")
-    .min(2, "Last name must be at least 2 characters")
-    .max(50, "Last name must be less than 50 characters"),
-  phoneNumber: z
-    .string()
-    .min(1, "Phone number is required")
-    .regex(/^[\+]?[1-9][\d]{0,15}$/, "Please enter a valid phone number"),
-});
+type ErrorType = {
+  message: string;
+  first_name?: string;
+  last_name?: string;
+};
 
-type UserProfileFormValues = z.infer<typeof userProfileSchema>;
+type UserProfileFormValues = z.infer<typeof UserProfileSchema>;
 
 interface UserProfileFormProps {
   initialData: {
     firstName?: string;
     lastName?: string;
-    phoneNumber?: string | null; // Allow null here
+    phoneNumber?: string | null;
   } | null;
   accessToken: string | undefined;
-  onSuccess?: () => void; // Added missing prop
-  onCancel?: () => void; // Added missing prop
+  onSuccess?: () => void;
+  onCancel?: () => void;
 }
 
 export function UserProfileForm({
   initialData,
-  //   accessToken,
   onSuccess,
   onCancel,
 }: UserProfileFormProps) {
-  const [isLoading, setIsLoading] = useState(false);
-
   const form = useForm<UserProfileFormValues>({
-    resolver: zodResolver(userProfileSchema),
+    resolver: zodResolver(UserProfileSchema),
     defaultValues: {
-      firstName: initialData?.firstName || "",
-      lastName: initialData?.lastName || "",
-      phoneNumber: initialData?.phoneNumber || "", // Handle null by converting to empty string
+      first_name: initialData?.firstName || "",
+      last_name: initialData?.lastName || "",
+      phone_number: initialData?.phoneNumber || "",
     },
   });
 
-  async function onSubmit(data: UserProfileFormValues) {
-    try {
-      setIsLoading(true);
+  const [error, setError] = useState<ErrorType | undefined>({
+    message: "",
+    first_name: "",
+    last_name: "",
+  });
 
-      // API call to update user profile
-      //   const response = await fetch("/api/user/profile", {
-      //     method: "PUT",
-      //     headers: {
-      //       "Content-Type": "application/json",
-      //       Authorization: `Bearer ${accessToken}`,
-      //     },
-      //     body: JSON.stringify(data),
-      //   });
+  const [isPending, startTransition] = useTransition();
 
-      //   if (!response.ok) {
-      //     throw new Error("Failed to update profile");
-      //   }
+  const onSubmit = (values: z.infer<typeof UserProfileSchema>) => {
+    setError({
+      message: "",
+      first_name: "",
+      last_name: "",
+    });
 
-      //   const result = await response.json();
+    startTransition(() => {
+      updateProfile(values).then((data) => {
+        if (data.success) {
+          toast.success("Profile updated", {
+            description: "Your profile has been successfully updated.",
+          });
+        }
 
-      // Using sonner toast
-
-      console.log({ data });
-      toast.success("Profile updated", {
-        description: "Your profile has been successfully updated.",
+        if (data.error?.message) {
+          toast.error(data.error.message);
+        }
+        setError(data.error);
       });
 
-      // Call onSuccess callback if provided
       onSuccess?.();
-    } catch (error) {
-      console.error("Error updating profile:", error);
-
-      // Using sonner toast for error
-      toast.error("Error", {
-        description: "Failed to update profile. Please try again.",
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  }
+    });
+  };
 
   return (
     <Form {...form}>
@@ -113,7 +92,7 @@ export function UserProfileForm({
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
           <FormField
             control={form.control}
-            name="firstName"
+            name="first_name"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>First Name</FormLabel>
@@ -121,20 +100,25 @@ export function UserProfileForm({
                   <Input
                     placeholder="Enter your first name"
                     {...field}
-                    disabled={isLoading}
+                    disabled={isPending}
                   />
                 </FormControl>
                 <FormDescription className="sr-only">
                   This is your public display first name.
                 </FormDescription>
                 <FormMessage />
+                {error?.first_name && (
+                  <p className="text-sm font-medium text-destructive">
+                    {error.first_name}
+                  </p>
+                )}
               </FormItem>
             )}
           />
 
           <FormField
             control={form.control}
-            name="lastName"
+            name="last_name"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Last Name</FormLabel>
@@ -142,13 +126,18 @@ export function UserProfileForm({
                   <Input
                     placeholder="Enter your last name"
                     {...field}
-                    disabled={isLoading}
+                    disabled={isPending}
                   />
                 </FormControl>
                 <FormDescription className="sr-only">
                   This is your public display last name.
                 </FormDescription>
                 <FormMessage />
+                {error?.last_name && (
+                  <p className="text-sm font-medium text-destructive">
+                    {error.last_name}
+                  </p>
+                )}
               </FormItem>
             )}
           />
@@ -156,7 +145,7 @@ export function UserProfileForm({
 
         <FormField
           control={form.control}
-          name="phoneNumber"
+          name="phone_number"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Phone Number</FormLabel>
@@ -164,7 +153,7 @@ export function UserProfileForm({
                 <Input
                   placeholder="Enter your phone number"
                   {...field}
-                  disabled={isLoading}
+                  disabled={isPending}
                   type="tel"
                 />
               </FormControl>
@@ -180,14 +169,18 @@ export function UserProfileForm({
           <Button
             type="button"
             variant="outline"
-            onClick={() => onCancel?.()} // Fixed: use onCancel prop instead of onSuccess
-            disabled={isLoading}
+            onClick={() => onCancel?.()}
+            disabled={isPending}
           >
             Cancel
           </Button>
-          <Button type="submit" disabled={isLoading} className="bg-primary text-white hover:bg-black transition-colors">
-            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            {isLoading ? "Saving..." : "Save Changes"}
+          <Button
+            type="submit"
+            disabled={isPending}
+            className="bg-primary text-white hover:bg-black transition-colors"
+          >
+            {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {isPending ? "Saving..." : "Save Changes"}
           </Button>
         </div>
       </form>

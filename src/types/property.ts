@@ -170,6 +170,7 @@ export interface PropertySearchParams {
   per_page?: number;
   page?: number;
   language?: "en" | "pt" | "de" | "fr" | "nl" | "ru" | "se";
+  premium?: boolean;
 }
 
 // Utility types for easier filtering and manipulation
