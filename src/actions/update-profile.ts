@@ -2,45 +2,42 @@
 
 import * as z from "zod";
 
-import { RegisterSchema } from "@/schema";
-// import { registerUser } from "@/data/user";
+import { UserProfileSchema } from "@/schema";
+import { auth } from "@/auth";
+import { revalidatePath } from "next/cache";
 
-export const register = async (
-  values: z.infer<typeof RegisterSchema>,
+export const updateProfile = async (
+  values: z.infer<typeof UserProfileSchema>
+  // callbackUrl: string | undefined
 ) => {
-  const validatedFields = RegisterSchema.safeParse(values);
+  const validatedFields = UserProfileSchema.safeParse(values);
 
   if (!validatedFields.success) {
     return {
       error: {
         message: "Invalid fields!",
-        password: "",
-        email: "",
         first_name: "",
         last_name: "",
-        password_confirmation: "",
       },
     };
   }
 
-  const { email, password, first_name, last_name, password_confirmation } =
-    validatedFields.data;
-  const newsletter = false;
+  const session = await auth();
+  const accessToken = session?.accessToken;
+
+    const { first_name, last_name } = validatedFields.data;
 
   try {
-    const endpoint = `/user/register`;
+    const endpoint = `/user/update`;
     const config: RequestInit = {
-      method: "POST",
+      method: "PUT",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
       },
       body: JSON.stringify({
-        email,
-        password,
-        first_name,
-        last_name,
-        password_confirmation,
-        newsletter,
+        first_name: first_name,
+        last_name: last_name,
       }),
     };
 
@@ -56,23 +53,16 @@ export const register = async (
       if (errorText || response.status === 422) {
         const error = {
           message: "There was an error while creating the user",
-          password: "",
-          email: "",
           first_name: "",
           last_name: "",
-          password_confirmation: "",
         };
+
+        // console.log({ errorText });
 
         const responseErros = JSON.parse(errorText);
         const errorObject = responseErros.errors;
 
-        if (errorObject.password) {
-          error.password = errorObject.password[0];
-        }
-
-        if (errorObject.email) {
-          error.email = errorObject.email[0];
-        }
+        // console.log(errorObject);
 
         if (errorObject.first_name) {
           error.first_name = errorObject.first_name[0];
@@ -82,8 +72,8 @@ export const register = async (
           error.last_name = errorObject.last_name[0];
         }
 
-        if (errorObject.password_confirmation) {
-          error.password_confirmation = errorObject.password_confirmation[0];
+        if (responseErros.message) {
+          error.message = responseErros.message;
         }
 
         return {
@@ -104,16 +94,12 @@ export const register = async (
     if (!user) {
       return {
         error: {
-          message: "There was an error while creating the user",
-          password: "",
-          email: "",
+          message: "There was an error while Updating profile",
           first_name: "",
           last_name: "",
-          password_confirmation: "",
         },
       };
     }
-    
   } catch (error) {
     console.log(error);
     // console.log({error})
@@ -128,17 +114,16 @@ export const register = async (
     return {
       error: {
         message:
-          "An error occcured while creating the user. Please check your internet Connection and try again",
-        password: "",
-        email: "",
+          "An error occcured while Updating your profile. Please check your internet Connection and try again",
         first_name: "",
         last_name: "",
-        password_confirmation: "",
       },
     };
   }
 
   /* TODO: send verification token email */
 
-  return { success: "User created!" };
+  revalidatePath("/settings");
+
+  return { success: "Profile Updated" };
 };

@@ -36,14 +36,14 @@ export function UserProfileDisplay({
   const handleFormSuccess = () => {
     setIsDialogOpen(false);
     // Optionally trigger a page refresh or update local state
-    window.location.reload();
+    // window.location.reload();
   };
 
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between w-full">
         <div>
-          <CardTitle className="text-3xl tracking-tight">
+          <CardTitle className="text-3xl text-primary tracking-tight">
             Profile Information
           </CardTitle>
           <p className="text-sm text-muted-foreground">
