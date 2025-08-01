@@ -5,9 +5,7 @@ import Image from "next/image";
 import { Property } from "@/types/property";
 import { useRouter } from "next/navigation";
 
-const HouseView = ({ properties }: { properties: Property[] }) => {
-  const propertyIndex = Math.floor(Math.random() * properties.length);
-  const property = properties[propertyIndex];
+const HouseView = ({ property }: { property: Property }) => {
 
   const router = useRouter();
   return (

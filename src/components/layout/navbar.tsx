@@ -102,7 +102,7 @@ export default function NavBar({
                     ? "/images/eav-logo-dark.svg"
                     : "/images/eav-logo.png"
                 }
-                alt="Logo"
+                alt="Exclusive Algarve Villas Logo"
                 width={70}
                 height={50}
                 className="object-contain"
