@@ -7,7 +7,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import RegionSelect from "@/components/search/region-select";
-import { PriceSlider } from "@/components/search/price-slider";
+import { PriceSlider } from "@/components/search/price-slider-2";
 import { PropertyTypes } from "@/components/property/property-types";
 import StatusTags from "./status-tags";
 import { SearchInput } from "./search-input";

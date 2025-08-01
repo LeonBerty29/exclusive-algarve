@@ -63,7 +63,9 @@ async function ListFeaturesProperties() {
 async function ListHouseView() {
   const response = await getFeaturedProperties({ premium: true });
   const properties = response.data;
-  return <HouseView properties={properties} />;
+  const propertyIndex = Math.floor(Math.random() * properties.length);
+    const property = properties[propertyIndex];
+  return <HouseView property={property} />;
 }
 
 function FeaturedPropertiesLoading() {

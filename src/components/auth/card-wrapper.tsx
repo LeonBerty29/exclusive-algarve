@@ -23,23 +23,23 @@ export const CardWrapper = ({
 }: CardWrapperProps) => {
 
   return (
-    <Card className="w-[400px] shadow-md">
+    <Card className="min-w-[90%] sm:min-w-[400px] md:w-lg shadow-md px-6 py-10 md:px-12">
       <CardHeader>
         <Header label={headerLabel} />
       </CardHeader>
-      <CardContent>
+      <CardContent className="px-0">
         {children}
       </CardContent>
 
       {
         showSocial && (
-          <CardFooter>
+          <CardFooter className="px-0">
             <Social />
           </CardFooter>
         )
       }
 
-      <CardFooter>
+      <CardFooter className="px-0">
         <BackButton href={backButtonHref} label={backButtonLabel} />
       </CardFooter>
     </Card>

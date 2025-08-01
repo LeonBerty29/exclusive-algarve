@@ -5,10 +5,10 @@ import { Button } from "../ui/button"
 
 export const Social = () => {
   return (
-    <div className="flex items-center w-full gap-x-2">
+    <div className="flex items-center w-full gap-x-4">
       <Button
         size="lg"
-        className="w-1/2"
+        className="flex-1"
         variant="outline"
         onClick={() => { }}
       >
@@ -16,7 +16,7 @@ export const Social = () => {
       </Button>
       <Button
         size="lg"
-        className="w-1/2"
+        className="flex-1"
         variant="outline"
         onClick={() => { }}
       >

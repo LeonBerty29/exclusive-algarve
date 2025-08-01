@@ -36,7 +36,7 @@ const SimilarProperties = async ({
             VIEW ALL PROPERTIES
           </Button>
         </div>
-        <CarouselContent className="-ml-1">
+        <CarouselContent className="-ml-1 flex-1">
           {properties.map((property, index) => (
             <CarouselItem
               key={index}
