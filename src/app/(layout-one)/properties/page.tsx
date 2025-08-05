@@ -7,7 +7,6 @@ import {
   getPropertiesWithAllPaginated,
 } from "@/data/properties";
 import { PropertySearchParams } from "@/types/property";
-import Link from "next/link";
 import { Suspense } from "react";
 import { PROPERTIES_PER_PAGE } from "@/config/constants";
 import {
@@ -15,6 +14,9 @@ import {
   PropertiesGridSkeleton,
   SearchHeaderSkeleton,
 } from "@/components/property/loading-states";
+import { auth } from "@/auth";
+import { redirect } from "next/navigation";
+import { getFavorites } from "@/data/favourites";
 
 // interface PropertiesPageProps {
 //   searchParams: PropertySearchParams;
@@ -143,6 +145,16 @@ async function PropertieList({
 }: {
   apiParams: PropertySearchParams;
 }) {
+  const session = await auth();
+  const token = session?.accessToken;
+  console.log({ token });
+
+  if (!token || !session) {
+    return redirect("/login");
+  }
+
+  const favoritesResponse = await getFavorites(token);
+  const favorites = favoritesResponse.favorite_properties;
   const propertiesResponse = await getPropertiesWithAllPaginated(
     apiParams,
     PROPERTIES_PER_PAGE
@@ -150,13 +162,11 @@ async function PropertieList({
 
   const properties = propertiesResponse.data;
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
       {properties.length > 0 ? (
         properties.map((property) => (
           <div key={property.id} className="">
-            <Link href={`/properties/${property.id}`} className="block">
-              <ProductCard property={property} />
-            </Link>
+            <ProductCard property={property} favorites={favorites} />
           </div>
         ))
       ) : (

@@ -1,29 +1,29 @@
-// import { cn } from "@/lib/utils";
 import { PiCarLight } from "react-icons/pi";
 import { MdOutlineShower } from "react-icons/md";
-// import { Play } from 'lucide-react';
 import { IoMdPricetag } from "react-icons/io";
 import { MdOutlineLocalHotel } from "react-icons/md";
 import { Card, CardContent, CardHeader } from "../ui/card";
 import ProductImageCarousel from "./product-image-carousel";
 import { AddToFavoriteButton } from "../search/submit-buttons";
-// import { Button } from '../ui/button';
 import { Separator } from "../ui/separator";
 import { PriceFormat } from "../shared/price-format";
 import { Property } from "@/types/property";
+import Link from "next/link";
 import { DeleteFromFavoriteButton } from "./remove-favorite-button";
 import { auth } from "@/auth";
-import Link from "next/link";
 
 interface Props {
   property: Property;
   favorites?: number[];
 }
 
-export const ProductCard = async ({ property, favorites = [] }: Props) => {
+export const FavoriteProductCard = async ({
+  property,
+  favorites = [],
+}: Props) => {
+  // Extract image URLs from assets.images.gallery
   const session = await auth();
   const token = session?.accessToken;
-  // Extract image URLs from assets.images.gallery
   const imagePaths =
     property.assets?.images?.gallery?.map((img) => img.url) || [];
 
@@ -34,7 +34,6 @@ export const ProductCard = async ({ property, favorites = [] }: Props) => {
   const favorite = favorites.includes(property.id);
   const reference = property.reference;
   const exclusive = property.agency.name === "EAV";
-  // const tag = { slug: "rsv", name: "Reserved" }; // placeholder tag
   const grossArea = property.features.private_area;
   const plotSize = property.features.plot_size;
   const amenities = {
@@ -52,8 +51,8 @@ export const ProductCard = async ({ property, favorites = [] }: Props) => {
   const showPrice = property.show_price;
 
   return (
-    <Card className="flex flex-col gap-0 rounded-none p-0">
-      <CardHeader className="p-0 relative w-full flex flex-col">
+    <Card className="flex lg:!flex-row gap-0 rounded-none p-0">
+      <CardHeader className="w-full lg:w-[50%] xl:w-[44%]  p-0 relative flex flex-col">
         <ProductImageCarousel imagePaths={imagePaths} />
         <div className="z-10 absolute top-2 left-2 right-2 flex items-center justify-between gap-3">
           <>
@@ -94,7 +93,7 @@ export const ProductCard = async ({ property, favorites = [] }: Props) => {
           </div>
         )}
       </CardHeader>
-      <CardContent className="p-3 space-y-3">
+      <CardContent className="p-3 space-y-3 lg:flex-1 lg:p-6 lg:space-y-3 lg:flex lg:flex-col lg:justify-center">
         <Link href={`/properties/${property.id}`} className="block">
           <div className="flex justify-between align-center flex-wrap gap-y-2 gap-x-5">
             {showPrice ? (
@@ -119,7 +118,7 @@ export const ProductCard = async ({ property, favorites = [] }: Props) => {
 
           <Separator className="mt-2" />
 
-          <div className="flex flex-wrap lg:flex-nowrap justify-between gap-2">
+          <div className="flex flex-wrap lg:flex-nowrap justify-between gap-4">
             <div className="max-w-[47%]">
               <div>
                 <p className="text-sm font-light text-gray-400 mb-3">

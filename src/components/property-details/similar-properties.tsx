@@ -6,7 +6,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { Button } from "../ui/button";
-import { getSimilarProperties } from "@/data/property";
+import { getListOfProperties } from "@/data/property";
 import { ProductCard } from "../product/product-card";
 import Link from "next/link";
 
@@ -15,7 +15,7 @@ const SimilarProperties = async ({
 }: {
   similarPropertiesId: number[];
 }) => {
-  const propertiesResponse = await getSimilarProperties(similarPropertiesId);
+  const propertiesResponse = await getListOfProperties(similarPropertiesId);
   const properties = propertiesResponse.data;
 
   return (

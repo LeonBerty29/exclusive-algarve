@@ -4,7 +4,8 @@
   * @type {string[]}
 */
 export const privateRoutes = [
-    "/settings"
+    "/settings",
+    "/favorites"
   ]
   
   

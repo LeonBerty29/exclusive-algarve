@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import React, { useRef } from "react";
 import {
   Carousel,
   CarouselContent,
@@ -12,11 +12,13 @@ import Image from "next/image";
 import { getProxiedImageUrl } from "@/lib/utils";
 import Autoplay from "embla-carousel-autoplay";
 
-export default function ProductImageCarousel({
-  imagePaths,
-}: {
+interface ProductImageCarouselProps {
   imagePaths: string[];
-}) {
+}
+
+const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
+  imagePaths,
+}) => {
   // ref for the carousel container
   const carouselContainerRef = useRef<HTMLDivElement>(null);
 
@@ -28,7 +30,15 @@ export default function ProductImageCarousel({
   );
 
   const handleMouseLeave = () => {
-    plugin.current.play();
+    if (plugin.current) {
+      plugin.current.play();
+    }
+  };
+
+  const handleMouseEnter = () => {
+    if (plugin.current) {
+      plugin.current.stop();
+    }
   };
 
   return (
@@ -40,14 +50,14 @@ export default function ProductImageCarousel({
       >
         <CarouselContent
           className="ml-0"
-          onMouseEnter={plugin.current.stop}
+          onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
           {imagePaths?.slice(0, 4).map((item: string, index: number) => (
             <CarouselItem key={`${item}--${index}`} className="p-0">
               <div className="relative w-full h-full">
                 {/* Image layer */}
-                <div className="relative w-full aspect-4/3 md:aspect-video overflow-hidden">
+                <div className="relative w-full aspect-4/3 lg:aspect-video overflow-hidden">
                   <Image
                     src={getProxiedImageUrl(item)}
                     alt="Image of our property"
@@ -67,4 +77,6 @@ export default function ProductImageCarousel({
       </Carousel>
     </div>
   );
-}
+};
+
+export default ProductImageCarousel;

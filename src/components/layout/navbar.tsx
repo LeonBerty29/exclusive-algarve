@@ -227,19 +227,7 @@ export default function NavBar({
 
           {/* Mobile Action Buttons */}
           <div className="pb-8 space-y-4">
-            <Button
-              variant="outline"
-              size="lg"
-              className="w-full rounded-none border-gray-300 bg-transparent hover:bg-gray-50 text-sm font-light h-12"
-              asChild
-            >
-              <Link
-                href="/book-meeting"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                BOOK A MEETING
-              </Link>
-            </Button>
+            <BookMeeting />
             <Button
               size="lg"
               className="w-full rounded-none bg-black hover:bg-black/90 text-white text-sm font-light h-12"

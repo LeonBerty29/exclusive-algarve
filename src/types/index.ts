@@ -40,3 +40,7 @@ export interface StoryblokError extends Error {
     data?: unknown;
   };
 }
+
+export interface FavoritesResponse {
+  favorite_properties: number[];
+}
