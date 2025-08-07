@@ -1,62 +1,76 @@
 "use client";
+import { addToFavorite } from "@/actions/favorites";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Heart, Loader2 } from "lucide-react";
-import { useFormStatus } from "react-dom";
+import { usePathname } from "next/navigation";
+import { useActionState, useEffect } from "react";
+import { toast } from "sonner";
+import { DeleteFromFavoriteButton } from "../product/remove-favorite-button";
 
-export function AddToFavoriteButton({ className }: { className?: string }) {
-  const { pending } = useFormStatus();
+export function AddToFavoriteButton({
+  className,
+  propertyId,
+  reference,
+  isFavourite,
+}: {
+  className?: string;
+  propertyId: number;
+  reference: string;
+  isFavourite: boolean;
+}) {
+  const pathname = usePathname();
+  const [state, formAction, isPending] = useActionState(addToFavorite, {});
+
+  // Handle toast notifications based on state changes
+  useEffect(() => {
+    if (state.success) {
+      toast(`${reference} ${state.success}`);
+    }
+    if (state.error) {
+      toast(`Failed to add ${reference} to favorites: ${state.error}`);
+    }
+  }, [state.success, state.error, reference]);
 
   return (
     <>
-      {pending ? (
-        <Button
-          variant="outline"
-          size="icon"
-          disabled
-          className={cn("bg-primary-foreground p-2 h-6 w-6 rounded-full", className)}
-        >
-          <Loader2 className="w-4 h-4 animate-spin text-primary" />
-        </Button>
-      ) : (
-        <Button
-          variant="default"
-          className={cn(
-            "bg-white p-2 h-6 w-6 rounded-full hover:bg-gray-200",
-            className
-          )}
-        >
-          <Heart className="size-4 text-black" />
-        </Button>
+      {isFavourite && (
+        <DeleteFromFavoriteButton
+          propertyId={propertyId}
+          reference={reference}
+          className="size-8"
+        />
       )}
-    </>
-  );
-}
 
-export function DeleteFromFavoriteButton() {
-  const { pending } = useFormStatus();
+      {!isFavourite && (
+        <form action={formAction}>
+          <input type="hidden" name="propertyId" value={propertyId} />
+          <input type="hidden" name="pathName" value={pathname} />
 
-  return (
-    <>
-      {pending ? (
-        <Button
-          variant="outline"
-          disabled
-          className="bg-primary-foreground p-2"
-        >
-          <Loader2 className="w-4 h-4 animate-spin text-primary" />
-        </Button>
-      ) : (
-        <Button
-          variant="default"
-          className="bg-white p-2 h-6 w-6 rounded-full hover:bg-gray-200"
-        >
-          <Heart
-            className="!w-[14px] !h-[14px] text-[#E21C49]"
-            fill="#E21C49"
-            strokeWidth={1}
-          />
-        </Button>
+          {isPending ? (
+            <Button
+              variant="outline"
+              size="icon"
+              disabled
+              className={cn(
+                "bg-primary-foreground p-2 h-6 w-6 rounded-full",
+                className
+              )}
+            >
+              <Loader2 className="w-4 h-4 animate-spin text-primary" />
+            </Button>
+          ) : (
+            <Button
+              variant="default"
+              className={cn(
+                "bg-white p-2 h-6 w-6 rounded-full hover:bg-gray-200",
+                className
+              )}
+            >
+              <Heart className="size-4 text-black" />
+            </Button>
+          )}
+        </form>
       )}
     </>
   );

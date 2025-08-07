@@ -1,12 +1,15 @@
-import { Home, MapPin } from "lucide-react";
+import {
+  // Home,
+  MapPin,
+} from "lucide-react";
 import Image from "next/image";
 import React from "react";
-import { BiArea } from "react-icons/bi";
-import { FaBed } from "react-icons/fa";
-import { GiElectric } from "react-icons/gi";
+// import { BiArea } from "react-icons/bi";
+// import { FaBed } from "react-icons/fa";
+// import { GiElectric } from "react-icons/gi";
 import { IoGolfOutline, IoRestaurantOutline } from "react-icons/io5";
-import { LiaExpandArrowsAltSolid } from "react-icons/lia";
-import { MdAreaChart, MdBathtub, MdOutlineTimeline } from "react-icons/md";
+// import { LiaExpandArrowsAltSolid } from "react-icons/lia";
+// import { MdAreaChart, MdBathtub, MdOutlineTimeline } from "react-icons/md";
 import { PiAirplaneLight, PiCityThin } from "react-icons/pi";
 import { TbBeach } from "react-icons/tb";
 
@@ -30,15 +33,11 @@ const page = () => {
           priority
           fill
         />
-
-        <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 h-12 px-6 text-base font-semibold flex items-center justify-center bg-primary text-white">
-          EAV-3500
-        </div>
       </div>
 
-      <PropertyImages />
       {/* Property Type */}
-      <div className="flex flex-col items-center py-10 mb-8 bg-white text-black">
+      <div className="flex flex-col items-center pt-10 mb-12 bg-white text-black">
+        <p className="text-gray-900 text-lg">EAV-3500</p>
         <p className="font-semibold text-5xl text-center ">Modern Villa</p>
         <div className="flex items-center gap-2">
           <MapPin className="h-4 w-4" />
@@ -48,21 +47,18 @@ const page = () => {
         </div>
       </div>
 
-      <div className="flex items-center gap-6 justify-between">
-        <div className="space-y-2 w-[58%]">
-          <h1 className="font-semibold text-3xl">
-            Modern Villa near Gale beach and Salgados Golf for sale Algarve
-          </h1>
-          <p className="text-base text-gray-600">
-            This villa is composed of three levels. On the ground floor, from
-            the main entrance, the hall leads you to the living room and dining
-            area, towards the kitchen.
-          </p>
-        </div>
-
-        <div className="border border-gray-500 py-4 px-8 w-fit text-xl font-semibold">
+      <div className="space-y-4">
+        <h1 className="font-semibold text-3xl text-center">
+          Modern Villa near Gale beach and Salgados Golf for sale Algarve
+        </h1>
+        <div className="border border-gray-500 py-4 px-8 w-fit text-xl font-semibold mx-auto">
           <h2 className="text-primary text-2xl">€4,500,000</h2>
         </div>
+        <p className="text-base text-gray-600 text-center">
+          This villa is composed of three levels. On the ground floor, from the
+          main entrance, the hall leads you to the living room and dining area,
+          towards the kitchen.
+        </p>
       </div>
 
       <BrochurePropertyDetailsIcons />
@@ -89,106 +85,118 @@ function BrochurePropertyDetailsIcons() {
   const propertyType = "Modern Villa";
   return (
     <div className="mt-10">
-      <h3 className="font-medium text-2xl text-primary">Property Details</h3>
+      <h3 className="font-medium text-2xl text-primary text-center">Property Details</h3>
       <div className="items-center grid grid-cols-4 gap-8 mt-5 mb-14">
         {(bedrooms || bedrooms !== 0) && (
-          <div className="flex gap-3 items-center">
-            <div className="flex items-center gap-3 justify-center border border-gray-500 bg-gray-200 p-3">
+          <div className="flex gap-3 items-center justify-center">
+            {/* <div className="flex items-center gap-3 justify-center border border-gray-500 bg-gray-200 p-3">
               <FaBed className="h-6 w-6 text-gray-500" />
-            </div>
-            <div className="space-y-2">
-              <span className="font-semibold text-lg">{bedrooms}</span>
-              <p className="text-xs text-gray-700">Bedrooms</p>
+            </div> */}
+            <div className="space-y-2 flex justify-center align-center flex-col">
+              <span className="font-semibold text-lg text-center">
+                {bedrooms}
+              </span>
+              <p className="text-sm text-gray-700 text-center">Bedrooms</p>
             </div>
           </div>
         )}
 
         {(bathrooms || bathrooms !== 0) && (
-          <div className="flex gap-3 items-center">
-            <div className="flex items-center gap-3 justify-center border border-gray-500 bg-gray-200 p-3">
+          <div className="flex gap-3 items-center justify-center">
+            {/* <div className="flex items-center gap-3 justify-center border border-gray-500 bg-gray-200 p-3">
               <MdBathtub className="h-6 w-6 text-gray-500" />
-            </div>
-            <div className="space-y-2">
-              <span className="font-semibold text-lg">{bathrooms}</span>
-              <p className="text-xs text-gray-700">Bathrooms</p>
+            </div> */}
+            <div className="space-y-2 flex justify-center align-center flex-col">
+              <span className="font-semibold text-lg text-center">
+                {bathrooms}
+              </span>
+              <p className="text-sm text-gray-700 text-center">Bathrooms</p>
             </div>
           </div>
         )}
 
         {(construction_year || construction_year !== "0") && (
-          <div className="flex gap-3 items-center">
-            <div className="flex items-center gap-3 justify-center border border-gray-500 bg-gray-200 p-3">
+          <div className="flex gap-3 items-center justify-center">
+            {/* <div className="flex items-center gap-3 justify-center border border-gray-500 bg-gray-200 p-3">
               <MdOutlineTimeline className="h-6 w-6 text-gray-500" />
-            </div>
-            <div className="space-y-2">
-              <span className="font-semibold text-lg">{construction_year}</span>
-              <p className="text-xs text-gray-700">Built Year</p>
+            </div> */}
+            <div className="space-y-2 flex justify-center align-center flex-col">
+              <span className="font-semibold text-lg text-center">
+                {construction_year}
+              </span>
+              <p className="text-sm text-gray-700 text-center">Built Year</p>
             </div>
           </div>
         )}
 
         {(private_area || private_area !== 0) && (
-          <div className="flex gap-3 items-center">
-            <div className="flex items-center gap-3 justify-center border border-gray-500 bg-gray-200 p-3">
+          <div className="flex gap-3 items-center justify-center">
+            {/* <div className="flex items-center gap-3 justify-center border border-gray-500 bg-gray-200 p-3">
               <BiArea className="h-6 w-6 text-gray-500" />
-            </div>
-            <div className="space-y-2">
-              <span className="font-semibold text-lg">
+            </div> */}
+            <div className="space-y-2 flex justify-center align-center flex-col">
+              <span className="font-semibold text-lg text-center">
                 {private_area}m<sup>2</sup>
               </span>
-              <p className="text-xs text-gray-700">Private area</p>
+              <p className="text-sm text-gray-700 text-center">Private area</p>
             </div>
           </div>
         )}
 
         {(plot_size || plot_size !== 0) && (
-          <div className="flex gap-3 items-center">
-            <div className="flex items-center gap-3 justify-center border border-gray-500 bg-gray-200 p-3">
+          <div className="flex gap-3 items-center justify-center">
+            {/* <div className="flex items-center gap-3 justify-center border border-gray-500 bg-gray-200 p-3">
               <LiaExpandArrowsAltSolid className="h-6 w-6 text-gray-500" />
-            </div>
-            <div className="space-y-2">
-              <span className="font-semibold text-lg">
+            </div> */}
+            <div className="space-y-2 flex justify-center align-center flex-col">
+              <span className="font-semibold text-lg text-center">
                 {plot_size}m<sup>2</sup>
               </span>
-              <p className="text-xs text-gray-700">Plot size</p>
+              <p className="text-sm text-gray-700 text-center">Plot size</p>
             </div>
           </div>
         )}
 
         {(construction_area || construction_area !== 0) && (
-          <div className="flex gap-3 items-center">
-            <div className="flex items-center gap-3 justify-center border border-gray-500 bg-gray-200 p-3">
+          <div className="flex gap-3 items-center justify-center">
+            {/* <div className="flex items-center gap-3 justify-center border border-gray-500 bg-gray-200 p-3">
               <MdAreaChart className="h-6 w-6 text-gray-500" />
-            </div>
-            <div className="space-y-2">
-              <span className="font-semibold text-lg">
+            </div> */}
+            <div className="space-y-2 flex justify-center align-center flex-col">
+              <span className="font-semibold text-lg text-center">
                 {construction_area}m<sup>2</sup>
               </span>
-              <p className="text-xs text-gray-700">Construction area</p>
+              <p className="text-sm text-gray-700 text-center">
+                Construction area
+              </p>
             </div>
           </div>
         )}
 
         {energy_class && (
-          <div className="flex gap-3 items-center">
-            <div className="flex items-center gap-3 justify-center border border-gray-500 bg-gray-200 p-3">
+          <div className="flex gap-3 items-center justify-center">
+            {/* <div className="flex items-center gap-3 justify-center border border-gray-500 bg-gray-200 p-3">
               <GiElectric className="h-6 w-6 text-gray-500" />
-            </div>
-            <div className="space-y-2">
-              <span className="font-semibold text-lg">{energy_class}</span>
-              <p className="text-xs text-gray-700">Energy Class</p>
+            </div> */}
+            <div className="space-y-2 flex justify-center align-center flex-col">
+              <span className="font-semibold text-lg text-center">
+                {energy_class}
+              </span>
+              <p className="text-sm text-gray-700 text-center">Energy Class</p>
             </div>
           </div>
         )}
 
         {propertyType && (
-          <div className="flex gap-3 items-center">
-            <div className="flex items-center gap-3 justify-center border border-gray-500 bg-gray-200 p-3">
+          <div className="flex gap-3 items-center justify-center">
+            {/* <div className="flex items-center gap-3 justify-center border border-gray-500 bg-gray-200 p-3">
               <Home className="h-6 w-6 text-gray-500" />
-            </div>
-            <div className="space-y-2">
-              <span className="font-semibold text-lg">{propertyType}</span>
-              <p className="text-xs text-gray-700">Property Type</p>
+            </div> */}
+            <div className="space-y-2 flex justify-center align-center flex-col">
+              <span className="font-semibold text-lg text-center">
+                {propertyType}
+              </span>
+              <p className="text-sm text-gray-700 text-center">Property Type</p>
             </div>
           </div>
         )}

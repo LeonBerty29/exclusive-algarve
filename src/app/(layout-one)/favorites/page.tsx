@@ -9,14 +9,13 @@ import { redirect } from "next/navigation";
 import React, { Suspense } from "react";
 import { Heart, Search, ChevronLeft, ChevronRight } from "lucide-react";
 
-interface PageProps {
-  searchParams: {
-    page?: string;
-  };
-}
+type PageProps = {
+  searchParams?: Promise<{ [x: string]: string | string[] | undefined }>;
+};
 
-const page = ({ searchParams }: PageProps) => {
-  const currentPage = parseInt(searchParams.page || "1", 10);
+const page = async (props: PageProps) => {
+  const searchParams = await props.searchParams;
+  const currentPage = parseInt((searchParams?.page as string) || "1", 10);
 
   return (
     <div className="xl:container mx-auto px-6 md:px-12 lg:px-14 pt-24 pb-12">
@@ -205,8 +204,8 @@ async function ListFavourites({ currentPage }: { currentPage: number }) {
 
   const favoritesResponse = await getFavorites(token);
   const favorites = favoritesResponse.favorite_properties;
-  console.log(favoritesResponse);
-  console.log(favorites);
+  // console.log(favoritesResponse);
+  // console.log(favorites);
 
   if (favorites.length === 0) {
     return <EmptyFavoritesState />;

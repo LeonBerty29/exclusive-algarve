@@ -2,9 +2,9 @@
 import { Heart, Loader2 } from "lucide-react";
 import { Button } from "../ui/button";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-
+import { toast } from "sonner";
 
 interface FavoritesResponse {
   favorite_properties: number[];
@@ -12,45 +12,64 @@ interface FavoritesResponse {
 
 export function DeleteFromFavoriteButton({
   propertyId,
-  token,
-  className
+  reference,
+  className,
 }: {
   propertyId: number;
-  token: string | undefined;
-  className?: string
+  className?: string;
+  reference: string;
 }) {
   const [pending, setPending] = useState(false);
-  const router = useRouter();
+  const pathname = usePathname();
 
   const handleDeleteFavorite = async () => {
-    if (!token) {
-      console.error("No token provided");
-      return;
-    }
-
     setPending(true);
+
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/favorites/${propertyId}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await fetch(
+        `/api/favorites/${propertyId}?currentPath=${encodeURIComponent(
+          pathname
+        )}`, // This calls your Next.js API route
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to remove favorite");
+        // Try to get error message from response
+        let errorMessage = "Failed to remove favorite";
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.error || errorMessage;
+        } catch {
+          // If JSON parsing fails, use status text
+          errorMessage = `${response.status} ${response.statusText}`;
+        }
+        throw new Error(errorMessage);
       }
 
-      const result: FavoritesResponse = await response.json();
-      console.log("Removed from favourites", result);
+      // Handle 204 No Content (successful deletion)
+      if (response.status === 204) {
+        toast.success(`Successfully removed ${reference} from favorites`);
+        return;
+      }
 
-      // Optionally refresh the page or update state
-      router.refresh();
+      // For other successful responses with content
+      const contentType = response.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
+        const result: FavoritesResponse = await response.json();
+        console.log("Removed from favourites", result);
+        toast.success(`Successfully removed ${reference} from favorites`);
+      } else {
+        toast.success(`Successfully removed ${reference} from favorites`);
+      }
     } catch (error) {
       console.error("Error deleting favorite:", error);
       // You might want to show a toast notification here
+      toast.error(`Error deleting ${reference} from favorites`);
     } finally {
       setPending(false);
     }
@@ -62,14 +81,20 @@ export function DeleteFromFavoriteButton({
         <Button
           variant="outline"
           disabled
-          className={cn("bg-primary-foreground p-2 h-6 w-6 rounded-full", className)}
+          className={cn(
+            "bg-primary-foreground p-2 h-6 w-6 rounded-full",
+            className
+          )}
         >
           <Loader2 className="w-4 h-4 animate-spin text-primary" />
         </Button>
       ) : (
         <Button
           variant="default"
-          className={cn("bg-gray-200 p-2 h-6 w-6 rounded-full hover:bg-black", className)}
+          className={cn(
+            "bg-gray-200 p-2 h-6 w-6 rounded-full hover:bg-black",
+            className
+          )}
           onClick={handleDeleteFavorite}
         >
           <Heart

@@ -1,6 +1,5 @@
-import {
-  // Calendar,
-} from "lucide-react";
+import // Calendar,
+"lucide-react";
 import ScrollableTabs from "@/components/property/scrollable-tabs";
 import PropertyDetailsIcons from "@/components/property/property-details-icons";
 
@@ -27,9 +26,7 @@ import SimilarPropertiesSkeleton from "@/components/property/similar-properties-
 import PropertyDetailsPageLoading from "@/components/property/property-details-page-loading";
 import { getFavorites } from "@/data/favourites";
 import { auth } from "@/auth";
-import { DeleteFromFavoriteButton } from "@/components/product/remove-favorite-button";
 import { AddToFavoriteButton } from "@/components/search/submit-buttons";
-import { addToFavorite } from "@/actions/favorites";
 
 interface Props {
   params: Promise<{ propertyId: string }>;
@@ -181,19 +178,23 @@ const PageContent = async (props: Props) => {
           </Breadcrumb>
 
           <div className="flex gap-2 items-center">
-            {token &&
-              (isFavourite ? (
-                <DeleteFromFavoriteButton
+            {
+            // token &&
+            //   (isFavourite ? (
+            //     <DeleteFromFavoriteButton
+            //       propertyId={property.id}
+            //       reference={property.reference}  
+            //       className="size-8"
+            //     />
+            //   ) : (
+                <AddToFavoriteButton
+                  className="size-8 bg-hray-200"
                   propertyId={property.id}
-                  token={token}
-                  className="size-8"
+                  reference={property.reference}
+                  isFavourite={isFavourite}
                 />
-              ) : (
-                <form action={addToFavorite}>
-                  <input type="hidden" name="propertyId" value={property.id} />
-                  <AddToFavoriteButton className="size-8" />
-                </form>
-              ))}
+              // ))
+              }
             <ShareButton />
           </div>
         </div>

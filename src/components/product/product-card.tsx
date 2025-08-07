@@ -1,18 +1,13 @@
-// import { cn } from "@/lib/utils";
 import { PiCarLight } from "react-icons/pi";
 import { MdOutlineShower } from "react-icons/md";
-// import { Play } from 'lucide-react';
 import { IoMdPricetag } from "react-icons/io";
 import { MdOutlineLocalHotel } from "react-icons/md";
 import { Card, CardContent, CardHeader } from "../ui/card";
 import ProductImageCarousel from "./product-image-carousel";
 import { AddToFavoriteButton } from "../search/submit-buttons";
-// import { Button } from '../ui/button';
 import { Separator } from "../ui/separator";
 import { PriceFormat } from "../shared/price-format";
 import { Property } from "@/types/property";
-import { DeleteFromFavoriteButton } from "./remove-favorite-button";
-import { auth } from "@/auth";
 import Link from "next/link";
 
 interface Props {
@@ -21,8 +16,6 @@ interface Props {
 }
 
 export const ProductCard = async ({ property, favorites = [] }: Props) => {
-  const session = await auth();
-  const token = session?.accessToken;
   // Extract image URLs from assets.images.gallery
   const imagePaths =
     property.assets?.images?.gallery?.map((img) => img.url) || [];
@@ -73,18 +66,11 @@ export const ProductCard = async ({ property, favorites = [] }: Props) => {
                 </div>
               )} */}
             </div>
-
-            {favorite ? (
-              <DeleteFromFavoriteButton
-                propertyId={property.id}
-                token={token}
-              />
-            ) : (
-              <form>
-                <input type="hidden" name="propertyId" value={property.id} />
-                <AddToFavoriteButton />
-              </form>
-            )}
+            <AddToFavoriteButton
+              propertyId={property.id}
+              reference={property.reference}
+              isFavourite={favorite}
+            />
           </>
         </div>
 
@@ -94,8 +80,8 @@ export const ProductCard = async ({ property, favorites = [] }: Props) => {
           </div>
         )}
       </CardHeader>
-      <CardContent className="p-3 space-y-3">
-        <Link href={`/properties/${property.id}`} className="block">
+      <CardContent className="p-4">
+        <Link href={`/properties/${property.id}`} className="block space-y-3">
           <div className="flex justify-between align-center flex-wrap gap-y-2 gap-x-5">
             {showPrice ? (
               <PriceFormat

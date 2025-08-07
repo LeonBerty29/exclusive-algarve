@@ -9,8 +9,6 @@ import { Separator } from "../ui/separator";
 import { PriceFormat } from "../shared/price-format";
 import { Property } from "@/types/property";
 import Link from "next/link";
-import { DeleteFromFavoriteButton } from "./remove-favorite-button";
-import { auth } from "@/auth";
 
 interface Props {
   property: Property;
@@ -22,8 +20,6 @@ export const FavoriteProductCard = async ({
   favorites = [],
 }: Props) => {
   // Extract image URLs from assets.images.gallery
-  const session = await auth();
-  const token = session?.accessToken;
   const imagePaths =
     property.assets?.images?.gallery?.map((img) => img.url) || [];
 
@@ -73,17 +69,11 @@ export const FavoriteProductCard = async ({
               )} */}
             </div>
 
-            {favorite ? (
-              <DeleteFromFavoriteButton
-                propertyId={property.id}
-                token={token}
-              />
-            ) : (
-              <form>
-                <input type="hidden" name="propertyId" value={property.id} />
-                <AddToFavoriteButton />
-              </form>
-            )}
+            <AddToFavoriteButton
+              propertyId={property.id}
+              reference={property.reference}
+              isFavourite={favorite}
+            />
           </>
         </div>
 
@@ -93,8 +83,8 @@ export const FavoriteProductCard = async ({
           </div>
         )}
       </CardHeader>
-      <CardContent className="p-3 space-y-3 lg:flex-1 lg:p-6 lg:space-y-3 lg:flex lg:flex-col lg:justify-center">
-        <Link href={`/properties/${property.id}`} className="block">
+      <CardContent className="p-3 lg:flex-1 lg:p-6 lg:space-y-3 lg:flex lg:flex-col lg:justify-center">
+        <Link href={`/properties/${property.id}`} className="block space-y-3">
           <div className="flex justify-between align-center flex-wrap gap-y-2 gap-x-5">
             {showPrice ? (
               <PriceFormat
