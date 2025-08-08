@@ -1,7 +1,5 @@
 "use client";
-import React, { 
-  // ReactNode 
-} from "react";
+import React from "react"; // ReactNode
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Carousel,
@@ -165,11 +163,9 @@ export const PropertyFeatures = ({
         {additionalFeatures.length > 0 ? (
           <div className="w-full max-w-full">
             <Carousel
-              opts={
-                {
-                  align: "start",
-                }
-              }
+              opts={{
+                align: "start",
+              }}
               className="w-full"
             >
               <CarouselContent>
@@ -188,12 +184,25 @@ export const PropertyFeatures = ({
                             </p>
                             {additionalFeature.features.map(
                               (feature, index) => (
-                                <p
-                                  className="text-xs text-gray-600 capitalize"
-                                  key={index}
-                                >
-                                  {feature.feature_name}
-                                </p>
+                                <>
+                                  {feature.field_type === "bool" && (
+                                    <p
+                                      className="text-xs text-gray-600 capitalize"
+                                      key={index}
+                                    >
+                                      {feature.feature_name}
+                                    </p>
+                                  )}
+                                  {feature.field_type === "select" && (
+                                    <p
+                                      className="text-xs text-gray-600 capitalize"
+                                      key={index}
+                                    >
+                                      {feature.feature_name} -{" "}
+                                      {feature.field_value}
+                                    </p>
+                                  )}
+                                </>
                               )
                             )}
                           </div>
