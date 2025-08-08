@@ -7,6 +7,7 @@ import {
   Text,
   StyleSheet,
   Image,
+  Link,
 } from "@react-pdf/renderer";
 import PropertyWatermark from "./watermark";
 import { IconText } from "./icons";
@@ -14,11 +15,43 @@ import { PropertyData } from "./types";
 
 const styles = StyleSheet.create({
   page: {
-    paddingTop: 30,
+    paddingTop: 80, // Increased to make room for header
     paddingHorizontal: 40,
-    paddingBottom: 30,
+    paddingBottom: 60, // Increased to make room for footer
     fontSize: 10,
     backgroundColor: "#ffffff",
+  },
+  // Header styles - positioned absolutely at top
+  headerRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    position: "absolute",
+    top: 20,
+    left: 40,
+    right: 40,
+    height: 40, // Define explicit height for header
+    zIndex: 10, // Ensure header stays on top
+  },
+  logoContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  companyLogo: {
+    width: 55,
+    height: 30,
+    marginRight: 10,
+    objectFit: "contain",
+  },
+  emailLink: {
+    fontSize: 10,
+    color: "#059669",
+    textDecoration: "underline",
+  },
+  // Main content area - properly spaced from header
+  contentContainer: {
+    flex: 1,
+    minHeight: 0, // Allow content to shrink if needed
   },
   header: {
     fontSize: 16,
@@ -26,16 +59,17 @@ const styles = StyleSheet.create({
     color: "#1f2937",
     textAlign: "center",
     marginBottom: 20,
+    marginTop: 0, // Remove top margin since we have page padding
   },
   mainImage: {
     width: "100%",
-    height: 400,
+    height: 350, // Reduced height to fit better
     marginBottom: 20,
     objectFit: "cover",
   },
   mainImagePlaceholder: {
     width: "100%",
-    height: 400,
+    height: 350, // Reduced height to fit better
     backgroundColor: "#f3f4f6",
     justifyContent: "center",
     alignItems: "center",
@@ -69,11 +103,11 @@ const styles = StyleSheet.create({
     color: "#1f2937",
   },
   priceContainer: {
-    borderWidth: 2,
+    borderBottomWidth: 1,
     borderColor: "#1f2937",
-    padding: 15,
+    padding: 7,
     alignSelf: "center",
-    marginBottom: 20,
+    marginBottom: 15,
   },
   price: {
     fontSize: 18,
@@ -85,7 +119,7 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: "#6b7280",
     textAlign: "center",
-    marginBottom: 25,
+    marginBottom: 20, // Reduced margin
     lineHeight: 1.4,
   },
   sectionTitle: {
@@ -94,7 +128,7 @@ const styles = StyleSheet.create({
     color: "#059669",
     textAlign: "center",
     marginBottom: 15,
-    marginTop: 20,
+    marginTop: 15, // Reduced margin
   },
   sectionTitleLeft: {
     fontSize: 14,
@@ -102,10 +136,10 @@ const styles = StyleSheet.create({
     color: "#059669",
     textAlign: "left",
     marginBottom: 15,
-    marginTop: 20,
+    marginTop: 15, // Reduced margin
   },
   featuresContainer: {
-    marginBottom: 25,
+    marginBottom: 20, // Reduced margin
   },
   featureRow: {
     flexDirection: "row",
@@ -129,17 +163,17 @@ const styles = StyleSheet.create({
   },
   gridImage: {
     width: "100%",
-    height: 300,
-    marginBottom: 15,
+    height: 250, // Reduced height
+    marginBottom: 10, // Reduced margin
     objectFit: "cover",
   },
   gridImagePlaceholder: {
     width: "100%",
-    height: 300,
+    height: 250, // Reduced height
     backgroundColor: "#f9fafb",
     justifyContent: "center",
     alignItems: "center",
-    marginBottom: 15,
+    marginBottom: 10, // Reduced margin
     border: "1px solid #e5e7eb",
   },
   imagesRow: {
@@ -147,29 +181,26 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginBottom: 10,
   },
-
-  // Updated driving distances styles for horizontal flow:
+  // Driving distances styles for horizontal flow
   drivingContainer: {
-    flexDirection: "row", // horizontal layout
+    flexDirection: "row",
     justifyContent: "flex-start",
-    flexWrap: "wrap", // allow wrapping to next line if overflow
-    marginBottom: 25,
+    flexWrap: "wrap",
+    marginBottom: 20, // Reduced margin
   },
-
   drivingItem: {
-    flexDirection: "row", // icon and text inline
+    flexDirection: "row",
     alignItems: "center",
-    marginRight: 15, // horizontal spacing between items
-    marginBottom: 8, // vertical spacing if wrapped
-    minWidth: 100, // optional: minimum width to help spacing
+    marginRight: 15,
+    marginBottom: 8,
+    minWidth: 100,
   },
-
   fullDescription: {
     fontSize: 12,
     lineHeight: 1.5,
     color: "#374151",
     textAlign: "justify",
-    marginBottom: 25,
+    marginBottom: 20, // Reduced margin
   },
   contactSection: {
     backgroundColor: "#f9fafb",
@@ -207,6 +238,7 @@ const styles = StyleSheet.create({
   },
   notice: {
     marginTop: 15,
+    marginBottom: 0, // Remove bottom margin since we have page padding
   },
   noticeText: {
     fontSize: 10,
@@ -218,13 +250,24 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#059669",
   },
-  pageNumber: {
+  // Footer styles - positioned absolutely at bottom
+  footer: {
     position: "absolute",
-    fontSize: 10,
     bottom: 20,
-    left: 0,
-    right: 0,
-    textAlign: "center",
+    left: 40,
+    right: 40,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    height: 20, // Define explicit height for footer
+    zIndex: 10, // Ensure footer stays on top
+  },
+  websiteText: {
+    fontSize: 10,
+    color: "#9ca3af",
+  },
+  pageNumber: {
+    fontSize: 10,
     color: "#9ca3af",
   },
 });
@@ -232,193 +275,241 @@ const styles = StyleSheet.create({
 type PropertyBrochureDocumentProps = {
   propertyData: PropertyData;
   title?: string;
+  companyLogo?: string; // Optional company logo URL
 };
 
 export const PropertyBrochureDocument: React.FC<
   PropertyBrochureDocumentProps
-> = ({ propertyData, title }) => {
+> = ({ propertyData, title, companyLogo }) => {
   return (
     <Document
       author="Exclusive Algarve Villas"
       title={title || `Property Brochure - ${propertyData.title}`}
     >
       <Page size="A4" style={styles.page}>
-        {/* Header */}
-        <Text style={styles.header}>EXCLUSIVE ALGARVE VILLAS</Text>
-
-        {/* Main Property Image */}
-        {propertyData.mainImage ? (
-          <Image src={propertyData.mainImage} style={styles.mainImage} />
-        ) : (
-          <View style={styles.mainImagePlaceholder}>
-            <Text style={{ fontSize: 12, color: "#6b7280" }}>
-              [Main Property Image]
-            </Text>
+        {/* Header Row with Logo and Email - Fixed at top */}
+        <View style={styles.headerRow} fixed>
+          <View style={styles.logoContainer}>
+            {companyLogo ? (
+              <Image src={companyLogo} style={styles.companyLogo} />
+            ) : (
+              <View
+                style={[
+                  styles.companyLogo,
+                  {
+                    backgroundColor: "#f3f4f6",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    border: "1px solid #e5e7eb",
+                  },
+                ]}
+              >
+                <Text style={{ fontSize: 8, color: "#9ca3af" }}>LOGO</Text>
+              </View>
+            )}
           </View>
-        )}
-
-        {/* Property Information */}
-        <Text style={styles.propertyId}>{propertyData.id}</Text>
-        <Text style={styles.propertyTitle}>{propertyData.title}</Text>
-        <Text style={styles.location}>{propertyData.location}</Text>
-
-        {/* Description and Price */}
-        <Text style={styles.description}>
-          Modern Villa near Gale beach and Salgados Golf for sale Algarve
-        </Text>
-
-        <View style={styles.priceContainer}>
-          <Text style={styles.price}>{propertyData.price}</Text>
+          <Link
+            src="mailto:info@exclusive-algarve.com"
+            style={styles.emailLink}
+          >
+            info@exclusive-algarve.com
+          </Link>
         </View>
 
-        <Text style={styles.shortDescription}>
-          {propertyData.shortDescription}
-        </Text>
+        {/* Main Content Container - Properly spaced */}
+        <View style={styles.contentContainer}>
+          {/* Header */}
+          {/* <Text style={styles.header}>EXCLUSIVE ALGARVE VILLAS</Text> */}
 
-        {/* Property Features */}
-        <Text style={styles.sectionTitle}>Property Details</Text>
-        <View style={styles.featuresContainer}>
-          <View style={styles.featureRow}>
-            <View style={styles.featureItem}>
-              <Text style={styles.featureValue}>{propertyData.bedrooms}</Text>
-              <Text style={styles.featureLabel}>Bedrooms</Text>
-            </View>
-            <View style={styles.featureItem}>
-              <Text style={styles.featureValue}>{propertyData.bathrooms}</Text>
-              <Text style={styles.featureLabel}>Bathrooms</Text>
-            </View>
-            <View style={styles.featureItem}>
-              <Text style={styles.featureValue}>
-                {propertyData.constructionYear}
+          {/* Main Property Image */}
+          {propertyData.mainImage ? (
+            <Image src={propertyData.mainImage} style={styles.mainImage} />
+          ) : (
+            <View style={styles.mainImagePlaceholder}>
+              <Text style={{ fontSize: 12, color: "#6b7280" }}>
+                [Main Property Image]
               </Text>
-              <Text style={styles.featureLabel}>Built Year</Text>
             </View>
-            <View style={styles.featureItem}>
-              <Text style={styles.featureValue}>
-                {propertyData.privateArea}m²
-              </Text>
-              <Text style={styles.featureLabel}>Private area</Text>
+          )}
+
+          {/* Property Information */}
+          <Text style={styles.propertyId}>{propertyData.id}</Text>
+          <Text style={styles.propertyTitle}>{propertyData.title}</Text>
+          <Text style={styles.location}>{propertyData.location}</Text>
+
+          {/* Description and Price */}
+          <Text style={styles.description}>
+            Modern Villa near Gale beach and Salgados Golf for sale Algarve
+          </Text>
+
+          <View style={styles.priceContainer}>
+            <Text style={styles.price}>{propertyData.price}</Text>
+          </View>
+
+          {/* Property Features - with optional chaining */}
+          <View style={styles.featuresContainer}>
+            <View style={styles.featureRow}>
+              <View style={styles.featureItem}>
+                <Text style={styles.featureValue}>
+                  {propertyData.bedrooms || "N/A"}
+                </Text>
+                <Text style={styles.featureLabel}>Bedrooms</Text>
+              </View>
+              <View style={styles.featureItem}>
+                <Text style={styles.featureValue}>
+                  {propertyData.bathrooms || "N/A"}
+                </Text>
+                <Text style={styles.featureLabel}>Bathrooms</Text>
+              </View>
+              <View style={styles.featureItem}>
+                <Text style={styles.featureValue}>
+                  {propertyData.constructionYear || "N/A"}
+                </Text>
+                <Text style={styles.featureLabel}>Built Year</Text>
+              </View>
+              <View style={styles.featureItem}>
+                <Text style={styles.featureValue}>
+                  {propertyData.privateArea
+                    ? `${propertyData.privateArea}m²`
+                    : "N/A"}
+                </Text>
+                <Text style={styles.featureLabel}>Private area</Text>
+              </View>
+            </View>
+            <View style={styles.featureRow}>
+              <View style={styles.featureItem}>
+                <Text style={styles.featureValue}>
+                  {propertyData.plotSize ? `${propertyData.plotSize}m²` : "N/A"}
+                </Text>
+                <Text style={styles.featureLabel}>Plot size</Text>
+              </View>
+              <View style={styles.featureItem}>
+                <Text style={styles.featureValue}>
+                  {propertyData.constructionArea
+                    ? `${propertyData.constructionArea}m²`
+                    : "N/A"}
+                </Text>
+                <Text style={styles.featureLabel}>Construction area</Text>
+              </View>
+              <View style={styles.featureItem}>
+                <Text style={styles.featureValue}>
+                  {propertyData.energyClass || "N/A"}
+                </Text>
+                <Text style={styles.featureLabel}>Energy Class</Text>
+              </View>
+              <View style={styles.featureItem}>
+                <Text style={styles.featureValue}>
+                  {propertyData.propertyType || "N/A"}
+                </Text>
+                <Text style={styles.featureLabel}>Property Type</Text>
+              </View>
             </View>
           </View>
-          <View style={styles.featureRow}>
-            <View style={styles.featureItem}>
-              <Text style={styles.featureValue}>{propertyData.plotSize}m²</Text>
-              <Text style={styles.featureLabel}>Plot size</Text>
-            </View>
-            <View style={styles.featureItem}>
-              <Text style={styles.featureValue}>
-                {propertyData.constructionArea}m²
-              </Text>
-              <Text style={styles.featureLabel}>Construction area</Text>
-            </View>
-            <View style={styles.featureItem}>
-              <Text style={styles.featureValue}>
-                {propertyData.energyClass}
-              </Text>
-              <Text style={styles.featureLabel}>Energy Class</Text>
-            </View>
-            <View style={styles.featureItem}>
-              <Text style={styles.featureValue}>
-                {propertyData.propertyType}
-              </Text>
-              <Text style={styles.featureLabel}>Property Type</Text>
-            </View>
-          </View>
-        </View>
 
-        {/* Additional Property Images */}
-        {propertyData.additionalImages &&
-        propertyData.additionalImages.length > 0
-          ? propertyData.additionalImages.map((imageUrl, index) => (
-              <Image key={index} src={imageUrl} style={styles.gridImage} />
-            ))
-          : Array.from({ length: 6 }).map((_, index) => (
-              <View key={index} style={styles.gridImagePlaceholder}>
-                <Text style={{ fontSize: 8, color: "#9ca3af" }}>
-                  [Image {index + 1}]
+          {/* Additional Property Images */}
+          {propertyData.additionalImages &&
+          propertyData.additionalImages.length > 0
+            ? propertyData.additionalImages.map((imageUrl, index) => (
+                <Image key={index} src={imageUrl} style={styles.gridImage} />
+              ))
+            : Array.from({ length: 6 }).map((_, index) => (
+                <View key={index} style={styles.gridImagePlaceholder}>
+                  <Text style={{ fontSize: 8, color: "#9ca3af" }}>
+                    [Image {index + 1}]
+                  </Text>
+                </View>
+              ))}
+
+          {/* Driving Distances (Horizontal Layout) - with optional chaining */}
+          {propertyData.drivingDistances &&
+            propertyData.drivingDistances.length > 0 && (
+              <>
+                <Text style={styles.sectionTitleLeft}>DRIVING DISTANCE</Text>
+                <View style={styles.drivingContainer}>
+                  {propertyData.drivingDistances.map((item, index) => (
+                    <View key={index} style={styles.drivingItem}>
+                      <IconText
+                        icon={item?.icon as any}
+                        text={`${item?.destination || "Unknown"} - ${
+                          item?.minutes || "N/A"
+                        } min`}
+                        size={11}
+                      />
+                    </View>
+                  ))}
+                </View>
+              </>
+            )}
+
+          {/* Property Description */}
+          <Text style={styles.fullDescription}>
+            {propertyData.fullDescription}
+          </Text>
+
+          {/* Contact Information */}
+          <View style={styles.contactSection}>
+            <View style={styles.contactRow}>
+              <View style={styles.contactOffice}>
+                <Text style={styles.officeTitle}>LAGOA</Text>
+                <Text style={styles.officeAddress}>
+                  Rua Ernesto Cabrita, Edificio Vales L/A{"\n"}
+                  8400-387 Lagoa - Algarve
                 </Text>
               </View>
-            ))}
-
-        {/* Driving Distances (Horizontal Layout) */}
-        <Text style={styles.sectionTitleLeft}>DRIVING DISTANCE</Text>
-        <View style={styles.drivingContainer}>
-          {propertyData.drivingDistances.map((item, index) => (
-            <View key={index} style={styles.drivingItem}>
-              <IconText
-                icon={item.icon as any}
-                text={`${item.destination} - ${item.minutes} min`}
-                size={11}
-              />
+              <View style={styles.contactOffice}>
+                <Text style={styles.officeTitle}>VILAMOURA</Text>
+                <Text style={styles.officeAddress}>
+                  Avenida Tivoli, B, Bloco 3, R/C Esq{"\n"}
+                  8125-465 Vilamoura - Algarve
+                </Text>
+              </View>
+              <View style={styles.contactOffice}>
+                <Text style={styles.officeTitle}>LAGOS</Text>
+                <Text style={styles.officeAddress}>
+                  R. Dr. José Francisco Tello Queiroz, L 3, R{"\n"}
+                  Loja R, 8600-707 Lagos
+                </Text>
+              </View>
             </View>
-          ))}
-        </View>
-
-        {/* Property Description */}
-        <Text style={styles.fullDescription}>
-          {propertyData.fullDescription}
-        </Text>
-
-        {/* Contact Information */}
-        <View style={styles.contactSection}>
-          <View style={styles.contactRow}>
-            <View style={styles.contactOffice}>
-              <Text style={styles.officeTitle}>LAGOA</Text>
-              <Text style={styles.officeAddress}>
-                Rua Ernesto Cabrita, Edificio Vales L/A{"\n"}
-                8400-387 Lagoa - Algarve
-              </Text>
-            </View>
-            <View style={styles.contactOffice}>
-              <Text style={styles.officeTitle}>VILAMOURA</Text>
-              <Text style={styles.officeAddress}>
-                Avenida Tivoli, B, Bloco 3, R/C Esq{"\n"}
-                8125-465 Vilamoura - Algarve
-              </Text>
-            </View>
-            <View style={styles.contactOffice}>
-              <Text style={styles.officeTitle}>LAGOS</Text>
-              <Text style={styles.officeAddress}>
-                R. Dr. José Francisco Tello Queiroz, L 3, R{"\n"}
-                Loja R, 8600-707 Lagos
+            <View style={styles.contactInfo}>
+              <Text style={styles.contactItem}>Tel.: +351 282 353 019</Text>
+              <Text style={styles.contactItem}>Mobile: +351 918 024 082</Text>
+              <Text style={styles.contactItem}>
+                Email: info@exclusive-algarve.com
               </Text>
             </View>
           </View>
-          <View style={styles.contactInfo}>
-            <Text style={styles.contactItem}>Tel.: +351 282 353 019</Text>
-            <Text style={styles.contactItem}>Mobile: +351 918 024 082</Text>
-            <Text style={styles.contactItem}>
-              Email: info@exclusive-algarve.com
+
+          {/* Important Notice */}
+          <View style={styles.notice}>
+            <Text style={styles.noticeText}>
+              <Text style={styles.noticeTitle}>Important notice: </Text>
+              These particulars are not an offer or contract, nor part of one.
+              The photographs show only certain parts of the property as they
+              appeared at the time they were taken. Areas, measurements, layout
+              plans and distances are for guidance only and should not be relied
+              upon as a statement of fact. All property details have been
+              provided by the seller and should not be considered factually
+              accurate about the property, its condition or value. Exclusive
+              Living Mediacao Imobiliaria Lda. holds no responsibility to the
+              accuracy of the information and will not be held liable for any
+              errors on any representation on the property.
             </Text>
           </View>
-        </View>
-
-        {/* Important Notice */}
-        <View style={styles.notice}>
-          <Text style={styles.noticeText}>
-            <Text style={styles.noticeTitle}>Important notice: </Text>
-            These particulars are not an offer or contract, nor part of one. The
-            photographs show only certain parts of the property as they appeared
-            at the time they were taken. Areas, measurements, layout plans and
-            distances are for guidance only and should not be relied upon as a
-            statement of fact. All property details have been provided by the
-            seller and should not be considered factually accurate about the
-            property, its condition or value. Exclusive Living Mediacao
-            Imobiliaria Lda. holds no responsibility to the accuracy of the
-            information and will not be held liable for any errors on any
-            representation on the property.
-          </Text>
         </View>
 
         <PropertyWatermark />
 
-        <Text
-          fixed
-          render={({ pageNumber, totalPages }) =>
-            `${pageNumber} / ${totalPages}`
-          }
-          style={styles.pageNumber}
-        />
+        {/* Footer with Website and Page Number - Fixed at bottom */}
+        <View style={styles.footer} fixed>
+          <Text style={styles.websiteText}>exclusivealgarvevillas.com</Text>
+          <Text
+            style={styles.pageNumber}
+            render={({ pageNumber, totalPages }) =>
+              `${pageNumber} / ${totalPages}`
+            }
+          />
+        </View>
       </Page>
     </Document>
   );

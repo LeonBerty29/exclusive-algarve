@@ -2,14 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth"; // Adjust this import path to match your auth setup
 import { revalidatePath } from "next/cache";
 
-// This will appear in your development server terminal
-console.log("API Route loaded - DELETE favorites handler");
-
-// Add this to see if the route is being found at all
-export async function GET() {
-  console.log("GET method called - route is accessible");
-  return NextResponse.json({ message: "Route is working" });
-}
 
 export async function DELETE(
   request: NextRequest,
@@ -19,7 +11,6 @@ export async function DELETE(
     // Get the current path from query parameters
     const requestUrl = new URL(request.url);
     const currentPath = requestUrl.searchParams.get("currentPath");
-    console.log({ currentPathRoute: currentPath });
 
     // Get the session and token directly in the route handler
     const session = await auth();
@@ -27,7 +18,6 @@ export async function DELETE(
     const token = session?.accessToken;
 
     if (!token) {
-      console.log("ERROR: No access token in session");
       return NextResponse.json(
         { error: "Authentication required - no access token" },
         { status: 401 }
@@ -38,10 +28,8 @@ export async function DELETE(
     const { propertyId: propertyIdParam } = await params;
 
     const propertyId = parseInt(propertyIdParam);
-    console.log("Parsed property ID:", propertyId);
 
     if (isNaN(propertyId)) {
-      console.log("Invalid property ID - not a number");
       return NextResponse.json(
         { error: "Invalid property ID" },
         { status: 400 }
@@ -53,7 +41,6 @@ export async function DELETE(
       process.env.API_BASE_URL || process.env.NEXT_PUBLIC_API_BASE_URL;
 
     if (!apiBaseUrl) {
-      console.log("ERROR: No API base URL configured");
       return NextResponse.json(
         { error: "API configuration error" },
         { status: 500 }
@@ -112,7 +99,6 @@ export async function DELETE(
     // For other successful responses, try to parse JSON
     let result = null;
     const contentType = response.headers.get("content-type");
-    console.log("Response content type:", contentType);
 
     if (contentType && contentType.includes("application/json")) {
       try {
