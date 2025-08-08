@@ -6,16 +6,15 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { Button } from "../ui/button";
-import { getSimilarProperties } from "@/data/property";
+import { getListOfProperties } from "@/data/property";
 import { ProductCard } from "../product/product-card";
-import Link from "next/link";
 
 const SimilarProperties = async ({
   similarPropertiesId,
 }: {
   similarPropertiesId: number[];
 }) => {
-  const propertiesResponse = await getSimilarProperties(similarPropertiesId);
+  const propertiesResponse = await getListOfProperties(similarPropertiesId);
   const properties = propertiesResponse.data;
 
   return (
@@ -42,9 +41,9 @@ const SimilarProperties = async ({
               key={index}
               className="pl-1 sm:basis-1/2 xl:basis-1/3"
             >
-              <Link href={`/properties/${property.id}`} className="p-1 py-0 max-w-[400px] mx-auto sm:max-w-full block">
+              <div className="p-1 py-0 max-w-[400px] mx-auto sm:max-w-full block">
                 <ProductCard property={property} />
-              </Link>
+              </div>
             </CarouselItem>
           ))}
         </CarouselContent>

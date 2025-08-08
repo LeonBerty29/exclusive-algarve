@@ -89,7 +89,7 @@ export const getProperty = async (
   return apiRequest<PropertyResponse>(endpoint);
 };
 
-export const getSimilarProperties = async (
+export const getListOfProperties = async (
   propertyIds: number[]
 ): Promise<PropertyListResponse> => {
   

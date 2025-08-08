@@ -28,7 +28,8 @@ import {
 
 // Type definitions
 interface FormData {
-  name: string;
+  firstName: string;
+  lastName: string;
   phone: string;
   email: string;
   date: Date | null;
@@ -38,7 +39,8 @@ interface FormData {
 }
 
 interface FormErrors {
-  name?: string;
+  firstName?: string;
+  lastName?: string;
   phone?: string;
   email?: string;
   date?: string;
@@ -51,7 +53,8 @@ type FormField = keyof FormData;
 
 const BookVisitDialog: React.FC = () => {
   const [formData, setFormData] = useState<FormData>({
-    name: "",
+    firstName: "",
+    lastName: "",
     phone: "",
     email: "",
     date: null,
@@ -96,8 +99,12 @@ const BookVisitDialog: React.FC = () => {
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
 
-    if (!formData.name.trim()) {
-      newErrors.name = "Name is required";
+    if (!formData.firstName.trim()) {
+      newErrors.firstName = "First name is required";
+    }
+
+    if (!formData.lastName.trim()) {
+      newErrors.lastName = "Last name is required";
     }
 
     if (!formData.phone.trim()) {
@@ -133,7 +140,8 @@ const BookVisitDialog: React.FC = () => {
 
       // Reset form
       setFormData({
-        name: "",
+        firstName: "",
+        lastName: "",
         phone: "",
         email: "",
         date: null,
@@ -176,169 +184,194 @@ const BookVisitDialog: React.FC = () => {
     <div className="">
       <Dialog>
         <DialogTrigger asChild>
-          <Button className="bg-primary text-lg px-8 py-6 text-white hover:bg-black/85 transition-all">
+          <Button className="bg-primary text-lg px-8 py-5 text-white hover:bg-black/85 transition-all">
             Book Visit
           </Button>
         </DialogTrigger>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader className="pb-5">
+        <DialogContent className="sm:max-w-md max-h-[90vh] flex flex-col">
+          <DialogHeader className="pb-5 flex-shrink-0">
             <DialogTitle>Book Visit</DialogTitle>
           </DialogHeader>
 
-          <div className="space-y-4">
-            <div>
-              <Label className="sr-only" htmlFor="name">
-                Name
-              </Label>
-              <Input
-                id="name"
-                type="text"
-                value={formData.name}
-                onChange={handleInputChangeEvent("name")}
-                placeholder="Name*"
-                className={errors.name ? "border-red-500" : ""}
-              />
-              {errors.name && (
-                <p className="text-red-500 text-sm mt-1">{errors.name}</p>
-              )}
-            </div>
-
-            <div>
-              <Label className="sr-only" htmlFor="phone">
-                Phone
-              </Label>
-              <Input
-                id="phone"
-                type="tel"
-                value={formData.phone}
-                onChange={handleInputChangeEvent("phone")}
-                placeholder="Phone*"
-                className={errors.phone ? "border-red-500" : ""}
-              />
-              {errors.phone && (
-                <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
-              )}
-            </div>
-
-            <div>
-              <Label className="sr-only" htmlFor="email">
-                Email
-              </Label>
-              <Input
-                id="email"
-                type="email"
-                value={formData.email}
-                onChange={handleInputChangeEvent("email")}
-                placeholder="Email*"
-                className={errors.email ? "border-red-500" : ""}
-              />
-              {errors.email && (
-                <p className="text-red-500 text-sm mt-1">{errors.email}</p>
-              )}
-            </div>
-
-            <div>
-              <Label className="sr-only">Date *</Label>
-              <Popover
-                open={isDatePopoverOpen}
-                onOpenChange={setIsDatePopoverOpen}
-              >
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className={`w-full justify-start text-left font-normal ${
-                      !formData.date ? "text-gray-500" : ""
-                    } ${errors.date ? "border-red-500" : ""}`}
-                  >
-                    <Calendar className="mr-2 h-4 w-4" />
-                    {formData.date
-                      ? formData.date.toLocaleDateString()
-                      : "Pick a date*"}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <CalendarComponent
-                    mode="single"
-                    selected={formData.date || undefined}
-                    onSelect={handleDateSelect}
-                    disabled={isDateDisabled}
-                    initialFocus
+          <div className="flex-1 overflow-y-auto">
+            <div className="space-y-4 pr-2">
+              <div className="grid grid-cols-1 gap-4">
+                <div>
+                  <Label className="sr-only" htmlFor="firstName">
+                    First Name
+                  </Label>
+                  <Input
+                    id="firstName"
+                    type="text"
+                    value={formData.firstName}
+                    onChange={handleInputChangeEvent("firstName")}
+                    placeholder="First Name*"
+                    className={errors.firstName ? "border-red-500" : ""}
                   />
-                </PopoverContent>
-              </Popover>
-              {errors.date && (
-                <p className="text-red-500 text-sm mt-1">{errors.date}</p>
-              )}
-            </div>
+                  {errors.firstName && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.firstName}
+                    </p>
+                  )}
+                </div>
 
-            <div>
-              <Label className="sr-only" htmlFor="time">
-                Time *
-              </Label>
-              <Select value={formData.time} onValueChange={handleTimeSelect}>
-                <SelectTrigger
-                  className={errors.time ? "border-red-500 w-full" : "w-full"}
+                <div>
+                  <Label className="sr-only" htmlFor="lastName">
+                    Last Name
+                  </Label>
+                  <Input
+                    id="lastName"
+                    type="text"
+                    value={formData.lastName}
+                    onChange={handleInputChangeEvent("lastName")}
+                    placeholder="Last Name*"
+                    className={errors.lastName ? "border-red-500" : ""}
+                  />
+                  {errors.lastName && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.lastName}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              <div>
+                <Label className="sr-only" htmlFor="phone">
+                  Phone
+                </Label>
+                <Input
+                  id="phone"
+                  type="tel"
+                  value={formData.phone}
+                  onChange={handleInputChangeEvent("phone")}
+                  placeholder="Phone*"
+                  className={errors.phone ? "border-red-500" : ""}
+                />
+                {errors.phone && (
+                  <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
+                )}
+              </div>
+
+              <div>
+                <Label className="sr-only" htmlFor="email">
+                  Email
+                </Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={handleInputChangeEvent("email")}
+                  placeholder="Email*"
+                  className={errors.email ? "border-red-500" : ""}
+                />
+                {errors.email && (
+                  <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+                )}
+              </div>
+
+              <div>
+                <Label className="sr-only">Date *</Label>
+                <Popover
+                  open={isDatePopoverOpen}
+                  onOpenChange={setIsDatePopoverOpen}
                 >
-                  <SelectValue placeholder="Select a time*" />
-                </SelectTrigger>
-                <SelectContent>
-                  {timeSlots.map((time: string) => (
-                    <SelectItem key={time} value={time}>
-                      {time}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {errors.time && (
-                <p className="text-red-500 text-sm mt-1">{errors.time}</p>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className={`w-full justify-start text-left font-normal ${
+                        !formData.date ? "text-gray-500" : ""
+                      } ${errors.date ? "border-red-500" : ""}`}
+                    >
+                      <Calendar className="mr-2 h-4 w-4" />
+                      {formData.date
+                        ? formData.date.toLocaleDateString()
+                        : "Pick a date*"}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <CalendarComponent
+                      mode="single"
+                      selected={formData.date || undefined}
+                      onSelect={handleDateSelect}
+                      disabled={isDateDisabled}
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
+                {errors.date && (
+                  <p className="text-red-500 text-sm mt-1">{errors.date}</p>
+                )}
+              </div>
+
+              <div>
+                <Label className="sr-only" htmlFor="time">
+                  Time *
+                </Label>
+                <Select value={formData.time} onValueChange={handleTimeSelect}>
+                  <SelectTrigger
+                    className={errors.time ? "border-red-500 w-full" : "w-full"}
+                  >
+                    <SelectValue placeholder="Select a time*" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {timeSlots.map((time: string) => (
+                      <SelectItem key={time} value={time}>
+                        {time}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {errors.time && (
+                  <p className="text-red-500 text-sm mt-1">{errors.time}</p>
+                )}
+              </div>
+
+              <div>
+                <Label className="sr-only" htmlFor="message">
+                  Message
+                </Label>
+                <Textarea
+                  id="message"
+                  value={formData.message}
+                  onChange={handleInputChangeEvent("message")}
+                  placeholder="Enter any additional information"
+                  rows={3}
+                />
+              </div>
+
+              <div className="flex space-x-2">
+                <input
+                  type="checkbox"
+                  id="acceptTerms"
+                  checked={formData.acceptTerms}
+                  onChange={handleCheckboxChange}
+                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                />
+                <Label
+                  htmlFor="acceptTerms"
+                  className="text-sm text-gray-500 font-light"
+                >
+                  By requesting information you are authorizing Exclusive
+                  Algarve Villas to use your data in order to contact you.
+                </Label>
+              </div>
+              {errors.acceptTerms && (
+                <p className="text-red-500 text-sm">{errors.acceptTerms}</p>
               )}
             </div>
+          </div>
 
-            <div>
-              <Label className="sr-only" htmlFor="message">
-                Message
-              </Label>
-              <Textarea
-                id="message"
-                value={formData.message}
-                onChange={handleInputChangeEvent("message")}
-                placeholder="Enter any additional information"
-                rows={3}
-              />
-            </div>
-
-            <div className="flex space-x-2">
-              <input
-                type="checkbox"
-                id="acceptTerms"
-                checked={formData.acceptTerms}
-                onChange={handleCheckboxChange}
-                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-              />
-              <Label
-                htmlFor="acceptTerms"
-                className="text-sm text-gray-500 font-light"
-              >
-                By requesting information you are authorizing Exclusive Algarve
-                Villas to use your data in order to contact you.
-              </Label>
-            </div>
-            {errors.acceptTerms && (
-              <p className="text-red-500 text-sm">{errors.acceptTerms}</p>
-            )}
-
-            <div className="flex justify-end space-x-2 pt-4">
-              <DialogTrigger asChild>
-                <Button variant="outline">Cancel</Button>
-              </DialogTrigger>
-              <Button
-                className="bg-primary text-white hover:bg-black/85 transition-all"
-                type="button"
-                onClick={handleSubmit}
-              >
-                Submit
-              </Button>
-            </div>
+          <div className="flex justify-end space-x-2 pt-4 flex-shrink-0 border-t mt-4">
+            <DialogTrigger asChild>
+              <Button variant="outline">Cancel</Button>
+            </DialogTrigger>
+            <Button
+              className="bg-primary text-white hover:bg-black/85 transition-all"
+              type="button"
+              onClick={handleSubmit}
+            >
+              Submit
+            </Button>
           </div>
         </DialogContent>
       </Dialog>

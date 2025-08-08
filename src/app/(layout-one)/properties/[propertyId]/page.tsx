@@ -1,8 +1,5 @@
-import { Button } from "@/components/ui/button";
-import {
-  // Calendar,
-  HeartIcon,
-} from "lucide-react";
+import // Calendar,
+"lucide-react";
 import ScrollableTabs from "@/components/property/scrollable-tabs";
 import PropertyDetailsIcons from "@/components/property/property-details-icons";
 
@@ -27,6 +24,9 @@ import { getProperty } from "@/data/property";
 import { Suspense } from "react";
 import SimilarPropertiesSkeleton from "@/components/property/similar-properties-skeleton";
 import PropertyDetailsPageLoading from "@/components/property/property-details-page-loading";
+import { getFavorites } from "@/data/favourites";
+import { auth } from "@/auth";
+import { AddToFavoriteButton } from "@/components/search/submit-buttons";
 
 interface Props {
   params: Promise<{ propertyId: string }>;
@@ -143,8 +143,17 @@ export default function page(props: Props) {
 
 const PageContent = async (props: Props) => {
   const { propertyId } = await props.params;
+  const session = await auth();
+  const token = session?.accessToken;
+  const favoritesResponse = token
+    ? await getFavorites(token)
+    : {
+        favorite_properties: [],
+      };
+  const favorites = favoritesResponse.favorite_properties;
   const response = await getProperty(propertyId);
   const property = response.data;
+  const isFavourite = favorites.includes(property.id);
 
   return (
     <>
@@ -169,12 +178,23 @@ const PageContent = async (props: Props) => {
           </Breadcrumb>
 
           <div className="flex gap-2 items-center">
-            <Button
-              variant="default"
-              className="size-8 rounded-full bg-gray-200 hover:bg-red-100 transition-all text-black"
-            >
-              <HeartIcon className="size-4" />
-            </Button>
+            {
+            // token &&
+            //   (isFavourite ? (
+            //     <DeleteFromFavoriteButton
+            //       propertyId={property.id}
+            //       reference={property.reference}  
+            //       className="size-8"
+            //     />
+            //   ) : (
+                <AddToFavoriteButton
+                  className="size-8 bg-hray-200"
+                  propertyId={property.id}
+                  reference={property.reference}
+                  isFavourite={isFavourite}
+                />
+              // ))
+              }
             <ShareButton />
           </div>
         </div>

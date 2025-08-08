@@ -35,7 +35,7 @@ const NavbarUserAuth = () => {
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
-              <Link href="/favourites" className="cursor-pointer">
+              <Link href="/favorites" className="cursor-pointer">
                 Favourites
               </Link>
             </DropdownMenuItem>

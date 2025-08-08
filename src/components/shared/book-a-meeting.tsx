@@ -28,7 +28,8 @@ import {
 
 // Type definitions
 interface FormData {
-  name: string;
+  firstName: string;
+  lastName: string;
   phone: string;
   email: string;
   date: Date | null;
@@ -41,7 +42,8 @@ interface FormData {
 }
 
 interface FormErrors {
-  name?: string;
+  firstName?: string;
+  lastName?: string;
   phone?: string;
   email?: string;
   date?: string;
@@ -56,7 +58,8 @@ type FormField = keyof FormData;
 
 export const BookMeeting: React.FC = () => {
   const [formData, setFormData] = useState<FormData>({
-    name: "",
+    firstName: "",
+    lastName: "",
     phone: "",
     email: "",
     date: null,
@@ -112,8 +115,12 @@ export const BookMeeting: React.FC = () => {
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
 
-    if (!formData.name.trim()) {
-      newErrors.name = "Name is required";
+    if (!formData.firstName.trim()) {
+      newErrors.firstName = "First name is required";
+    }
+
+    if (!formData.lastName.trim()) {
+      newErrors.lastName = "Last name is required";
     }
 
     if (!formData.phone.trim()) {
@@ -157,7 +164,8 @@ export const BookMeeting: React.FC = () => {
 
       // Reset form
       setFormData({
-        name: "",
+        firstName: "",
+        lastName: "",
         phone: "",
         email: "",
         date: null,
@@ -227,27 +235,48 @@ export const BookMeeting: React.FC = () => {
             BOOK A MEETING
           </Button>
         </DialogTrigger>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
           <DialogHeader className="pb-5">
             <DialogTitle>Book A Meeting</DialogTitle>
           </DialogHeader>
 
           <div className="space-y-4">
-            <div>
-              <Label className="sr-only" htmlFor="name">
-                Name
-              </Label>
-              <Input
-                id="name"
-                type="text"
-                value={formData.name}
-                onChange={handleInputChangeEvent("name")}
-                placeholder="Name*"
-                className={errors.name ? "border-red-500" : ""}
-              />
-              {errors.name && (
-                <p className="text-red-500 text-sm mt-1">{errors.name}</p>
-              )}
+            <div className="grid grid-cols-1 gap-4">
+              <div>
+                <Label className="sr-only" htmlFor="firstName">
+                  First Name
+                </Label>
+                <Input
+                  id="firstName"
+                  type="text"
+                  value={formData.firstName}
+                  onChange={handleInputChangeEvent("firstName")}
+                  placeholder="First Name*"
+                  className={errors.firstName ? "border-red-500" : ""}
+                />
+                {errors.firstName && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.firstName}
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <Label className="sr-only" htmlFor="lastName">
+                  Last Name
+                </Label>
+                <Input
+                  id="lastName"
+                  type="text"
+                  value={formData.lastName}
+                  onChange={handleInputChangeEvent("lastName")}
+                  placeholder="Last Name*"
+                  className={errors.lastName ? "border-red-500" : ""}
+                />
+                {errors.lastName && (
+                  <p className="text-red-500 text-sm mt-1">{errors.lastName}</p>
+                )}
+              </div>
             </div>
 
             <div>

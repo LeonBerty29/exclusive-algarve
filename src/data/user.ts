@@ -145,7 +145,7 @@ async function apiRequest<T>(
 export const registerUser = async (
   userData: RegisterRequest
 ): Promise<RegisterResponse> => {
-  const endpoint = `/user/register`;
+  const endpoint = `/client/register`;
 
   try {
     return apiRequest<RegisterResponse>(endpoint, {
@@ -160,7 +160,7 @@ export const registerUser = async (
 export const loginUser = async (
   credentials: LoginRequest
 ): Promise<LoginResponse> => {
-  const endpoint = `/user/login`;
+  const endpoint = `/client/login`;
 
   return apiRequest<LoginResponse>(endpoint, {
     method: "POST",
@@ -171,7 +171,7 @@ export const loginUser = async (
 export const getUserProfile = async (
   token: string
 ): Promise<ProfileResponse> => {
-  const endpoint = `/user/me`;
+  const endpoint = `/client/me`;
 
   return apiRequest<ProfileResponse>(
     endpoint,
@@ -184,7 +184,7 @@ export const getUserProfile = async (
 };
 
 export const logoutUser = async (token: string): Promise<LogoutResponse> => {
-  const endpoint = `/user/logout`;
+  const endpoint = `/client/logout`;
 
   return apiRequest<LogoutResponse>(
     endpoint,
