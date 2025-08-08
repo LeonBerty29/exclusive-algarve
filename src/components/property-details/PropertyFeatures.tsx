@@ -1,5 +1,7 @@
 "use client";
-import React, { ReactNode } from "react";
+import React, { 
+  // ReactNode 
+} from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Carousel,
@@ -8,13 +10,13 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { GiWaterDrop } from "react-icons/gi";
-import { FaHotTub } from "react-icons/fa";
-import { FcElectricity } from "react-icons/fc";
-import { PiSwimmingPoolBold } from "react-icons/pi";
-import { BiSolidCarGarage } from "react-icons/bi";
-import { MdBalcony } from "react-icons/md";
-import { Wifi } from "lucide-react";
+// import { GiWaterDrop } from "react-icons/gi";
+// import { FaHotTub } from "react-icons/fa";
+// import { FcElectricity } from "react-icons/fc";
+// import { PiSwimmingPoolBold } from "react-icons/pi";
+// import { BiSolidCarGarage } from "react-icons/bi";
+// import { MdBalcony } from "react-icons/md";
+import { IdCard, Wifi } from "lucide-react";
 import { LuCircleParking } from "react-icons/lu";
 import { BsCameraVideo } from "react-icons/bs";
 import { MdOutlinePets } from "react-icons/md";
@@ -22,11 +24,11 @@ import { PiWashingMachineThin } from "react-icons/pi";
 import { TbAirConditioningDisabled } from "react-icons/tb";
 import { AdditionalFeature } from "@/types/property";
 
-interface PropertyFeature {
-  title: string;
-  label: string;
-  icon: ReactNode;
-}
+// interface PropertyFeature {
+//   title: string;
+//   label: string;
+//   icon: ReactNode;
+// }
 
 interface Amenity {
   name: string;
@@ -40,36 +42,36 @@ interface PropertyFeaturesProps {
 export const PropertyFeatures = ({
   additionalFeatures,
 }: PropertyFeaturesProps) => {
-  console.log({additionalFeatures})
+  console.log({ additionalFeatures });
   // Helper function to get icon for feature category
-  const getFeatureIcon = (categoryName: string): ReactNode => {
-    const name = categoryName.toLowerCase();
-    if (name.includes("water"))
-      return <GiWaterDrop className="h-8 w-8 mb-1 fill-[#26ADE8]" />;
-    if (name.includes("hot") || name.includes("heating"))
-      return <FaHotTub className="h-8 w-8 mb-1 fill-[#26ADE8]" />;
-    if (name.includes("electric"))
-      return <FcElectricity className="h-8 w-8 mb-1 fill-[#FEBC08]" />;
-    if (name.includes("pool"))
-      return <PiSwimmingPoolBold className="h-8 w-8 mb-1 fill-[#26ADE8]" />;
-    if (name.includes("garage") || name.includes("parking"))
-      return <BiSolidCarGarage className="h-8 w-8 mb-1" />;
-    if (name.includes("balcony") || name.includes("terrace"))
-      return <MdBalcony className="h-8 w-8 mb-1 fill-[#01d9a3]" />;
-    return <div className="h-8 w-8 mb-1 bg-gray-300 rounded-full" />;
-  };
+  // const getFeatureIcon = (categoryName: string): ReactNode => {
+  //   const name = categoryName.toLowerCase();
+  //   if (name.includes("water"))
+  //     return <GiWaterDrop className="h-8 w-8 mb-1 fill-[#26ADE8]" />;
+  //   if (name.includes("hot") || name.includes("heating"))
+  //     return <FaHotTub className="h-8 w-8 mb-1 fill-[#26ADE8]" />;
+  //   if (name.includes("electric"))
+  //     return <FcElectricity className="h-8 w-8 mb-1 fill-[#FEBC08]" />;
+  //   if (name.includes("pool"))
+  //     return <PiSwimmingPoolBold className="h-8 w-8 mb-1 fill-[#26ADE8]" />;
+  //   if (name.includes("garage") || name.includes("parking"))
+  //     return <BiSolidCarGarage className="h-8 w-8 mb-1" />;
+  //   if (name.includes("balcony") || name.includes("terrace"))
+  //     return <MdBalcony className="h-8 w-8 mb-1 fill-[#01d9a3]" />;
+  //   return <div className="h-8 w-8 mb-1 bg-gray-300 rounded-full" />;
+  // };
 
   // Generate property features from additional_features
-  const propertyFeatures: PropertyFeature[] = additionalFeatures.map(
-    (category) => ({
-      title: category.category_name,
-      label:
-        category.features.length > 0
-          ? String(category.features[0].field_value)
-          : category.category_name,
-      icon: getFeatureIcon(category.category_name),
-    })
-  );
+  // const propertyFeatures: FeatureItem[] = additionalFeatures.map(
+  //   (category) => ({
+  //     title: category.category_name,
+  //     label:
+  //       category.features.length > 0
+  //         ? String(category.features[0].field_value)
+  //         : category.category_name,
+  //     icon: getFeatureIcon(category.category_name),
+  //   })
+  // );
 
   // Static amenities - you can expand this based on your needs
   const amenities: Amenity[] = [
@@ -149,37 +151,51 @@ export const PropertyFeatures = ({
 
   const chunkArrayOfAmenities = chunkArray(combinedAmenities, 4);
 
+  const getIcon = (icon: string) => {
+    console.log({ icon });
+    return <IdCard className="h-6 w-6" />;
+  };
+
   return (
     <div className="pt-5 w-full max-w-full">
       <section className="mb-8">
         <p className="text-base font-bold text-primary mb-4">
           PROPERTY FEATURES
         </p>
-        {propertyFeatures.length > 0 ? (
+        {additionalFeatures.length > 0 ? (
           <div className="w-full max-w-full">
             <Carousel
-              opts={{
-                // align: "start",
-              }}
+              opts={
+                {
+                  align: "start",
+                }
+              }
               className="w-full"
             >
               <CarouselContent>
-                {propertyFeatures.map((feature, index) => (
+                {additionalFeatures.map((additionalFeature, index) => (
                   <CarouselItem
                     key={index}
-                    className="w-auto sm:basis-1/2 lg:basis-1/3"
+                    className="w-auto sm:basis-1/2 xl:basis-1/3"
                   >
-                    <div className="p-1 w-full">
+                    <div className="p-1 w-full bg-gray-100 h-full">
                       <Card className="border-none rounded-none shadow-none bg-transparent w-full">
                         <CardContent className="p-0">
                           <div className="text-center flex flex-col gap-1 items-center">
-                            {feature.icon}
+                            {getIcon(additionalFeature.category_icon)}
                             <p className="font-semibold text-sm uppercase">
-                              {feature.title}
+                              {additionalFeature.category_name}
                             </p>
-                            <p className="text-xs text-gray-600 capitalize">
-                              {feature.label}
-                            </p>
+                            {additionalFeature.features.map(
+                              (feature, index) => (
+                                <p
+                                  className="text-xs text-gray-600 capitalize"
+                                  key={index}
+                                >
+                                  {feature.feature_name}
+                                </p>
+                              )
+                            )}
                           </div>
                         </CardContent>
                       </Card>
@@ -199,9 +215,7 @@ export const PropertyFeatures = ({
       </section>
 
       <section>
-        <p className="text-base font-bold text-primary mb-4">
-          AMENITIES
-        </p>
+        <p className="text-base font-bold text-primary mb-4">AMENITIES</p>
 
         {chunkArrayOfAmenities.length > 0 ? (
           <div className="w-full max-w-full">
