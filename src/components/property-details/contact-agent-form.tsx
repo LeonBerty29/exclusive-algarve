@@ -31,7 +31,7 @@ const ContactAgentForm = () => {
             height={64}
             className="w-full h-full object-cover"
           />
-            {/* <div className="w-full h-full bg-gray-600 flex items-center justify-center text-white text-xl font-bold hidden">
+          {/* <div className="w-full h-full bg-gray-600 flex items-center justify-center text-white text-xl font-bold hidden">
                 {agent.name
                 .split(" ")
                 .map((n) => n[0])
@@ -46,12 +46,21 @@ const ContactAgentForm = () => {
 
       {/* Contact Form */}
       <form className="space-y-4">
-        <div>
-          <Input
-            type="text"
-            placeholder="Name"
-            className="bg-transparent border-0 border-b border-primary rounded-none text-white placeholder:text-white/70 focus:border-primary focus-visible:ring-0 focus-visible:ring-offset-0 px-0 pb-2"
-          />
+        <div className="grid grid-cols-1 gap-4">
+          <div>
+            <Input
+              type="text"
+              placeholder="First Name"
+              className="bg-transparent border-0 border-b border-primary rounded-none text-white placeholder:text-white/70 focus:border-primary focus-visible:ring-0 focus-visible:ring-offset-0 px-0 pb-2"
+            />
+          </div>
+          <div>
+            <Input
+              type="text"
+              placeholder="Last Name"
+              className="bg-transparent border-0 border-b border-primary rounded-none text-white placeholder:text-white/70 focus:border-primary focus-visible:ring-0 focus-visible:ring-offset-0 px-0 pb-2"
+            />
+          </div>
         </div>
 
         <div>

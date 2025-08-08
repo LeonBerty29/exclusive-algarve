@@ -40,6 +40,7 @@ interface PropertyFeaturesProps {
 export const PropertyFeatures = ({
   additionalFeatures,
 }: PropertyFeaturesProps) => {
+  console.log({additionalFeatures})
   // Helper function to get icon for feature category
   const getFeatureIcon = (categoryName: string): ReactNode => {
     const name = categoryName.toLowerCase();
