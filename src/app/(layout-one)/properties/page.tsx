@@ -15,7 +15,6 @@ import {
   SearchHeaderSkeleton,
 } from "@/components/property/loading-states";
 import { auth } from "@/auth";
-import { redirect } from "next/navigation";
 import { getFavorites } from "@/data/favourites";
 
 // interface PropertiesPageProps {
