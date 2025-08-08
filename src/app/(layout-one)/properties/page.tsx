@@ -15,7 +15,6 @@ import {
   SearchHeaderSkeleton,
 } from "@/components/property/loading-states";
 import { auth } from "@/auth";
-import { redirect } from "next/navigation";
 import { getFavorites } from "@/data/favourites";
 
 // interface PropertiesPageProps {
@@ -149,11 +148,11 @@ async function PropertieList({
   const token = session?.accessToken;
   console.log({ token });
 
-  if (!token || !session) {
-    return redirect("/login");
-  }
-
-  const favoritesResponse = await getFavorites(token);
+  const favoritesResponse = token
+    ? await getFavorites(token)
+    : {
+        favorite_properties: [],
+      };
   const favorites = favoritesResponse.favorite_properties;
   const propertiesResponse = await getPropertiesWithAllPaginated(
     apiParams,

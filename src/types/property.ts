@@ -70,6 +70,7 @@ export interface DrivingDistance {
 }
 
 export interface AdditionalFeature {
+  category_icon: string;
   category_id: number;
   category_name: string;
   features: FeatureItem[];
