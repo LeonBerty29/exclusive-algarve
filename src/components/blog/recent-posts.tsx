@@ -1,8 +1,6 @@
-"use client";
 import { formatDateString } from "@/utils";
 import { ISbStoryData } from "@storyblok/react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
 
 export function RecentPosts({
   blogs,
@@ -10,19 +8,15 @@ export function RecentPosts({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   blogs: ISbStoryData<any>[];
 }) {
-  const params = useParams();
-  const currentSlug = params.slug as string;
-  const recentPosts = blogs
-    .slice(0, 4)
-    .filter((blog) => blog.slug !== currentSlug);
+
 
   return (
     <>
-      {recentPosts.slice(0, 3).length > 0 && (
+      {blogs.slice(0, 3).length > 0 && (
         <div className="sm:min-w-[400px] lg:w-[400px]">
           <h2 className="text-2xl mb-6">Recent Post</h2>
           <div className="grid sm:grid-cols-2 lg:flex lg:flex-wrap gap-4 lg:flex-col">
-            {recentPosts.slice(0, 3).map((blog) => (
+            {blogs.slice(0, 3).map((blog) => (
               <Link
                 key={blog.slug}
                 href={`/blogs/${blog.slug}`}

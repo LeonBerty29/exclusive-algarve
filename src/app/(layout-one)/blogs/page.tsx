@@ -40,7 +40,7 @@ export default function BlogPage() {
 }
 
 async function GetAndDisplayBlogs() {
-  const blogs = await fetchAllBlogs();
+  const blogs = await fetchAllBlogs({});
   // console.log(blogs[0]);
   return (
     <>
