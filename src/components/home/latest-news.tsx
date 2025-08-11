@@ -25,11 +25,13 @@ const LatestNews = async () => {
 export default LatestNews;
 
 async function RecentBlogsGrid() {
-  const recentBlogs = await fetchAllBlogs({
+  const blogs = await fetchAllBlogs({
     per_page: 4,
     page: 1,
     sort_by: "created_at:desc"
   });
+  
+  const recentBlogs = blogs.data.stories;
   return (
     <>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">

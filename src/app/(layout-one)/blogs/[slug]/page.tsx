@@ -101,9 +101,11 @@ async function ListRecentBlogs({
     sort_by: "created_at:desc",
   });
 
+  
+
   const blogs = excludeBlogWithSlug
-    ? blogsResponse.filter((blog) => blog.slug !== excludeBlogWithSlug)
-    : blogsResponse;
+    ? blogsResponse.data.stories.filter((blog) => blog.slug !== excludeBlogWithSlug)
+    : blogsResponse.data.stories;
 
   return (
     <>
@@ -125,9 +127,11 @@ async function RelatedArticles({
     tag: tag,
   });
 
+
+
   const relatedBlogs = excludeBlogWithSlug
-    ? relatedBlogsResponse.filter((blog) => blog.slug !== excludeBlogWithSlug)
-    : relatedBlogsResponse;
+    ? relatedBlogsResponse.data.stories.filter((blog) => blog.slug !== excludeBlogWithSlug)
+    : relatedBlogsResponse.data.stories;
 
   return (
     <>

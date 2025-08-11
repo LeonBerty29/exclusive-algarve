@@ -25,7 +25,8 @@ export const fetchAllBlogs = async ({
       ...withTag,
       ...sortBy
     });
-    return response.data.stories;
+
+    return response;
   } catch (error: unknown) {
     console.log(error);
 
