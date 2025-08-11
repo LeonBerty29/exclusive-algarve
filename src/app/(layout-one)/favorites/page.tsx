@@ -196,7 +196,7 @@ function InvalidPageState({ totalPages }: { totalPages: number }) {
 async function ListFavourites({ currentPage }: { currentPage: number }) {
   const session = await auth();
   const token = session?.accessToken;
-  console.log({ token });
+  // console.log({ token });
 
   if (!token || !session) {
     return redirect("/login");

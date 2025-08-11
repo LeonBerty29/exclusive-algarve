@@ -6,7 +6,7 @@ import {
   View,
   Text,
   StyleSheet,
-  Image,
+  Image as PdfImage,
   Link,
 } from "@react-pdf/renderer";
 import PropertyWatermark from "./watermark";
@@ -291,7 +291,7 @@ export const PropertyBrochureDocument: React.FC<
         <View style={styles.headerRow} fixed>
           <View style={styles.logoContainer}>
             {companyLogo ? (
-              <Image src={companyLogo} style={styles.companyLogo} />
+              <PdfImage src={companyLogo} style={styles.companyLogo} />
             ) : (
               <View
                 style={[
@@ -323,7 +323,7 @@ export const PropertyBrochureDocument: React.FC<
 
           {/* Main Property Image */}
           {propertyData.mainImage ? (
-            <Image src={propertyData.mainImage} style={styles.mainImage} />
+            <PdfImage src={propertyData.mainImage} style={styles.mainImage} />
           ) : (
             <View style={styles.mainImagePlaceholder}>
               <Text style={{ fontSize: 12, color: "#6b7280" }}>
@@ -410,7 +410,7 @@ export const PropertyBrochureDocument: React.FC<
           {propertyData.additionalImages &&
           propertyData.additionalImages.length > 0
             ? propertyData.additionalImages.map((imageUrl, index) => (
-                <Image key={index} src={imageUrl} style={styles.gridImage} />
+                <PdfImage key={index} src={imageUrl} style={styles.gridImage} />
               ))
             : Array.from({ length: 6 }).map((_, index) => (
                 <View key={index} style={styles.gridImagePlaceholder}>
