@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation";
 import { useActionState, useEffect } from "react";
 import { toast } from "sonner";
 import { DeleteFromFavoriteButton } from "../product/remove-favorite-button";
+import Link from "next/link";
 
 export function AddToFavoriteButton({
   className,
@@ -25,10 +26,20 @@ export function AddToFavoriteButton({
   // Handle toast notifications based on state changes
   useEffect(() => {
     if (state.success) {
-      toast(`${reference} ${state.success}`);
+      toast.success(`${state.success}`);
     }
     if (state.error) {
-      toast(`Failed to add ${reference} to favorites: ${state.error}`);
+      toast.error(`${state.error}`, {
+        duration: 5000,
+        action: (
+          <>
+            {/* <label htmlFor=""></label> */}
+            <Button asChild className="bg-primary text-white hover:bg-black">
+              <Link href={"login"}>Login</Link>
+            </Button>
+          </>
+        ),
+      });
     }
   }, [state.success, state.error, reference]);
 

@@ -3,7 +3,7 @@
 import { auth } from "@/auth";
 import { AddToFavorites } from "@/data/favourites";
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
+// import { redirect } from "next/navigation";
 
 type ActionState = {
   success?: string;
@@ -22,13 +22,16 @@ export async function addToFavorite(
     const token = session?.accessToken;
 
     if (!propertyId) {
-      return { 
-        error: "Property ID is required", 
+      return {
+        error: "Property ID is required",
       };
     }
 
     if (!token) {
-      redirect("/login");
+      // redirect("/login");
+      return {
+        error: "You must be logged in to add a property to favorites",
+      };
     }
 
     await AddToFavorites(Number(propertyId), token);
@@ -37,13 +40,13 @@ export async function addToFavorite(
       revalidatePath(pathName);
     }
 
-    return { 
-      success: "Added to favorites successfully!", 
+    return {
+      success: `${propertyId} successfully Added to favorites!`,
     };
   } catch (error) {
     console.error("Add to favorites error:", error);
-    return { 
-      error: "Failed to add to favorites", 
+    return {
+      error: `Failed to add ${propertyId} to favorites`,
     };
   }
 }
