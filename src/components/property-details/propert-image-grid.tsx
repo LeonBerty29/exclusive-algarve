@@ -25,15 +25,14 @@ const PropertyImageGrid: React.FC<PropertyImageGridProps> = ({ assets }) => {
       <div className="gap-x-6 flex mb-8">
         <div className="w-full lg:flex-1">
           <div className="w-full h-[450px] xl:h-[550px] relative">
-            <Image
-              src={
-                propertyImages[0]?.url &&
-                getProxiedImageUrl(propertyImages[0]?.url)
-              }
-              alt={propertyImages[0]?.title || "Property image"}
-              fill
-              className="object-cover"
-            />
+            {propertyImages[0] && (
+              <Image
+                src={getProxiedImageUrl(propertyImages[0]?.url)}
+                alt={propertyImages[0]?.title || "Property image"}
+                fill
+                className="object-cover"
+              />
+            )}
             {hasFloorPlans && (
               <div className="absolute z-10 bottom-4 right-4 flex gap-3">
                 <Button
@@ -52,7 +51,6 @@ const PropertyImageGrid: React.FC<PropertyImageGridProps> = ({ assets }) => {
             {propertyImages[1] && (
               <Image
                 src={
-                  propertyImages[1]?.url &&
                   getProxiedImageUrl(propertyImages[1]?.url)
                 }
                 alt={propertyImages[1].title || "Property image"}

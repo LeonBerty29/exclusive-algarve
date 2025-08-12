@@ -78,7 +78,14 @@ export const getProperties = cache(
 
 export const getFeaturedProperties = cache(
   async (params: PropertySearchParams = {}): Promise<PropertyListResponse> => {
-    return getProperties(params);
+    // const pp = await getProperties(params);
+    // console.log({pp})
+    return await getProperties(params);
+  }
+);
+export const getPremiumProperties = cache(
+  async (params: PropertySearchParams = {}): Promise<PropertyListResponse> => {
+    return await getProperties(params);
   }
 );
 

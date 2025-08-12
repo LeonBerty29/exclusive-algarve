@@ -60,19 +60,19 @@ export async function DELETE(
     });
 
     if (!response.ok) {
-      console.log("External API returned error status");
+      // console.log("External API returned error status");
       let errorText = "";
 
       try {
         errorText = await response.text();
-        console.log("Error response body:", errorText);
+        // console.log("Error response body:", errorText);
       } catch (textError) {
         console.log("Could not read error response body:", textError);
       }
 
-      console.log(
-        `Forwarding error: ${response.status} ${response.statusText}`
-      );
+      // console.log(
+      //   `Forwarding error: ${response.status} ${response.statusText}`
+      // );
 
       // Forward the same status code from the backend
       return NextResponse.json(
@@ -86,7 +86,7 @@ export async function DELETE(
 
     // Revalidate the specific path that made the request
     if (currentPath) {
-      console.log("Revalidating current path:", currentPath);
+      // console.log("Revalidating current path:", currentPath);
       revalidatePath(currentPath);
     }
 
@@ -108,20 +108,20 @@ export async function DELETE(
       }
     }
 
-    console.log("Returning successful response");
+    // console.log("Returning successful response");
     return NextResponse.json(result || { success: true });
   } catch (error) {
-    console.error("=== CRITICAL ERROR in DELETE handler ===");
-    console.error("Error type:", error?.constructor?.name);
-    console.error(
-      "Error message:",
-      error instanceof Error ? error.message : String(error)
-    );
+    // console.error("=== CRITICAL ERROR in DELETE handler ===");
+    // console.error("Error type:", error?.constructor?.name);
+    // console.error(
+    //   "Error message:",
+    //   error instanceof Error ? error.message : String(error)
+    // );
     console.error(
       "Error stack:",
       error instanceof Error ? error.stack : "No stack trace"
     );
-    console.error("=== END CRITICAL ERROR ===");
+    // console.error("=== END CRITICAL ERROR ===");
 
     return NextResponse.json(
       {
