@@ -8,6 +8,7 @@ import {
 import { Button } from "../ui/button";
 import { getListOfProperties } from "@/data/property";
 import { ProductCard } from "../product/product-card";
+import Link from "next/link";
 
 const SimilarProperties = async ({
   similarPropertiesId,
@@ -31,8 +32,11 @@ const SimilarProperties = async ({
             <span className="text-primary">INTEREST</span>
           </h3>
 
-          <Button className="bg-black text-white hover:opacity-85 w-full text-xs order-3">
-            VIEW ALL PROPERTIES
+          <Button
+            asChild
+            className="bg-black text-white hover:opacity-85 w-full text-xs order-3"
+          >
+            <Link href="/properties">VIEW ALL PROPERTIES</Link>
           </Button>
         </div>
         <CarouselContent className="-ml-1 flex-1">
