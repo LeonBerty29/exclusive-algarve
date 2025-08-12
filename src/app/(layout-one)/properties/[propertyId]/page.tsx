@@ -179,22 +179,13 @@ const PageContent = async (props: Props) => {
 
           <div className="flex gap-2 items-center">
             {
-            // token &&
-            //   (isFavourite ? (
-            //     <DeleteFromFavoriteButton
-            //       propertyId={property.id}
-            //       reference={property.reference}  
-            //       className="size-8"
-            //     />
-            //   ) : (
-                <AddToFavoriteButton
-                  className="size-8 bg-hray-200"
-                  propertyId={property.id}
-                  reference={property.reference}
-                  isFavourite={isFavourite}
-                />
-              // ))
-              }
+              <AddToFavoriteButton
+                className="size-8 bg-hray-200"
+                propertyId={property.id}
+                reference={property.reference}
+                isFavourite={isFavourite}
+              />
+            }
             <ShareButton />
           </div>
         </div>
@@ -210,10 +201,6 @@ const PageContent = async (props: Props) => {
               {property.price.toLocaleString()}
             </p>
           </div>
-
-          {/* <Button className="bg-black text-white hover:bg-black/85 transition-all">
-              Book a visit
-            </Button> */}
 
           <BookVisitDialog />
         </div>
@@ -233,51 +220,6 @@ const PageContent = async (props: Props) => {
             </div>
 
             <div className="w-full lg:flex lg:w-[37%] xl:w-[30%] flex-col pt-4">
-              {/* <div className="w-full border p-5 mb-6">
-                  <p className="text-xs text-gray-500 mb-5">
-                    Ref Code:{" "}
-                    <span className="text-sm font-bold text-primary">
-                      {details.refCode}
-                    </span>
-                  </p>
-                  <div className="mb-5">
-                    <p className="text-xs text-gray-500">Location</p>
-                    <p className="text-base font-bold text-black">
-                      {details.location}
-                    </p>
-                  </div>
-
-                  <div className="flex justify-between gap-4 mb-6">
-                    <div>
-                      <span className="text-xs text-gray-500">
-                        Private Area
-                      </span>
-                      <p className="font-bold text-base">
-                        {details.privateArea} m<sup>2</sup>
-                      </p>
-                    </div>
-                    <div>
-                      <span className="text-xs text-gray-500">
-                        Construction Area
-                      </span>
-                      <p className="font-bold text-base">
-                        {details.grossArea} m<sup>2</sup>
-                      </p>
-                    </div>
-                    <div>
-                      <span className="text-xs text-gray-500">Plot Size</span>
-                      <p className="font-bold text-base">
-                        {details.plotSize} m<sup>2</sup>
-                      </p>
-                    </div>
-                  </div>
-
-                  <Button className="rounded-none w-full gap-5 bg-black text-white">
-                    <Calendar />
-                    BOOK A VISIT
-                  </Button>
-                </div> */}
-
               <div className="bg-black text-white w-full p-6">
                 <ContactAgentForm />
               </div>

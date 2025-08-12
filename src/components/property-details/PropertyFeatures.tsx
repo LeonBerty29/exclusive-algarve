@@ -171,7 +171,7 @@ export const PropertyFeatures = ({
               <CarouselContent>
                 {additionalFeatures.map((additionalFeature, index) => (
                   <CarouselItem
-                    key={index}
+                    key={`additionalFeature--${index}`}
                     className="w-auto sm:basis-1/2 xl:basis-1/3"
                   >
                     <div className="p-1 w-full bg-gray-100 h-full">
@@ -183,26 +183,22 @@ export const PropertyFeatures = ({
                               {additionalFeature.category_name}
                             </p>
                             {additionalFeature.features.map(
-                              (feature, index) => (
-                                <>
+                              (feature, featureIndex) => (
+                                <React.Fragment
+                                  key={`feature--${index}--${featureIndex}`}
+                                >
                                   {feature.field_type === "bool" && (
-                                    <p
-                                      className="text-xs text-gray-600 capitalize"
-                                      key={index}
-                                    >
+                                    <p className="text-xs text-gray-600 capitalize">
                                       {feature.feature_name}
                                     </p>
                                   )}
                                   {feature.field_type === "select" && (
-                                    <p
-                                      className="text-xs text-gray-600 capitalize"
-                                      key={index}
-                                    >
+                                    <p className="text-xs text-gray-600 capitalize">
                                       {feature.feature_name} -{" "}
                                       {feature.field_value}
                                     </p>
                                   )}
-                                </>
+                                </React.Fragment>
                               )
                             )}
                           </div>

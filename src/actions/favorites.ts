@@ -8,6 +8,7 @@ import { revalidatePath } from "next/cache";
 type ActionState = {
   success?: string;
   error?: string;
+  authenticated?: string;
 };
 
 export async function addToFavorite(
@@ -30,7 +31,7 @@ export async function addToFavorite(
     if (!token) {
       // redirect("/login");
       return {
-        error: "You must be logged in to add a property to favorites",
+        authenticated: "You must be logged in to add a property to favorites",
       };
     }
 
