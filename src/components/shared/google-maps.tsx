@@ -23,8 +23,8 @@ export function GoogleMap({
 
       const { Map } = await loader.importLibrary("maps");
 
-      //   init a marker
-      const { Marker } = (await loader.importLibrary(
+      // Import the advanced marker library
+      const { AdvancedMarkerElement } = (await loader.importLibrary(
         "marker"
       )) as google.maps.MarkerLibrary;
 
@@ -33,21 +33,22 @@ export function GoogleMap({
         lng: longitude,
       };
 
-      //   map options
+      // Map options - mapId is required for AdvancedMarkerElement
       const mapOptions: google.maps.MapOptions = {
         center: position,
         zoom: 17,
         mapId: "MY_NEXTJS_MAPID",
       };
 
-      //   setup the map
+      // Setup the map
       const map = new Map(mapRef.current as HTMLDivElement, mapOptions);
 
-      //   put up a marker
+      // Create advanced marker
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const marker = new Marker({
+      const marker = new AdvancedMarkerElement({
         map,
         position,
+        title: "Location Marker", // Optional: adds tooltip on hover
       });
     };
 

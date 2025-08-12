@@ -14,13 +14,14 @@ import {
 // import { PiSwimmingPoolBold } from "react-icons/pi";
 // import { BiSolidCarGarage } from "react-icons/bi";
 // import { MdBalcony } from "react-icons/md";
-import { IdCard, Wifi } from "lucide-react";
+import { Wifi } from "lucide-react";
 import { LuCircleParking } from "react-icons/lu";
 import { BsCameraVideo } from "react-icons/bs";
 import { MdOutlinePets } from "react-icons/md";
 import { PiWashingMachineThin } from "react-icons/pi";
 import { TbAirConditioningDisabled } from "react-icons/tb";
 import { AdditionalFeature } from "@/types/property";
+import { featuresIcons } from "@/data/icons";
 
 // interface PropertyFeature {
 //   title: string;
@@ -150,8 +151,17 @@ export const PropertyFeatures = ({
   const chunkArrayOfAmenities = chunkArray(combinedAmenities, 4);
 
   const getIcon = (icon: string) => {
-    console.log({ icon });
-    return <IdCard className="h-6 w-6" />;
+    // console.log({ icon });
+    // console.log({ featuresIcons });
+    // console.log(featuresIcons["default"]);
+    // console.log(featuresIcons[icon]);
+    if (featuresIcons[icon]) {
+      const Icon = featuresIcons[icon];
+      return <Icon className="h-6 w-6 text-gray-600" />;
+    } else {
+      const Icon = featuresIcons.default;
+      return <Icon className="h-6 w-6 text-gray-600" />;
+    }
   };
 
   return (
@@ -177,7 +187,7 @@ export const PropertyFeatures = ({
                     <div className="p-1 w-full bg-gray-100 h-full">
                       <Card className="border-none rounded-none shadow-none bg-transparent w-full">
                         <CardContent className="p-0">
-                          <div className="text-center flex flex-col gap-1 items-center">
+                          <div className="text-center flex flex-col gap-1.5 items-center">
                             {getIcon(additionalFeature.category_icon)}
                             <p className="font-semibold text-sm uppercase">
                               {additionalFeature.category_name}
@@ -187,15 +197,14 @@ export const PropertyFeatures = ({
                                 <React.Fragment
                                   key={`feature--${index}--${featureIndex}`}
                                 >
-                                  {feature.field_type === "bool" && (
-                                    <p className="text-xs text-gray-600 capitalize">
-                                      {feature.feature_name}
-                                    </p>
-                                  )}
-                                  {feature.field_type === "select" && (
+                                  {feature.field_type === "select" ? (
                                     <p className="text-xs text-gray-600 capitalize">
                                       {feature.feature_name} -{" "}
                                       {feature.field_value}
+                                    </p>
+                                  ) : (
+                                    <p className="text-xs text-gray-600 capitalize">
+                                      {feature.feature_name}
                                     </p>
                                   )}
                                 </React.Fragment>

@@ -9,7 +9,7 @@ import LifeStyle from "@/components/home/lifestyle";
 import DiscoverSection from "@/components/home/discover-section";
 import { Suspense } from "react";
 import { RecentListingLoading } from "@/components/home/recent-listing-loading";
-import { getFeaturedProperties } from "@/data/properties";
+import { getFeaturedProperties, getPremiumProperties } from "@/data/properties";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Home() {
@@ -61,11 +61,12 @@ async function ListFeaturesProperties() {
 }
 
 async function ListHouseView() {
-  const response = await getFeaturedProperties({ premium: true });
+  const response = await getPremiumProperties({ premium: true });
   const properties = response.data;
   const propertyIndex = Math.floor(Math.random() * properties.length);
   const property = properties[propertyIndex];
   return <HouseView property={property} />;
+  return <></>
 }
 
 function FeaturedPropertiesLoading() {
