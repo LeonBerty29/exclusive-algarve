@@ -4,7 +4,7 @@ import HeroSection from "@/components/home/hero-section";
 import AwardsSection from "@/components/home/awards-section";
 import RecentListing from "@/components/home/recent-listing";
 import MeetTheTeam from "@/components/home/meet-the-team";
-// import HouseView from "@/components/home/house-view";
+import HouseView from "@/components/home/house-view";
 import LifeStyle from "@/components/home/lifestyle";
 import DiscoverSection from "@/components/home/discover-section";
 import { Suspense } from "react";
@@ -37,11 +37,11 @@ export default function Home() {
         <MeetTheTeam />
       </div>
 
-      {/* <div>
+      <div>
         <Suspense fallback={<HouseViewLoading />}>
           <ListHouseView />
         </Suspense>
-      </div> */}
+      </div>
 
       <div className="py-14">
         <LatestNews />
@@ -60,13 +60,13 @@ async function ListFeaturesProperties() {
   return <FeaturedProperties properties={properties} />;
 }
 
-// async function ListHouseView() {
-//   const response = await getFeaturedProperties({ premium: true });
-//   const properties = response.data;
-//   const propertyIndex = Math.floor(Math.random() * properties.length);
-//     const property = properties[propertyIndex];
-//   return <HouseView property={property} />;
-// }
+async function ListHouseView() {
+  const response = await getFeaturedProperties({ premium: true });
+  const properties = response.data;
+  const propertyIndex = Math.floor(Math.random() * properties.length);
+  const property = properties[propertyIndex];
+  return <HouseView property={property} />;
+}
 
 function FeaturedPropertiesLoading() {
   return (
@@ -96,41 +96,41 @@ function FeaturedPropertiesLoading() {
   );
 }
 
-// const HouseViewLoading = () => {
-//   return (
-//     <div className="min-h-screen relative">
-//       <div className="absolute top-0 left-0 h-full w-full before:absolute before:inset-0 before:bg-black/60 before:bg-opacity-50 before:content-[''] before:z-10">
-//         {/* Background image skeleton */}
-//         <Skeleton className="h-full w-full bg-gray-800" />
+const HouseViewLoading = () => {
+  return (
+    <div className="min-h-screen relative">
+      <div className="absolute top-0 left-0 h-full w-full before:absolute before:inset-0 before:bg-black/60 before:bg-opacity-50 before:content-[''] before:z-10">
+        {/* Background image skeleton */}
+        <Skeleton className="h-full w-full bg-gray-800" />
 
-//         <div className="absolute left-0 right-0 bottom-0 z-20 flex justify-center">
-//           <div className="container px-6 sm:px-8 md:px-10 lg:px-12 py-12 md:py-14 xl:py-20 text-white z-22 flex flex-col sm:flex-row items-end w-full gap-9">
-//             <div className="flex-1">
-//               <div>
-//                 {/* Title skeleton */}
-//                 <Skeleton className="h-6 w-80 max-w-sm mb-8 bg-white/20" />
+        <div className="absolute left-0 right-0 bottom-0 z-20 flex justify-center">
+          <div className="container px-6 sm:px-8 md:px-10 lg:px-12 py-12 md:py-14 xl:py-20 text-white z-22 flex flex-col sm:flex-row items-end w-full gap-9">
+            <div className="flex-1">
+              <div>
+                {/* Title skeleton */}
+                <Skeleton className="h-6 w-80 max-w-sm mb-8 bg-white/20" />
 
-//                 {/* Description skeleton - multiple lines */}
-//                 <div className="max-w-xl space-y-3 mb-6">
-//                   <Skeleton className="h-4 w-full bg-white/20" />
-//                   <Skeleton className="h-4 w-full bg-white/20" />
-//                   <Skeleton className="h-4 w-3/4 bg-white/20" />
-//                 </div>
+                {/* Description skeleton - multiple lines */}
+                <div className="max-w-xl space-y-3 mb-6">
+                  <Skeleton className="h-4 w-full bg-white/20" />
+                  <Skeleton className="h-4 w-full bg-white/20" />
+                  <Skeleton className="h-4 w-3/4 bg-white/20" />
+                </div>
 
-//                 {/* Additional description skeleton */}
-//                 <div className="max-w-xl space-y-2">
-//                   <Skeleton className="h-4 w-full bg-white/20" />
-//                   <Skeleton className="h-4 w-5/6 bg-white/20" />
-//                   <Skeleton className="h-4 w-2/3 bg-white/20" />
-//                 </div>
-//               </div>
-//             </div>
+                {/* Additional description skeleton */}
+                <div className="max-w-xl space-y-2">
+                  <Skeleton className="h-4 w-full bg-white/20" />
+                  <Skeleton className="h-4 w-5/6 bg-white/20" />
+                  <Skeleton className="h-4 w-2/3 bg-white/20" />
+                </div>
+              </div>
+            </div>
 
-//             {/* Button skeleton */}
-//             <Skeleton className="h-10 w-28 bg-white/20" />
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
+            {/* Button skeleton */}
+            <Skeleton className="h-10 w-28 bg-white/20" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};

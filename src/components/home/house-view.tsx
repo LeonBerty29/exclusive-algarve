@@ -3,18 +3,21 @@ import React from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { Property } from "@/types/property";
-import { useRouter } from "next/navigation";
+import { getProxiedImageUrl } from "@/lib/utils";
+import Link from "next/link";
 
 const HouseView = ({ property }: { property: Property }) => {
+  if (!property) {
+    return null;
+  }
 
-  const router = useRouter();
   return (
     <div className="min-h-screen relative">
       <div className="absolute top-0 left-0 h-full w-full before:absolute before:inset-0 before:bg-black/60 before:bg-opacity-50 before:content-[''] before:z-10">
         {property.assets.images.gallery[0].url ? (
           <div className="h-full w-full relative">
             <Image
-              src={property.assets.images.gallery[0].url}
+              src={getProxiedImageUrl(property.assets.images.gallery[0].url)}
               alt={property.title}
               className="h-full w-full object-cover"
               fill
@@ -59,14 +62,13 @@ const HouseView = ({ property }: { property: Property }) => {
               {/* <p className="mb-6 text-3xl font-semibold">{property.price}</p>
                                 <p className="mb-8 text-lg opacity-90">{property.specs}</p> */}
 
-              <motion.button
-                onClick={() => router.push(`/properties/${property.id}`)}
+              <motion.div
                 className="group flex text-xs font-light items-center gap-2 rounded-none bg-[#fff] px-5 py-[10px] text-[#000] border transition-colors hover:bg-primary hover:border-primary hover:text-white w-fit"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.95 }}
               >
-                HAVE A LOOK
-              </motion.button>
+                <Link href={`/properties/${property.id}`}> HAVE A LOOK</Link>
+              </motion.div>
             </motion.div>
           )}
         </div>
