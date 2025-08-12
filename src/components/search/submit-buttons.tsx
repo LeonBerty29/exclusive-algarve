@@ -38,7 +38,7 @@ export function AddToFavoriteButton({
           <>
             {/* <label htmlFor=""></label> */}
             <Button asChild className="bg-primary text-white hover:bg-black">
-              <Link href={"login"}>Login</Link>
+              <Link href={"/login"}>Login</Link>
             </Button>
           </>
         ),
