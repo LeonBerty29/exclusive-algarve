@@ -29,8 +29,11 @@ export function AddToFavoriteButton({
       toast.success(`${state.success}`);
     }
     if (state.error) {
-      toast.error(`${state.error}`, {
-        duration: 5000,
+      toast.error(`${state.error}`);
+    }
+    if (state.authenticated) {
+      toast.error(`${state.authenticated}`, {
+        duration: 2000,
         action: (
           <>
             {/* <label htmlFor=""></label> */}
@@ -41,7 +44,7 @@ export function AddToFavoriteButton({
         ),
       });
     }
-  }, [state.success, state.error, reference]);
+  }, [state.success, state.error, state.authenticated, reference]);
 
   return (
     <>

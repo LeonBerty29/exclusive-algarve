@@ -146,7 +146,6 @@ async function PropertieList({
 }) {
   const session = await auth();
   const token = session?.accessToken;
-  console.log({ token });
 
   const favoritesResponse = token
     ? await getFavorites(token)
