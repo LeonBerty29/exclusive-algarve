@@ -1,5 +1,5 @@
 // import FeaturedProperties from "@/components/home/featured-properties";
-// import LatestNews from "@/components/home/latest-news";
+import LatestNews from "@/components/home/latest-news";
 // import HeroSection from "@/components/home/hero-section";
 // import AwardsSection from "@/components/home/awards-section";
 // import RecentListing from "@/components/home/recent-listing";
@@ -35,19 +35,19 @@ export default function Home() {
       </div>
       <div className="mt-8">
         <MeetTheTeam />
-      </div>
+      </div> */}
 
-      <div>
+      {/* <div>
         <Suspense fallback={<HouseViewLoading />}>
           <ListHouseView />
         </Suspense>
-      </div>
+      </div> */}
 
       <div className="py-14">
         <LatestNews />
       </div>
 
-      <div className="pt-10">
+      {/* <div className="pt-10">
         <DiscoverSection />
       </div> */}
     </div>
