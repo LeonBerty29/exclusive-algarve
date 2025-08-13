@@ -138,9 +138,9 @@ export interface PropertyResponse {
 
 export interface PropertySearchParams {
   search?: string;
-  location?: string;
-  zone?: string;
+  location_area?: string;
   municipality?: string;
+  zone?: string;
   district?: string;
   min_price?: number;
   max_price?: number;
@@ -257,6 +257,50 @@ export interface PropertyComparison {
     construction_year: string[];
     location: string[];
   };
+}
+
+export interface LocationArea {
+  id: number;
+  name: string;
+  property_count: number;
+  municipalities: Municipality[];
+}
+
+export interface Municipality {
+  id: number;
+  name: string;
+  property_count: number;
+  zones: Zone[];
+}
+
+export interface Zone {
+  id: number;
+  name: string;
+  property_count: number;
+}
+
+export interface FeatureCategory {
+  category_id: number;
+  category_name: string;
+  category_slug: string;
+  icon: string;
+  features: MetadataFeature[];
+}
+
+export interface MetadataFeature {
+  id: number;
+  name: string;
+  slug: string;
+  icon: string | null;
+  type: "bool" | "select" | "integer" | "text" | "float";
+  options: string[];
+}
+
+// Updated PropertyMetadata interface to match actual API response
+export interface PropertyMetadata {
+  typologies: { id: number; name: string }[];
+  features: FeatureCategory[];
+  areas: LocationArea[];
 }
 
 export interface PropertyMetadata {

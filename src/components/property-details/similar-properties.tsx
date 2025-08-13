@@ -39,11 +39,11 @@ const SimilarProperties = async ({
             <Link href="/properties">VIEW ALL PROPERTIES</Link>
           </Button>
         </div>
-        <CarouselContent className="-ml-1 flex-1">
+        <CarouselContent className="-ml-1 flex-1 w-full">
           {properties.map((property, index) => (
             <CarouselItem
               key={index}
-              className="pl-1 sm:basis-1/2 xl:basis-1/3"
+              className="pl-1 sm:basis-1/2 "
             >
               <div className="p-1 py-0 max-w-[400px] mx-auto sm:max-w-full block">
                 <ProductCard property={property} />

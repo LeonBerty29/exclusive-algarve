@@ -168,7 +168,7 @@ export async function searchPropertiesByLocation(
 ): Promise<PropertyListResponse> {
   return getProperties({
     ...additionalParams,
-    location,
+    location_area: location,
   });
 }
 
