@@ -35,7 +35,7 @@ export default async function PropertiesPage(props: PageProps) {
   const searchParams = await props.searchParams;
   const apiParams: PropertySearchParams = {
     search: searchParams.search,
-    location: searchParams.location,
+    location_area: searchParams.location_area,
     municipality: searchParams.municipality,
     district: searchParams.district,
     min_price: searchParams.min_price,
@@ -66,7 +66,7 @@ export default async function PropertiesPage(props: PageProps) {
   // Create a key based on the search parameters that affect the data
   const suspenseKey = JSON.stringify({
     search: apiParams.search,
-    location: apiParams.location,
+    location: apiParams.location_area,
     municipality: apiParams.municipality,
     district: apiParams.district,
     min_price: apiParams.min_price,

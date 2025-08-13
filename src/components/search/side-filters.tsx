@@ -40,7 +40,13 @@ const SideFilters = ({ suspenseKey }: { suspenseKey: string }) => {
         </CardHeader>
         <CardContent>
           <div className="relative mb-4">
-            <RegionSelect />
+            <Suspense
+              key={`${suspenseKey} --region-select`}
+              // fallback={<RegionSelectLoading />}
+              fallback={<>Loading...</>}
+            >
+              <ListRegionSelect />
+            </Suspense>
           </div>
         </CardContent>
       </Card>
@@ -157,6 +163,11 @@ export async function ListBedroomsRangeSelect() {
   const ranges = await getRanges();
   const bedroomRange = ranges.bedrooms; // Fixed: was using ranges.price
   return <BedroomsRangeSelect bedroomRange={bedroomRange} />;
+}
+
+export async function ListRegionSelect() {
+  const metadata = await getMetadata();
+  return <RegionSelect metadata={metadata} />;
 }
 
 export async function ListBathroomsRangeSelect() {
