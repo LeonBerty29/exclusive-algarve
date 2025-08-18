@@ -7,20 +7,12 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Button } from "../ui/button";
-import { ListFilter, ListFilterPlus } from "lucide-react";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-import SideFilters from "./side-filters";
+import { ListFilter, } from "lucide-react";
 import FilterTags from "./filter-tags";
 import SortBy from "./sort-by";
+import { PropertiesFilter } from "./properties-filters";
 
-const SearchHeader = ({suspenseKey}: {suspenseKey: string}) => {
+const SearchHeader = ({ suspenseKey }: { suspenseKey: string }) => {
   return (
     <>
       <div className="mb-5 2xl:container px-6 sm:px-8 md:px-10 lg:px-14 mx-auto w-full">
@@ -63,15 +55,18 @@ const SearchHeader = ({suspenseKey}: {suspenseKey: string}) => {
         </div>
       </div>
 
-      <div className="flex gap-5 2xl:container px-6 sm:px-8 md:px-10 lg:px-14 mx-auto py-5">
-        <p className="text-sm mr-8 sm:hidden">
-          Found <span className="text-primary font-bold">740</span> Properties
-        </p>
+      <div className="">
+        <div>
+          <PropertiesFilter suspenseKey={suspenseKey} />
+        </div>
+      </div>
+
+      <div className="mt-6 flex gap-5 2xl:container px-6 sm:px-8 md:px-10 lg:px-14 mx-auto py-0">
         <div className="hidden sm:flex items-center gap-5 flex-wrap">
           <FilterTags />
         </div>
 
-        <div className="xl:hidden ml-auto">
+        {/* <div className="xl:hidden ml-auto">
           <Sheet>
             <SheetTrigger className="bg-black text-white px-4 py-2 flex items-center gap-2">
               Filters <ListFilterPlus className="w-4 h-4" />
@@ -96,7 +91,7 @@ const SearchHeader = ({suspenseKey}: {suspenseKey: string}) => {
               </SheetHeader>
             </SheetContent>
           </Sheet>
-        </div>
+        </div> */}
       </div>
     </>
   );

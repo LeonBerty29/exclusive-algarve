@@ -12,9 +12,11 @@ import { PropertyTypes } from "@/components/property/property-types";
 import StatusTags from "./status-tags";
 import { SearchInput } from "./search-input";
 import { Skeleton } from "../ui/skeleton";
-import { BedroomsRangeSelect } from "./bedrooms-range-select";
-import { BathroomsRangeSelect } from "./bathrooms-range-select";
+// import { BedroomsRangeSelect } from "./bedrooms-range-select";
+// import { BathroomsRangeSelect } from "./bathrooms-range-select";
 import { getMetadata, getRanges } from "@/data/properties-metada";
+import { BathroomSlider } from "./bathrooms-slider";
+import { BedroomsSlider } from "./bedrooms-slider";
 // import { AreaSlider } from "./area-slider";
 // import { Landmark } from "lucide-react";
 
@@ -85,7 +87,7 @@ const SideFilters = ({ suspenseKey }: { suspenseKey: string }) => {
           </div>
         </CardContent>
       </Card>
-      
+
       {/* <Card className="flex flex-col mb-6 rounded-none">
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="text-base">Area</CardTitle>
@@ -162,7 +164,8 @@ async function ListPriceSlider() {
 export async function ListBedroomsRangeSelect() {
   const ranges = await getRanges();
   const bedroomRange = ranges.bedrooms; // Fixed: was using ranges.price
-  return <BedroomsRangeSelect bedroomRange={bedroomRange} />;
+  // return <BedroomsRangeSelect bedroomRange={bedroomRange} />;
+  return <BedroomsSlider bedroomRange={bedroomRange} />;
 }
 
 export async function ListRegionSelect() {
@@ -173,7 +176,8 @@ export async function ListRegionSelect() {
 export async function ListBathroomsRangeSelect() {
   const ranges = await getRanges();
   const bathroomRange = ranges.bathrooms;
-  return <BathroomsRangeSelect bathroomRange={bathroomRange} />;
+  // return <BathroomsRangeSelect bathroomRange={bathroomRange} />;
+  return <BathroomSlider bathroomRange={bathroomRange} />;
 }
 
 function PropertyTypesLoading() {

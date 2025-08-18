@@ -9,25 +9,25 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Ranges } from "@/types/property";
-import { PRICE_SLIDER_STEP } from "@/config/constants";
 import { Slider } from "../ui/slider";
-import { PriceFormat } from "../shared/price-format";
 
-const CURRENCY = "EUR";
-
-export function PriceSlider({ priceRange }: { priceRange: Ranges["price"] }) {
+export function BedroomsSlider({
+  bedroomRange,
+}: {
+  bedroomRange: Ranges["bedrooms"];
+}) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const previousValuesRef = useRef<[number, number] | undefined>(undefined);
   const [open, setOpen] = useState(false);
 
   const [sliderValues, setSliderValues] = useState<[number, number]>(() => {
-    const minPrice = searchParams.get("min_price");
-    const maxPrice = searchParams.get("max_price");
+    const minBedrooms = searchParams.get("min_bedrooms");
+    const maxBedrooms = searchParams.get("max_bedrooms");
 
     return [
-      minPrice ? parseInt(minPrice) : priceRange.min,
-      maxPrice ? parseInt(maxPrice) : priceRange.max,
+      minBedrooms ? parseInt(minBedrooms) : bedroomRange.min,
+      maxBedrooms ? parseInt(maxBedrooms) : bedroomRange.max,
     ];
   });
 
@@ -36,19 +36,19 @@ export function PriceSlider({ priceRange }: { priceRange: Ranges["price"] }) {
       const params = new URLSearchParams(searchParams.toString());
 
       // Only set params if they're different from defaults
-      if (newValues[0] !== priceRange.min) {
-        params.set("min_price", newValues[0].toString());
+      if (newValues[0] !== bedroomRange.min) {
+        params.set("min_bedrooms", newValues[0].toString());
       } else {
-        params.delete("min_price");
+        params.delete("min_bedrooms");
       }
 
-      if (newValues[1] !== priceRange.max) {
-        params.set("max_price", newValues[1].toString());
+      if (newValues[1] !== bedroomRange.max) {
+        params.set("max_bedrooms", newValues[1].toString());
       } else {
-        params.delete("max_price");
+        params.delete("max_bedrooms");
       }
 
-      // Only reset to first page when price VALUES actually change
+      // Only reset to first page when bedroom VALUES actually change
       const previousValues = previousValuesRef.current;
       const valuesChanged =
         !previousValues ||
@@ -69,49 +69,30 @@ export function PriceSlider({ priceRange }: { priceRange: Ranges["price"] }) {
   };
 
   useEffect(() => {
-    const minPrice = searchParams.get("min_price");
-    const maxPrice = searchParams.get("max_price");
+    const minBedrooms = searchParams.get("min_bedrooms");
+    const maxBedrooms = searchParams.get("max_bedrooms");
 
     const newValues: [number, number] = [
-      minPrice ? parseInt(minPrice) : priceRange.min,
-      maxPrice ? parseInt(maxPrice) : priceRange.max,
+      minBedrooms ? parseInt(minBedrooms) : bedroomRange.min,
+      maxBedrooms ? parseInt(maxBedrooms) : bedroomRange.max,
     ];
 
     setSliderValues(newValues);
-  }, [searchParams, priceRange.min, priceRange.max]);
+  }, [searchParams, bedroomRange.min, bedroomRange.max]);
 
   // Check if values are different from defaults
   const isFiltered =
-    sliderValues[0] !== priceRange.min || sliderValues[1] !== priceRange.max;
+    sliderValues[0] !== bedroomRange.min ||
+    sliderValues[1] !== bedroomRange.max;
 
   const getDisplayText = () => {
     if (!isFiltered) {
-      return "Price Range";
+      return "Bedrooms";
     }
     if (sliderValues[0] === sliderValues[1]) {
-      return (
-        <PriceFormat
-          amount={sliderValues[0]}
-          currency={CURRENCY}
-          className="font-normal"
-        />
-      );
+      return `${sliderValues[0]} bedroom${sliderValues[0] === 1 ? "" : "s"}`;
     }
-    return (
-      <span className="flex items-center gap-1">
-        <PriceFormat
-          amount={sliderValues[0]}
-          currency={CURRENCY}
-          className="font-normal"
-        />
-        <span>-</span>
-        <PriceFormat
-          amount={sliderValues[1]}
-          currency={CURRENCY}
-          className="font-normal"
-        />
-      </span>
-    );
+    return `${sliderValues[0]} - ${sliderValues[1]} bedrooms`;
   };
 
   return (
@@ -132,22 +113,14 @@ export function PriceSlider({ priceRange }: { priceRange: Ranges["price"] }) {
           <div className="space-y-4">
             <div className="space-y-4">
               <div className="flex items-center justify-between text-sm text-gray-500">
-                <PriceFormat
-                  amount={sliderValues[0]}
-                  currency={CURRENCY}
-                  className="font-normal"
-                />
-                <PriceFormat
-                  amount={sliderValues[1]}
-                  currency={CURRENCY}
-                  className="font-normal"
-                />
+                <span>{sliderValues[0]}</span>
+                <span>{sliderValues[1]}</span>
               </div>
               <Slider
-                defaultValue={[priceRange.min, priceRange.max]}
-                min={priceRange.min}
-                max={priceRange.max}
-                step={PRICE_SLIDER_STEP}
+                defaultValue={[bedroomRange.min, bedroomRange.max]}
+                min={bedroomRange.min}
+                max={bedroomRange.max}
+                step={1}
                 onValueChange={(values) => {
                   setSliderValues([values[0], values[1]]);
                 }}
