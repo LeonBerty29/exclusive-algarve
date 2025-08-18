@@ -1,9 +1,22 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Checkbox } from "@/components/ui/checkbox-two";
-import { Label } from "@/components/ui/label";
+import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { PropertyMetadata } from "@/types/property";
 
 export function PropertyTypes({
@@ -11,9 +24,9 @@ export function PropertyTypes({
 }: {
   typologies: PropertyMetadata["typologies"];
 }) {
-  // console.log("Rendering <PropertyTypes />");
   const router = useRouter();
   const searchParams = useSearchParams();
+  const [open, setOpen] = useState(false);
 
   // Get initial selected types from URL (comma-separated values)
   const getInitialTypes = (): string[] => {
@@ -40,17 +53,15 @@ export function PropertyTypes({
     router.replace(`?${params.toString()}`, { scroll: false });
   };
 
-  const handleCheckboxChange = (itemId: string, checked: boolean | string) => {
+  const handleSelect = (typologyId: string) => {
     let newSelection: string[];
 
-    if (checked) {
-      // Add to selection if not already present
-      newSelection = selectedItems.includes(itemId)
-        ? selectedItems
-        : [...selectedItems, itemId];
-    } else {
+    if (selectedItems.includes(typologyId)) {
       // Remove from selection
-      newSelection = selectedItems.filter((id) => id !== itemId);
+      newSelection = selectedItems.filter((id) => id !== typologyId);
+    } else {
+      // Add to selection
+      newSelection = [...selectedItems, typologyId];
     }
 
     setSelectedItems(newSelection);
@@ -64,46 +75,58 @@ export function PropertyTypes({
       ? typologyParam.split(",").filter(Boolean)
       : [];
     setSelectedItems(currentTypes);
-  }, [searchParams]); // Convert to string for stable comparison
+  }, [searchParams]);
 
   return (
     <div className="space-y-4">
-      {typologies.map((typology, index) => (
-        <div
-          key={`${typology.id}-${index}`}
-          className="flex justify-between items-center"
-        >
-          <div className="flex items-center space-x-3">
-            <Checkbox
-              id={`${typology.id}-${index}`}
-              checked={selectedItems.includes(typology.id.toString())}
-              onCheckedChange={(checked) =>
-                handleCheckboxChange(typology.id.toString(), checked)
-              }
-              className={cn(
-                "rounded-[3px] data-[state=checked]:!bg-primary data-[state=checked]:!border-primary bg-gray-400/70 border-gray-400/70",
-                selectedItems.includes(typology.id.toString()) &&
-                  "font-bold bg-primary"
-              )}
-              alwaysShowCheck={true}
-              checkIconColor="white"
-            />
-            <Label
-              htmlFor={`${typology.id}-${index}`}
-              className={cn(
-                "text-sm font-normal text-neutral-500",
-                selectedItems.includes(typology.id.toString()) &&
-                  "font-bold text-primary"
-              )}
-            >
-              {typology.name}
-            </Label>
-          </div>
-          <span className="text-sm font-bold">
-            {/* You'll need to add total count to your typology data */}
-          </span>
-        </div>
-      ))}
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          <Button
+            variant="outline"
+            role="combobox"
+            aria-expanded={open}
+            className="w-full min-h-[40px] justify-between text-left font-normal overflow-hidden text-gray-600"
+          >
+            {selectedItems.length === 0 ? (
+              "Select property types..."
+            ) : (
+              <span className="text-gray-900">
+                {`${selectedItems.length} property type${
+                  selectedItems.length === 1 ? "" : "s"
+                } selected`}
+              </span>
+            )}
+            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-80 p-0" align="start">
+          <Command>
+            <CommandInput placeholder="Search property types..." />
+            <CommandList>
+              <CommandEmpty>No property types found.</CommandEmpty>
+              <CommandGroup>
+                {typologies.map((typology) => (
+                  <CommandItem
+                    key={typology.id}
+                    value={typology.name}
+                    onSelect={() => handleSelect(typology.id.toString())}
+                  >
+                    <Check
+                      className={cn(
+                        "mr-2 h-4 w-4",
+                        selectedItems.includes(typology.id.toString())
+                          ? "opacity-100"
+                          : "opacity-0"
+                      )}
+                    />
+                    {typology.name}
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            </CommandList>
+          </Command>
+        </PopoverContent>
+      </Popover>
     </div>
   );
 }

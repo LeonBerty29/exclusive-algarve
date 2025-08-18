@@ -1,7 +1,7 @@
 import { ProductCard } from "@/components/product/product-card";
 import { PropertiesPagination } from "@/components/property/properties-pagination";
 import SearchHeader from "@/components/search/search-header";
-import SideFilters from "@/components/search/side-filters";
+// import SideFilters from "@/components/search/side-filters";
 import {
   // getPropertiesWithAll,
   getPropertiesWithAllPaginated,
@@ -16,6 +16,7 @@ import {
 } from "@/components/property/loading-states";
 import { auth } from "@/auth";
 import { getFavorites } from "@/data/favourites";
+// import HeroSearch from "@/components/home/search-component";
 
 // interface PropertiesPageProps {
 //   searchParams: PropertySearchParams;
@@ -37,6 +38,7 @@ export default async function PropertiesPage(props: PageProps) {
     search: searchParams.search,
     location_area: searchParams.location_area,
     municipality: searchParams.municipality,
+    zone: searchParams.zone,
     district: searchParams.district,
     min_price: searchParams.min_price,
     max_price: searchParams.max_price,
@@ -68,6 +70,7 @@ export default async function PropertiesPage(props: PageProps) {
     search: apiParams.search,
     location: apiParams.location_area,
     municipality: apiParams.municipality,
+    zone: apiParams.zone,
     district: apiParams.district,
     min_price: apiParams.min_price,
     max_price: apiParams.max_price,
@@ -101,7 +104,7 @@ export default async function PropertiesPage(props: PageProps) {
   return (
     <>
       <div className="pt-24 w-full">
-        <div className="mb-4 w-full">
+        <div className="w-full">
           <Suspense fallback={<SearchHeaderSkeleton />}>
             <SearchHeader
               suspenseKey={suspenseKey}
@@ -109,16 +112,21 @@ export default async function PropertiesPage(props: PageProps) {
               // currentPage={propertiesResponse.meta.current_page}
               // totalPages={propertiesResponse.meta.last_page}
             />
+
+            {/* <div className="my-10">
+              <HeroSearch />
+            </div> */}
+
           </Suspense>
         </div>
 
         <div className="2xl:container px-6 sm:px-8 md:px-10 lg:px-14 mx-auto">
           <div className="max-w-[400px] mx-auto sm:max-w-full sm:mx-0 flex items-start flex-wrap pb-8">
-            <div className="w-80 max-h-[calc(100vh-6rem)] overflow-y-auto sticky top-24 hidden xl:block">
+            {/* <div className="w-80 max-h-[calc(100vh-6rem)] overflow-y-auto sticky top-24 hidden xl:block">
               <SideFilters suspenseKey={suspenseKey} />
-            </div>
+            </div> */}
 
-            <div className="xl:pl-6 flex-1 md:min-w-[400px]">
+            <div className="flex-1 md:min-w-[400px] mt-6">
               <Suspense
                 key={`${suspenseKey} --properties`}
                 fallback={<PropertiesGridSkeleton />}
@@ -160,7 +168,7 @@ async function PropertieList({
 
   const properties = propertiesResponse.data;
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+    <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-5">
       {properties.length > 0 ? (
         properties.map((property) => (
           <div key={property.id} className="">

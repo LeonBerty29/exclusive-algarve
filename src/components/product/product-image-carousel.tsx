@@ -57,7 +57,7 @@ const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
             <CarouselItem key={`${item}--${index}`} className="p-0">
               <div className="relative w-full h-full">
                 {/* Image layer */}
-                <div className="relative w-full aspect-4/3 lg:aspect-video overflow-hidden">
+                <div className="relative w-full aspect-4/3 overflow-hidden">
                   <Image
                     src={getProxiedImageUrl(item)}
                     alt="Image of our property"
@@ -72,8 +72,8 @@ const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
         </CarouselContent>
 
         {/* Control buttons */}
-        <CarouselPrevious className="h-[28px] w-[28px] absolute left-0 top-1/2 -translate-y-1/2 hover:bg-gray-300 backdrop-blur-sm z-30 rounded-none bg-gray-300/75 border-gray-300/75 hover:border-gray-300 " />
-        <CarouselNext className="h-[28px] w-[28px] absolute right-0 top-1/2 -translate-y-1/2 hover:bg-gray-300 backdrop-blur-sm z-30 rounded-none bg-gray-300/75 border-gray-300/75 hover:border-gray-300 " />
+        <CarouselPrevious className="h-[28px] w-[28px] absolute left-0 top-1/2 -translate-y-1/2 hover:bg-gray-300 backdrop-blur-sm z-[10] rounded-none bg-gray-300/75 border-gray-300/75 hover:border-gray-300 " />
+        <CarouselNext className="h-[28px] w-[28px] absolute right-0 top-1/2 -translate-y-1/2 hover:bg-gray-300 backdrop-blur-sm z-[10] rounded-none bg-gray-300/75 border-gray-300/75 hover:border-gray-300 " />
       </Carousel>
     </div>
   );
