@@ -14,8 +14,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
-import { BookMeeting } from "../shared/book-a-meeting";
 import NavbarUserAuth from "../auth/navbar-user-auth";
+import BookMeeting from "../shared/book-meeting";
 
 export default function NavBar({
   colorChange = false,
