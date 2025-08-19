@@ -1,6 +1,8 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useTransition, useEffect } from "react";
 import { Calendar } from "lucide-react";
+import { toast } from "sonner";
+import { ZodError, ZodIssue } from "zod";
 import {
   Dialog,
   DialogContent,
@@ -25,57 +27,74 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { bookVisitAction } from "@/actions/book-visit";
+import { clientBookVisitSchema } from "@/types/book-a-visit";
 
-// Type definitions
+// Client-side form data interface
 interface FormData {
-  firstName: string;
-  lastName: string;
+  first_name: string;
+  last_name: string;
   phone: string;
   email: string;
-  date: Date | null;
-  time: string;
-  message: string;
+  visit_date: Date | null;
+  visit_time: string;
+  additional_text: string;
   acceptTerms: boolean;
+  source_url: string;
 }
 
 interface FormErrors {
-  firstName?: string;
-  lastName?: string;
+  first_name?: string;
+  last_name?: string;
   phone?: string;
   email?: string;
-  date?: string;
-  time?: string;
-  message?: string;
+  visit_date?: string;
+  visit_time?: string;
+  additional_text?: string;
   acceptTerms?: string;
+  source_url?: string;
 }
 
 type FormField = keyof FormData;
 
 const BookVisitDialog: React.FC = () => {
+  const [isPending, startTransition] = useTransition();
+  const [isOpen, setIsOpen] = useState(false);
   const [formData, setFormData] = useState<FormData>({
-    firstName: "",
-    lastName: "",
+    first_name: "",
+    last_name: "",
     phone: "",
     email: "",
-    date: null,
-    time: "",
-    message: "",
+    visit_date: null,
+    visit_time: "",
+    additional_text: "",
     acceptTerms: false,
+    source_url: "",
   });
 
   const [errors, setErrors] = useState<FormErrors>({});
   const [isDatePopoverOpen, setIsDatePopoverOpen] = useState(false);
 
+  // Get current page URL on mount
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setFormData((prev) => ({
+        ...prev,
+        source_url: window.location.href,
+      }));
+    }
+  }, []);
+
   const timeSlots: string[] = [
-    "9:00 AM",
-    "10:00 AM",
-    "11:00 AM",
-    "12:00 PM",
-    "1:00 PM",
-    "2:00 PM",
-    "3:00 PM",
-    "4:00 PM",
-    "5:00 PM",
+    "09:00",
+    "10:00",
+    "11:00",
+    "12:00",
+    "13:00",
+    "14:00",
+    "15:00",
+    "16:00",
+    "17:00",
   ];
 
   const handleInputChange = <T extends FormField>(
@@ -91,65 +110,103 @@ const BookVisitDialog: React.FC = () => {
     if (errors[field]) {
       setErrors((prev) => ({
         ...prev,
-        [field]: undefined,
+        [field]: "",
       }));
     }
   };
 
-  const validateForm = (): boolean => {
-    const newErrors: FormErrors = {};
+  const validateClientForm = (): boolean => {
+    try {
+      clientBookVisitSchema.parse(formData);
+      setErrors({});
+      return true;
+    } catch (error) {
+      const newErrors: FormErrors = {};
 
-    if (!formData.firstName.trim()) {
-      newErrors.firstName = "First name is required";
+      if (error instanceof ZodError) {
+        error.errors.forEach((err: ZodIssue) => {
+          const fieldName = err.path[0] as keyof FormErrors;
+          if (fieldName && typeof fieldName === "string") {
+            newErrors[fieldName] = err.message;
+          }
+        });
+      }
+
+      setErrors(newErrors);
+      return false;
     }
-
-    if (!formData.lastName.trim()) {
-      newErrors.lastName = "Last name is required";
-    }
-
-    if (!formData.phone.trim()) {
-      newErrors.phone = "Phone is required";
-    }
-
-    if (!formData.email.trim()) {
-      newErrors.email = "Email is required";
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "Please enter a valid email address";
-    }
-
-    if (!formData.date) {
-      newErrors.date = "Date is required";
-    }
-
-    if (!formData.time) {
-      newErrors.time = "Time is required";
-    }
-
-    if (!formData.acceptTerms) {
-      newErrors.acceptTerms = "You must accept the terms and conditions";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (): void => {
-    if (validateForm()) {
-      console.log("Form submitted:", formData);
-      alert("Visit booked successfully!");
-
-      // Reset form
-      setFormData({
-        firstName: "",
-        lastName: "",
-        phone: "",
-        email: "",
-        date: null,
-        time: "",
-        message: "",
-        acceptTerms: false,
-      });
+  const handleSubmit = async (): Promise<void> => {
+    // Client-side validation first
+    if (!validateClientForm()) {
+      toast.error("Please fix the form errors before submitting");
+      return;
     }
+
+    const formDataToSubmit = new FormData();
+    formDataToSubmit.append("first_name", formData.first_name);
+    formDataToSubmit.append("last_name", formData.last_name);
+    formDataToSubmit.append("phone", formData.phone);
+    formDataToSubmit.append("email", formData.email);
+    formDataToSubmit.append(
+      "visit_date",
+      formData.visit_date?.toISOString().split("T")[0] || ""
+    );
+    formDataToSubmit.append("visit_time", formData.visit_time);
+    formDataToSubmit.append("additional_text", formData.additional_text);
+    formDataToSubmit.append("source_url", formData.source_url);
+
+    startTransition(async () => {
+      try {
+        const result = await bookVisitAction(formDataToSubmit);
+
+        if (result.success) {
+          toast.success(result.message || "Visit booked successfully!");
+
+          // Reset form
+          setFormData({
+            first_name: "",
+            last_name: "",
+            phone: "",
+            email: "",
+            visit_date: null,
+            visit_time: "",
+            additional_text: "",
+            acceptTerms: false,
+            source_url: formData.source_url, // Keep the source URL
+          });
+          setErrors({});
+          setIsOpen(false);
+        } else {
+          // Handle server validation errors
+          if (result.fieldErrors) {
+            const newErrors: FormErrors = {};
+            Object.entries(result.fieldErrors).forEach(([key, message]) => {
+              // Direct mapping since field names now match
+              const fieldName = key as keyof FormErrors;
+              newErrors[fieldName] = message;
+            });
+            setErrors(newErrors);
+          }
+
+          if (result.errors) {
+            // Handle detailed validation errors from API
+            const errorMessages = Object.entries(result.errors)
+              .map(([field, messages]) => `${field}: ${messages.join(", ")}`)
+              .join("; ");
+            toast.error(`Validation errors: ${errorMessages}`);
+          } else {
+            toast.error(
+              result.message || "Failed to book visit. Please try again."
+            );
+          }
+        }
+      } catch (error) {
+        console.error("Submit error:", error);
+        toast.error("An unexpected error occurred. Please try again.");
+      }
+    });
   };
 
   const handleInputChangeEvent =
@@ -165,13 +222,12 @@ const BookVisitDialog: React.FC = () => {
   };
 
   const handleDateSelect = (date: Date | undefined): void => {
-    handleInputChange("date", date || null);
-    // Close the popover when a date is selected
+    handleInputChange("visit_date", date || null);
     setIsDatePopoverOpen(false);
   };
 
   const handleTimeSelect = (value: string): void => {
-    handleInputChange("time", value);
+    handleInputChange("visit_time", value);
   };
 
   const isDateDisabled = (date: Date): boolean => {
@@ -182,7 +238,7 @@ const BookVisitDialog: React.FC = () => {
 
   return (
     <div className="">
-      <Dialog>
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogTrigger asChild>
           <Button className="bg-primary text-lg px-8 py-5 text-white hover:bg-black/85 transition-all">
             Book Visit
@@ -197,39 +253,41 @@ const BookVisitDialog: React.FC = () => {
             <div className="space-y-4 pr-2">
               <div className="grid grid-cols-1 gap-4">
                 <div>
-                  <Label className="sr-only" htmlFor="firstName">
+                  <Label className="sr-only" htmlFor="first_name">
                     First Name
                   </Label>
                   <Input
-                    id="firstName"
+                    id="first_name"
                     type="text"
-                    value={formData.firstName}
-                    onChange={handleInputChangeEvent("firstName")}
+                    value={formData.first_name}
+                    onChange={handleInputChangeEvent("first_name")}
                     placeholder="First Name*"
-                    className={errors.firstName ? "border-red-500" : ""}
+                    className={errors.first_name ? "border-red-500" : ""}
+                    disabled={isPending}
                   />
-                  {errors.firstName && (
+                  {errors.first_name && (
                     <p className="text-red-500 text-sm mt-1">
-                      {errors.firstName}
+                      {errors.first_name}
                     </p>
                   )}
                 </div>
 
                 <div>
-                  <Label className="sr-only" htmlFor="lastName">
+                  <Label className="sr-only" htmlFor="last_name">
                     Last Name
                   </Label>
                   <Input
-                    id="lastName"
+                    id="last_name"
                     type="text"
-                    value={formData.lastName}
-                    onChange={handleInputChangeEvent("lastName")}
+                    value={formData.last_name}
+                    onChange={handleInputChangeEvent("last_name")}
                     placeholder="Last Name*"
-                    className={errors.lastName ? "border-red-500" : ""}
+                    className={errors.last_name ? "border-red-500" : ""}
+                    disabled={isPending}
                   />
-                  {errors.lastName && (
+                  {errors.last_name && (
                     <p className="text-red-500 text-sm mt-1">
-                      {errors.lastName}
+                      {errors.last_name}
                     </p>
                   )}
                 </div>
@@ -246,6 +304,7 @@ const BookVisitDialog: React.FC = () => {
                   onChange={handleInputChangeEvent("phone")}
                   placeholder="Phone*"
                   className={errors.phone ? "border-red-500" : ""}
+                  disabled={isPending}
                 />
                 {errors.phone && (
                   <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
@@ -263,6 +322,7 @@ const BookVisitDialog: React.FC = () => {
                   onChange={handleInputChangeEvent("email")}
                   placeholder="Email*"
                   className={errors.email ? "border-red-500" : ""}
+                  disabled={isPending}
                 />
                 {errors.email && (
                   <p className="text-red-500 text-sm mt-1">{errors.email}</p>
@@ -279,37 +339,46 @@ const BookVisitDialog: React.FC = () => {
                     <Button
                       variant="outline"
                       className={`w-full justify-start text-left font-normal ${
-                        !formData.date ? "text-gray-500" : ""
-                      } ${errors.date ? "border-red-500" : ""}`}
+                        !formData.visit_date ? "text-gray-500" : ""
+                      } ${errors.visit_date ? "border-red-500" : ""}`}
+                      disabled={isPending}
                     >
                       <Calendar className="mr-2 h-4 w-4" />
-                      {formData.date
-                        ? formData.date.toLocaleDateString()
+                      {formData.visit_date
+                        ? formData.visit_date.toLocaleDateString()
                         : "Pick a date*"}
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0" align="start">
                     <CalendarComponent
                       mode="single"
-                      selected={formData.date || undefined}
+                      selected={formData.visit_date || undefined}
                       onSelect={handleDateSelect}
                       disabled={isDateDisabled}
                       initialFocus
                     />
                   </PopoverContent>
                 </Popover>
-                {errors.date && (
-                  <p className="text-red-500 text-sm mt-1">{errors.date}</p>
+                {errors.visit_date && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.visit_date}
+                  </p>
                 )}
               </div>
 
               <div>
-                <Label className="sr-only" htmlFor="time">
+                <Label className="sr-only" htmlFor="visit_time">
                   Time *
                 </Label>
-                <Select value={formData.time} onValueChange={handleTimeSelect}>
+                <Select
+                  value={formData.visit_time}
+                  onValueChange={handleTimeSelect}
+                  disabled={isPending}
+                >
                   <SelectTrigger
-                    className={errors.time ? "border-red-500 w-full" : "w-full"}
+                    className={
+                      errors.visit_time ? "border-red-500 w-full" : "w-full"
+                    }
                   >
                     <SelectValue placeholder="Select a time*" />
                   </SelectTrigger>
@@ -321,21 +390,24 @@ const BookVisitDialog: React.FC = () => {
                     ))}
                   </SelectContent>
                 </Select>
-                {errors.time && (
-                  <p className="text-red-500 text-sm mt-1">{errors.time}</p>
+                {errors.visit_time && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.visit_time}
+                  </p>
                 )}
               </div>
 
               <div>
-                <Label className="sr-only" htmlFor="message">
+                <Label className="sr-only" htmlFor="additional_text">
                   Message
                 </Label>
                 <Textarea
-                  id="message"
-                  value={formData.message}
-                  onChange={handleInputChangeEvent("message")}
+                  id="additional_text"
+                  value={formData.additional_text}
+                  onChange={handleInputChangeEvent("additional_text")}
                   placeholder="Enter any additional information"
                   rows={3}
+                  disabled={isPending}
                 />
               </div>
 
@@ -346,6 +418,7 @@ const BookVisitDialog: React.FC = () => {
                   checked={formData.acceptTerms}
                   onChange={handleCheckboxChange}
                   className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  disabled={isPending}
                 />
                 <Label
                   htmlFor="acceptTerms"
@@ -362,15 +435,20 @@ const BookVisitDialog: React.FC = () => {
           </div>
 
           <div className="flex justify-end space-x-2 pt-4 flex-shrink-0 border-t mt-4">
-            <DialogTrigger asChild>
-              <Button variant="outline">Cancel</Button>
-            </DialogTrigger>
+            <Button
+              variant="outline"
+              onClick={() => setIsOpen(false)}
+              disabled={isPending}
+            >
+              Cancel
+            </Button>
             <Button
               className="bg-primary text-white hover:bg-black/85 transition-all"
               type="button"
               onClick={handleSubmit}
+              disabled={isPending}
             >
-              Submit
+              {isPending ? "Submitting..." : "Submit"}
             </Button>
           </div>
         </DialogContent>
