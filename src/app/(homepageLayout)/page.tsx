@@ -57,16 +57,20 @@ export default function Home() {
 async function ListFeaturesProperties() {
   const response = await getFeaturedProperties({ featured: true, per_page: 3 });
   const properties = response.data;
+  // console.log({properties})
   return <FeaturedProperties properties={properties} />;
 }
 
 async function ListHouseView() {
   const response = await getPremiumProperties({ premium: true });
   const properties = response.data;
+
+  if (!properties.length) {
+    return <></>
+  }
   const propertyIndex = Math.floor(Math.random() * properties.length);
   const property = properties[propertyIndex];
   return <HouseView property={property} />;
-  return <></>
 }
 
 function FeaturedPropertiesLoading() {
