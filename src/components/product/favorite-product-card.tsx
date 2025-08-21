@@ -49,7 +49,7 @@ export const FavoriteProductCard = async ({
   return (
     <Card className="flex lg:!flex-row gap-0 rounded-none p-0">
       <CardHeader className="w-full lg:w-[50%] xl:w-[44%]  p-0 relative flex flex-col">
-        <ProductImageCarousel imagePaths={imagePaths} />
+        <ProductImageCarousel imagePaths={imagePaths} link={`/properties/${property.id}`} />
         <div className="z-10 absolute top-2 left-2 right-2 flex items-center justify-between gap-3">
           <>
             <div className="flex items-center gap-[6px]">

@@ -42,7 +42,7 @@ const SearchHeader = ({ suspenseKey }: { suspenseKey: string }) => {
             {/* <Image src="/images/search-header-icon.png" alt="" width={25} height={25} /> */}
             <p className="text-sm lg:text-base text-center">
               <b>3,550</b> Properties for sale with{" "}
-              <span className="text-primary font-semibold">Algarve Villa</span>
+              <span className="text-primary font-semibold">Exclusive Algarve Villas</span>
             </p>
           </div>
 

@@ -16,6 +16,9 @@ import {
 } from "@/components/property/loading-states";
 import { auth } from "@/auth";
 import { getFavorites } from "@/data/favourites";
+import { Building2, Search, FilterX, Home } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 // import HeroSearch from "@/components/home/search-component";
 
 // interface PropertiesPageProps {
@@ -112,20 +115,11 @@ export default async function PropertiesPage(props: PageProps) {
               // currentPage={propertiesResponse.meta.current_page}
               // totalPages={propertiesResponse.meta.last_page}
             />
-
-            {/* <div className="my-10">
-              <HeroSearch />
-            </div> */}
-
           </Suspense>
         </div>
 
         <div className="2xl:container px-6 sm:px-8 md:px-10 lg:px-14 mx-auto">
           <div className="max-w-[400px] mx-auto sm:max-w-full sm:mx-0 flex items-start flex-wrap pb-8">
-            {/* <div className="w-80 max-h-[calc(100vh-6rem)] overflow-y-auto sticky top-24 hidden xl:block">
-              <SideFilters suspenseKey={suspenseKey} />
-            </div> */}
-
             <div className="flex-1 md:min-w-[400px] mt-6">
               <Suspense
                 key={`${suspenseKey} --properties`}
@@ -144,6 +138,34 @@ export default async function PropertiesPage(props: PageProps) {
         </div>
       </div>
     </>
+  );
+}
+
+// Helper function to check if any filters are applied
+function hasActiveFilters(params: PropertySearchParams): boolean {
+  return !!(
+    params.search ||
+    params.location_area ||
+    params.municipality ||
+    params.zone ||
+    params.district ||
+    params.min_price ||
+    params.max_price ||
+    params.typology ||
+    params.min_bedrooms ||
+    params.max_bedrooms ||
+    params.min_bathrooms ||
+    params.max_bathrooms ||
+    params.min_area ||
+    params.max_area ||
+    params.min_plot_size ||
+    params.max_plot_size ||
+    params.construction_year_from ||
+    params.construction_year_to ||
+    params.energy_class ||
+    params.agency_id ||
+    params.featured ||
+    (params.show_price !== undefined && params.show_price !== null)
   );
 }
 
@@ -167,6 +189,8 @@ async function PropertieList({
   );
 
   const properties = propertiesResponse.data;
+  const hasFilters = hasActiveFilters(apiParams);
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-5">
       {properties.length > 0 ? (
@@ -177,9 +201,79 @@ async function PropertieList({
         ))
       ) : (
         <div className="col-span-full text-center py-12">
-          <p className="text-gray-500 text-lg">
-            No properties found matching your criteria.
-          </p>
+          <div className="flex items-center justify-center px-4">
+            <div className="max-w-md w-full text-center">
+              {/* Icon with glow effect */}
+              <div className="mb-8 relative">
+                <div className="w-24 h-24 mx-auto relative">
+                  <div className="relative bg-gradient-to-r from-purple-500 to-primary rounded-2xl w-full h-full flex items-center justify-center">
+                    <Building2 className="w-12 h-12 text-white animate-pulse" />
+                  </div>
+                </div>
+                <Search
+                  className="absolute -top-2 -right-4 w-8 h-8 text-black animate-spin"
+                  style={{ animationDuration: "3s" }}
+                />
+              </div>
+
+              {/* Error Message */}
+              <div className="mb-6">
+                <h1 className="text-3xl font-bold text-gray-900 mb-3">
+                  No Properties Found
+                </h1>
+                <p className="text-gray-600 text-lg">
+                  We couldn&apos;t find any properties matching your current search
+                  criteria.
+                </p>
+              </div>
+
+              {/* Conditional Action Buttons */}
+              {hasFilters ? (
+                <div className="space-y-4">
+                  <p className="text-sm text-gray-500 mb-4">
+                    Try clearing your filters to see more results
+                  </p>
+                  <Button
+                    asChild
+                    className="bg-primary hover:bg-black border-primary hover:border-black text-white font-semibold py-3 px-8 rounded-lg border transition-all duration-200 transform hover:scale-105 shadow-md flex items-center justify-center gap-2 mx-auto"
+                  >
+                    <Link href="/properties">
+                      <FilterX className="w-5 h-5" />
+                      Clear All Filters
+                    </Link>
+                  </Button>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <p className="text-sm text-gray-500 mb-4">
+                    No properties are currently available. Try browsing our full
+                    catalog or return home.
+                  </p>
+                  <div className="flex gap-3 justify-center">
+                    <Button
+                      asChild
+                      className="bg-white hover:bg-gray-50 text-gray-700 font-semibold py-3 px-6 rounded-lg border border-gray-200 transition-all duration-200 transform hover:scale-105 shadow-md flex items-center justify-center gap-2"
+                    >
+                      <Link href="/">
+                        <Home className="w-5 h-5" />
+                        Home
+                      </Link>
+                    </Button>
+
+                    <Button
+                      asChild
+                      className="bg-primary hover:bg-black border-primary hover:border-black text-white font-semibold py-3 px-6 rounded-lg border transition-all duration-200 transform hover:scale-105 shadow-md flex items-center justify-center gap-2"
+                    >
+                      <Link href="/properties">
+                        <Search className="w-5 h-5" />
+                        Browse Properties
+                      </Link>
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       )}
     </div>

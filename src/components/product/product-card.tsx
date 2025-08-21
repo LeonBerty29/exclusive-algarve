@@ -45,9 +45,12 @@ export const ProductCard = async ({ property, favorites = [] }: Props) => {
   const showPrice = property.show_price;
 
   return (
-    <Card className="flex flex-col gap-0 rounded-none p-0">
+    <Card className="flex flex-col gap-0 rounded-none p-0 h-full">
       <CardHeader className="p-0 relative w-full flex flex-col">
-        <ProductImageCarousel imagePaths={imagePaths} />
+        <ProductImageCarousel
+          imagePaths={imagePaths}
+          link={`/properties/${property.id}`}
+        />
         <div className="z-10 absolute top-2 left-2 right-2 flex items-center justify-between gap-3">
           <>
             <div className="flex items-center gap-[6px]">
@@ -80,94 +83,101 @@ export const ProductCard = async ({ property, favorites = [] }: Props) => {
           </div>
         )}
       </CardHeader>
-      <CardContent className="p-4">
-        <Link href={`/properties/${property.id}`} className="block space-y-3">
-          <div className="flex justify-between align-center flex-wrap gap-y-2 gap-x-5">
-            {showPrice ? (
-              <PriceFormat
-                amount={property.price}
-                currency={currency}
-                amountStyle="text-primary"
-                formatAmount={false}
-                className="gap-1 text-primary text-xl"
-              />
-            ) : (
-              <span className="text-xl font-semibold flex items-center gap-1 text-primary">
-                Contact for price
-              </span>
-            )}
-          </div>
+      <CardContent className="p-4 flex-1">
+        <Link href={`/properties/${property.id}`} className="flex flex-col gap-3 h-full justify-between">
+          <div>
+            <div className="flex justify-between align-center flex-wrap gap-y-2 gap-x-5">
+              {showPrice ? (
+                <PriceFormat
+                  amount={property.price}
+                  currency={currency}
+                  amountStyle="text-primary"
+                  formatAmount={false}
+                  className="gap-1 text-primary text-xl"
+                />
+              ) : (
+                <span className="text-xl font-semibold flex items-center gap-1 text-primary">
+                  Contact for price
+                </span>
+              )}
+            </div>
 
-          <div
+            {/* <div
             dangerouslySetInnerHTML={{ __html: property.description }}
             className="text-neutral prose lg:prose-base line-clamp-2"
-          />
-
-          <Separator className="mt-2" />
-
-          <div className="flex flex-wrap lg:flex-nowrap justify-between gap-2">
-            <div className="max-w-[47%]">
-              <div>
-                <p className="text-sm font-light text-gray-400 mb-3">
-                  Location
-                </p>
-                <p className="text-sm font-semibold text-black line-clamp-1">
-                  {location}
-                </p>
-              </div>
-            </div>
-
-            <div className="max-w-[52%] min-w-fit flex gap-2">
-              <div className="flex-1 max-w-fit">
-                <p className="text-sm font-light text-gray-400 mb-3">
-                  Gross Area
-                </p>
-                <p className="text-sm text-black font-semibold">
-                  {grossArea} m<sup>2</sup>
-                </p>
-              </div>
-              <div className="flex-1 max-w-fit">
-                <p className="text-sm font-light text-gray-400 mb-3">
-                  Plot Size
-                </p>
-                <p className="text-sm font-semibold text-black">
-                  {plotSize} m<sup>2</sup>
-                </p>
-              </div>
-            </div>
+          /> */}
+            <h3 className="text-gray-500 text-lg line-clamp-2 mt-3">
+              {property.title}
+            </h3>
           </div>
 
-          <div className="flex flex-wrap lg:flex-nowrap justify-between pt-1 gap-2">
-            <div className="w-[47%]">
-              <div className="flex items-center gap-4 h-[40px]">
-                <div className="flex items-center text-sm gap-2">
-                  <MdOutlineLocalHotel className="h-6 w-6 text-gray-500" />
-                  <span className="font-semibold">{amenities.bedrooms}</span>
+          <div>
+            <Separator className="mb-3" />
+
+            <div className="flex flex-wrap justify-between gap-2">
+              <div className="max-w-[47%]">
+                <div>
+                  <p className="text-sm font-light text-gray-400 mb-3">
+                    Location
+                  </p>
+                  <p className="text-sm font-semibold text-black line-clamp-1">
+                    {location}
+                  </p>
                 </div>
-                <div className="flex items-center text-sm gap-2">
-                  <MdOutlineShower className="h-6 w-6 text-gray-500" />
-                  <span className="font-semibold">{amenities.bathrooms}</span>
+              </div>
+
+              <div className="max-w-[52%] min-w-fit flex gap-2">
+                <div className="flex-1 max-w-fit">
+                  <p className="text-sm font-light text-gray-400 mb-3">
+                    Gross Area
+                  </p>
+                  <p className="text-sm text-black font-semibold">
+                    {grossArea} m<sup>2</sup>
+                  </p>
                 </div>
-                <div className="flex items-center text-sm gap-2">
-                  <PiCarLight
-                    className="h-6 w-6 fill-none text-gray-800"
-                    strokeWidth={6}
-                  />
-                  <span className="font-semibold">{amenities.garage}</span>
+                <div className="flex-1 max-w-fit">
+                  <p className="text-sm font-light text-gray-400 mb-3">
+                    Plot Size
+                  </p>
+                  <p className="text-sm font-semibold text-black">
+                    {plotSize} m<sup>2</sup>
+                  </p>
                 </div>
               </div>
             </div>
 
-            {/* <div className='w-[52%] max-w-[140px] min-w[128px]'>
-            {
-              liveVideo && (
-                <Button type='button' className='text-[9px] font-semibold w-full rounded-none bg-black text-white hover:bg-black/90'>
-                  <Play className='h-2 w-2 text-white fill-white' />
-                  LIVE TOUR VIDEO
-                </Button>
-              )
-            }
-          </div> */}
+            <div className="flex flex-wrap lg:flex-nowrap justify-between pt-1 gap-2">
+              <div className="w-[47%]">
+                <div className="flex items-center gap-4 h-[40px]">
+                  <div className="flex items-center text-sm gap-2">
+                    <MdOutlineLocalHotel className="h-6 w-6 text-gray-500" />
+                    <span className="font-semibold">{amenities.bedrooms}</span>
+                  </div>
+                  <div className="flex items-center text-sm gap-2">
+                    <MdOutlineShower className="h-6 w-6 text-gray-500" />
+                    <span className="font-semibold">{amenities.bathrooms}</span>
+                  </div>
+                  <div className="flex items-center text-sm gap-2">
+                    <PiCarLight
+                      className="h-6 w-6 fill-none text-gray-800"
+                      strokeWidth={6}
+                    />
+                    <span className="font-semibold">{amenities.garage}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* <div className='w-[52%] max-w-[140px] min-w[128px]'>
+  {
+    liveVideo && (
+      <Button type='button' className='text-[9px] font-semibold w-full rounded-none bg-black text-white hover:bg-black/90'>
+        <Play className='h-2 w-2 text-white fill-white' />
+        LIVE TOUR VIDEO
+      </Button>
+    )
+  }
+</div> */}
+            </div>
           </div>
         </Link>
       </CardContent>

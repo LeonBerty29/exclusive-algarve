@@ -105,7 +105,7 @@ export default function NavBar({
                 alt="Exclusive Algarve Villas Logo"
                 width={70}
                 height={50}
-                className="object-contain"
+                className="object-contain h-15 w-20"
               />
             </Link>
           </div>
