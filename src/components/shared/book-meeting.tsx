@@ -77,7 +77,7 @@ const BookMeetingDialog: React.FC = () => {
     meetingType: "onsite",
     onsiteLocation: "",
     virtualPlatform: "",
-    acceptTerms: false,
+    acceptTerms: true,
     sourceUrl: "",
   });
 

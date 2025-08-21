@@ -4,6 +4,24 @@ import { NewsletterForm } from "./newsletter-form";
 import { MessageForm } from "./message-us-form";
 import Image from "next/image";
 
+const locations = [
+  {
+    name: "Vilamoura",
+    address: "Av.Tivoli, B, Bloco 3, R/C Esq8125-410 Vilamoura",
+    link: "https://www.google.com/maps/place/Exclusive+Algarve+Villas+-+VILAMOURA+-+Luxury+real+estate+agency/@37.0807699,-8.1157467,570m/data=!3m2!1e3!4b1!4m6!3m5!1s0xd1ab5bd0de9a74d:0x365a6c5338873b2!8m2!3d37.0807699!4d-8.1157467!16s%2Fg%2F11wqrdr6q6?entry=ttu&g_ep=EgoyMDI1MDgxNy4wIKXMDSoASAFQAw%3D%3D",
+  },
+  {
+    name: "Lagoa",
+    address: "R. Ernesto Cabrita, Edif. Vales, Loja A8400-387 Lagoa",
+    link: "https://www.google.com/maps/place/Exclusive+Algarve+Villas+-+Lagoa+(Carvoeiro)+-+Luxury+real+estate+agency/@37.1351626,-8.4588553,570m/data=!3m2!1e3!4b1!4m6!3m5!1s0xd1ad7b9f6406fad:0x1faa9a9dd838f5ba!8m2!3d37.1351626!4d-8.4588553!16s%2Fg%2F11yhj8sl2?entry=ttu&g_ep=EgoyMDI1MDgxNy4wIKXMDSoASAFQAw%3D%3D",
+  },
+  {
+    name: "Lagos",
+    address: "R. Ernesto Cabrita, Edif. Vales, Loja A8400-387 Lagoa",
+    link: "https://www.google.com/maps/place/Exclusive+Algarve+Villas+-+LAGOS+-+Luxury+real+estate+agency/@37.1110648,-8.6814324,570m/data=!3m2!1e3!4b1!4m6!3m5!1s0xd1b31418b50f1e7:0xcff931dc671940b!8m2!3d37.1110648!4d-8.6814324!16s%2Fg%2F11wn7pk_fy?entry=ttu&g_ep=EgoyMDI1MDgxNy4wIKXMDSoASAFQAw%3D%3D",
+  },
+];
+
 const Footer = () => {
   return (
     <div className="bg-neutral-900">
@@ -17,30 +35,18 @@ const Footer = () => {
             <div className="flex items-start flex-wrap gap-4 justify-between gap-y-10">
               <div className="max-w-[285px] min-w-[220px]">
                 <ul className="space-y-6 list-none">
-                  <li>
-                    <h4 className="text-sm text-primary font-light uppercase mb-3">
-                      Vilamoura
-                    </h4>
-                    <p className="text-xs font-light w-full md:w-[80%]">
-                      Av.Tivoli, B, Bloco 3, R/C Esq8125-410 Vilamoura
-                    </p>
-                  </li>
-                  <li>
-                    <h4 className="text-sm text-primary font-light uppercase mb-3">
-                      lagoa
-                    </h4>
-                    <p className="text-xs font-light w-full md:w-[80%]">
-                      R. Ernesto Cabrita, Edif. Vales, Loja A8400-387 Lagoa
-                    </p>
-                  </li>
-                  <li>
-                    <h4 className="text-sm text-primary font-light uppercase mb-3">
-                      lagos
-                    </h4>
-                    <p className="text-xs font-light w-full md:w-[80%]">
-                      R. Ernesto Cabrita, Edif. Vales, Loja A8400-387 Lagoa
-                    </p>
-                  </li>
+                  {locations.map((location, index) => (
+                    <li key={`office--location--key--${index}`}>
+                      <Link href={location.link} target="_blank">
+                        <h4 className="text-sm text-primary font-light uppercase mb-3 hover:underline">
+                          {location.name}
+                        </h4>
+                        <p className="text-xs font-light w-full md:w-[80%] hover:underline">
+                          {location.address}
+                        </p>
+                      </Link>
+                    </li>
+                  ))}
                 </ul>
               </div>
               <div className="min-w-[200px] w-fit max-w-[285px]">
