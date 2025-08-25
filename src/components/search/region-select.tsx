@@ -9,11 +9,16 @@ import {
   CommandGroup,
 } from "@/components/ui/command";
 import { CommandItem } from "@/components/ui/command-two";
+// import {
+//   Popover,
+//   PopoverContent,
+//   PopoverTrigger,
+// } from "@/components/ui/popover";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Check, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -477,8 +482,8 @@ export default function RegionSelect({ metadata }: RegionSelectProps) {
 
   return (
     <div className="w-full">
-      <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
+      <DropdownMenu open={open} onOpenChange={setOpen}>
+        <DropdownMenuTrigger asChild>
           <Button
             variant="outline"
             role="combobox"
@@ -496,8 +501,11 @@ export default function RegionSelect({ metadata }: RegionSelectProps) {
             </div>
             <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-80 p-0" align="start">
+        </DropdownMenuTrigger>
+        <DropdownMenuContent
+          className="w-80 p-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']"
+          align="start"
+        >
           <Command>
             <CommandInput placeholder="Search locations..." />
             <CommandList>
@@ -513,7 +521,7 @@ export default function RegionSelect({ metadata }: RegionSelectProps) {
                       value={optionKey} // Use unique key as value to fix hover issue
                       onSelect={() => {
                         handleLocationSelect(option);
-                        // Don't close the popover to allow multiple selections
+                        // Don't close the DropdownMenu to allow multiple selections
                       }}
                       className={cn(
                         "flex items-center justify-between cursor-pointer",
@@ -539,8 +547,8 @@ export default function RegionSelect({ metadata }: RegionSelectProps) {
               </CommandGroup>
             </CommandList>
           </Command>
-        </PopoverContent>
-      </Popover>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   );
 }

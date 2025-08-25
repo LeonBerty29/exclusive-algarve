@@ -58,6 +58,10 @@ export interface Property {
     videos: PropertyVideo[] | null;
     virtual_tours: VirtualTour[];
   };
+  sales_consultant: {
+    name: string;
+    profile_picture: string;
+  };
   driving_distances: DrivingDistance[];
   similar_properties: number[];
   created_at: string;

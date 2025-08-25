@@ -17,6 +17,7 @@ import { toast } from "sonner";
 import { ZodError, ZodIssue } from "zod";
 import { contactAgentAction } from "@/actions/contact-agent";
 import { clientContactAgentSchema } from "@/types/contact-agent";
+import { Property } from "@/types/property";
 
 // Client-side form data interface
 interface FormData {
@@ -43,7 +44,11 @@ interface FormErrors {
 
 type FormField = keyof FormData;
 
-const ContactAgentForm = () => {
+const ContactAgentForm = ({
+  salesConsultant,
+}: {
+  salesConsultant: Property["sales_consultant"];
+}) => {
   const [isPending, startTransition] = useTransition();
   const [formData, setFormData] = useState<FormData>({
     firstName: "",
@@ -51,7 +56,7 @@ const ContactAgentForm = () => {
     phone: "",
     email: "",
     message: "",
-    primaryContactChannel: "",
+    primaryContactChannel: "Email",
     acceptTerms: true,
     sourceUrl: "",
   });
@@ -67,12 +72,6 @@ const ContactAgentForm = () => {
       }));
     }
   }, []);
-
-  const agent = {
-    name: "Sarah Johnson",
-    role: "Sales Consultant Responsible for this listing",
-    image: "/images/team/carolina.jpg",
-  };
 
   const contactChannels = ["Email", "Phone", "Whatsapp", "SMS"];
 
@@ -217,17 +216,21 @@ const ContactAgentForm = () => {
       {/* Agent Info */}
       <div className="flex items-center gap-4 mb-6">
         <div className="w-16 h-16 rounded-full overflow-hidden bg-gray-700 flex-shrink-0">
-          <Image
-            src={agent.image}
-            alt={agent.name}
-            width={64}
-            height={64}
-            className="w-full h-full object-cover"
-          />
+          {salesConsultant.profile_picture && (
+            <Image
+              src={salesConsultant.profile_picture}
+              alt={salesConsultant.name}
+              width={64}
+              height={64}
+              className="w-full h-full object-cover"
+            />
+          )}
         </div>
         <div>
-          <h3 className="text-lg font-bold text-white">{agent.name}</h3>
-          <p className="text-sm text-gray-300">{agent.role}</p>
+          <h3 className="text-lg font-bold text-white">
+            {salesConsultant.name}
+          </h3>
+          <p className="text-sm text-gray-300">Request more information</p>
         </div>
       </div>
 

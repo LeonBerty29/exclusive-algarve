@@ -22,7 +22,11 @@ export const clientContactAgentSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
   message: z.string().optional(),
   primaryContactChannel: z
-    .enum(["Email", "Phone", "Whatsapp", "SMS"])
+    .enum(["Email", "Phone", "Whatsapp", "SMS"], {
+      required_error: "Please select a primary contact channel",
+      invalid_type_error: "Please select a valid primary contact channel",
+      message: "Please select a valid primary contact channel",
+    })
     .optional(),
   acceptTerms: z.boolean().refine((val) => val === true, {
     message: "You must accept the terms and conditions",

@@ -222,7 +222,7 @@ const PageContent = async (props: Props) => {
 
             <div className="w-full lg:flex lg:w-[37%] xl:w-[30%] flex-col pt-4">
               <div className="bg-black text-white w-full p-6">
-                <ContactAgentForm />
+                <ContactAgentForm salesConsultant={property.sales_consultant} />
               </div>
             </div>
           </div>

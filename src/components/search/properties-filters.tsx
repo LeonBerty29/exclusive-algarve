@@ -1,14 +1,17 @@
 import React, { Suspense } from "react";
 import RegionSelect from "@/components/search/region-select";
-import { PriceSlider } from "@/components/search/price-slider-2";
+// import { PriceSlider } from "@/components/search/price-slider-2";
 import { PropertyTypes } from "@/components/property/property-types";
 // import StatusTags from "./status-tags";
 import { SearchInput } from "./search-input";
 import { Skeleton } from "../ui/skeleton";
 import { getMetadata, getRanges } from "@/data/properties-metada";
-import { BathroomSlider } from "./bathrooms-slider";
-import { BedroomsSlider } from "./bedrooms-slider";
+// import { BathroomSlider } from "./bathrooms-slider";
+// import { BedroomsSlider } from "./bedrooms-slider";
 import { CollapsibleFilters } from "./collapsible-filters";
+import { PriceSelect } from "./price-select";
+import { BedroomsDropdown } from "./bedroom-select";
+import { BathroomsDropdown } from "./bathroom-select";
 
 export const PropertiesFilter = ({ suspenseKey }: { suspenseKey: string }) => {
   return (
@@ -77,7 +80,7 @@ async function ListPropertyTypes() {
 async function ListPriceSlider() {
   const ranges = await getRanges();
   const priceRange = ranges.price;
-  return <PriceSlider priceRange={priceRange} />;
+  return <PriceSelect priceRange={priceRange} />;
 }
 
 // async function ListAreaSlider() {
@@ -90,7 +93,7 @@ export async function ListBedroomsRangeSelect() {
   const ranges = await getRanges();
   const bedroomRange = ranges.bedrooms; // Fixed: was using ranges.price
   // return <BedroomsRangeSelect bedroomRange={bedroomRange} />;
-  return <BedroomsSlider bedroomRange={bedroomRange} />;
+  return <BedroomsDropdown bedroomRange={bedroomRange} />;
 }
 
 export async function ListRegionSelect() {
@@ -102,5 +105,5 @@ export async function ListBathroomsRangeSelect() {
   const ranges = await getRanges();
   const bathroomRange = ranges.bathrooms;
   // return <BathroomsRangeSelect bathroomRange={bathroomRange} />;
-  return <BathroomSlider bathroomRange={bathroomRange} />;
+  return <BathroomsDropdown bathroomRange={bathroomRange} />;
 }

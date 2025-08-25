@@ -19,6 +19,8 @@ import { getFavorites } from "@/data/favourites";
 import { Building2, Search, FilterX, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { ListFilter } from "lucide-react";
+import { SortBy } from "@/components/search/sort-by";
 // import HeroSearch from "@/components/home/search-component";
 
 // interface PropertiesPageProps {
@@ -119,6 +121,12 @@ export default async function PropertiesPage(props: PageProps) {
         </div>
 
         <div className="2xl:container px-6 sm:px-8 md:px-10 lg:px-14 mx-auto">
+          <div className="flex items-center gap-1 md:gap-4 justify-end">
+            <div className="flex items-center gap-2 text-xs md:text-sm">
+              <ListFilter className="w-4 h-4 hidden sm:block" /> Sort by:
+            </div>
+            <SortBy />
+          </div>
           <div className="max-w-[400px] mx-auto sm:max-w-full sm:mx-0 flex items-start flex-wrap pb-8">
             <div className="flex-1 md:min-w-[400px] mt-6">
               <Suspense
@@ -222,8 +230,8 @@ async function PropertieList({
                   No Properties Found
                 </h1>
                 <p className="text-gray-600 text-lg">
-                  We couldn&apos;t find any properties matching your current search
-                  criteria.
+                  We couldn&apos;t find any properties matching your current
+                  search criteria.
                 </p>
               </div>
 

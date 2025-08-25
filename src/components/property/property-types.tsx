@@ -12,11 +12,17 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
+// import {
+//   Popover,
+//   PopoverContent,
+//   PopoverTrigger,
+// } from "@/components/ui/popover";
+
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { PropertyMetadata } from "@/types/property";
 
 export function PropertyTypes({
@@ -79,8 +85,8 @@ export function PropertyTypes({
 
   return (
     <div className="space-y-4">
-      <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
+      <DropdownMenu open={open} onOpenChange={setOpen}>
+        <DropdownMenuTrigger asChild>
           <Button
             variant="outline"
             role="combobox"
@@ -98,8 +104,11 @@ export function PropertyTypes({
             )}
             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-80 p-0" align="start">
+        </DropdownMenuTrigger>
+        <DropdownMenuContent
+          className="w-80 p-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']"
+          align="start"
+        >
           <Command>
             <CommandInput placeholder="Search property types..." />
             <CommandList>
@@ -125,8 +134,8 @@ export function PropertyTypes({
               </CommandGroup>
             </CommandList>
           </Command>
-        </PopoverContent>
-      </Popover>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   );
 }

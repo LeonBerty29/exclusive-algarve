@@ -28,7 +28,7 @@ export const register = async (
   const newsletter = false;
 
   try {
-    const endpoint = `/user/register`;
+    const endpoint = `/client/register`;
     const config: RequestInit = {
       method: "POST",
       headers: {
@@ -48,6 +48,8 @@ export const register = async (
 
     const response: Response = await fetch(url, config);
 
+    // console.log({response})
+
     if (!response.ok) {
       const errorText = await response.text();
       // console.log({ errorText });
@@ -62,6 +64,8 @@ export const register = async (
           last_name: "",
           password_confirmation: "",
         };
+
+        // console.log({errorText})
 
         const responseErros = JSON.parse(errorText);
         const errorObject = responseErros.errors;

@@ -36,7 +36,7 @@ const sortOptions = [
   },
 ];
 
-const SortBy = () => {
+export const SortBy = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -109,5 +109,3 @@ const SortBy = () => {
     </Select>
   );
 };
-
-export default SortBy;
