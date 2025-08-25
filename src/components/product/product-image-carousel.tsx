@@ -27,7 +27,7 @@ const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
 
   const plugin = useRef(
     Autoplay({
-      delay: 2000,
+      delay: 4000,
       stopOnMouseEnter: true,
     })
   );

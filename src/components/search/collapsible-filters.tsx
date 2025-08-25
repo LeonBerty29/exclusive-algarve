@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { ChevronDown, ChevronUp, Filter, X } from "lucide-react";
+import { ChevronDown, ChevronUp, Filter, Search, X } from "lucide-react";
 import React from "react";
 import {
   Sheet,
@@ -26,7 +26,7 @@ export const CollapsibleFilters = ({
   const [isFixed, setIsFixed] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isTablet, setIsTablet] = useState(false);
-  const [isHidden, setIsHidden] = useState(false); // New state for hiding sticky menu
+  const [isHidden, setIsHidden] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const [originalTop, setOriginalTop] = useState<number>(0);
 
@@ -42,6 +42,13 @@ export const CollapsibleFilters = ({
   const currentVisibleCount = getVisibleCount();
   const visibleFilters = childrenArray.slice(0, currentVisibleCount);
   const hiddenFilters = childrenArray.slice(currentVisibleCount);
+
+  // Click handler to toggle showing all filters
+  const handleToggleFilters = () => {
+    if (!isMobile) {
+      setShowAll(!showAll);
+    }
+  };
 
   useEffect(() => {
     const checkScreenSize = () => {
@@ -79,21 +86,14 @@ export const CollapsibleFilters = ({
     return () => window.removeEventListener("scroll", handleScroll);
   }, [isFixed, originalTop, isMobile]);
 
-  // Reset hidden state when not fixed
-  // useEffect(() => {
-  //   if (!isFixed) {
-  //     setIsHidden(false);
-  //   }
-  // }, [isFixed]);
-
   // Mobile Sheet Component
   const MobileFilterSheet = () => (
     <div className="md:hidden">
       <Sheet>
         <SheetTrigger asChild>
           <Button variant="outline" className="w-full">
-            <Filter className="w-4 h-4 mr-2" />
-            Filters
+            <Search className="w-4 h-4 mr-2" />
+            Search
           </Button>
         </SheetTrigger>
         <SheetContent side="bottom" className="h-[90vh] p-5 overflow-y-auto">
@@ -198,7 +198,7 @@ export const CollapsibleFilters = ({
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <button
-                        onClick={() => setShowAll(!showAll)}
+                        onClick={handleToggleFilters}
                         className="flex items-center gap-2 px-0 py-0 text-sm font-medium text-gray-700 bg-transparent border-none rounded-md transition-colors hover:text-gray-900"
                       >
                         {showAll ? (
@@ -250,7 +250,7 @@ export const CollapsibleFilters = ({
             {hiddenFilters.length > 0 && (
               <div className="flex justify-center mt-2">
                 <button
-                  onClick={() => setShowAll(!showAll)}
+                  onClick={handleToggleFilters}
                   className="flex items-center gap-2 px-0 py-0 text-sm font-medium text-gray-700 bg-transparent border-none rounded-md transition-colors hover:text-gray-900"
                 >
                   {showAll ? (

@@ -5,7 +5,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 export const PropertyCardSkeleton = () => (
   <div className="bg-white rounded-lg shadow-md overflow-hidden">
     <div className="relative">
-      <Skeleton className="w-full h-48" />
+      <Skeleton className="w-full aspect-4/3" />
       <div className="absolute top-3 right-3">
         <Skeleton className="w-8 h-8 rounded-full" />
       </div>

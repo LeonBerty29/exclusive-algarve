@@ -7,9 +7,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Button } from "../ui/button";
-import { ListFilter, } from "lucide-react";
 import FilterTags from "./filter-tags";
-import SortBy from "./sort-by";
 import { PropertiesFilter } from "./properties-filters";
 
 const SearchHeader = ({ suspenseKey }: { suspenseKey: string }) => {
@@ -42,15 +40,10 @@ const SearchHeader = ({ suspenseKey }: { suspenseKey: string }) => {
             {/* <Image src="/images/search-header-icon.png" alt="" width={25} height={25} /> */}
             <p className="text-sm lg:text-base text-center">
               <b>3,550</b> Properties for sale with{" "}
-              <span className="text-primary font-semibold">Exclusive Algarve Villas</span>
+              <span className="text-primary font-semibold">
+                Exclusive Algarve Villas
+              </span>
             </p>
-          </div>
-
-          <div className="flex items-center gap-1 md:gap-4">
-            <div className="flex items-center gap-2 text-xs md:text-sm">
-              <ListFilter className="w-4 h-4 hidden sm:block" /> Sort by:
-            </div>
-            <SortBy />
           </div>
         </div>
       </div>

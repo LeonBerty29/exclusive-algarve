@@ -3,6 +3,79 @@ import React from "react";
 import { NewsletterForm } from "./newsletter-form";
 import { MessageForm } from "./message-us-form";
 import Image from "next/image";
+import { FaFacebook, FaInstagram, FaTwitter } from "react-icons/fa";
+
+
+const navigations = [
+  {
+    name: "Home",
+    link: "/",
+  },
+  {
+    name: "Properties",
+    link: "/properties",
+  },
+  {
+    name: "Blog",
+    link: "/blogs",
+  },
+  {
+    name: "About Us",
+    link: "/about-us",
+  },
+  {
+    name: "Terms and Conditions",
+    link: "/terms-and-conditions",
+  },
+  // {
+  //   name: "Privacy Policy",
+  //   link: "/privacy-policy",
+  // },
+  // {
+  //   name: "Cookie Policy",
+  //   link: "/cookie-policy",
+  // },
+];
+const resources = [
+  {
+    name: "Become a vendor",
+    link: "/become-a-vendor",
+  },
+  {
+    name: "Portugal properties taxes",
+    link: "/yearly-property-taxes",
+  },
+  {
+    name: "Buying process",
+    link: "/buying-process",
+  },
+  {
+    name: "Digital Nomad Visa",
+    link: "/digital-nomad-visa",
+  },
+  {
+    name: "Golden Visa Program",
+    link: "/golden-visa-program",
+  },
+];
+
+const socialMediaplatforms = [
+  {
+    name: "Facebook",
+    link: "#",
+    icon: FaFacebook,
+  },
+  {
+    name: "Instagram",
+    link: "#",
+    icon: FaInstagram,
+  },
+  {
+    name: "Twitter",
+    link: "#",
+    icon: FaTwitter,
+  },
+];
 
 const locations = [
   {
@@ -54,26 +127,16 @@ const Footer = () => {
                   Navigation
                 </h4>
                 <ul className="space-y-4 list-none">
-                  <li>
-                    <Link href="/" className="text-xs font-light">
-                      Home
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="/properties" className="text-xs font-light">
-                      Properties
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="/about-us" className="text-xs font-light">
-                      About Us
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="/blogs" className="text-xs font-light">
-                      Blog
-                    </Link>
-                  </li>
+                  {navigations.map((navigation, index) => (
+                    <li key={`navigation--key--${index}`}>
+                      <Link
+                        href={navigation.link}
+                        className="text-xs font-light"
+                      >
+                        {navigation.name}
+                      </Link>
+                    </li>
+                  ))}
                 </ul>
               </div>
               <div className="min-w-[200px] w-fit max-w-[285px]">
@@ -81,47 +144,33 @@ const Footer = () => {
                   Resources
                 </h4>
                 <ul className="space-y-4 list-none">
-                  <li>
-                    <Link
-                      href="/become-a-vendor"
-                      className="text-xs font-light"
-                    >
-                      Become a vendor
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/yearly-property-taxes"
-                      className="text-xs font-light"
-                    >
-                      Portugal properties taxes
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="/buying-process" className="text-xs font-light">
-                      Buying process
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/digital-nomad-visa"
-                      className="text-xs font-light"
-                    >
-                      Digital Nomad Visa
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/golden-visa-program"
-                      className="text-xs font-light"
-                    >
-                      Golden Visa Program
-                    </Link>
-                  </li>
+                  {resources.map((resource, index) => (
+                    <li key={`resource--key--${index}`}>
+                      <Link href={resource.link} className="text-xs font-light">
+                        {resource.name}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="min-w-[200px] w-fit max-w-[285px]">
+                <h4 className="text-sm text-primary font-light uppercase mb-3">
+                  Social Media
+                </h4>
+                <ul className="space-y-4 list-none">
+                  {socialMediaplatforms.map((socialMediaplatform, index) => (
+                    <li key={`social--media--key--${index}`}>
+                      <Link href={socialMediaplatform.link} className="text-xs font-light flex items-center gap-2">
+                        <socialMediaplatform.icon />
+                        {socialMediaplatform.name}
+                      </Link>
+                    </li>
+                  ))}
                 </ul>
               </div>
             </div>
           </div>
+
           <div className="max-w-[430px] w-full">
             <h3 className="mb-5 font-light text-xl md:text-2xl lg:text-3xl uppercase">
               Subscribe to our NewsLETTERS

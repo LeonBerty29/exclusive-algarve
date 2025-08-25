@@ -4,7 +4,6 @@ import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { Play, Pause } from "lucide-react";
 import { cn } from "@/lib/utils";
-import HeroSearch from "./search-component";
 import { Button } from "../ui/button";
 import Link from "next/link";
 import Image from "next/image";
@@ -15,7 +14,11 @@ const videos = [
   "/videos/hero-video-3.mp4",
 ];
 
-export default function HeroSection() {
+export default function HeroSection({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const [currentVideo, setCurrentVideo] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMobile, setIsMobile] = useState<boolean | null>(null);
@@ -58,9 +61,7 @@ export default function HeroSection() {
       <section className="relative h-screen w-full overflow-hidden bg-gray-900">
         <div className="absolute inset-0 bg-black/40" />
         <div className="absolute left-1/2 top-1/2 -translate-y-1/2 w-full max-w-7xl -translate-x-1/2 px-4">
-          <div className="glassmorphism rounded-xl p-6">
-            <HeroSearch />
-          </div>
+          <div className="glassmorphism rounded-xl p-6">{children}</div>
           <Button className="bg-primary text-white hover:bg-primary/80 transition-all !mx-auto block">
             <Link href="/properties">ALL PROPERTIES</Link>
           </Button>
@@ -70,7 +71,7 @@ export default function HeroSection() {
   }
 
   return (
-    <section className="relative h-screen w-full overflow-hidden">
+    <section className="relative min-h-screen w-full overflow-hidden">
       {/* Mobile: Single Image */}
       {isMobile ? (
         <div className="absolute inset-0">
@@ -163,9 +164,7 @@ export default function HeroSection() {
       )}
 
       <div className="absolute left-1/2 top-1/2 -translate-y-1/2 w-full max-w-7xl -translate-x-1/2 px-4">
-        <div className="glassmorphism rounded-xl p-6">
-          <HeroSearch />
-        </div>
+        <div className="glassmorphism rounded-xl p-6">{children}</div>
 
         <Button className="bg-white text-black hover:bg-black hover:text-white transition-all !mx-auto block">
           <Link href="/properties">ALL PROPERTIES</Link>

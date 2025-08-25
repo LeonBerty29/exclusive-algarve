@@ -59,6 +59,7 @@ export function AddToFavoriteButton({
       {!isFavourite && (
         <form action={formAction}>
           <input type="hidden" name="propertyId" value={propertyId} />
+          <input type="hidden" name="reference" value={reference} />
           <input type="hidden" name="pathName" value={pathname} />
 
           {isPending ? (

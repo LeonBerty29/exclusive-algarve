@@ -32,7 +32,7 @@ const FilterTags = () => {
 
   // Function to clear all filters
   const clearAllFilters = () => {
-    router.replace("/properties");
+    router.push("/properties");
   };
 
   // Function to get icon for filter type

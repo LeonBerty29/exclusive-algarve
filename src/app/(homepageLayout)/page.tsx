@@ -11,11 +11,32 @@ import { Suspense } from "react";
 import { RecentListingLoading } from "@/components/home/recent-listing-loading";
 import { getFeaturedProperties, getPremiumProperties } from "@/data/properties";
 import { Skeleton } from "@/components/ui/skeleton";
+// import HeroSearch from "@/components/home/search-component";
+// import { PropertiesFilter } from "@/components/search/properties-filters";
+import { HomepageSearchEngine } from "@/components/search/homepage-search-engine";
+import { HomepageSearchResult } from "@/components/search/homepage-search-result";
+import { PropertySearchParams } from "@/types/property";
 
-export default function Home() {
+type Params = {
+  [x: string]: string | string[];
+};
+
+interface PageProps {
+  params?: Promise<Params>;
+  searchParams: Promise<PropertySearchParams>;
+}
+
+export default async function Home(props: PageProps) {
+  const searchParams = await props.searchParams;
+
   return (
     <div className="w-full">
-      <HeroSection />
+      <HeroSection>
+        {/* <HeroSearch /> */}
+        <HomepageSearchEngine searchParams={searchParams} />
+      </HeroSection>
+
+      <HomepageSearchResult searchParams={searchParams} />
 
       <div className="">
         <Suspense fallback={<FeaturedPropertiesLoading />}>
@@ -66,7 +87,7 @@ async function ListHouseView() {
   const properties = response.data;
 
   if (!properties.length) {
-    return <></>
+    return <></>;
   }
   const propertyIndex = Math.floor(Math.random() * properties.length);
   const property = properties[propertyIndex];

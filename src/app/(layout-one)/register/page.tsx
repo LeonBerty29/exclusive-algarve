@@ -13,7 +13,7 @@ const RegisterPage = async ({ searchParams }: LoginPageProps) => {
   const params = await searchParams;
   const callbackUrl = params.callbackUrl;
   return (
-    <div className="flex items-center justify-center min-h-screen">
+    <div className="flex items-center justify-center min-h-screen pt-24 pb-8">
       <RegisterForm callbackUrl={callbackUrl} />
     </div>
   );

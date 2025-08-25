@@ -13,7 +13,7 @@ const LoginPage = async ({ searchParams }: LoginPageProps) => {
   const params = await searchParams;
   const callbackUrl = params.callbackUrl;
   return (
-    <div className="flex items-center justify-center min-h-screen">
+    <div className="flex items-center justify-center min-h-screen pt-20 pb-8">
       <LoginForm callbackUrl={callbackUrl} />
     </div>
   );

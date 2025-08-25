@@ -16,6 +16,7 @@ export async function addToFavorite(
   formData: FormData
 ): Promise<ActionState> {
   const propertyId = formData.get("propertyId") as string;
+  const reference = formData.get("reference") as string;
   const pathName = formData.get("pathName") as string;
 
   try {
@@ -42,12 +43,12 @@ export async function addToFavorite(
     }
 
     return {
-      success: `${propertyId} successfully Added to favorites!`,
+      success: `${reference} successfully Added to favorites!`,
     };
   } catch (error) {
     console.error("Add to favorites error:", error);
     return {
-      error: `Failed to add ${propertyId} to favorites`,
+      error: `Failed to add ${reference} to favorites`,
     };
   }
 }
