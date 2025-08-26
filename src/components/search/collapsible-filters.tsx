@@ -98,7 +98,7 @@ export const CollapsibleFilters = ({
         </SheetTrigger>
         <SheetContent side="bottom" className="h-[90vh] p-5 overflow-y-auto">
           <SheetHeader>
-            <SheetTitle>Filters</SheetTitle>
+            <SheetTitle>Search</SheetTitle>
           </SheetHeader>
           <div className="mt-6 space-y-6">
             {childrenArray.map((child, index) => (

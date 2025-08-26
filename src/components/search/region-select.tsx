@@ -278,7 +278,7 @@ export default function RegionSelect({ metadata }: RegionSelectProps) {
     // Reset to first page when location changes
     params.delete("page");
 
-    router.push(`?${params.toString()}`, { scroll: false });
+    router.replace(`?${params.toString()}`);
   };
 
   // Handle location selection/deselection with hierarchical logic

@@ -172,7 +172,7 @@ export function PriceSelect({ priceRange }: { priceRange: Ranges["price"] }) {
     // Reset to first page when filter changes
     params.delete("page");
 
-    router.push(`?${params.toString()}`, { scroll: false });
+    router.replace(`?${params.toString()}`, { scroll: false });
   };
 
   const getDisplayText = () => {

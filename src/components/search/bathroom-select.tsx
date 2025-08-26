@@ -77,7 +77,7 @@ export function BathroomsDropdown({
     // Update the ref with current values
     previousValuesRef.current = newValues;
 
-    router.push(`?${params.toString()}`, { scroll: false });
+    router.replace(`?${params.toString()}`);
   };
 
   useEffect(() => {
