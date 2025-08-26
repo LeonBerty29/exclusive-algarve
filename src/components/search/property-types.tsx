@@ -56,7 +56,7 @@ export function PropertyTypes({
     // Reset to first page when type changes
     params.delete("page");
 
-    router.replace(`?${params.toString()}`, { scroll: false });
+    router.replace(`?${params.toString()}`);
   };
 
   const handleSelect = (typologyId: string) => {

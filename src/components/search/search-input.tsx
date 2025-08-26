@@ -27,7 +27,7 @@ export function SearchInput() {
     // Reset to first page when search changes
     params.delete("page");
 
-    router.push(`?${params.toString()}`, { scroll: false });
+    router.replace(`?${params.toString()}`);
   };
 
   const handleSearch = () => {

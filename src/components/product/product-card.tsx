@@ -106,7 +106,7 @@ export const ProductCard = async ({ property, favorites = [] }: Props) => {
             dangerouslySetInnerHTML={{ __html: property.description }}
             className="text-neutral prose lg:prose-base line-clamp-2"
           /> */}
-            <h3 className="text-gray-500 text-lg line-clamp-2 mt-3">
+            <h3 className="text-gray-500  text-sm md:text-base lg:text-lg line-clamp-2 mt-3">
               {property.title}
             </h3>
           </div>

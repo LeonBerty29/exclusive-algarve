@@ -1,16 +1,8 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { ChevronDown, ChevronUp, Filter, Search, X } from "lucide-react";
+import { ChevronDown, ChevronUp, Filter, X } from "lucide-react";
 import React from "react";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 interface CollapsibleFiltersProps {
@@ -29,6 +21,7 @@ export const CollapsibleFilters = ({
   const [isHidden, setIsHidden] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const [originalTop, setOriginalTop] = useState<number>(0);
+  const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const childrenArray = React.Children.toArray(children);
 
@@ -47,6 +40,35 @@ export const CollapsibleFilters = ({
   const handleToggleFilters = () => {
     if (!isMobile) {
       setShowAll(!showAll);
+    }
+  };
+
+  // Mouse enter handler - wait 500ms then open menu
+  const handleMouseEnter = () => {
+    if (!isMobile && hiddenFilters.length > 0) {
+      // Clear any existing timeout
+      if (hoverTimeoutRef.current) {
+        clearTimeout(hoverTimeoutRef.current);
+      }
+
+      // Set new timeout to open menu after 500ms
+      hoverTimeoutRef.current = setTimeout(() => {
+        setShowAll(true);
+      }, 500);
+    }
+  };
+
+  // Mouse leave handler - immediately collapse menu
+  const handleMouseLeave = () => {
+    if (!isMobile) {
+      // Clear the timeout if mouse leaves before 500ms
+      if (hoverTimeoutRef.current) {
+        clearTimeout(hoverTimeoutRef.current);
+        hoverTimeoutRef.current = null;
+      }
+
+      // Collapse the menu immediately
+      setShowAll(false);
     }
   };
 
@@ -86,31 +108,14 @@ export const CollapsibleFilters = ({
     return () => window.removeEventListener("scroll", handleScroll);
   }, [isFixed, originalTop, isMobile]);
 
-  // Mobile Sheet Component
-  const MobileFilterSheet = () => (
-    <div className="md:hidden">
-      <Sheet>
-        <SheetTrigger asChild>
-          <Button variant="outline" className="w-full">
-            <Search className="w-4 h-4 mr-2" />
-            Search
-          </Button>
-        </SheetTrigger>
-        <SheetContent side="bottom" className="h-[90vh] p-5 overflow-y-auto">
-          <SheetHeader>
-            <SheetTitle>Filters</SheetTitle>
-          </SheetHeader>
-          <div className="mt-6 space-y-6">
-            {childrenArray.map((child, index) => (
-              <div key={index} className="relative">
-                {child}
-              </div>
-            ))}
-          </div>
-        </SheetContent>
-      </Sheet>
-    </div>
-  );
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (hoverTimeoutRef.current) {
+        clearTimeout(hoverTimeoutRef.current);
+      }
+    };
+  }, []);
 
   // Sticky Trigger Component (when hidden)
   const StickyTrigger = () => (
@@ -141,6 +146,8 @@ export const CollapsibleFilters = ({
 
       <div
         ref={containerRef}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
         className={`
           z-[11] 2xl:container px-6 sm:px-8 md:px-10 lg:px-14 mx-auto pt-8 bg-amber-50 hidden md:block
           ${
@@ -275,7 +282,6 @@ export const CollapsibleFilters = ({
 
   return (
     <>
-      <MobileFilterSheet />
       <DesktopFilters />
     </>
   );

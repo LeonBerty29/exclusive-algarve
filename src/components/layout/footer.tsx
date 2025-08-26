@@ -8,8 +8,20 @@ import { FaFacebook, FaInstagram, FaTwitter } from "react-icons/fa";
 
 const navigations = [
   {
-    name: "Home",
-    link: "/",
+    name: "Buy",
+    link: "/buying-process",
+  },
+  {
+    name: "Sell",
+    link: "/become-a-vendor",
+  },
+  {
+    name: "About Us",
+    link: "/about-us",
+  },
+  {
+    name: "Contact",
+    link: "/contact",
   },
   {
     name: "Properties",
@@ -19,14 +31,10 @@ const navigations = [
     name: "Blog",
     link: "/blogs",
   },
-  {
-    name: "About Us",
-    link: "/about-us",
-  },
-  {
-    name: "Terms and Conditions",
-    link: "/terms-and-conditions",
-  },
+  // {
+  //   name: "Terms and Conditions",
+  //   link: "/terms-and-conditions",
+  // },
   // {
   //   name: "Privacy Policy",
   //   link: "/privacy-policy",
@@ -38,7 +46,7 @@ const navigations = [
 ];
 const resources = [
   {
-    name: "Become a vendor",
+    name: "The selling process",
     link: "/become-a-vendor",
   },
   {
@@ -46,7 +54,7 @@ const resources = [
     link: "/yearly-property-taxes",
   },
   {
-    name: "Buying process",
+    name: "The buying process",
     link: "/buying-process",
   },
   {

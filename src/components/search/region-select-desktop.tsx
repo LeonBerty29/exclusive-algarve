@@ -15,10 +15,10 @@ import { CommandItem } from "@/components/ui/command-two";
 //   PopoverTrigger,
 // } from "@/components/ui/popover";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { Check, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -43,7 +43,7 @@ interface RegionSelectProps {
   metadata: PropertyMetadata;
 }
 
-export default function RegionSelect({ metadata }: RegionSelectProps) {
+export default function RegionSelectDesktop({ metadata }: RegionSelectProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [open, setOpen] = useState(false);
@@ -482,8 +482,8 @@ export default function RegionSelect({ metadata }: RegionSelectProps) {
 
   return (
     <div className="w-full">
-      <DropdownMenu open={open} onOpenChange={setOpen}>
-        <DropdownMenuTrigger asChild>
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
           <Button
             variant="outline"
             role="combobox"
@@ -501,8 +501,8 @@ export default function RegionSelect({ metadata }: RegionSelectProps) {
             </div>
             <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent
+        </PopoverTrigger>
+        <PopoverContent
           className="w-80 p-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']"
           align="start"
         >
@@ -521,7 +521,7 @@ export default function RegionSelect({ metadata }: RegionSelectProps) {
                       value={optionKey} // Use unique key as value to fix hover issue
                       onSelect={() => {
                         handleLocationSelect(option);
-                        // Don't close the DropdownMenu to allow multiple selections
+                        // Don't close the Popover to allow multiple selections
                       }}
                       className={cn(
                         "flex items-center justify-between cursor-pointer",
@@ -547,8 +547,8 @@ export default function RegionSelect({ metadata }: RegionSelectProps) {
               </CommandGroup>
             </CommandList>
           </Command>
-        </DropdownMenuContent>
-      </DropdownMenu>
+        </PopoverContent>
+      </Popover>
     </div>
   );
 }

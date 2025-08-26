@@ -78,7 +78,7 @@ export function BedroomsDropdown({
     // Update the ref with current values
     previousValuesRef.current = newValues;
 
-    router.push(`?${params.toString()}`, { scroll: false });
+    router.replace(`?${params.toString()}`, { scroll: false });
   };
 
   useEffect(() => {

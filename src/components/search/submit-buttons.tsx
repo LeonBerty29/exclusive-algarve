@@ -44,7 +44,11 @@ export function AddToFavoriteButton({
         ),
       });
     }
-  }, [state.success, state.error, state.authenticated, reference]);
+
+    if (state.timestamp) {
+      
+    }
+  }, [state.success, state.error, state.authenticated, state.timestamp, reference]);
 
   return (
     <>

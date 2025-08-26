@@ -9,10 +9,10 @@ import { ChevronDown, Check } from "lucide-react";
 //   PopoverTrigger,
 // } from "@/components/ui/popover";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import {
   Command,
@@ -29,7 +29,7 @@ interface PriceRange {
   value: string;
 }
 
-export function PriceSelect({ priceRange }: { priceRange: Ranges["price"] }) {
+export function PriceSelectDesktop({ priceRange }: { priceRange: Ranges["price"] }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [selectedValue, setSelectedValue] = useState<string>("");
@@ -188,8 +188,8 @@ export function PriceSelect({ priceRange }: { priceRange: Ranges["price"] }) {
 
   return (
     <div className="space-y-4">
-      <DropdownMenu open={open} onOpenChange={setOpen}>
-        <DropdownMenuTrigger asChild>
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
           <Button
             variant="outline"
             role="combobox"
@@ -199,8 +199,8 @@ export function PriceSelect({ priceRange }: { priceRange: Ranges["price"] }) {
             {getDisplayText()}
             <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-80 p-0" align="start">
+        </PopoverTrigger>
+        <PopoverContent className="w-80 p-0" align="start">
           <Command>
             <CommandEmpty>No price range found.</CommandEmpty>
             <CommandGroup>
@@ -223,8 +223,8 @@ export function PriceSelect({ priceRange }: { priceRange: Ranges["price"] }) {
               ))}
             </CommandGroup>
           </Command>
-        </DropdownMenuContent>
-      </DropdownMenu>
+        </PopoverContent>
+      </Popover>
     </div>
   );
 }

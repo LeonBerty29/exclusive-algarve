@@ -4,14 +4,14 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { ChevronsUpDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Ranges } from "@/types/property";
 
-export function BathroomsDropdown({
+export function BathroomsDropdownDesktop({
   bathroomRange,
 }: {
   bathroomRange: Ranges["bathrooms"];
@@ -120,8 +120,8 @@ export function BathroomsDropdown({
 
   return (
     <div className="space-y-4">
-      <DropdownMenu open={open} onOpenChange={setOpen}>
-        <DropdownMenuTrigger asChild>
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
           <Button
             variant="outline"
             className="w-full min-h-[40px] justify-between text-left font-normal overflow-hidden text-gray-600"
@@ -129,8 +129,8 @@ export function BathroomsDropdown({
             {getDisplayText()}
             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-80 p-4" align="start">
+        </PopoverTrigger>
+        <PopoverContent className="w-80 p-4" align="start">
           <Tabs defaultValue="min" className="w-full">
             <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="min">Min</TabsTrigger>
@@ -177,8 +177,8 @@ export function BathroomsDropdown({
               </div>
             </TabsContent>
           </Tabs>
-        </DropdownMenuContent>
-      </DropdownMenu>
+        </PopoverContent>
+      </Popover>
     </div>
   );
 }

@@ -4,17 +4,18 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { ChevronsUpDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  Popover,
+  PopoverContent,
+  //   PopoverItem,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Ranges } from "@/types/property";
 
-export function BathroomsDropdown({
-  bathroomRange,
+export function BedroomsDropdownDesktop({
+  bedroomRange,
 }: {
-  bathroomRange: Ranges["bathrooms"];
+  bedroomRange: Ranges["bedrooms"];
 }) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -22,12 +23,12 @@ export function BathroomsDropdown({
   const [open, setOpen] = useState(false);
 
   const [selectedValues, setSelectedValues] = useState<[number, number]>(() => {
-    const minBathrooms = searchParams.get("min_bathrooms");
-    const maxBathrooms = searchParams.get("max_bathrooms");
+    const minBedrooms = searchParams.get("min_bedrooms");
+    const maxBedrooms = searchParams.get("max_bedrooms");
 
     return [
-      minBathrooms ? parseInt(minBathrooms) : bathroomRange.min,
-      maxBathrooms ? parseInt(maxBathrooms) : bathroomRange.max,
+      minBedrooms ? parseInt(minBedrooms) : bedroomRange.min,
+      maxBedrooms ? parseInt(maxBedrooms) : bedroomRange.max,
     ];
   });
 
@@ -51,19 +52,19 @@ export function BathroomsDropdown({
     const params = new URLSearchParams(searchParams.toString());
 
     // Only set params if they're different from defaults
-    if (newValues[0] !== bathroomRange.min) {
-      params.set("min_bathrooms", newValues[0].toString());
+    if (newValues[0] !== bedroomRange.min) {
+      params.set("min_bedrooms", newValues[0].toString());
     } else {
-      params.delete("min_bathrooms");
+      params.delete("min_bedrooms");
     }
 
-    if (newValues[1] !== bathroomRange.max) {
-      params.set("max_bathrooms", newValues[1].toString());
+    if (newValues[1] !== bedroomRange.max) {
+      params.set("max_bedrooms", newValues[1].toString());
     } else {
-      params.delete("max_bathrooms");
+      params.delete("max_bedrooms");
     }
 
-    // Only reset to first page when bathroom VALUES actually change
+    // Only reset to first page when bedroom VALUES actually change
     const previousValues = previousValuesRef.current;
     const valuesChanged =
       !previousValues ||
@@ -77,25 +78,26 @@ export function BathroomsDropdown({
     // Update the ref with current values
     previousValuesRef.current = newValues;
 
-    router.replace(`?${params.toString()}`);
+    router.replace(`?${params.toString()}`, { scroll: false });
   };
 
   useEffect(() => {
-    const minBathrooms = searchParams.get("min_bathrooms");
-    const maxBathrooms = searchParams.get("max_bathrooms");
+    const minBedrooms = searchParams.get("min_bedrooms");
+    const maxBedrooms = searchParams.get("max_bedrooms");
 
     const newValues: [number, number] = [
-      minBathrooms ? parseInt(minBathrooms) : bathroomRange.min,
-      maxBathrooms ? parseInt(maxBathrooms) : bathroomRange.max,
+      minBedrooms ? parseInt(minBedrooms) : bedroomRange.min,
+      maxBedrooms ? parseInt(maxBedrooms) : bedroomRange.max,
     ];
 
     setSelectedValues(newValues);
-  }, [searchParams, bathroomRange.min, bathroomRange.max]);
+  }, [searchParams, bedroomRange.min, bedroomRange.max]);
 
   // Generate options for min and max selects
+
   const generateOptions = () => {
     const options = [];
-    for (let i = bathroomRange.min; i <= bathroomRange.max; i++) {
+    for (let i = bedroomRange.min; i <= bedroomRange.max; i++) {
       options.push(i);
     }
     return options;
@@ -103,25 +105,25 @@ export function BathroomsDropdown({
 
   // Check if values are different from defaults
   const isFiltered =
-    selectedValues[0] !== bathroomRange.min ||
-    selectedValues[1] !== bathroomRange.max;
+    selectedValues[0] !== bedroomRange.min ||
+    selectedValues[1] !== bedroomRange.max;
 
   const getDisplayText = () => {
     if (!isFiltered) {
-      return "Bathrooms";
+      return "Bedrooms";
     }
     if (selectedValues[0] === selectedValues[1]) {
-      return `${selectedValues[0]} bathroom${
+      return `${selectedValues[0]} bedroom${
         selectedValues[0] === 1 ? "" : "s"
       }`;
     }
-    return `${selectedValues[0]} - ${selectedValues[1]} bathrooms`;
+    return `${selectedValues[0]} - ${selectedValues[1]} bedrooms`;
   };
 
   return (
     <div className="space-y-4">
-      <DropdownMenu open={open} onOpenChange={setOpen}>
-        <DropdownMenuTrigger asChild>
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
           <Button
             variant="outline"
             className="w-full min-h-[40px] justify-between text-left font-normal overflow-hidden text-gray-600"
@@ -129,8 +131,8 @@ export function BathroomsDropdown({
             {getDisplayText()}
             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-80 p-4" align="start">
+        </PopoverTrigger>
+        <PopoverContent className="w-80 p-4" align="start">
           <Tabs defaultValue="min" className="w-full">
             <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="min">Min</TabsTrigger>
@@ -177,8 +179,8 @@ export function BathroomsDropdown({
               </div>
             </TabsContent>
           </Tabs>
-        </DropdownMenuContent>
-      </DropdownMenu>
+        </PopoverContent>
+      </Popover>
     </div>
   );
 }

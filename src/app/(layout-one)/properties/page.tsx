@@ -127,7 +127,7 @@ export default async function PropertiesPage(props: PageProps) {
             </div>
             <SortBy />
           </div>
-          <div className="max-w-[400px] mx-auto sm:max-w-full sm:mx-0 flex items-start flex-wrap pb-8">
+          <div className="mx-auto sm:max-w-full sm:mx-0 flex items-start flex-wrap pb-8">
             <div className="flex-1 md:min-w-[400px] mt-6">
               <Suspense
                 key={`${suspenseKey} --properties`}

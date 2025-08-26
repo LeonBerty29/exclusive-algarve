@@ -9,6 +9,24 @@ import {
 import { Button } from "../ui/button";
 import FilterTags from "./filter-tags";
 import { PropertiesFilter } from "./properties-filters";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "../ui/sheet";
+import { Search } from "lucide-react";
+import { SearchInput } from "./search-input";
+import { Suspense } from "react";
+import { Skeleton } from "../ui/skeleton";
+import {
+  ListBathroomsRangeSelect,
+  ListBedroomsRangeSelect,
+  ListPrices,
+  ListPropertyTypes,
+  ListRegionSelect,
+} from "./listing-filters";
 
 const SearchHeader = ({ suspenseKey }: { suspenseKey: string }) => {
   return (
@@ -36,7 +54,7 @@ const SearchHeader = ({ suspenseKey }: { suspenseKey: string }) => {
             ALL PROPERTIES
           </Button>
 
-          <div className="flex-col items-center gap-2 hidden sm:flex">
+          <div className="flex-col items-center gap-2 sm:flex">
             {/* <Image src="/images/search-header-icon.png" alt="" width={25} height={25} /> */}
             <p className="text-sm lg:text-base text-center">
               <b>3,550</b> Properties for sale with{" "}
@@ -52,6 +70,73 @@ const SearchHeader = ({ suspenseKey }: { suspenseKey: string }) => {
         <div>
           <PropertiesFilter suspenseKey={suspenseKey} />
         </div>
+      </div>
+
+      <div className="md:hidden">
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button variant="outline" className="w-full">
+              <Search className="w-4 h-4 mr-2" />
+              Search
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="bottom" className="h-[90vh] p-5 overflow-y-auto">
+            <SheetHeader>
+              <SheetTitle>Search</SheetTitle>
+            </SheetHeader>
+            <div className="mt-6 space-y-6">
+              <div className="relative">
+                <SearchInput />
+              </div>
+
+              <div className="relative">
+                <Suspense
+                  key={`${suspenseKey} --region-select`}
+                  fallback={<Skeleton className="h-10 w-full" />}
+                >
+                  <ListRegionSelect />
+                </Suspense>
+              </div>
+
+              <div className="relative">
+                <Suspense
+                  key={`${suspenseKey} --property-types`}
+                  fallback={<Skeleton className="h-10 w-full" />}
+                >
+                  <ListPropertyTypes />
+                </Suspense>
+              </div>
+
+              <div className="relative">
+                <Suspense
+                  key={`${suspenseKey} --price-slider`}
+                  fallback={<Skeleton className="h-10 w-full" />}
+                >
+                  <ListPrices />
+                </Suspense>
+              </div>
+
+              {/* Additional filters that will be hidden initially */}
+              <div className="relative">
+                <Suspense
+                  key={`${suspenseKey} --bedrooms-slider`}
+                  fallback={<Skeleton className="h-10 w-full" />}
+                >
+                  <ListBedroomsRangeSelect />
+                </Suspense>
+              </div>
+
+              <div className="relative">
+                <Suspense
+                  key={`${suspenseKey} --bathrooms-slider`}
+                  fallback={<Skeleton className="h-10 w-full" />}
+                >
+                  <ListBathroomsRangeSelect />
+                </Suspense>
+              </div>
+            </div>
+          </SheetContent>
+        </Sheet>
       </div>
 
       <div className="mt-6 flex gap-5 2xl:container px-6 sm:px-8 md:px-10 lg:px-14 mx-auto py-0">
