@@ -52,7 +52,7 @@ export function ContactForm({
     phone: "",
     email: "",
     message: "",
-    acceptTerms: false,
+    acceptTerms: true,
     sourceUrl: "",
   });
 
