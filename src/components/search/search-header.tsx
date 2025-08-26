@@ -36,7 +36,7 @@ const SearchHeader = ({ suspenseKey }: { suspenseKey: string }) => {
             ALL PROPERTIES
           </Button>
 
-          <div className="flex-col items-center gap-2 hidden sm:flex">
+          <div className="flex-col items-center gap-2 sm:flex">
             {/* <Image src="/images/search-header-icon.png" alt="" width={25} height={25} /> */}
             <p className="text-sm lg:text-base text-center">
               <b>3,550</b> Properties for sale with{" "}
