@@ -1,11 +1,12 @@
 "use client";
 import React, { useState, useTransition, useEffect } from "react";
-import { Calendar } from "lucide-react";
+import { Calendar, CheckCircle } from "lucide-react";
 import { toast } from "sonner";
 import { ZodError, ZodIssue } from "zod";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -468,7 +469,7 @@ const BookVisitDialog: React.FC = () => {
       </Dialog>
 
       {/* Success Dialog */}
-      <Dialog open={isSuccessDialogOpen} onOpenChange={setIsSuccessDialogOpen}>
+      {/* <Dialog open={isSuccessDialogOpen} onOpenChange={setIsSuccessDialogOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle className="text-green-600">Success!</DialogTitle>
@@ -482,6 +483,30 @@ const BookVisitDialog: React.FC = () => {
               className="bg-primary text-white hover:bg-black/85 transition-all"
             >
               OK
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog> */}
+
+      <Dialog open={isSuccessDialogOpen} onOpenChange={setIsSuccessDialogOpen}>
+        <DialogContent className="sm:max-w-md rounded-2xl">
+          <DialogHeader>
+            <div className="flex items-center justify-center mb-4">
+              <CheckCircle className="h-12 w-12 text-green-500" />
+            </div>
+            <DialogTitle className="text-center text-xl font-semibold">
+              Success!!
+            </DialogTitle>
+            <DialogDescription className="text-center text-gray-600 mt-2">
+              {successMessage}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-center mt-6">
+            <Button
+              onClick={() => setIsSuccessDialogOpen(false)}
+              className="bg-primary hover:bg-primary/90 text-white px-8"
+            >
+              Close
             </Button>
           </div>
         </DialogContent>
