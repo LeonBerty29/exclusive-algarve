@@ -5,20 +5,20 @@ import ProperyVideosModal from "./property-videos-modal";
 import PropertyImagesModal from "./property-images-modal";
 import { Property } from "@/types/property";
 import { getProxiedImageUrl } from "@/lib/utils";
+import RequestInformationDialog from "./request-information";
 
 interface PropertyImageGridProps {
   assets: Property["assets"];
+  salesConsultant: Property["sales_consultant"];
 }
 
-const PropertyImageGrid: React.FC<PropertyImageGridProps> = ({ assets }) => {
+const PropertyImageGrid: React.FC<PropertyImageGridProps> = ({
+  assets,
+  salesConsultant,
+}) => {
   const propertyImages = assets.images.gallery;
   const hasVideos = assets.videos && assets.videos.length > 0;
-  const hasFloorPlans =
-    assets.images.floor_plans && assets.images.floor_plans.length > 0;
   const totalImages = propertyImages.length;
-
-  // Fallback image if no images are available
-  // const defaultImage = "/images/property-placeholder.jpg";
 
   return (
     <>
@@ -33,8 +33,8 @@ const PropertyImageGrid: React.FC<PropertyImageGridProps> = ({ assets }) => {
                 className="object-cover"
               />
             )}
-            {hasFloorPlans && (
-              <div className="absolute z-10 bottom-4 right-4 flex gap-3">
+            <div className="absolute z-10 bottom-4 right-4 flex gap-3">
+              <RequestInformationDialog salesConsultant={salesConsultant}>
                 <Button
                   type="button"
                   className="text-sm font-semibold w-full rounded-none bg-white text-black !px-6 hover:text-white hover:bg-black transition-all"
@@ -42,17 +42,15 @@ const PropertyImageGrid: React.FC<PropertyImageGridProps> = ({ assets }) => {
                   <LiaEdit className="h-3 w-3" />
                   REQUEST INFORMATION
                 </Button>
-              </div>
-            )}
+              </RequestInformationDialog>
+            </div>
           </div>
         </div>
         <div className="hidden lg:flex lg:w-[37%] xl:w-[30%] space-y-6 flex-col">
           <div className="relative w-full flex-1">
             {propertyImages[1] && (
               <Image
-                src={
-                  getProxiedImageUrl(propertyImages[1]?.url)
-                }
+                src={getProxiedImageUrl(propertyImages[1]?.url)}
                 alt={propertyImages[1].title || "Property image"}
                 fill
                 className="object-cover"

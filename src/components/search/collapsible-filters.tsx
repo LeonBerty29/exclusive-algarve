@@ -43,7 +43,7 @@ export const CollapsibleFilters = ({
     }
   };
 
-  // Mouse enter handler - wait 500ms then open menu
+  // Mouse enter handler - wait 150ms then open menu
   const handleMouseEnter = () => {
     if (!isMobile && hiddenFilters.length > 0) {
       // Clear any existing timeout
@@ -51,17 +51,17 @@ export const CollapsibleFilters = ({
         clearTimeout(hoverTimeoutRef.current);
       }
 
-      // Set new timeout to open menu after 500ms
+      // Set new timeout to open menu after 150ms
       hoverTimeoutRef.current = setTimeout(() => {
         setShowAll(true);
-      }, 500);
+      }, 150);
     }
   };
 
   // Mouse leave handler - immediately collapse menu
   const handleMouseLeave = () => {
     if (!isMobile) {
-      // Clear the timeout if mouse leaves before 500ms
+      // Clear the timeout if mouse leaves before 150ms
       if (hoverTimeoutRef.current) {
         clearTimeout(hoverTimeoutRef.current);
         hoverTimeoutRef.current = null;

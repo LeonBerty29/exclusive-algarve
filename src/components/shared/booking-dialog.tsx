@@ -1,11 +1,12 @@
 "use client";
 import React, { useState, useTransition, useEffect } from "react";
-import { Calendar } from "lucide-react";
+import { Calendar, CheckCircle } from "lucide-react";
 import { toast } from "sonner";
 import { ZodError, ZodIssue } from "zod";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -60,6 +61,8 @@ type FormField = keyof FormData;
 const BookVisitDialog: React.FC = () => {
   const [isPending, startTransition] = useTransition();
   const [isOpen, setIsOpen] = useState(false);
+  const [isSuccessDialogOpen, setIsSuccessDialogOpen] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
   const [formData, setFormData] = useState<FormData>({
     first_name: "",
     last_name: "",
@@ -68,7 +71,7 @@ const BookVisitDialog: React.FC = () => {
     visit_date: null,
     visit_time: "",
     additional_text: "",
-    acceptTerms: false,
+    acceptTerms: true,
     source_url: "",
   });
 
@@ -144,6 +147,12 @@ const BookVisitDialog: React.FC = () => {
       return;
     }
 
+    // Validate that date is not null before proceeding
+    if (!formData.visit_date) {
+      toast.error("Please select a visit date");
+      return;
+    }
+
     const formDataToSubmit = new FormData();
     formDataToSubmit.append("first_name", formData.first_name);
     formDataToSubmit.append("last_name", formData.last_name);
@@ -151,18 +160,21 @@ const BookVisitDialog: React.FC = () => {
     formDataToSubmit.append("email", formData.email);
     formDataToSubmit.append(
       "visit_date",
-      formData.visit_date?.toISOString().split("T")[0] || ""
+      formData.visit_date.toISOString().split("T")[0]
     );
     formDataToSubmit.append("visit_time", formData.visit_time);
     formDataToSubmit.append("additional_text", formData.additional_text);
     formDataToSubmit.append("source_url", formData.source_url);
+
+    // Include acceptTerms if you need it on the server
+    // formDataToSubmit.append("acceptTerms", formData.acceptTerms.toString());
 
     startTransition(async () => {
       try {
         const result = await bookVisitAction(formDataToSubmit);
 
         if (result.success) {
-          toast.success(result.message || "Visit booked successfully!");
+          setSuccessMessage(result.message || "Visit booked successfully!");
 
           // Reset form
           setFormData({
@@ -178,12 +190,14 @@ const BookVisitDialog: React.FC = () => {
           });
           setErrors({});
           setIsOpen(false);
+
+          // Show success dialog
+          setIsSuccessDialogOpen(true);
         } else {
           // Handle server validation errors
           if (result.fieldErrors) {
             const newErrors: FormErrors = {};
             Object.entries(result.fieldErrors).forEach(([key, message]) => {
-              // Direct mapping since field names now match
               const fieldName = key as keyof FormErrors;
               newErrors[fieldName] = message;
             });
@@ -449,6 +463,50 @@ const BookVisitDialog: React.FC = () => {
               disabled={isPending}
             >
               {isPending ? "Submitting..." : "Submit"}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Success Dialog */}
+      {/* <Dialog open={isSuccessDialogOpen} onOpenChange={setIsSuccessDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-green-600">Success!</DialogTitle>
+          </DialogHeader>
+          <div className="py-4">
+            <p className="text-gray-700">{successMessage}</p>
+          </div>
+          <div className="flex justify-end">
+            <Button
+              onClick={() => setIsSuccessDialogOpen(false)}
+              className="bg-primary text-white hover:bg-black/85 transition-all"
+            >
+              OK
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog> */}
+
+      <Dialog open={isSuccessDialogOpen} onOpenChange={setIsSuccessDialogOpen}>
+        <DialogContent className="sm:max-w-md rounded-2xl">
+          <DialogHeader>
+            <div className="flex items-center justify-center mb-4">
+              <CheckCircle className="h-12 w-12 text-green-500" />
+            </div>
+            <DialogTitle className="text-center text-xl font-semibold">
+              Success!!
+            </DialogTitle>
+            <DialogDescription className="text-center text-gray-600 mt-2">
+              {successMessage}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-center mt-6">
+            <Button
+              onClick={() => setIsSuccessDialogOpen(false)}
+              className="bg-primary hover:bg-primary/90 text-white px-8"
+            >
+              Close
             </Button>
           </div>
         </DialogContent>

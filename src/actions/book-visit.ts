@@ -27,10 +27,14 @@ export async function bookVisitAction(
       source_url: (formData.get("source_url") as string) || undefined,
     };
 
+    // console.log("Raw form data:", rawData); // Debug log
+
     // Validate the data using Zod schema
     const validationResult = bookVisitSchema.safeParse(rawData);
 
     if (!validationResult.success) {
+      console.log("Validation errors:", validationResult.error.errors); // Debug log
+
       // Convert Zod errors to field errors with proper typing
       const fieldErrors: { [key: string]: string } = {};
       validationResult.error.errors.forEach((error: ZodIssue) => {
