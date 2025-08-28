@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useTransition, useEffect } from "react";
-import { Calendar } from "lucide-react";
+import { Calendar, CheckCircle } from "lucide-react";
 import { toast } from "sonner";
 import { ZodError, ZodIssue } from "zod";
 import {
@@ -66,6 +66,8 @@ type FormField = keyof FormData;
 const BookMeetingDialog: React.FC = () => {
   const [isPending, startTransition] = useTransition();
   const [isOpen, setIsOpen] = useState(false);
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
   const [formData, setFormData] = useState<FormData>({
     firstName: "",
     lastName: "",
@@ -199,7 +201,7 @@ const BookMeetingDialog: React.FC = () => {
         const result = await bookMeetingAction(formDataToSubmit);
 
         if (result.success) {
-          toast.success(result.message || "Meeting booked successfully!");
+          setSuccessMessage(result.message || "Meeting booked successfully!");
 
           // Reset form
           setFormData({
@@ -218,6 +220,7 @@ const BookMeetingDialog: React.FC = () => {
           });
           setErrors({});
           setIsOpen(false);
+          setShowSuccessDialog(true); // Show success dialog
         } else {
           // Handle server validation errors
           if (result.fieldErrors) {
@@ -313,6 +316,37 @@ const BookMeetingDialog: React.FC = () => {
 
   return (
     <div className="">
+      {/* Success Dialog */}
+      <Dialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
+        <DialogContent className="sm:max-w-md rounded-2xl">
+          <DialogHeader className="text-center">
+            <div className="flex justify-center mb-4">
+              <CheckCircle className="h-16 w-16 text-green-500" />
+            </div>
+            <DialogTitle className="text-xl text-center">
+              Meeting Booked Successfully!
+            </DialogTitle>
+          </DialogHeader>
+
+          <div className="text-center space-y-4">
+            <p className="text-gray-600">{successMessage}</p>
+            <p className="text-sm text-gray-500">
+              We&apos;ll get back to you immediately
+            </p>
+          </div>
+
+          <div className="flex justify-center pt-4 mb-2">
+            <Button
+              onClick={() => setShowSuccessDialog(false)}
+              className="bg-primary text-white hover:bg-black/85 transition-all"
+            >
+              Close
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Main Booking Dialog */}
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogTrigger asChild>
           <Button

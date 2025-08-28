@@ -3,11 +3,19 @@ import React, { useState, useTransition, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { ZodError, ZodIssue } from "zod";
 import { contactFormAction } from "@/actions/contact-form";
 import { clientContactFormSchema } from "@/types/contact-form";
+import { CheckCircle } from "lucide-react";
 
 // Client-side form data interface
 interface FormData {
@@ -46,6 +54,8 @@ export function ContactForm({
   submitBtnStyling = "",
 }: ContactFormProps) {
   const [isPending, startTransition] = useTransition();
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
   const [formData, setFormData] = useState<FormData>({
     firstName: "",
     lastName: "",
@@ -128,9 +138,11 @@ export function ContactForm({
         const result = await contactFormAction(formDataToSubmit);
 
         if (result.success) {
-          toast.success(
+          // Show success dialog instead of toast
+          setSuccessMessage(
             result.message || "Contact form submitted successfully!"
           );
+          setShowSuccessDialog(true);
 
           // Reset form
           setFormData({
@@ -355,6 +367,31 @@ export function ContactForm({
           </Button>
         </div>
       </div>
+
+      {/* Success Dialog */}
+      <Dialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <div className="flex items-center justify-center mb-4">
+              <CheckCircle className="h-12 w-12 text-green-500" />
+            </div>
+            <DialogTitle className="text-center text-xl font-semibold">
+              Message Sent Successfully!
+            </DialogTitle>
+            <DialogDescription className="text-center text-gray-600 mt-2">
+              {successMessage}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-center mt-6">
+            <Button
+              onClick={() => setShowSuccessDialog(false)}
+              className="bg-primary hover:bg-primary/90 text-white px-8"
+            >
+              Close
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

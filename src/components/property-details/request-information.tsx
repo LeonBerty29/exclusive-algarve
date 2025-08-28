@@ -38,9 +38,9 @@ const RequestInformationDialog: React.FC<RequestInformationDialogProps> = ({
       <DialogContent
         showCloseButton={true}
         closeButtonStyles="bg-white"
-        className="border-primary h-full overflow-y-auto py-10 bg-black"
+        className="border-primary h-full overflow-y-auto bg-black sm:max-w-md max-h-[90vh]"
       >
-        <div>
+        <div className=" ">
           <DialogHeader>
             <DialogTitle className="text-white text-center">
               Contact Sales Consultant
