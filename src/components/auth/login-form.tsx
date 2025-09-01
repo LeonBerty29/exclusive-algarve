@@ -42,6 +42,7 @@ export const LoginForm = ({
       email: "",
       password: "",
     },
+    reValidateMode: "onChange",
   });
 
   const onSubmit = (values: z.infer<typeof LoginSchema>) => {

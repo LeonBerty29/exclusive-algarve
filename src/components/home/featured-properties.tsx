@@ -21,6 +21,8 @@ export default function FeaturedProperties({
   //     offset: ["start start", "end end"]
   // });
 
+  const language = "en"
+
   return (
     <div ref={containerRef} className="relative h-[300vh]">
       {properties.map((property) => {
@@ -73,7 +75,7 @@ export default function FeaturedProperties({
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  <Link href={`/properties/${property.id}`}>HAVE A LOOK</Link>
+                  <Link href={`/properties/${property.seo.slugs[language]}`}>HAVE A LOOK</Link>
                 </motion.button>
               </motion.div>
             </div>

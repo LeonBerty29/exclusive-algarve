@@ -1,8 +1,17 @@
 "use client";
-import React, { useState, useTransition, useEffect } from "react";
+import React, { useState, useTransition, useRef } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
 import {
   Dialog,
   DialogContent,
@@ -11,34 +20,10 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
-import { toast } from "sonner";
-import { ZodError, ZodIssue } from "zod";
+import * as z from "zod";
 import { contactFormAction } from "@/actions/contact-form";
 import { clientContactFormSchema } from "@/types/contact-form";
 import { CheckCircle } from "lucide-react";
-
-// Client-side form data interface
-interface FormData {
-  firstName: string;
-  lastName: string;
-  phone: string;
-  email: string;
-  message: string;
-  acceptTerms: boolean;
-  sourceUrl: string;
-}
-
-interface FormErrors {
-  firstName?: string;
-  lastName?: string;
-  phone?: string;
-  email?: string;
-  message?: string;
-  acceptTerms?: string;
-  sourceUrl?: string;
-}
-
-type FormField = keyof FormData;
 
 interface ContactFormProps {
   theme?: "dark" | "light";
@@ -56,112 +41,70 @@ export function ContactForm({
   const [isPending, startTransition] = useTransition();
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
-  const [formData, setFormData] = useState<FormData>({
-    firstName: "",
-    lastName: "",
-    phone: "",
-    email: "",
-    message: "",
-    acceptTerms: true,
-    sourceUrl: "",
+  const [error, setError] = useState<string | undefined>("");
+
+  // Capture the source URL once when component mounts
+  const sourceUrlRef = useRef<string>("");
+
+  // Initialize sourceUrl on first render
+  if (!sourceUrlRef.current && typeof window !== "undefined") {
+    sourceUrlRef.current = window.location.href;
+  }
+
+  const form = useForm<z.infer<typeof clientContactFormSchema>>({
+    resolver: zodResolver(clientContactFormSchema),
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      phone: "",
+      email: "",
+      message: "",
+      acceptTerms: false,
+      sourceUrl: sourceUrlRef.current,
+    },
+    reValidateMode: "onChange",
   });
 
-  const [errors, setErrors] = useState<FormErrors>({});
-
-  // Get current page URL on mount
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      setFormData((prev) => ({
-        ...prev,
-        sourceUrl: window.location.href,
-      }));
-    }
-  }, []);
-
-  const handleInputChange = <T extends FormField>(
-    field: T,
-    value: FormData[T]
-  ): void => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-
-    // Clear error when user starts typing
-    if (errors[field]) {
-      setErrors((prev) => ({
-        ...prev,
-        [field]: "",
-      }));
-    }
-  };
-
-  const validateClientForm = (): boolean => {
-    try {
-      clientContactFormSchema.parse(formData);
-      setErrors({});
-      return true;
-    } catch (error) {
-      const newErrors: FormErrors = {};
-
-      if (error instanceof ZodError) {
-        error.errors.forEach((err: ZodIssue) => {
-          const fieldName = err.path[0] as keyof FormErrors;
-          if (fieldName && typeof fieldName === "string") {
-            newErrors[fieldName] = err.message;
-          }
-        });
-      }
-
-      setErrors(newErrors);
-      return false;
-    }
-  };
-
-  const handleSubmit = async (): Promise<void> => {
-    // Client-side validation first
-    if (!validateClientForm()) {
-      toast.error("Please fix the form errors before submitting");
-      return;
-    }
+  const onSubmit = (values: z.infer<typeof clientContactFormSchema>) => {
+    setError("");
 
     const formDataToSubmit = new FormData();
-    formDataToSubmit.append("first_name", formData.firstName);
-    formDataToSubmit.append("last_name", formData.lastName);
-    formDataToSubmit.append("phone", formData.phone);
-    formDataToSubmit.append("email", formData.email);
-    formDataToSubmit.append("message", formData.message);
-    formDataToSubmit.append("source_url", formData.sourceUrl);
+    formDataToSubmit.append("first_name", values.firstName);
+    formDataToSubmit.append("last_name", values.lastName);
+    formDataToSubmit.append("phone", values.phone);
+    formDataToSubmit.append("email", values.email);
+    formDataToSubmit.append("message", values.message);
+    formDataToSubmit.append("source_url", values.sourceUrl || "");
 
     startTransition(async () => {
       try {
         const result = await contactFormAction(formDataToSubmit);
 
         if (result.success) {
-          // Show success dialog instead of toast
+          // Show success dialog
           setSuccessMessage(
             result.message || "Contact form submitted successfully!"
           );
           setShowSuccessDialog(true);
 
-          // Reset form
-          setFormData({
+          // Reset form but keep sourceUrl
+          form.reset({
             firstName: "",
             lastName: "",
             phone: "",
             email: "",
             message: "",
-            acceptTerms: false,
-            sourceUrl: formData.sourceUrl, // Keep the source URL
+            acceptTerms: true,
+            sourceUrl: sourceUrlRef.current,
           });
-          setErrors({});
         } else {
           // Handle server validation errors
           if (result.fieldErrors) {
-            const newErrors: FormErrors = {};
+            // Map server field names to client field names and set form errors
             Object.entries(result.fieldErrors).forEach(([key, message]) => {
-              // Map server field names to client field names
-              const fieldMapping: { [key: string]: keyof FormErrors } = {
+              const fieldMapping: {
+                [key: string]: keyof z.infer<typeof clientContactFormSchema>;
+              } = {
                 first_name: "firstName",
                 last_name: "lastName",
                 phone: "phone",
@@ -171,10 +114,13 @@ export function ContactForm({
               };
 
               const clientFieldName =
-                fieldMapping[key] || (key as keyof FormErrors);
-              newErrors[clientFieldName] = message;
+                fieldMapping[key] ||
+                (key as keyof z.infer<typeof clientContactFormSchema>);
+              form.setError(clientFieldName, {
+                type: "server",
+                message: message,
+              });
             });
-            setErrors(newErrors);
           }
 
           if (result.errors) {
@@ -182,9 +128,9 @@ export function ContactForm({
             const errorMessages = Object.entries(result.errors)
               .map(([field, messages]) => `${field}: ${messages.join(", ")}`)
               .join("; ");
-            toast.error(`Validation errors: ${errorMessages}`);
+            setError(`Validation errors: ${errorMessages}`);
           } else {
-            toast.error(
+            setError(
               result.message ||
                 "Failed to submit contact form. Please try again."
             );
@@ -192,21 +138,9 @@ export function ContactForm({
         }
       } catch (error) {
         console.error("Submit error:", error);
-        toast.error("An unexpected error occurred. Please try again.");
+        setError("An unexpected error occurred. Please try again.");
       }
     });
-  };
-
-  const handleInputChangeEvent =
-    (field: FormField) =>
-    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
-      handleInputChange(field, e.target.value as FormData[typeof field]);
-    };
-
-  const handleCheckboxChange = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ): void => {
-    handleInputChange("acceptTerms", e.target.checked);
   };
 
   const inputClasses =
@@ -235,142 +169,172 @@ export function ContactForm({
           CONTACT US
         </h2>
       )}
-      <div className="space-y-4">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Input
-              id="firstName"
+
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <FormField
+              control={form.control}
               name="firstName"
-              type="text"
-              value={formData.firstName}
-              onChange={handleInputChangeEvent("firstName")}
-              className={cn(
-                inputClasses,
-                errors.firstName && "ring-2 ring-red-500"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      type="text"
+                      placeholder="FIRST NAME"
+                      className={inputClasses}
+                      disabled={isPending}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
               )}
-              placeholder="FIRST NAME"
-              disabled={isPending}
             />
-            {errors.firstName && (
-              <p className="text-red-500 text-sm mt-1">{errors.firstName}</p>
-            )}
-          </div>
 
-          <div className="space-y-2">
-            <Input
-              id="lastName"
+            <FormField
+              control={form.control}
               name="lastName"
-              type="text"
-              value={formData.lastName}
-              onChange={handleInputChangeEvent("lastName")}
-              className={cn(
-                inputClasses,
-                errors.lastName && "ring-2 ring-red-500"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      type="text"
+                      placeholder="LAST NAME"
+                      className={inputClasses}
+                      disabled={isPending}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
               )}
-              placeholder="LAST NAME"
-              disabled={isPending}
             />
-            {errors.lastName && (
-              <p className="text-red-500 text-sm mt-1">{errors.lastName}</p>
-            )}
           </div>
-        </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Input
-              id="email"
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <FormField
+              control={form.control}
               name="email"
-              type="email"
-              value={formData.email}
-              onChange={handleInputChangeEvent("email")}
-              className={cn(
-                inputClasses,
-                errors.email && "ring-2 ring-red-500"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      type="email"
+                      placeholder="EMAIL ADDRESS"
+                      className={inputClasses}
+                      disabled={isPending}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
               )}
-              placeholder="EMAIL ADDRESS"
-              disabled={isPending}
             />
-            {errors.email && (
-              <p className="text-red-500 text-sm mt-1">{errors.email}</p>
-            )}
-          </div>
 
-          <div className="space-y-2">
-            <Input
-              id="phone"
+            <FormField
+              control={form.control}
               name="phone"
-              type="tel"
-              value={formData.phone}
-              onChange={handleInputChangeEvent("phone")}
-              className={cn(
-                inputClasses,
-                errors.phone && "ring-2 ring-red-500"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      type="tel"
+                      placeholder="PHONE NUMBER"
+                      className={inputClasses}
+                      disabled={isPending}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
               )}
-              placeholder="PHONE NUMBER"
-              disabled={isPending}
             />
-            {errors.phone && (
-              <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
-            )}
           </div>
-        </div>
 
-        <div className="space-y-2">
-          <Textarea
-            id="message"
+          <FormField
+            control={form.control}
             name="message"
-            value={formData.message}
-            onChange={handleInputChangeEvent("message")}
-            className={cn(
-              textareaClasses,
-              "w-full",
-              errors.message && "ring-2 ring-red-500"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <Textarea
+                    {...field}
+                    placeholder="MESSAGE..."
+                    className={cn(textareaClasses, "w-full")}
+                    disabled={isPending}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
             )}
-            placeholder="MESSAGE..."
-            disabled={isPending}
           />
-          {errors.message && (
-            <p className="text-red-500 text-sm mt-1">{errors.message}</p>
-          )}
-        </div>
 
-        <div className="flex items-center space-x-3 mt-8">
-          <input
-            type="checkbox"
-            id="acceptTerms"
+          <FormField
+            control={form.control}
             name="acceptTerms"
-            checked={formData.acceptTerms}
-            onChange={handleCheckboxChange}
-            className="my-0 h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
-            disabled={isPending}
-          />
-          <label htmlFor="acceptTerms" className={checkboxLabelClasses}>
-            By requesting information you are authorizing Exclusive Algarve
-            Villas to use your data in order to contact you.
-          </label>
-        </div>
-        {errors.acceptTerms && (
-          <p className="text-red-500 text-sm mt-1">{errors.acceptTerms}</p>
-        )}
-
-        <div className="mt-8">
-          <Button
-            onClick={handleSubmit}
-            disabled={!formData.acceptTerms || isPending}
-            className={cn(
-              "bg-primary hover:bg-primary/90 text-white font-medium py-5 px-14 rounded-none transition-colors disabled:opacity-50 disabled:cursor-not-allowed",
-              submitBtnStyling
+            render={({ field }) => (
+              <FormItem className="flex items-center space-x-3 mt-8">
+                <FormControl>
+                  <input
+                    type="checkbox"
+                    checked={field.value}
+                    onChange={field.onChange}
+                    className="my-0 h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                    disabled={isPending}
+                  />
+                </FormControl>
+                <label className={checkboxLabelClasses}>
+                  By requesting information you are authorizing Exclusive
+                  Algarve Villas to use your data in order to contact you.
+                </label>
+                <FormMessage />
+              </FormItem>
             )}
-          >
-            {isPending ? "Submitting..." : "Submit"}
-          </Button>
-        </div>
-      </div>
+          />
+
+          {/* Show general error message */}
+          {error && (
+            <div className="flex justify-center mt-2">
+              <p className="text-red-500 text-sm">{error}</p>
+            </div>
+          )}
+
+          {/* Hidden sourceUrl field */}
+          <FormField
+            control={form.control}
+            name="sourceUrl"
+            render={({ field }) => (
+              <FormItem className="hidden">
+                <FormControl>
+                  <Input {...field} type="hidden" />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+
+          <div className="mt-8">
+            <Button
+              type="submit"
+              disabled={
+                !form.watch("acceptTerms") ||
+                isPending ||
+                !form.formState.isValid
+              }
+              className={cn(
+                "bg-primary hover:bg-primary/90 text-white font-medium py-5 px-14 rounded-none transition-colors disabled:opacity-50 disabled:cursor-not-allowed",
+                submitBtnStyling
+              )}
+            >
+              {isPending ? "Submitting..." : "Submit"}
+            </Button>
+          </div>
+        </form>
+      </Form>
 
       {/* Success Dialog */}
       <Dialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md rounded-2xl">
           <DialogHeader>
             <div className="flex items-center justify-center mb-4">
               <CheckCircle className="h-12 w-12 text-green-500" />

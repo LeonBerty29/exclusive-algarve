@@ -71,7 +71,7 @@ const BookVisitDialog: React.FC = () => {
     visit_date: null,
     visit_time: "",
     additional_text: "",
-    acceptTerms: true,
+    acceptTerms: false,
     source_url: "",
   });
 

@@ -7,9 +7,14 @@ export const LoginSchema = z.object({
       message: "Email is required",
     })
     .email(),
-  password: z.string().min(1, {
-    message: "Password is required",
-  }),
+  password: z
+    .string()
+    .min(1, {
+      message: "Password is required",
+    })
+    .min(8, {
+      message: "Password must be at least 8 characters",
+    }),
 });
 
 export const RegisterSchema = z
@@ -34,7 +39,7 @@ export const RegisterSchema = z
         message: "Password confirmation is required",
       })
       .min(8, {
-        message: "Password must be at least 8 characters long",
+        message: "Password must be at least 8 characters",
       }),
     first_name: z.string().min(1, {
       message: "First Name is required",

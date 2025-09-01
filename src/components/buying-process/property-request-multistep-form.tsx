@@ -1,29 +1,66 @@
 "use client";
-import React, { useState, ChangeEvent, JSX } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import React, { useState, useTransition, useRef } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { ChevronLeft, ChevronRight, CheckCircle } from "lucide-react";
+import * as z from "zod";
+import { propertyFormAction } from "@/actions/property-request";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "../ui/button";
+
+// Validation schemas for each step
+const stepOneSchema = z.object({
+  firstName: z.string().min(1, "First name is required"),
+  lastName: z.string().min(1, "Last name is required"),
+  email: z
+    .string()
+    .min(1, "Email is required")
+    .email("Please enter a valid email address"),
+  phone: z.string().min(1, "Phone number is required"),
+  consent: z.boolean().refine((val) => val === true, {
+    message: "You must authorize us to contact you",
+  }),
+});
+
+const stepTwoSchema = z.object({
+  propertyTypes: z
+    .array(z.string())
+    .min(1, "At least one property type is required"),
+  minBudget: z.string().min(1, "Minimum budget is required"),
+  maxBudget: z.string().min(1, "Maximum budget is required"),
+  location: z.string().min(1, "Location is required"),
+  minBedrooms: z.string().min(1, "Minimum bedrooms is required"),
+  maxBedrooms: z.string().min(1, "Maximum bedrooms is required"),
+  minBathrooms: z.string().min(1, "Minimum bathrooms is required"),
+  maxBathrooms: z.string().min(1, "Maximum bathrooms is required"),
+  hasPool: z.boolean(),
+  hasGarage: z.boolean(),
+});
+
+const stepThreeSchema = z.object({
+  additionalInfo: z.string().optional(),
+  sourceUrl: z.string().min(1, "Source URL is required"),
+});
+
+// Combined schema for final submission
+const fullFormSchema = stepOneSchema
+  .merge(stepTwoSchema)
+  .merge(stepThreeSchema);
+
+type StepOneData = z.infer<typeof stepOneSchema>;
+type StepTwoData = z.infer<typeof stepTwoSchema>;
+type StepThreeData = z.infer<typeof stepThreeSchema>;
 
 // Types
 interface PropertyType {
   id: string;
   name: string;
-}
-
-interface FormData {
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-  propertyTypes: string[];
-  minBudget: string;
-  maxBudget: string;
-  location: string;
-  minBedrooms: string;
-  maxBedrooms: string;
-  minBathrooms: string;
-  maxBathrooms: string;
-  hasPool: boolean;
-  hasGarage: boolean;
-  additionalInfo: string;
 }
 
 interface CheckboxProps {
@@ -41,12 +78,12 @@ interface PropertyTypesProps {
 
 // Mock data for property types
 const mockPropertyTypes: PropertyType[] = [
-  { id: "1", name: "Apartment" },
-  { id: "2", name: "House" },
-  { id: "3", name: "Villa" },
-  { id: "4", name: "Condo" },
-  { id: "5", name: "Townhouse" },
-  { id: "6", name: "Penthouse" },
+  { id: "apartment", name: "Apartment" },
+  { id: "house", name: "House" },
+  { id: "villa", name: "Villa" },
+  { id: "condo", name: "Condo" },
+  { id: "townhouse", name: "Townhouse" },
+  { id: "penthouse", name: "Penthouse" },
 ];
 
 // Simple Checkbox component
@@ -144,94 +181,83 @@ const PropertyTypes: React.FC<PropertyTypesProps> = ({
 
 export const MultiStepPropertyForm: React.FC = () => {
   const [currentStep, setCurrentStep] = useState<number>(1);
-  const [formData, setFormData] = useState<FormData>({
-    firstName: "",
-    lastName: "",
-    email: "",
-    phone: "",
-    propertyTypes: [],
-    minBudget: "",
-    maxBudget: "",
-    location: "",
-    minBedrooms: "",
-    maxBedrooms: "",
-    minBathrooms: "",
-    maxBathrooms: "",
-    hasPool: false,
-    hasGarage: false,
-    additionalInfo: "",
-  });
+  const [isPending, startTransition] = useTransition();
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [generalError, setGeneralError] = useState<string>("");
+
+  // Capture the source URL once when component mounts
+  const sourceUrlRef = useRef<string>("");
+  if (!sourceUrlRef.current && typeof window !== "undefined") {
+    sourceUrlRef.current = window.location.href;
+  }
 
   const totalSteps: number = 3;
 
-  const handleInputChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-  ): void => {
-    const target = e.target;
-    const { name, value } = target;
+  // Form instances for each step
+  const stepOneForm = useForm<StepOneData>({
+    resolver: zodResolver(stepOneSchema),
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+      consent: false,
+    },
+    mode: "onChange",
+  });
 
-    if (target.type === "checkbox") {
-      // Type assertion for checkbox inputs
-      const checkboxTarget = target as HTMLInputElement;
-      setFormData((prev) => ({
-        ...prev,
-        [name]: checkboxTarget.checked,
-      }));
-    } else {
-      setFormData((prev) => ({
-        ...prev,
-        [name]: value,
-      }));
-    }
-  };
+  const stepTwoForm = useForm<StepTwoData>({
+    resolver: zodResolver(stepTwoSchema),
+    defaultValues: {
+      propertyTypes: [],
+      minBudget: "",
+      maxBudget: "",
+      location: "",
+      minBedrooms: "",
+      maxBedrooms: "",
+      minBathrooms: "",
+      maxBathrooms: "",
+      hasPool: false,
+      hasGarage: false,
+    },
+    mode: "onChange",
+  });
 
-  const handlePropertyTypeChange = (selected: string[]): void => {
-    setFormData((prev) => ({
-      ...prev,
-      propertyTypes: selected,
-    }));
-  };
+  const stepThreeForm = useForm<StepThreeData>({
+    resolver: zodResolver(stepThreeSchema),
+    defaultValues: {
+      additionalInfo: "",
+      sourceUrl: sourceUrlRef.current,
+    },
+    mode: "onChange",
+  });
 
-  // Budget validation and swapping - only when fields are not focused
-  const handleBudgetBlur = (): void => {
-    const minBudget: number = parseFloat(formData.minBudget.replace(/,/g, ""));
-    const maxBudget: number = parseFloat(formData.maxBudget.replace(/,/g, ""));
-
-    if (formData.minBudget && formData.maxBudget && minBudget > maxBudget) {
-      setFormData((prev) => ({
-        ...prev,
-        minBudget: prev.maxBudget,
-        maxBudget: prev.minBudget,
-      }));
-    }
-  };
-
-  // Validation functions
-  const validateStep1 = (): boolean => {
-    return !!(formData.firstName && formData.lastName);
-  };
-
-  const validateStep2 = (): boolean => {
-    return !!(
-      formData.propertyTypes.length > 0 &&
-      formData.minBudget &&
-      formData.maxBudget
-    );
-  };
-
-  const canProceed = (): boolean => {
+  const getCurrentForm = () => {
     switch (currentStep) {
       case 1:
-        return validateStep1();
+        return stepOneForm;
       case 2:
-        return validateStep2();
+        return stepTwoForm;
+      case 3:
+        return stepThreeForm;
       default:
-        return true;
+        return stepOneForm;
     }
   };
 
-  const nextStep = (): void => {
-    if (currentStep < totalSteps && canProceed()) {
+  const canProceedToNextStep = (): boolean => {
+    const form = getCurrentForm();
+    return form.formState.isValid;
+  };
+
+  const nextStep = async (): Promise<void> => {
+    const form = getCurrentForm();
+
+    // Trigger validation
+    const isValid = await form.trigger();
+
+    if (isValid && currentStep < totalSteps) {
       setCurrentStep(currentStep + 1);
     }
   };
@@ -242,62 +268,196 @@ export const MultiStepPropertyForm: React.FC = () => {
     }
   };
 
-  const handleSubmit = (): void => {
-    console.log("Form submitted:", formData);
-    alert("Form submitted successfully!");
-  };
-
-  const formatNumberInput = (value: string): string => {
-    const numericValue = value.replace(/[^\d]/g, "");
-    return numericValue.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  };
-
-  const handleBudgetChange = (e: ChangeEvent<HTMLInputElement>): void => {
-    const { name, value } = e.target;
-    const formattedValue = formatNumberInput(value);
-    setFormData((prev) => ({
-      ...prev,
-      [name]: formattedValue,
-    }));
-  };
-
-  const generateMinSelectOptions = (
+  const generateSelectOptions = (
     min: number,
     max: number,
-    currentMax: string
-  ): JSX.Element[] => {
-    const options: JSX.Element[] = [];
-    const maxValue = currentMax ? parseInt(currentMax) : max;
+    isMax: boolean = false
+  ): React.JSX.Element[] => {
+    const options: React.JSX.Element[] = [];
 
-    for (let i = min; i <= Math.min(max, maxValue); i++) {
+    for (let i = min; i <= max; i++) {
       options.push(
         <option key={i} value={i.toString()}>
-          {i}
+          {isMax && i === max ? `${i}+` : i}
         </option>
       );
     }
     return options;
   };
 
-  const generateMaxSelectOptions = (
-    min: number,
-    max: number,
-    currentMin: string
-  ): JSX.Element[] => {
-    const options: JSX.Element[] = [];
-    const minValue = currentMin ? parseInt(currentMin) : min;
+  const handleFinalSubmit = (): void => {
+    setGeneralError("");
 
-    for (let i = Math.max(min, minValue); i <= max; i++) {
-      options.push(
-        <option key={i} value={i.toString()}>
-          {i === max ? `${i}+` : i}
-        </option>
-      );
+    // Combine all form data
+    const stepOneData = stepOneForm.getValues();
+    const stepTwoData = stepTwoForm.getValues();
+    const stepThreeData = stepThreeForm.getValues();
+
+    const combinedData = {
+      ...stepOneData,
+      ...stepTwoData,
+      ...stepThreeData,
+    };
+
+    // Validate the complete form
+    const validationResult = fullFormSchema.safeParse(combinedData);
+
+    if (!validationResult.success) {
+      setGeneralError("Please check all form fields for errors");
+      return;
     }
-    return options;
+
+    // Create FormData for submission
+    const formDataToSubmit = new FormData();
+    formDataToSubmit.append("first_name", combinedData.firstName);
+    formDataToSubmit.append("last_name", combinedData.lastName);
+    formDataToSubmit.append("email", combinedData.email);
+    formDataToSubmit.append("phone", combinedData.phone);
+    formDataToSubmit.append(
+      "property_types",
+      combinedData.propertyTypes.join(",")
+    );
+    formDataToSubmit.append("budget_min", combinedData.minBudget);
+    formDataToSubmit.append("budget_max", combinedData.maxBudget);
+    formDataToSubmit.append("location", combinedData.location);
+    formDataToSubmit.append("bedrooms_min", combinedData.minBedrooms);
+    formDataToSubmit.append("bedrooms_max", combinedData.maxBedrooms);
+    formDataToSubmit.append("bathrooms_min", combinedData.minBathrooms);
+    formDataToSubmit.append("bathrooms_max", combinedData.maxBathrooms);
+    formDataToSubmit.append("with_pool", combinedData.hasPool.toString());
+    formDataToSubmit.append("with_garage", combinedData.hasGarage.toString());
+    formDataToSubmit.append(
+      "additional_text",
+      combinedData.additionalInfo || ""
+    );
+    formDataToSubmit.append("source_url", combinedData.sourceUrl);
+    formDataToSubmit.append("consent", combinedData.consent.toString());
+
+    startTransition(async () => {
+      try {
+        const result = await propertyFormAction(formDataToSubmit);
+
+        if (result.success) {
+          // Show success dialog
+          setSuccessMessage(
+            result.message || "Property request submitted successfully!"
+          );
+          setShowSuccessDialog(true);
+
+          // Reset all forms
+          stepOneForm.reset({
+            firstName: "",
+            lastName: "",
+            email: "",
+            phone: "",
+            consent: false,
+          });
+          stepTwoForm.reset({
+            propertyTypes: [],
+            minBudget: "",
+            maxBudget: "",
+            location: "",
+            minBedrooms: "",
+            maxBedrooms: "",
+            minBathrooms: "",
+            maxBathrooms: "",
+            hasPool: false,
+            hasGarage: false,
+          });
+          stepThreeForm.reset({
+            additionalInfo: "",
+            sourceUrl: sourceUrlRef.current,
+          });
+          setCurrentStep(1);
+        } else {
+          // Handle server validation errors
+          if (result.fieldErrors) {
+            // Map server field names to client field names and set form errors
+            Object.entries(result.fieldErrors).forEach(([key, message]) => {
+              // Map server field names to client form fields
+              const fieldMapping: {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                [key: string]: { form: any; field: string };
+              } = {
+                first_name: { form: stepOneForm, field: "firstName" },
+                last_name: { form: stepOneForm, field: "lastName" },
+                email: { form: stepOneForm, field: "email" },
+                phone: { form: stepOneForm, field: "phone" },
+                consent: { form: stepOneForm, field: "consent" },
+                property_types: { form: stepTwoForm, field: "propertyTypes" },
+                budget_min: { form: stepTwoForm, field: "minBudget" },
+                budget_max: { form: stepTwoForm, field: "maxBudget" },
+                location: { form: stepTwoForm, field: "location" },
+                bedrooms_min: { form: stepTwoForm, field: "minBedrooms" },
+                bedrooms_max: { form: stepTwoForm, field: "maxBedrooms" },
+                bathrooms_min: { form: stepTwoForm, field: "minBathrooms" },
+                bathrooms_max: { form: stepTwoForm, field: "maxBathrooms" },
+                additional_text: {
+                  form: stepThreeForm,
+                  field: "additionalInfo",
+                },
+                source_url: { form: stepThreeForm, field: "sourceUrl" },
+              };
+
+              const mapping = fieldMapping[key];
+              if (mapping) {
+                mapping.form.setError(mapping.field, {
+                  type: "server",
+                  message: message,
+                });
+
+                // Navigate to the step containing the error
+                if (
+                  [
+                    "first_name",
+                    "last_name",
+                    "email",
+                    "phone",
+                    "consent",
+                  ].includes(key)
+                ) {
+                  setCurrentStep(1);
+                } else if (
+                  [
+                    "property_types",
+                    "budget_min",
+                    "budget_max",
+                    "location",
+                    "bedrooms_min",
+                    "bedrooms_max",
+                    "bathrooms_min",
+                    "bathrooms_max",
+                  ].includes(key)
+                ) {
+                  setCurrentStep(2);
+                } else if (["additional_text", "source_url"].includes(key)) {
+                  setCurrentStep(3);
+                }
+              }
+            });
+          }
+
+          if (result.errors) {
+            // Handle detailed validation errors from API
+            const errorMessages = Object.entries(result.errors)
+              .map(([field, messages]) => `${field}: ${messages.join(", ")}`)
+              .join("; ");
+            setGeneralError(`Validation errors: ${errorMessages}`);
+          } else {
+            setGeneralError(
+              result.message ||
+                "Failed to submit property request. Please try again."
+            );
+          }
+        }
+      } catch (error) {
+        console.error("Submit error:", error);
+        setGeneralError("An unexpected error occurred. Please try again.");
+      }
+    });
   };
 
-  const StepIndicator = (): JSX.Element => (
+  const StepIndicator = (): React.JSX.Element => (
     <div className="flex items-center justify-center mb-8">
       {[1, 2, 3].map((step) => (
         <React.Fragment key={step}>
@@ -322,7 +482,7 @@ export const MultiStepPropertyForm: React.FC = () => {
     </div>
   );
 
-  const renderStepContent = (): JSX.Element | null => {
+  const renderStepContent = (): React.JSX.Element | null => {
     switch (currentStep) {
       case 1:
         return (
@@ -333,54 +493,74 @@ export const MultiStepPropertyForm: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <input
+                  {...stepOneForm.register("firstName")}
                   type="text"
-                  name="firstName"
                   placeholder="FIRST NAME *"
-                  value={formData.firstName}
-                  onChange={handleInputChange}
                   className="w-full px-4 py-3 bg-gray-100 border-0 rounded-none text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-600"
-                  required
                 />
+                {stepOneForm.formState.errors.firstName && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {stepOneForm.formState.errors.firstName.message}
+                  </p>
+                )}
               </div>
               <div>
                 <input
+                  {...stepOneForm.register("lastName")}
                   type="text"
-                  name="lastName"
                   placeholder="LAST NAME *"
-                  value={formData.lastName}
-                  onChange={handleInputChange}
                   className="w-full px-4 py-3 bg-gray-100 border-0 rounded-none text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-600"
-                  required
                 />
+                {stepOneForm.formState.errors.lastName && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {stepOneForm.formState.errors.lastName.message}
+                  </p>
+                )}
               </div>
               <div>
                 <input
+                  {...stepOneForm.register("email")}
                   type="email"
-                  name="email"
-                  placeholder="EMAIL ADDRESS"
-                  value={formData.email}
-                  onChange={handleInputChange}
+                  placeholder="EMAIL ADDRESS *"
                   className="w-full px-4 py-3 bg-gray-100 border-0 rounded-none text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-600"
                 />
+                {stepOneForm.formState.errors.email && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {stepOneForm.formState.errors.email.message}
+                  </p>
+                )}
               </div>
               <div>
                 <input
+                  {...stepOneForm.register("phone")}
                   type="tel"
-                  name="phone"
-                  placeholder="PHONE NUMBER"
-                  value={formData.phone}
-                  onChange={handleInputChange}
+                  placeholder="PHONE NUMBER *"
                   className="w-full px-4 py-3 bg-gray-100 border-0 rounded-none text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-600"
                 />
+                {stepOneForm.formState.errors.phone && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {stepOneForm.formState.errors.phone.message}
+                  </p>
+                )}
               </div>
             </div>
             <div className="flex items-center space-x-2 text-sm text-gray-600">
-              <input type="checkbox" className="text-yellow-600" />
-              <span>
+              <input
+                {...stepOneForm.register("consent")}
+                type="checkbox"
+                className="text-yellow-600"
+                id="consent"
+              />
+              <label htmlFor="consent">
                 By requesting information you are authorizing Exclusive Agence
-                Villa to use your data in order to contact you.
-              </span>
+                Villa to use your data in order to contact you. *
+              </label>
             </div>
+            {stepOneForm.formState.errors.consent && (
+              <p className="text-red-500 text-xs">
+                {stepOneForm.formState.errors.consent.message}
+              </p>
+            )}
           </div>
         );
 
@@ -398,9 +578,18 @@ export const MultiStepPropertyForm: React.FC = () => {
               </h3>
               <PropertyTypes
                 typologies={mockPropertyTypes}
-                selectedItems={formData.propertyTypes}
-                onSelectionChange={handlePropertyTypeChange}
+                selectedItems={stepTwoForm.watch("propertyTypes")}
+                onSelectionChange={(selected) =>
+                  stepTwoForm.setValue("propertyTypes", selected, {
+                    shouldValidate: true,
+                  })
+                }
               />
+              {stepTwoForm.formState.errors.propertyTypes && (
+                <p className="text-red-500 text-xs">
+                  {stepTwoForm.formState.errors.propertyTypes.message}
+                </p>
+              )}
             </div>
 
             {/* Budget Range */}
@@ -411,25 +600,33 @@ export const MultiStepPropertyForm: React.FC = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <input
-                    type="text"
-                    name="minBudget"
+                    {...stepTwoForm.register("minBudget")}
+                    type="number"
+                    min="0"
+                    step="1000"
                     placeholder="MIN BUDGET"
-                    value={formData.minBudget}
-                    onChange={handleBudgetChange}
-                    onBlur={handleBudgetBlur}
                     className="w-full px-4 py-3 bg-gray-100 border-0 rounded-none text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-600"
                   />
+                  {stepTwoForm.formState.errors.minBudget && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {stepTwoForm.formState.errors.minBudget.message}
+                    </p>
+                  )}
                 </div>
                 <div>
                   <input
-                    type="text"
-                    name="maxBudget"
+                    {...stepTwoForm.register("maxBudget")}
+                    type="number"
+                    min="0"
+                    step="1000"
                     placeholder="MAX BUDGET"
-                    value={formData.maxBudget}
-                    onChange={handleBudgetChange}
-                    onBlur={handleBudgetBlur}
                     className="w-full px-4 py-3 bg-gray-100 border-0 rounded-none text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-600"
                   />
+                  {stepTwoForm.formState.errors.maxBudget && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {stepTwoForm.formState.errors.maxBudget.message}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
@@ -437,69 +634,88 @@ export const MultiStepPropertyForm: React.FC = () => {
             {/* Location */}
             <div>
               <input
+                {...stepTwoForm.register("location")}
                 type="text"
-                name="location"
-                placeholder="PREFERRED LOCATION"
-                value={formData.location}
-                onChange={handleInputChange}
+                placeholder="PREFERRED LOCATION *"
                 className="w-full px-4 py-3 bg-gray-100 border-0 rounded-none text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-600"
               />
+              {stepTwoForm.formState.errors.location && (
+                <p className="text-red-500 text-xs mt-1">
+                  {stepTwoForm.formState.errors.location.message}
+                </p>
+              )}
             </div>
 
             {/* Bedrooms */}
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-700">Bedrooms</h3>
+              <h3 className="text-lg font-semibold text-gray-700">
+                Bedrooms *
+              </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <select
-                    name="minBedrooms"
-                    value={formData.minBedrooms}
-                    onChange={handleInputChange}
+                    {...stepTwoForm.register("minBedrooms")}
                     className="w-full px-4 py-3 bg-gray-100 border-0 rounded-none text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-yellow-600"
                   >
                     <option value="">MIN BEDROOMS</option>
-                    {generateMinSelectOptions(0, 10, formData.maxBedrooms)}
+                    {generateSelectOptions(0, 10)}
                   </select>
+                  {stepTwoForm.formState.errors.minBedrooms && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {stepTwoForm.formState.errors.minBedrooms.message}
+                    </p>
+                  )}
                 </div>
                 <div>
                   <select
-                    name="maxBedrooms"
-                    value={formData.maxBedrooms}
-                    onChange={handleInputChange}
+                    {...stepTwoForm.register("maxBedrooms")}
                     className="w-full px-4 py-3 bg-gray-100 border-0 rounded-none text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-yellow-600"
                   >
                     <option value="">MAX BEDROOMS</option>
-                    {generateMaxSelectOptions(0, 10, formData.minBedrooms)}
+                    {generateSelectOptions(0, 10, true)}
                   </select>
+                  {stepTwoForm.formState.errors.maxBedrooms && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {stepTwoForm.formState.errors.maxBedrooms.message}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
 
             {/* Bathrooms */}
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-700">Bathrooms</h3>
+              <h3 className="text-lg font-semibold text-gray-700">
+                Bathrooms *
+              </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <select
-                    name="minBathrooms"
-                    value={formData.minBathrooms}
-                    onChange={handleInputChange}
+                    {...stepTwoForm.register("minBathrooms")}
                     className="w-full px-4 py-3 bg-gray-100 border-0 rounded-none text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-yellow-600"
                   >
                     <option value="">MIN BATHROOMS</option>
-                    {generateMinSelectOptions(0, 10, formData.maxBathrooms)}
+                    {generateSelectOptions(0, 10)}
                   </select>
+                  {stepTwoForm.formState.errors.minBathrooms && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {stepTwoForm.formState.errors.minBathrooms.message}
+                    </p>
+                  )}
                 </div>
                 <div>
                   <select
-                    name="maxBathrooms"
-                    value={formData.maxBathrooms}
-                    onChange={handleInputChange}
+                    {...stepTwoForm.register("maxBathrooms")}
                     className="w-full px-4 py-3 bg-gray-100 border-0 rounded-none text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-yellow-600"
                   >
                     <option value="">MAX BATHROOMS</option>
-                    {generateMaxSelectOptions(0, 10, formData.minBathrooms)}
+                    {generateSelectOptions(0, 10, true)}
                   </select>
+                  {stepTwoForm.formState.errors.maxBathrooms && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {stepTwoForm.formState.errors.maxBathrooms.message}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
@@ -510,11 +726,9 @@ export const MultiStepPropertyForm: React.FC = () => {
               <div className="space-y-3">
                 <div className="flex items-center space-x-3">
                   <input
+                    {...stepTwoForm.register("hasPool")}
                     type="checkbox"
-                    name="hasPool"
                     id="hasPool"
-                    checked={formData.hasPool}
-                    onChange={handleInputChange}
                     className="w-4 h-4 text-yellow-600 focus:ring-yellow-600 border-gray-300 rounded"
                   />
                   <label htmlFor="hasPool" className="text-sm text-gray-700">
@@ -523,11 +737,9 @@ export const MultiStepPropertyForm: React.FC = () => {
                 </div>
                 <div className="flex items-center space-x-3">
                   <input
+                    {...stepTwoForm.register("hasGarage")}
                     type="checkbox"
-                    name="hasGarage"
                     id="hasGarage"
-                    checked={formData.hasGarage}
-                    onChange={handleInputChange}
                     className="w-4 h-4 text-yellow-600 focus:ring-yellow-600 border-gray-300 rounded"
                   />
                   <label htmlFor="hasGarage" className="text-sm text-gray-700">
@@ -548,14 +760,15 @@ export const MultiStepPropertyForm: React.FC = () => {
             <div className="space-y-4">
               <div>
                 <textarea
-                  name="additionalInfo"
+                  {...stepThreeForm.register("additionalInfo")}
                   placeholder="ADDITIONAL REQUIREMENTS OR COMMENTS"
-                  value={formData.additionalInfo}
-                  onChange={handleInputChange}
                   rows={4}
                   className="w-full px-4 py-3 bg-gray-100 border-0 rounded-none text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-600 resize-none"
                 />
               </div>
+
+              {/* Hidden source URL field */}
+              <input {...stepThreeForm.register("sourceUrl")} type="hidden" />
             </div>
           </div>
         );
@@ -567,7 +780,7 @@ export const MultiStepPropertyForm: React.FC = () => {
 
   return (
     <div className="flex items-center justify-center">
-      <div className="w-full max-w-4xl bg-white">
+      <div className="w-full max-w-4xl">
         <div className="p-8">
           <h1 className="text-3xl font-semibold text-center text-black mb-10">
             REQUEST FOR A PROPERTY
@@ -578,12 +791,20 @@ export const MultiStepPropertyForm: React.FC = () => {
           <div>
             <div className="mb-8">{renderStepContent()}</div>
 
+            {/* Show general error message */}
+            {generalError && (
+              <div className="flex justify-center mb-4">
+                <p className="text-red-500 text-sm">{generalError}</p>
+              </div>
+            )}
+
             <div className="flex justify-between flex-wrap gap-4">
               {currentStep > 1 && (
                 <button
                   type="button"
                   onClick={prevStep}
-                  className="flex items-center px-6 py-3 bg-gray-300 text-gray-700 font-semibold hover:bg-gray-400 transition-colors duration-200"
+                  disabled={isPending}
+                  className="flex items-center px-6 py-3 bg-gray-300 text-gray-700 font-semibold hover:bg-gray-400 transition-colors duration-200 disabled:opacity-50"
                 >
                   <ChevronLeft className="w-4 h-4 mr-2" />
                   PREVIOUS
@@ -596,9 +817,9 @@ export const MultiStepPropertyForm: React.FC = () => {
                 <button
                   type="button"
                   onClick={nextStep}
-                  disabled={!canProceed()}
+                  disabled={!canProceedToNextStep() || isPending}
                   className={`flex items-center px-8 py-3 font-semibold transition-colors duration-200 ${
-                    canProceed()
+                    canProceedToNextStep() && !isPending
                       ? "bg-yellow-600 text-white hover:bg-yellow-700"
                       : "bg-gray-300 text-gray-500 cursor-not-allowed"
                   }`}
@@ -609,16 +830,46 @@ export const MultiStepPropertyForm: React.FC = () => {
               ) : (
                 <button
                   type="button"
-                  onClick={handleSubmit}
-                  className="px-8 py-3 bg-yellow-600 text-white font-semibold hover:bg-yellow-700 transition-colors duration-200"
+                  onClick={handleFinalSubmit}
+                  disabled={!canProceedToNextStep() || isPending}
+                  className={`px-8 py-3 font-semibold transition-colors duration-200 ${
+                    canProceedToNextStep() && !isPending
+                      ? "bg-yellow-600 text-white hover:bg-yellow-700"
+                      : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  }`}
                 >
-                  SUBMIT REQUEST
+                  {isPending ? "SUBMITTING..." : "SUBMIT REQUEST"}
                 </button>
               )}
             </div>
           </div>
         </div>
       </div>
+
+      {/* Success Dialog */}
+      <Dialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
+        <DialogContent className="sm:max-w-md rounded-2xl">
+          <DialogHeader>
+            <div className="flex items-center justify-center mb-4">
+              <CheckCircle className="h-12 w-12 text-green-500" />
+            </div>
+            <DialogTitle className="text-center text-xl font-semibold">
+              Successful Submission!
+            </DialogTitle>
+            <DialogDescription className="text-center text-gray-600 mt-2">
+              {successMessage}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-center mt-6">
+            <Button
+              onClick={() => setShowSuccessDialog(false)}
+              className="bg-primary hover:bg-primary/90 text-white px-8"
+            >
+              Close
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
