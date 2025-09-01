@@ -57,7 +57,7 @@ const ContactAgentForm = ({
     email: "",
     message: "",
     primaryContactChannel: "Email",
-    acceptTerms: true,
+    acceptTerms: false,
     sourceUrl: "",
   });
 

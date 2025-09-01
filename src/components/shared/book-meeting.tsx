@@ -29,6 +29,7 @@ import {
 } from "@/components/ui/select";
 import { bookMeetingAction } from "@/actions/book-meeting";
 import { clientBookMeetingSchema } from "@/types/book-a-meeting";
+import { cn } from "@/lib/utils";
 
 // Client-side form data interface
 interface FormData {
@@ -63,7 +64,7 @@ interface FormErrors {
 
 type FormField = keyof FormData;
 
-const BookMeetingDialog: React.FC = () => {
+const BookMeetingDialog = ({ buttonStyle }: { buttonStyle?: string }) => {
   const [isPending, startTransition] = useTransition();
   const [isOpen, setIsOpen] = useState(false);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
@@ -79,7 +80,7 @@ const BookMeetingDialog: React.FC = () => {
     meetingType: "onsite",
     onsiteLocation: "",
     virtualPlatform: "",
-    acceptTerms: true,
+    acceptTerms: false,
     sourceUrl: "",
   });
 
@@ -338,7 +339,7 @@ const BookMeetingDialog: React.FC = () => {
           <div className="flex justify-center pt-4 mb-2">
             <Button
               onClick={() => setShowSuccessDialog(false)}
-              className="bg-primary text-white hover:bg-black/85 transition-all"
+              className="bg-primary text-white hover:bg-black transition-colors"
             >
               Close
             </Button>
@@ -351,7 +352,10 @@ const BookMeetingDialog: React.FC = () => {
         <DialogTrigger asChild>
           <Button
             variant="outline"
-            className="rounded-none border-gray-300 bg-transparent hover:bg-gray-50 text-sm font-light"
+            className={cn(
+              "rounded-none border-gray-300 bg-transparent hover:bg-gray-50 text-sm font-light",
+              buttonStyle
+            )}
           >
             BOOK A MEETING
           </Button>
