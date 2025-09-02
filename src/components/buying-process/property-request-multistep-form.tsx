@@ -28,7 +28,8 @@ const stepOneSchema = z.object({
   }),
 });
 
-const stepTwoSchema = z.object({
+// Base schema for form resolver (without refinements)
+const stepTwoBaseSchema = z.object({
   propertyTypes: z
     .array(z.string())
     .min(1, "At least one property type is required"),
@@ -48,14 +49,53 @@ const stepThreeSchema = z.object({
   sourceUrl: z.string().min(1, "Source URL is required"),
 });
 
-// Combined schema for final submission
-const fullFormSchema = stepOneSchema
-  .merge(stepTwoSchema)
+// Combined base schema for form data structure
+const combinedBaseSchema = stepOneSchema
+  .merge(stepTwoBaseSchema)
   .merge(stepThreeSchema);
 
+// Validation function for min/max relationships
+const validateMinMaxRelationships = (
+  data: z.infer<typeof combinedBaseSchema>
+) => {
+  const errors: string[] = [];
+
+  // Validate budget
+  const minBudget = parseFloat(data.minBudget);
+  const maxBudget = parseFloat(data.maxBudget);
+  if (!isNaN(minBudget) && !isNaN(maxBudget) && minBudget > maxBudget) {
+    errors.push("Minimum budget must be less than or equal to maximum budget");
+  }
+
+  // Validate bedrooms
+  const minBedrooms = parseInt(data.minBedrooms);
+  const maxBedrooms = parseInt(data.maxBedrooms);
+  if (!isNaN(minBedrooms) && !isNaN(maxBedrooms) && minBedrooms > maxBedrooms) {
+    errors.push(
+      "Minimum bedrooms must be less than or equal to maximum bedrooms"
+    );
+  }
+
+  // Validate bathrooms
+  const minBathrooms = parseInt(data.minBathrooms);
+  const maxBathrooms = parseInt(data.maxBathrooms);
+  if (
+    !isNaN(minBathrooms) &&
+    !isNaN(maxBathrooms) &&
+    minBathrooms > maxBathrooms
+  ) {
+    errors.push(
+      "Minimum bathrooms must be less than or equal to maximum bathrooms"
+    );
+  }
+
+  return errors;
+};
+
 type StepOneData = z.infer<typeof stepOneSchema>;
-type StepTwoData = z.infer<typeof stepTwoSchema>;
+type StepTwoData = z.infer<typeof stepTwoBaseSchema>;
 type StepThreeData = z.infer<typeof stepThreeSchema>;
+type CombinedFormData = z.infer<typeof combinedBaseSchema>;
 
 // Types
 interface PropertyType {
@@ -149,7 +189,7 @@ const PropertyTypes: React.FC<PropertyTypesProps> = ({
   };
 
   return (
-    <div className="space-y-4">
+    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
       {typologies.map((typology, index) => (
         <div
           key={`${typology.id}-${index}`}
@@ -179,7 +219,7 @@ const PropertyTypes: React.FC<PropertyTypesProps> = ({
   );
 };
 
-export const MultiStepPropertyForm: React.FC = () => {
+export const MultiStepPropertyForm = () => {
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [isPending, startTransition] = useTransition();
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
@@ -208,7 +248,7 @@ export const MultiStepPropertyForm: React.FC = () => {
   });
 
   const stepTwoForm = useForm<StepTwoData>({
-    resolver: zodResolver(stepTwoSchema),
+    resolver: zodResolver(stepTwoBaseSchema),
     defaultValues: {
       propertyTypes: [],
       minBudget: "",
@@ -268,21 +308,154 @@ export const MultiStepPropertyForm: React.FC = () => {
     }
   };
 
+  // Helper function to generate select options with disabled states
   const generateSelectOptions = (
     min: number,
     max: number,
-    isMax: boolean = false
+    isMax: boolean = false,
+    selectedMin?: string,
+    selectedMax?: string
   ): React.JSX.Element[] => {
     const options: React.JSX.Element[] = [];
+    const minValue = selectedMin ? parseInt(selectedMin) : undefined;
+    const maxValue = selectedMax ? parseInt(selectedMax) : undefined;
 
     for (let i = min; i <= max; i++) {
+      let isDisabled = false;
+
+      if (isMax && minValue !== undefined) {
+        // For max selects, disable options less than selected min
+        isDisabled = i < minValue;
+      } else if (!isMax && maxValue !== undefined) {
+        // For min selects, disable options greater than selected max
+        isDisabled = i > maxValue;
+      }
+
       options.push(
-        <option key={i} value={i.toString()}>
+        <option key={i} value={i.toString()} disabled={isDisabled}>
           {isMax && i === max ? `${i}+` : i}
         </option>
       );
     }
     return options;
+  };
+
+  // Watch form values for min/max validation
+  const minBedrooms = stepTwoForm.watch("minBedrooms");
+  const maxBedrooms = stepTwoForm.watch("maxBedrooms");
+  const minBathrooms = stepTwoForm.watch("minBathrooms");
+  const maxBathrooms = stepTwoForm.watch("maxBathrooms");
+  const minBudget = stepTwoForm.watch("minBudget");
+  const maxBudget = stepTwoForm.watch("maxBudget");
+
+  // Handle budget validation on change
+  const handleBudgetChange = (
+    field: "minBudget" | "maxBudget",
+    value: string
+  ) => {
+    stepTwoForm.setValue(field, value, { shouldValidate: true });
+
+    // Perform manual validation for min/max relationships
+    const currentValues = stepTwoForm.getValues();
+    const updatedValues = { ...currentValues, [field]: value };
+
+    // Validate budget range
+    if (updatedValues.minBudget && updatedValues.maxBudget) {
+      const minBudget = parseFloat(updatedValues.minBudget);
+      const maxBudget = parseFloat(updatedValues.maxBudget);
+
+      if (!isNaN(minBudget) && !isNaN(maxBudget)) {
+        if (minBudget > maxBudget) {
+          // Set errors when minimum is greater than maximum
+          stepTwoForm.setError("minBudget", {
+            type: "manual",
+            message:
+              "Minimum budget must be less than or equal to maximum budget",
+          });
+          stepTwoForm.setError("maxBudget", {
+            type: "manual",
+            message:
+              "Maximum budget must be greater than or equal to minimum budget",
+          });
+        } else {
+          // Clear errors when the relationship is valid
+          stepTwoForm.clearErrors(["minBudget", "maxBudget"]);
+        }
+      }
+    }
+  };
+
+  // Handle bedroom validation on change
+  const handleBedroomChange = (
+    field: "minBedrooms" | "maxBedrooms",
+    value: string
+  ) => {
+    stepTwoForm.setValue(field, value, { shouldValidate: true });
+
+    const currentValues = stepTwoForm.getValues();
+    const updatedValues = { ...currentValues, [field]: value };
+
+    if (updatedValues.minBedrooms && updatedValues.maxBedrooms) {
+      const minBedrooms = parseInt(updatedValues.minBedrooms);
+      const maxBedrooms = parseInt(updatedValues.maxBedrooms);
+
+      if (
+        !isNaN(minBedrooms) &&
+        !isNaN(maxBedrooms) &&
+        minBedrooms > maxBedrooms
+      ) {
+        if (field === "minBedrooms") {
+          stepTwoForm.setError("minBedrooms", {
+            type: "manual",
+            message: "Minimum bedrooms cannot be greater than maximum bedrooms",
+          });
+        } else {
+          stepTwoForm.setError("maxBedrooms", {
+            type: "manual",
+            message: "Maximum bedrooms cannot be less than minimum bedrooms",
+          });
+        }
+      } else {
+        stepTwoForm.clearErrors(["minBedrooms", "maxBedrooms"]);
+      }
+    }
+  };
+
+  // Handle bathroom validation on change
+  const handleBathroomChange = (
+    field: "minBathrooms" | "maxBathrooms",
+    value: string
+  ) => {
+    stepTwoForm.setValue(field, value, { shouldValidate: true });
+
+    const currentValues = stepTwoForm.getValues();
+    const updatedValues = { ...currentValues, [field]: value };
+
+    if (updatedValues.minBathrooms && updatedValues.maxBathrooms) {
+      const minBathrooms = parseInt(updatedValues.minBathrooms);
+      const maxBathrooms = parseInt(updatedValues.maxBathrooms);
+
+      if (
+        !isNaN(minBathrooms) &&
+        !isNaN(maxBathrooms) &&
+        minBathrooms > maxBathrooms
+      ) {
+        if (field === "minBathrooms") {
+          stepTwoForm.setError("minBathrooms", {
+            type: "manual",
+            message:
+              "Minimum bathrooms cannot be greater than maximum bathrooms",
+          });
+        } else {
+          stepTwoForm.setError("maxBathrooms", {
+            type: "manual",
+            message: "Maximum bathrooms cannot be less than minimum bathrooms",
+          });
+        }
+      } else {
+        stepTwoForm.clearErrors(["minBathrooms", "maxBathrooms"]);
+      }
+    }
   };
 
   const handleFinalSubmit = (): void => {
@@ -293,17 +466,23 @@ export const MultiStepPropertyForm: React.FC = () => {
     const stepTwoData = stepTwoForm.getValues();
     const stepThreeData = stepThreeForm.getValues();
 
-    const combinedData = {
+    const combinedData: CombinedFormData = {
       ...stepOneData,
       ...stepTwoData,
       ...stepThreeData,
     };
 
-    // Validate the complete form
-    const validationResult = fullFormSchema.safeParse(combinedData);
-
-    if (!validationResult.success) {
+    // Validate the base schema first
+    const baseValidationResult = combinedBaseSchema.safeParse(combinedData);
+    if (!baseValidationResult.success) {
       setGeneralError("Please check all form fields for errors");
+      return;
+    }
+
+    // Validate min/max relationships
+    const relationshipErrors = validateMinMaxRelationships(combinedData);
+    if (relationshipErrors.length > 0) {
+      setGeneralError(relationshipErrors.join("; "));
       return;
     }
 
@@ -482,7 +661,7 @@ export const MultiStepPropertyForm: React.FC = () => {
     </div>
   );
 
-  const renderStepContent = (): React.JSX.Element | null => {
+  const renderStepContent = (): React.JSX.Element | null | undefined => {
     switch (currentStep) {
       case 1:
         return (
@@ -600,11 +779,14 @@ export const MultiStepPropertyForm: React.FC = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <input
-                    {...stepTwoForm.register("minBudget")}
                     type="number"
                     min="0"
                     step="1000"
                     placeholder="MIN BUDGET"
+                    value={minBudget}
+                    onChange={(e) =>
+                      handleBudgetChange("minBudget", e.target.value)
+                    }
                     className="w-full px-4 py-3 bg-gray-100 border-0 rounded-none text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-600"
                   />
                   {stepTwoForm.formState.errors.minBudget && (
@@ -615,11 +797,14 @@ export const MultiStepPropertyForm: React.FC = () => {
                 </div>
                 <div>
                   <input
-                    {...stepTwoForm.register("maxBudget")}
                     type="number"
                     min="0"
                     step="1000"
                     placeholder="MAX BUDGET"
+                    value={maxBudget}
+                    onChange={(e) =>
+                      handleBudgetChange("maxBudget", e.target.value)
+                    }
                     className="w-full px-4 py-3 bg-gray-100 border-0 rounded-none text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-600"
                   />
                   {stepTwoForm.formState.errors.maxBudget && (
@@ -654,11 +839,20 @@ export const MultiStepPropertyForm: React.FC = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <select
-                    {...stepTwoForm.register("minBedrooms")}
+                    value={minBedrooms}
+                    onChange={(e) =>
+                      handleBedroomChange("minBedrooms", e.target.value)
+                    }
                     className="w-full px-4 py-3 bg-gray-100 border-0 rounded-none text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-yellow-600"
                   >
                     <option value="">MIN BEDROOMS</option>
-                    {generateSelectOptions(0, 10)}
+                    {generateSelectOptions(
+                      0,
+                      10,
+                      false,
+                      undefined,
+                      maxBedrooms
+                    )}
                   </select>
                   {stepTwoForm.formState.errors.minBedrooms && (
                     <p className="text-red-500 text-xs mt-1">
@@ -668,11 +862,14 @@ export const MultiStepPropertyForm: React.FC = () => {
                 </div>
                 <div>
                   <select
-                    {...stepTwoForm.register("maxBedrooms")}
+                    value={maxBedrooms}
+                    onChange={(e) =>
+                      handleBedroomChange("maxBedrooms", e.target.value)
+                    }
                     className="w-full px-4 py-3 bg-gray-100 border-0 rounded-none text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-yellow-600"
                   >
                     <option value="">MAX BEDROOMS</option>
-                    {generateSelectOptions(0, 10, true)}
+                    {generateSelectOptions(0, 10, true, minBedrooms, undefined)}
                   </select>
                   {stepTwoForm.formState.errors.maxBedrooms && (
                     <p className="text-red-500 text-xs mt-1">
@@ -691,11 +888,20 @@ export const MultiStepPropertyForm: React.FC = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <select
-                    {...stepTwoForm.register("minBathrooms")}
+                    value={minBathrooms}
+                    onChange={(e) =>
+                      handleBathroomChange("minBathrooms", e.target.value)
+                    }
                     className="w-full px-4 py-3 bg-gray-100 border-0 rounded-none text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-yellow-600"
                   >
                     <option value="">MIN BATHROOMS</option>
-                    {generateSelectOptions(0, 10)}
+                    {generateSelectOptions(
+                      0,
+                      10,
+                      false,
+                      undefined,
+                      maxBathrooms
+                    )}
                   </select>
                   {stepTwoForm.formState.errors.minBathrooms && (
                     <p className="text-red-500 text-xs mt-1">
@@ -705,11 +911,20 @@ export const MultiStepPropertyForm: React.FC = () => {
                 </div>
                 <div>
                   <select
-                    {...stepTwoForm.register("maxBathrooms")}
+                    value={maxBathrooms}
+                    onChange={(e) =>
+                      handleBathroomChange("maxBathrooms", e.target.value)
+                    }
                     className="w-full px-4 py-3 bg-gray-100 border-0 rounded-none text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-yellow-600"
                   >
                     <option value="">MAX BATHROOMS</option>
-                    {generateSelectOptions(0, 10, true)}
+                    {generateSelectOptions(
+                      0,
+                      10,
+                      true,
+                      minBathrooms,
+                      undefined
+                    )}
                   </select>
                   {stepTwoForm.formState.errors.maxBathrooms && (
                     <p className="text-red-500 text-xs mt-1">
@@ -717,6 +932,11 @@ export const MultiStepPropertyForm: React.FC = () => {
                     </p>
                   )}
                 </div>
+                {stepTwoForm.formState.errors.maxBathrooms && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {stepTwoForm.formState.errors.maxBathrooms.message}
+                  </p>
+                )}
               </div>
             </div>
 
