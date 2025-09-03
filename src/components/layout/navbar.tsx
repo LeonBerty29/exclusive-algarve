@@ -16,6 +16,8 @@ import {
 import { cn } from "@/lib/utils";
 import NavbarUserAuth from "../auth/navbar-user-auth";
 import BookMeeting from "../shared/book-meeting";
+import { BuyResourcesDropdown } from "./buy-resources-dropdown";
+import { SellResourcesDropdown } from "./sell-resources-dropdown";
 
 export default function NavBar({
   colorChange = false,
@@ -31,8 +33,8 @@ export default function NavBar({
     // { href: "/properties", label: "Properties" },
     // { href: "/about-us", label: "About Us" },
     // { href: "/blogs", label: "Blog" },
-    { href: "/buying-process", label: "Buy" },
-    { href: "/become-a-vendor", label: "Sell" },
+    // { href: "/buying-process", label: "Buy" },
+    // { href: "/become-a-vendor", label: "Sell" },
     { href: "/about-us", label: "About Us" },
     { href: "/contact", label: "Contact" },
   ];
@@ -77,7 +79,10 @@ export default function NavBar({
       >
         <div className="2xl:container w-full mx-auto px-6 sm:px-8 md:px-10 lg:px-14 flex h-16 items-center justify-between">
           {/* Desktop Navigation */}
+
           <nav className="hidden lg:flex items-center space-x-8">
+            <BuyResourcesDropdown scrolled={scrolled} colorChange={colorChange} />
+            <SellResourcesDropdown scrolled={scrolled} colorChange={colorChange} />
             {navLinks.map((link) => (
               <Link
                 key={link.href}
