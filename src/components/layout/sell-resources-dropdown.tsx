@@ -84,7 +84,7 @@ export function SellResourcesDropdown({ scrolled, colorChange }: { scrolled: boo
           variant="ghost"
           size="sm"
           className={cn(
-            "flex items-center space-x-1",
+            "flex items-center space-x-1 bg-transparent hover:!bg-transparent !p-0",
             scrolled
             ? "text-gray-600"
             : colorChange
