@@ -16,6 +16,8 @@ import {
 import { cn } from "@/lib/utils";
 import NavbarUserAuth from "../auth/navbar-user-auth";
 import BookMeeting from "../shared/book-meeting";
+import { BuyResourcesDropdown } from "./buy-resources-dropdown";
+import { SellResourcesDropdown } from "./sell-resources-dropdown";
 
 export default function NavBar({
   colorChange = false,
@@ -31,8 +33,8 @@ export default function NavBar({
     // { href: "/properties", label: "Properties" },
     // { href: "/about-us", label: "About Us" },
     // { href: "/blogs", label: "Blog" },
-    { href: "/buying-process", label: "Buy" },
-    { href: "/become-a-vendor", label: "Sell" },
+    // { href: "/buying-process", label: "Buy" },
+    // { href: "/become-a-vendor", label: "Sell" },
     { href: "/about-us", label: "About Us" },
     { href: "/contact", label: "Contact" },
   ];
@@ -78,6 +80,14 @@ export default function NavBar({
         <div className="2xl:container w-full mx-auto px-6 sm:px-8 md:px-10 lg:px-14 flex h-16 items-center justify-between">
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center space-x-8">
+            <BuyResourcesDropdown
+              scrolled={scrolled}
+              colorChange={colorChange}
+            />
+            <SellResourcesDropdown
+              scrolled={scrolled}
+              colorChange={colorChange}
+            />
             {navLinks.map((link) => (
               <Link
                 key={link.href}
@@ -206,6 +216,15 @@ export default function NavBar({
           {/* Mobile Navigation Links */}
           <nav className="flex-1">
             <div className="space-y-1">
+              {/* Mobile Buy/Sell Dropdowns */}
+              <div className="pb-4 space-y-3">
+                <div className="flex flex-col items-start space-y-2">
+                  <BuyResourcesDropdown scrolled={true} colorChange={false} />
+                  <SellResourcesDropdown scrolled={true} colorChange={false} />
+                </div>
+              </div>
+
+              {/* Regular Navigation Links */}
               {navLinks.map((link, index) => (
                 <Link
                   key={link.href}
@@ -217,7 +236,7 @@ export default function NavBar({
                       : "text-gray-700 hover:text-gray-900 pl-0"
                   }`}
                   style={{
-                    animationDelay: `${index * 0.1}s`,
+                    animationDelay: `${(index + 2) * 0.1}s`, // +2 to account for dropdown components
                     animation: isMobileMenuOpen
                       ? "slideInLeft 0.3s ease-out forwards"
                       : "none",
