@@ -27,8 +27,10 @@ import { PropertyMetadata } from "@/types/property";
 
 export function PropertyTypes({
   typologies,
+  modal = true
 }: {
   typologies: PropertyMetadata["typologies"];
+  modal?: boolean;
 }) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -85,13 +87,13 @@ export function PropertyTypes({
 
   return (
     <div className="space-y-4">
-      <DropdownMenu open={open} onOpenChange={setOpen}>
+      <DropdownMenu modal={modal} open={open} onOpenChange={setOpen}>
         <DropdownMenuTrigger asChild>
           <Button
             variant="outline"
             role="combobox"
             aria-expanded={open}
-            className="w-full min-h-[40px] justify-between text-left font-normal overflow-hidden text-gray-600"
+            className="w-full min-h-[40px] justify-between text-left font-normal overflow-hidden text-muted-foreground text-sm md:text-base"
           >
             {selectedItems.length === 0 ? (
               "Select property types..."
@@ -119,6 +121,7 @@ export function PropertyTypes({
                     key={typology.id}
                     value={typology.name}
                     onSelect={() => handleSelect(typology.id.toString())}
+                    className="text-base"
                   >
                     <Check
                       className={cn(

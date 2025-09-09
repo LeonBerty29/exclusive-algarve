@@ -60,10 +60,7 @@ export const clientContactFormSchema = z.object({
     .email("Please enter a valid email address"),
 
   message: z
-    .string()
-    .min(1, "Message is required")
-    .min(10, "Message must be at least 10 characters")
-    .max(500, "Message must be less than 500 characters"),
+    .string().optional(),
 
   acceptTerms: z.boolean().refine((val) => val === true, {
     message: "You must accept the terms and conditions",

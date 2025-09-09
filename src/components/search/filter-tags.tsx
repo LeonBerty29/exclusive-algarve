@@ -156,13 +156,13 @@ const FilterTags = () => {
       )}
 
       {/* Other Active Filters */}
-      {activeFilters.map(([key, value]) => {
+      {activeFilters.map(([key, value], index) => {
         // Skip price filters as they're handled above
         if (key === "min_price" || key === "max_price") return null;
 
         return (
           <div
-            key={key}
+            key={`${key}-${index}`}
             className="text-sm bg-gray-200 font-semibold text-black flex items-center gap-2 px-4 py-2 rounded-md"
           >
             {getFilterIcon(key)}

@@ -5,7 +5,7 @@ import ProperyVideosModal from "./property-videos-modal";
 import PropertyImagesModal from "./property-images-modal";
 import { Property } from "@/types/property";
 import { getProxiedImageUrl } from "@/lib/utils";
-import RequestInformationDialog from "./request-information";
+import {RequestInformationDialog} from "./request-information";
 
 interface PropertyImageGridProps {
   assets: Property["assets"];

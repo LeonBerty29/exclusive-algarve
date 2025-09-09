@@ -22,13 +22,19 @@ interface Resource {
     title: string;
     content: StoryblokRichTextNode<string | TrustedHTML>;
   };
-  // Add other properties as needed
 }
 
-export function SellResourcesDropdown({ scrolled, colorChange }: { scrolled: boolean; colorChange?: boolean }) {
+export function SellResourcesDropdown({
+  scrolled,
+  colorChange,
+}: {
+  scrolled: boolean;
+  colorChange?: boolean;
+}) {
   const [resources, setResources] = useState<Resource[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [open, setOpen] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -47,7 +53,6 @@ export function SellResourcesDropdown({ scrolled, colorChange }: { scrolled: boo
           err instanceof Error ? err.message : "Failed to fetch resources"
         );
         console.error("Error fetching resources:", err);
-        throw new Error("Failed to fetch resources");
       } finally {
         setLoading(false);
       }
@@ -56,10 +61,9 @@ export function SellResourcesDropdown({ scrolled, colorChange }: { scrolled: boo
     fetchResources();
   }, []);
 
-  // console.log({ resources });
-
   const handleResourceClick = (slug: string) => {
     router.push(`/sell/${slug}`);
+    setOpen(false); // Close dropdown after navigating
   };
 
   if (loading) {
@@ -78,39 +82,44 @@ export function SellResourcesDropdown({ scrolled, colorChange }: { scrolled: boo
   }
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          variant="ghost"
-          size="sm"
-          className={cn(
-            "flex items-center space-x-1 bg-transparent hover:!bg-transparent !p-0",
-            scrolled
-            ? "text-gray-600"
-            : colorChange
-            ? "text-white"
-            : "text-gray-600"
+    <DropdownMenu open={open} onOpenChange={setOpen} modal={false}>
+      <div
+        onMouseEnter={() => setOpen(true)}
+        onMouseLeave={() => setOpen(false)}
+      >
+        <DropdownMenuTrigger asChild>
+          <Button
+            variant="ghost"
+            size="sm"
+            className={cn(
+              "flex items-center space-x-1 bg-transparent hover:!bg-transparent !p-0",
+              scrolled
+                ? "text-gray-600"
+                : colorChange
+                ? "text-white"
+                : "text-gray-600"
+            )}
+          >
+            Sell
+            <ChevronDown className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className="w-80 p-3">
+          {resources.length === 0 ? (
+            <DropdownMenuItem disabled>No resources available</DropdownMenuItem>
+          ) : (
+            resources.map((resource) => (
+              <DropdownMenuItem
+                key={resource.id}
+                onClick={() => handleResourceClick(resource.slug)}
+                className="cursor-pointer py-3 hover:bg-gray-100 text-gray-800 border-b border-gray-200"
+              >
+                {resource.name}
+              </DropdownMenuItem>
+            ))
           )}
-        >
-          Sell
-          <ChevronDown className="h-4 w-4" />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-80 p-3">
-        {resources.length === 0 ? (
-          <DropdownMenuItem disabled>No resources available</DropdownMenuItem>
-        ) : (
-          resources.map((resource) => (
-            <DropdownMenuItem
-              key={resource.id}
-              onClick={() => handleResourceClick(resource.slug)}
-              className="cursor-pointer py-3 hover:bg-gray-100 text-gray-800 border-b border-gray-200"
-            >
-              {resource.name}
-            </DropdownMenuItem>
-          ))
-        )}
-      </DropdownMenuContent>
+        </DropdownMenuContent>
+      </div>
     </DropdownMenu>
   );
 }

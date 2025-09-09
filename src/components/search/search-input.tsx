@@ -4,8 +4,11 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
+import { cn } from "@/lib/utils";
 
-export function SearchInput() {
+export function SearchInput(
+  {className}: {className?: string}
+) {
   // console.log("Rendering <SearchInput />")
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -58,7 +61,7 @@ export function SearchInput() {
         value={searchValue}
         onChange={handleInputChange}
         onKeyDown={handleKeyDown}
-        className="w-full border-transparent border-b-primary bg-transparent focus:bg-transparent active:bg-transparent hover:bg-transparent rounded-none text-neutral-500 font-light text-sm placeholder:text-neutral-400 shadow-none min-h-[40px]"
+        className={cn("w-full border-transparent border-b-primary bg-transparent focus:bg-transparent active:bg-transparent hover:bg-transparent rounded-none shadow-none min-h-[40px] text-white placeholder:text-white/70 placeholder:text-sm placeholder:md:text-base", className)}
       />
       <Button
         onClick={handleSearch}

@@ -222,7 +222,7 @@ export function MessageForm() {
           {/* Submit Button */}
           <Button
             type="submit"
-            disabled={isPending || !form.formState.isValid}
+            disabled={isPending}
             className={cn(
               "bg-primary hover:bg-primary/90 text-white font-medium py-5 px-8 rounded-none transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             )}

@@ -41,9 +41,10 @@ interface LocationOption {
 
 interface RegionSelectProps {
   metadata: PropertyMetadata;
+  modal?: boolean;
 }
 
-export default function RegionSelect({ metadata }: RegionSelectProps) {
+export default function RegionSelect({ metadata, modal=true }: RegionSelectProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [open, setOpen] = useState(false);
@@ -482,7 +483,7 @@ export default function RegionSelect({ metadata }: RegionSelectProps) {
 
   return (
     <div className="w-full">
-      <DropdownMenu open={open} onOpenChange={setOpen}>
+      <DropdownMenu modal={modal} open={open} onOpenChange={setOpen}>
         <DropdownMenuTrigger asChild>
           <Button
             variant="outline"
@@ -492,11 +493,11 @@ export default function RegionSelect({ metadata }: RegionSelectProps) {
           >
             <div className="flex flex-wrap gap-1 flex-1">
               {selectedItems.length === 0 ? (
-                <span className="text-muted-foreground">
+                <span className="text-muted-foreground text-sm md:text-base font-normal">
                   Select locations...
                 </span>
               ) : (
-                <span>Selected locations</span>
+                <span className="text-sm md:text-base font-normal">Selected locations</span>
               )}
             </div>
             <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -531,8 +532,9 @@ export default function RegionSelect({ metadata }: RegionSelectProps) {
                           !isSelected &&
                           "bg-neutral-200",
                         option.type === "area" && isSelected && "bg-amber-50",
-                        option.type === "municipality" && "text-sm underline",
-                        option.type === "zone" && "text-xs text-gray-600"
+                        option.type === "municipality" && "text-lg underline",
+                        option.type === "area" && "text-lg uppercase",
+                        option.type === "zone" && "text-base text-gray-700"
                       )}
                     >
                       <span className="whitespace-pre">

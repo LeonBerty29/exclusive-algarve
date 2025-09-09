@@ -62,7 +62,7 @@ export default function HeroSection({
         <div className="absolute inset-0 bg-black/40" />
         <div className="absolute left-1/2 top-1/2 -translate-y-1/2 w-full max-w-7xl -translate-x-1/2 px-4">
           <div className="glassmorphism rounded-xl p-6">{children}</div>
-          <Button className="bg-primary text-white hover:bg-primary/80 transition-all !mx-auto block">
+          <Button className="bg-primary text-white hover:bg-primary/80 transition-all !mx-auto block text-base lg:text-lg">
             <Link href="/properties">ALL PROPERTIES</Link>
           </Button>
         </div>
