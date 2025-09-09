@@ -1,7 +1,9 @@
 import DiscoverSection from "@/components/home/discover-section";
 import BookMeeting from "@/components/shared/book-meeting";
 import { ContactSection } from "@/components/shared/contact-section";
+import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 
 const ContactPage = () => {
@@ -51,6 +53,17 @@ const ContactPage = () => {
           />
         </div>
       </div>
+
+      <section className="lg:container mx-auto px-6 md:px-12 lg:px-14 py-14 xl:pb-20">
+        <div className="flex flex-col items-center gap-3">
+            <h4 className="uppercase font-bold text-2xl text-center text-primary">Request an agenet partnership</h4>
+            <Button asChild className="bg-black hover:bg-black/90 px-8 text-white transition-colors">
+              <Link href="/agent">
+                REQUEST
+              </Link>
+            </Button>
+        </div>
+      </section>
 
       <DiscoverSection />
     </>

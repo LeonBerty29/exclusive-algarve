@@ -9,7 +9,7 @@ export const PropertiesFilter = ({ suspenseKey }: { suspenseKey: string }) => {
   return (
     <CollapsibleFilters visibleCount={4}>
       <div className="relative">
-        <SearchInput />
+        <SearchInput className="text-gray-700 placeholder:text-gray-700" />
       </div>
 
       <div className="relative">

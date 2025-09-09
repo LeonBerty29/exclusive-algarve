@@ -3,11 +3,6 @@ import { useState, useEffect, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ChevronDown, Check } from "lucide-react";
 
-// import {
-//   Popover,
-//   PopoverContent,
-//   PopoverTrigger,
-// } from "@/components/ui/popover";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -29,10 +24,16 @@ interface PriceRange {
   value: string;
 }
 
-export function PriceSelect({ priceRange }: { priceRange: Ranges["price"] }) {
+export function PriceSelect({
+  priceRange,
+  modal = true,
+}: {
+  priceRange: Ranges["price"];
+  modal?: boolean;
+}) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [selectedValue, setSelectedValue] = useState<string>("");
+  const [selectedValues, setSelectedValues] = useState<string[]>([]);
   const [open, setOpen] = useState(false);
 
   // Generate price ranges based on min and max values
@@ -40,133 +41,148 @@ export function PriceSelect({ priceRange }: { priceRange: Ranges["price"] }) {
     const ranges: PriceRange[] = [];
     const { min, max } = priceRange;
 
-    // Add "Any Price" option
-    ranges.push({
-      min: min,
-      max: max,
-      label: "Any Price",
-      value: "any",
+    // Define standard range boundaries
+    const standardRanges = [
+      { min: 0, max: 500000, label: "0 to €500K" },
+      { min: 500000, max: 1000000, label: "€500K - €1M" },
+      { min: 1000000, max: 2000000, label: "€1M - €2M" },
+      { min: 2000000, max: 3000000, label: "€2M - €3M" },
+      { min: 3000000, max: 4000000, label: "€3M - €4M" },
+      { min: 4000000, max: 5000000, label: "€4M - €5M" },
+    ];
+
+    // Add standard ranges that overlap with your data
+    standardRanges.forEach((range) => {
+      if (range.min < max && range.max > min) {
+        const adjustedMin = Math.max(range.min, min);
+        const adjustedMax = Math.min(range.max, max);
+
+        if (adjustedMax > adjustedMin) {
+          ranges.push({
+            min: adjustedMin,
+            max: adjustedMax,
+            label: range.label,
+            value: `${adjustedMin}-${adjustedMax}`,
+          });
+        }
+      }
     });
 
-    // If min is less than 500k, add 0-500k range
-    if (min < 500000) {
-      const upperBound = Math.min(500000, max);
-      ranges.push({
-        min: min,
-        max: upperBound,
-        label: `0 to €500K`,
-        value: `${min}-${upperBound}`,
-      });
-    }
+    // Handle ranges above 5M based on actual max price
+    if (max > 5000000) {
+      const finalRangeMin = Math.max(5000000, min);
 
-    // Add 500k-1M if applicable
-    if (max > 500000) {
-      const lowerBound = Math.max(500000, min);
-      const upperBound = Math.min(1000000, max);
-      if (upperBound > lowerBound) {
+      if (max <= 10000000) {
+        // If max is 10M or less, create 5M-10M range
         ranges.push({
-          min: lowerBound,
-          max: upperBound,
-          label: `€500K - €1M`,
-          value: `${lowerBound}-${upperBound}`,
+          min: finalRangeMin,
+          max: 10000000,
+          label: "€5M - €10M",
+          value: `${finalRangeMin}-10000000`,
+        });
+      } else {
+        // If max is greater than 10M, create both 5M-10M and 10M+ ranges
+        ranges.push({
+          min: finalRangeMin,
+          max: 10000000,
+          label: "€5M - €10M",
+          value: `${finalRangeMin}-10000000`,
+        });
+
+        ranges.push({
+          min: 10000000,
+          max: max,
+          label: "€10M+",
+          value: `10000000-${max}`,
         });
       }
-    }
-
-    // From 1M to 5M, increment by 1M
-    for (let i = 1000000; i < Math.min(5000000, max); i += 1000000) {
-      const lowerBound = Math.max(i, min);
-      const upperBound = Math.min(i + 1000000, max);
-      if (upperBound > lowerBound) {
-        const lowerLabel = i / 1000000;
-        const upperLabel = (i + 1000000) / 1000000;
-        ranges.push({
-          min: lowerBound,
-          max: upperBound,
-          label: `€${lowerLabel}M - €${upperLabel}M`,
-          value: `${lowerBound}-${upperBound}`,
-        });
-      }
-    }
-
-    // From 5M to 15M, increment by 5M
-    for (let i = 5000000; i < Math.min(15000000, max); i += 5000000) {
-      const lowerBound = Math.max(i, min);
-      const upperBound = Math.min(i + 5000000, max);
-      if (upperBound > lowerBound) {
-        const lowerLabel = i / 1000000;
-        const upperLabel = (i + 5000000) / 1000000;
-        ranges.push({
-          min: lowerBound,
-          max: upperBound,
-          label: `€${lowerLabel}M - €${upperLabel}M`,
-          value: `${lowerBound}-${upperBound}`,
-        });
-      }
-    }
-
-    // 15M+ if max is greater than 15M
-    if (max > 15000000) {
-      const lowerBound = Math.max(15000000, min);
-      ranges.push({
-        min: lowerBound,
-        max: max,
-        label: `€15M+`,
-        value: `${lowerBound}-${max}`,
-      });
     }
 
     return ranges;
   }, [priceRange.min, priceRange.max]);
 
-  // Determine current selected value based on URL params
+  // Determine current selected values based on URL params
   useEffect(() => {
-    const minPrice = searchParams.get("min_price");
-    const maxPrice = searchParams.get("max_price");
+    const priceRangeParams = searchParams.getAll("price_ranges[]");
 
-    if (!minPrice && !maxPrice) {
-      setSelectedValue("any");
-      return;
+    if (priceRangeParams.length === 0) {
+      // Check for legacy min_price and max_price parameters
+      const minPrice = searchParams.get("min_price");
+      const maxPrice = searchParams.get("max_price");
+
+      if (minPrice || maxPrice) {
+        const currentMin = minPrice ? parseInt(minPrice) : priceRange.min;
+        const currentMax = maxPrice ? parseInt(maxPrice) : priceRange.max;
+
+        // Find matching range for legacy parameters
+        const matchingRange = priceRanges.find(
+          (range) => range.min === currentMin && range.max === currentMax
+        );
+
+        setSelectedValues(matchingRange ? [matchingRange.value] : []);
+      } else {
+        setSelectedValues([]);
+      }
+    } else {
+      // Parse new price_ranges[] format
+      const selectedRanges: string[] = [];
+
+      priceRangeParams.forEach((param) => {
+        const [min, max] = param.split(",").map(Number);
+        if (!isNaN(min) && !isNaN(max)) {
+          const matchingRange = priceRanges.find(
+            (range) => range.min === min && range.max === max
+          );
+          if (matchingRange) {
+            selectedRanges.push(matchingRange.value);
+          }
+        }
+      });
+
+      setSelectedValues(selectedRanges);
     }
-
-    const currentMin = minPrice ? parseInt(minPrice) : priceRange.min;
-    const currentMax = maxPrice ? parseInt(maxPrice) : priceRange.max;
-
-    // Find matching range
-    const matchingRange = priceRanges.find(
-      (range) => range.min === currentMin && range.max === currentMax
-    );
-
-    setSelectedValue(matchingRange?.value || "");
   }, [searchParams, priceRange.min, priceRange.max, priceRanges]);
 
-  const handleValueChange = (value: string) => {
-    setSelectedValue(value);
-    setOpen(false);
+  const handleValueToggle = (value: string) => {
+    let newSelectedValues: string[];
 
+    if (selectedValues.includes(value)) {
+      // Remove the value if already selected
+      newSelectedValues = selectedValues.filter((v) => v !== value);
+    } else {
+      // Add the value if not selected
+      newSelectedValues = [...selectedValues, value];
+    }
+
+    setSelectedValues(newSelectedValues);
+    updateURL(newSelectedValues);
+  };
+
+  const updateURL = (values: string[]) => {
     const params = new URLSearchParams(searchParams.toString());
 
-    if (value === "any") {
-      // Remove price filters for "Any Price"
-      params.delete("min_price");
-      params.delete("max_price");
-    } else {
-      // Parse the selected range and set URL params
-      const selectedRange = priceRanges.find((range) => range.value === value);
-      if (selectedRange) {
-        // Only set params if they're different from defaults
-        if (selectedRange.min !== priceRange.min) {
-          params.set("min_price", selectedRange.min.toString());
-        } else {
-          params.delete("min_price");
-        }
+    // Remove legacy price parameters
+    params.delete("min_price");
+    params.delete("max_price");
 
-        if (selectedRange.max !== priceRange.max) {
-          params.set("max_price", selectedRange.max.toString());
-        } else {
-          params.delete("max_price");
+    // Remove existing price_ranges[] parameters
+    params.delete("price_ranges[]");
+
+    if (values.length === 0) {
+      // No ranges selected, don't add any price parameters
+    } else {
+      // Add new price_ranges[] parameters
+      values.forEach((value) => {
+        const selectedRange = priceRanges.find(
+          (range) => range.value === value
+        );
+        if (selectedRange) {
+          params.append(
+            "price_ranges[]",
+            `${selectedRange.min},${selectedRange.max}`
+          );
         }
-      }
+      });
     }
 
     // Reset to first page when filter changes
@@ -175,26 +191,36 @@ export function PriceSelect({ priceRange }: { priceRange: Ranges["price"] }) {
     router.replace(`?${params.toString()}`, { scroll: false });
   };
 
+  const clearAllSelections = () => {
+    setSelectedValues([]);
+    updateURL([]);
+    setOpen(false);
+  };
+
   const getDisplayText = () => {
-    if (!selectedValue || selectedValue === "any") {
+    if (selectedValues.length === 0) {
       return "Price Range";
     }
 
-    const selectedRange = priceRanges.find(
-      (range) => range.value === selectedValue
-    );
-    return selectedRange?.label || "Price Range";
+    if (selectedValues.length === 1) {
+      const selectedRange = priceRanges.find(
+        (range) => range.value === selectedValues[0]
+      );
+      return selectedRange?.label || "Price Range";
+    }
+
+    return `${selectedValues.length} price ranges selected`;
   };
 
   return (
     <div className="space-y-4">
-      <DropdownMenu open={open} onOpenChange={setOpen}>
+      <DropdownMenu modal={modal} open={open} onOpenChange={setOpen}>
         <DropdownMenuTrigger asChild>
           <Button
             variant="outline"
             role="combobox"
             aria-expanded={open}
-            className="w-full min-h-[40px] justify-between text-left font-normal text-gray-600"
+            className="w-full min-h-[40px] justify-between text-left text-muted-foreground text-sm md:text-base font-normal"
           >
             {getDisplayText()}
             <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -204,16 +230,24 @@ export function PriceSelect({ priceRange }: { priceRange: Ranges["price"] }) {
           <Command>
             <CommandEmpty>No price range found.</CommandEmpty>
             <CommandGroup>
+              {selectedValues.length > 0 && (
+                <CommandItem
+                  onSelect={clearAllSelections}
+                  className="cursor-pointer text-red-600 border-b border-gray-100 mb-1"
+                >
+                  Clear all selections
+                </CommandItem>
+              )}
               {priceRanges.map((range) => (
                 <CommandItem
                   key={range.value}
                   value={range.value}
-                  onSelect={() => handleValueChange(range.value)}
-                  className="cursor-pointer"
+                  onSelect={() => handleValueToggle(range.value)}
+                  className="cursor-pointer text-base"
                 >
                   <Check
                     className={`mr-2 h-4 w-4 ${
-                      selectedValue === range.value
+                      selectedValues.includes(range.value)
                         ? "opacity-100"
                         : "opacity-0"
                     }`}

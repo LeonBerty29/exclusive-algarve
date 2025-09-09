@@ -149,9 +149,7 @@ export function NewsletterForm({ className = "" }: NewsletterFormProps) {
             />
             <Button
               type="submit"
-              disabled={
-                !form.watch("email") || isPending || !form.formState.isValid
-              }
+              disabled={isPending}
               className="bg-primary hover:bg-primary/90 rounded-none text-white px-6 h-12 flex items-center justify-center"
             >
               {isPending ? "Subscribing..." : "Subscribe"}

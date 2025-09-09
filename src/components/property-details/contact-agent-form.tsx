@@ -44,11 +44,15 @@ interface FormErrors {
 
 type FormField = keyof FormData;
 
+type ContactAgentFormProps = {
+  salesConsultant: Property["sales_consultant"];
+  onSuccess?: () => void; // new prop optional callback
+};
+
 const ContactAgentForm = ({
   salesConsultant,
-}: {
-  salesConsultant: Property["sales_consultant"];
-}) => {
+  onSuccess,
+}: ContactAgentFormProps) => {
   const [isPending, startTransition] = useTransition();
   const [formData, setFormData] = useState<FormData>({
     firstName: "",
@@ -155,6 +159,7 @@ const ContactAgentForm = ({
             sourceUrl: formData.sourceUrl, // Keep the source URL
           });
           setErrors({});
+          if (onSuccess) onSuccess()
         } else {
           // Handle server validation errors
           if (result.fieldErrors) {

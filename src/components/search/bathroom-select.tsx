@@ -13,8 +13,10 @@ import { Ranges } from "@/types/property";
 
 export function BathroomsDropdown({
   bathroomRange,
+  modal,
 }: {
   bathroomRange: Ranges["bathrooms"];
+  modal?: boolean;
 }) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -120,11 +122,11 @@ export function BathroomsDropdown({
 
   return (
     <div className="space-y-4">
-      <DropdownMenu open={open} onOpenChange={setOpen}>
+      <DropdownMenu modal={modal} open={open} onOpenChange={setOpen}>
         <DropdownMenuTrigger asChild>
           <Button
             variant="outline"
-            className="w-full min-h-[40px] justify-between text-left font-normal overflow-hidden text-gray-600"
+            className="w-full min-h-[40px] justify-between text-left font-normal overflow-hidden text-muted-foreground text-sm md:text-base"
           >
             {getDisplayText()}
             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />

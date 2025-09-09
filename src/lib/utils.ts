@@ -13,6 +13,16 @@ export const getProxiedImageUrl = (originalUrl: string) => {
 };
 
 export const generateApiParams = (searchParams: PropertySearchParams) => {
+  let priceRanges: string[] | undefined;
+  if (searchParams["price_ranges[]"]) {
+    // Handle both single value and array of values
+    if (Array.isArray(searchParams["price_ranges[]"])) {
+      priceRanges = searchParams["price_ranges[]"] as string[];
+    } else {
+      priceRanges = [searchParams["price_ranges[]"] as string];
+    }
+
+  }
   const apiParams: PropertySearchParams = {
     search: searchParams.search,
     location_area: searchParams.location_area,
@@ -21,6 +31,7 @@ export const generateApiParams = (searchParams: PropertySearchParams) => {
     district: searchParams.district,
     min_price: searchParams.min_price,
     max_price: searchParams.max_price,
+    price_ranges: priceRanges || [],
     currency: searchParams.currency || "EUR",
     typology: searchParams.typology,
     min_bedrooms: searchParams.min_bedrooms,
@@ -57,6 +68,7 @@ export const generateSuspenseKey = (apiParams: PropertySearchParams) => {
     district: apiParams.district,
     min_price: apiParams.min_price,
     max_price: apiParams.max_price,
+    price_ranges: apiParams.price_ranges,
     currency: apiParams.currency,
     typology: apiParams.typology,
     min_bedrooms: apiParams.min_bedrooms,
@@ -83,6 +95,7 @@ export const generateSuspenseKey = (apiParams: PropertySearchParams) => {
 };
 
 export const hasActiveFilters = (params: PropertySearchParams): boolean => {
+
   return !!(
     params.search ||
     params.location_area ||
@@ -91,6 +104,7 @@ export const hasActiveFilters = (params: PropertySearchParams): boolean => {
     params.district ||
     params.min_price ||
     params.max_price ||
+    (params.price_ranges && params.price_ranges.length > 0) ||
     params.typology ||
     params.min_bedrooms ||
     params.max_bedrooms ||
@@ -102,7 +116,7 @@ export const hasActiveFilters = (params: PropertySearchParams): boolean => {
     params.max_plot_size ||
     params.construction_year_from ||
     params.construction_year_to ||
-    params.energy_class ||
+    (params.energy_class && params.energy_class.length > 0) ||
     params.agency_id ||
     params.featured ||
     (params.show_price !== undefined && params.show_price !== null)

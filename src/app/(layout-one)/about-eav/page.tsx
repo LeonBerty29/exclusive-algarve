@@ -4,6 +4,8 @@ import { cn } from "@/lib/utils";
 import DiscoverSection from "@/components/home/discover-section";
 import { ContactSection } from "@/components/shared/contact-section";
 import ClientTestimonial from "@/components/about-us/client-testimonial";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 const AboutUs = () => {
 
@@ -64,6 +66,10 @@ const AboutUs = () => {
               for over a decade. They have built up a multi award winning
               company and continue to grow the business year after year.
             </p>
+
+            <Button asChild className="bg-primary hover:bg-black text-white transition-colors mt-5">
+              <Link href="/about-eav/the-team">See The Team</Link>
+            </Button>
           </div>
         </div>
       </div>

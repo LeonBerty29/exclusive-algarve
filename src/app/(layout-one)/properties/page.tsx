@@ -21,6 +21,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ListFilter } from "lucide-react";
 import { SortBy } from "@/components/search/sort-by";
+import { generateApiParams, hasActiveFilters } from "@/lib/utils";
 // import HeroSearch from "@/components/home/search-component";
 
 // interface PropertiesPageProps {
@@ -39,36 +40,26 @@ interface PageProps {
 export default async function PropertiesPage(props: PageProps) {
   // Convert searchParams to the format expected by your API
   const searchParams = await props.searchParams;
-  const apiParams: PropertySearchParams = {
-    search: searchParams.search,
-    location_area: searchParams.location_area,
-    municipality: searchParams.municipality,
-    zone: searchParams.zone,
-    district: searchParams.district,
-    min_price: searchParams.min_price,
-    max_price: searchParams.max_price,
-    currency: searchParams.currency || "EUR",
-    typology: searchParams.typology,
-    min_bedrooms: searchParams.min_bedrooms,
-    max_bedrooms: searchParams.max_bedrooms,
-    min_bathrooms: searchParams.min_bathrooms,
-    max_bathrooms: searchParams.max_bathrooms,
-    min_area: searchParams.min_area,
-    max_area: searchParams.max_area,
-    min_plot_size: searchParams.min_plot_size,
-    max_plot_size: searchParams.max_plot_size,
-    construction_year_from: searchParams.construction_year_from,
-    construction_year_to: searchParams.construction_year_to,
-    energy_class: searchParams.energy_class,
-    agency_id: searchParams.agency_id,
-    featured: searchParams.featured,
-    show_price: searchParams.show_price,
-    sort_by: searchParams.sort_by || "created_at",
-    sort_direction: searchParams.sort_direction || "desc",
-    per_page: searchParams.per_page || 20,
-    page: searchParams.page || 1,
-    language: searchParams.language || "en",
-  };
+
+  console.log("why is search params not showing");
+
+  console.log({ searchParamsInPage: searchParams });
+
+  // Handle price_ranges parameter - it comes from URL as price_ranges[]
+  let priceRanges: string[] | undefined;
+  if (searchParams["price_ranges[]"]) {
+    // Handle both single value and array of values
+    console.log("There are price ranges");
+    if (Array.isArray(searchParams["price_ranges[]"])) {
+      priceRanges = searchParams["price_ranges[]"] as string[];
+    } else {
+      priceRanges = [searchParams["price_ranges[]"] as string];
+    }
+
+    console.log({ priceRanges });
+  }
+
+  const apiParams: PropertySearchParams = generateApiParams(searchParams);
 
   // Create a key based on the search parameters that affect the data
   const suspenseKey = JSON.stringify({
@@ -79,6 +70,7 @@ export default async function PropertiesPage(props: PageProps) {
     district: apiParams.district,
     min_price: apiParams.min_price,
     max_price: apiParams.max_price,
+    price_ranges: apiParams.price_ranges,
     currency: apiParams.currency,
     typology: apiParams.typology,
     min_bedrooms: apiParams.min_bedrooms,
@@ -146,34 +138,6 @@ export default async function PropertiesPage(props: PageProps) {
         </div>
       </div>
     </>
-  );
-}
-
-// Helper function to check if any filters are applied
-function hasActiveFilters(params: PropertySearchParams): boolean {
-  return !!(
-    params.search ||
-    params.location_area ||
-    params.municipality ||
-    params.zone ||
-    params.district ||
-    params.min_price ||
-    params.max_price ||
-    params.typology ||
-    params.min_bedrooms ||
-    params.max_bedrooms ||
-    params.min_bathrooms ||
-    params.max_bathrooms ||
-    params.min_area ||
-    params.max_area ||
-    params.min_plot_size ||
-    params.max_plot_size ||
-    params.construction_year_from ||
-    params.construction_year_to ||
-    params.energy_class ||
-    params.agency_id ||
-    params.featured ||
-    (params.show_price !== undefined && params.show_price !== null)
   );
 }
 

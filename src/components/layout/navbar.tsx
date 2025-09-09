@@ -31,11 +31,11 @@ export default function NavBar({
   const navLinks = [
     // { href: "/", label: "Home" },
     // { href: "/properties", label: "Properties" },
-    // { href: "/about-us", label: "About Us" },
+    // { href: "/about-eav", label: "About Us" },
     // { href: "/blogs", label: "Blog" },
     // { href: "/buying-process", label: "Buy" },
     // { href: "/become-a-vendor", label: "Sell" },
-    { href: "/about-us", label: "About Us" },
+    { href: "/about-eav", label: "About Us" },
     { href: "/contact", label: "Contact" },
   ];
 

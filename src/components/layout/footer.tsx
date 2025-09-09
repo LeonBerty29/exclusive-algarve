@@ -17,7 +17,7 @@ const navigations = [
   },
   {
     name: "About Us",
-    link: "/about-us",
+    link: "/about-eav",
   },
   {
     name: "Contact",

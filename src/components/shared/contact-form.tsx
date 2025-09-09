@@ -73,7 +73,7 @@ export function ContactForm({
     formDataToSubmit.append("last_name", values.lastName);
     formDataToSubmit.append("phone", values.phone);
     formDataToSubmit.append("email", values.email);
-    formDataToSubmit.append("message", values.message);
+    formDataToSubmit.append("message", values.message || "");
     formDataToSubmit.append("source_url", values.sourceUrl || "");
 
     startTransition(async () => {
@@ -317,9 +317,7 @@ export function ContactForm({
             <Button
               type="submit"
               disabled={
-                !form.watch("acceptTerms") ||
-                isPending ||
-                !form.formState.isValid
+                isPending
               }
               className={cn(
                 "bg-primary hover:bg-primary/90 text-white font-medium py-5 px-14 rounded-none transition-colors disabled:opacity-50 disabled:cursor-not-allowed",

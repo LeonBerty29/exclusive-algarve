@@ -48,25 +48,56 @@ async function apiRequest<T>(
 }
 
 /**
- * Builds query string from search parameters
+ * Builds query string from search parameters with support for array parameters
  */
 function buildQueryString(params: PropertySearchParams): string {
   const searchParams = new URLSearchParams();
 
   Object.entries(params).forEach(([key, value]) => {
     if (value !== undefined && value !== null && value !== "") {
-      searchParams.append(key, value.toString());
+      // Handle array parameters (like price_ranges, energy_class)
+      if (Array.isArray(value)) {
+        if (value.length > 0) {
+          // For price_ranges, we need to use the bracket notation
+          if (key === "price_ranges") {
+            value.forEach((item) => {
+              searchParams.append("price_ranges[]", item.toString());
+            });
+          } else if (key === "price_ranges[]") {
+            // value.forEach((item) => {
+              // searchParams.append("price_ranges[]", item.toString());
+            // });
+
+          }
+          // For energy_class and other arrays, use bracket notation as well
+          else if (key === "energy_class") {
+            value.forEach((item) => {
+              searchParams.append("energy_class[]", item.toString());
+            });
+          }
+          // For any other arrays, use bracket notation
+          else {
+            value.forEach((item) => {
+              searchParams.append(`${key}[]`, item.toString());
+            });
+          }
+        }
+      } else {
+        // Handle non-array parameters
+        searchParams.append(key, value.toString());
+      }
     }
   });
 
+
   const queryString = searchParams.toString();
+
   return queryString ? `?${queryString}` : "";
 }
 
 /**
  * Fetches a paginated list of properties with optional filtering and sorting
  */
-
 export const getProperties = cache(
   async (params: PropertySearchParams = {}): Promise<PropertyListResponse> => {
     const queryString = buildQueryString(params);
@@ -78,11 +109,10 @@ export const getProperties = cache(
 
 export const getFeaturedProperties = cache(
   async (params: PropertySearchParams = {}): Promise<PropertyListResponse> => {
-    // const pp = await getProperties(params);
-    // console.log({pp})
     return await getProperties(params);
   }
 );
+
 export const getPremiumProperties = cache(
   async (params: PropertySearchParams = {}): Promise<PropertyListResponse> => {
     return await getProperties(params);
@@ -173,7 +203,7 @@ export async function searchPropertiesByLocation(
 }
 
 /**
- * Search properties by price range
+ * Search properties by price range (legacy single range)
  */
 export async function searchPropertiesByPriceRange(
   minPrice: number,
@@ -184,6 +214,19 @@ export async function searchPropertiesByPriceRange(
     ...additionalParams,
     min_price: minPrice,
     max_price: maxPrice,
+  });
+}
+
+/**
+ * Search properties by multiple price ranges (new method)
+ */
+export async function searchPropertiesByMultiplePriceRanges(
+  priceRanges: string[], // Array of "min,max" strings
+  additionalParams: PropertySearchParams = {}
+): Promise<PropertyListResponse> {
+  return getProperties({
+    ...additionalParams,
+    price_ranges: priceRanges,
   });
 }
 
@@ -231,6 +274,7 @@ export async function getPropertiesWithAllPaginated(
   params: PropertySearchParams = {},
   perPage: number = 15
 ): Promise<PropertyListResponse> {
+
   return getProperties({
     ...params,
     include: "media,features",

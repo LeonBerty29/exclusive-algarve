@@ -148,6 +148,7 @@ export interface PropertySearchParams {
   district?: string;
   min_price?: number;
   max_price?: number;
+  price_ranges?: string[];
   currency?: "EUR" | "USD" | "GBP";
   typology?: number;
   min_bedrooms?: number;
@@ -164,7 +165,7 @@ export interface PropertySearchParams {
   agency_id?: number;
   featured?: boolean;
   show_price?: boolean;
-  include?: string; // 'assets', 'additional_features', 'seo', etc.
+  include?: string;
   sort_by?:
     | "created_at"
     | "updated_at"
@@ -176,6 +177,7 @@ export interface PropertySearchParams {
   page?: number;
   language?: "en" | "pt" | "de" | "fr" | "nl" | "ru" | "se";
   premium?: boolean;
+  "price_ranges[]"?: string[];
 }
 
 // Utility types for easier filtering and manipulation
