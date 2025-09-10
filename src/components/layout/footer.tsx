@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import React from "react";
 import { NewsletterForm } from "./newsletter-form";
 import { MessageForm } from "./message-us-form";

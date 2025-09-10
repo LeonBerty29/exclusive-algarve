@@ -3,7 +3,7 @@ import BookMeeting from "@/components/shared/book-meeting";
 import { ContactSection } from "@/components/shared/contact-section";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import React from "react";
 
 const ContactPage = () => {

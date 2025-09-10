@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { Property } from "@/types/property";
 import { getProxiedImageUrl } from "@/lib/utils";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 
 const HouseView = ({ property }: { property: Property }) => {
   if (!property) {

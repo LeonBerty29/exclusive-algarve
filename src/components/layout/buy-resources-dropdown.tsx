@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { StoryblokRichTextNode } from "@storyblok/react";
-import { useRouter } from "next/navigation";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,6 +12,7 @@ import { ChevronDown } from "lucide-react";
 import { Button } from "../ui/button";
 import { Skeleton } from "../ui/skeleton";
 import { cn } from "@/lib/utils";
+import { Link } from "@/i18n/navigation";
 
 interface Resource {
   id: string;
@@ -35,7 +35,6 @@ export function BuyResourcesDropdown({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
-  const router = useRouter();
 
   useEffect(() => {
     async function fetchResources() {
@@ -60,11 +59,6 @@ export function BuyResourcesDropdown({
 
     fetchResources();
   }, []);
-
-  const handleResourceClick = (slug: string) => {
-    router.push(`/buy/${slug}`);
-    setOpen(false); // close after selection
-  };
 
   if (loading) {
     return <Skeleton className="h-6 w-10" />;
@@ -111,10 +105,12 @@ export function BuyResourcesDropdown({
             resources.map((resource) => (
               <DropdownMenuItem
                 key={resource.id}
-                onClick={() => handleResourceClick(resource.slug)}
+                asChild
                 className="cursor-pointer py-3 hover:bg-gray-100 text-gray-800 border-b border-gray-200"
               >
-                {resource.name}
+                <Link href={`/buy/${resource.slug}`}>
+                  {resource.name}
+                </Link>
               </DropdownMenuItem>
             ))
           )}

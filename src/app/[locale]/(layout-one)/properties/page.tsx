@@ -18,7 +18,7 @@ import { auth } from "@/auth";
 import { getFavorites } from "@/data/favourites";
 import { Building2, Search, FilterX, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { ListFilter } from "lucide-react";
 import { SortBy } from "@/components/search/sort-by";
 import { generateApiParams, hasActiveFilters } from "@/lib/utils";

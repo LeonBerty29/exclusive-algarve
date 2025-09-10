@@ -8,7 +8,7 @@ import { AddToFavoriteButton } from "../search/submit-buttons";
 import { Separator } from "../ui/separator";
 import { PriceFormat } from "../shared/price-format";
 import { Property } from "@/types/property";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 
 interface Props {
   property: Property;

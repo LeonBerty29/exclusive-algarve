@@ -5,9 +5,11 @@ import DiscoverSection from "@/components/home/discover-section";
 import { ContactSection } from "@/components/shared/contact-section";
 import ClientTestimonial from "@/components/about-us/client-testimonial";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 
 const AboutUs = () => {
+  const t = useTranslations("about");
 
   const images = [
     "/images/awards/awards-badge.jpg",
@@ -23,15 +25,10 @@ const AboutUs = () => {
         <div className="flex items-center gap-y-5 justify-between py-5 md:py-8 flex-wrap">
           <div className="w-full md:w-[50%] md:pr-8 lg:pr-14">
             <h1 className="text-2xl lg:text-3xl font-normal sm:max-w-70 mb-6">
-              ABOUT EXCLUSIVE ALGARVE VILLAS
+              {t("title")}
             </h1>
             <p className="text-neutral-700 text-sm xl:text-base mb-5 md:mb-0">
-              Exclusive Algarve Villas has been a known name in the sale of
-              luxurious and unique Properties in the Western and Central Algarve
-              since 2006. With many years of experience, we lead a team of
-              property professionals who are knowledgeable in their work area
-              and will be dedicated to show you all the ins and outs of the
-              Algarve region.
+              {t("textAboutEav")}
             </p>
           </div>
 
@@ -57,18 +54,17 @@ const AboutUs = () => {
 
           <div className="w-full md:w-[50%] lg:min-w-[unset] md:pl-8 lg:pl-14 order-1 md:order-2">
             <h2 className="text-2xl lg:text-3xl font-normal sm:max-w-70 mb-6">
-              MEET <br /> THE TEAM
+              {t("meetTiltlePart1")} <br /> {t("meetTiltlePart2")}
             </h2>
             <p className="text-neutral-700 text-sm xl:text-base mb-5 md:mb-0">
-              Directors Marcela Boturao & Bart van Linden would like to welcome
-              you to meet the team of Exclusive Algarve Villas. Both Marcela and
-              Bart have been active in selling luxury real estate in the Algarve
-              for over a decade. They have built up a multi award winning
-              company and continue to grow the business year after year.
+              {t("meetTheTeamText")}
             </p>
 
-            <Button asChild className="bg-primary hover:bg-black text-white transition-colors mt-5">
-              <Link href="/about-eav/the-team">See The Team</Link>
+            <Button
+              asChild
+              className="bg-primary hover:bg-black text-white transition-colors mt-5"
+            >
+              <Link href="/about-eav/the-team">{t("seeTheTeam")}</Link>
             </Button>
           </div>
         </div>
@@ -78,17 +74,13 @@ const AboutUs = () => {
 
       <div className="lg:container mx-auto px-6 md:px-12 lg:px-14 py-20">
         <h3 className="text-center text-2xl lg:text-2xl font-normal mb-6">
-          WE ARE PROUD OF OUR
+          {t("proudAchievement1")}
           <br />
-          <span className="text-primary">ACHIEVEMENTS</span>
+          <span className="text-primary">{t("proudAchievement2")}</span>
         </h3>
 
         <p className="text-center text-sm mb-5 max-w-4xl mx-auto">
-          Exclusive Algarve Villas has won various awards over the years, from
-          “Best Real Estate Agency Website” to “Best Real Estate Agency
-          Portugal” by the International Property Awards in London. Furthermore
-          has also won an award in 2019 by Best Luxury Real Estate Agency 2019
-          by Build Magazine.
+          {t("meetTheTeamText")}
         </p>
 
         <div className="flex items-center justify-center gap-x-3 gap-y-3 flex-wrap mt-16">

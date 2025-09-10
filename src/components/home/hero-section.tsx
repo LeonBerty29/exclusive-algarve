@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { Play, Pause } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import Image from "next/image";
 
 const videos = [

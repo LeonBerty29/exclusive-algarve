@@ -8,7 +8,7 @@ import {
 import { Button } from "../ui/button";
 import { getListOfProperties } from "@/data/property";
 import { ProductCard } from "../product/product-card";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 
 const SimilarProperties = async ({
   similarPropertiesId,

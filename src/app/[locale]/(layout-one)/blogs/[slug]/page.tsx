@@ -3,7 +3,7 @@ import { Separator } from "@/components/ui/separator";
 import { fetchAllBlogs, fetchBlogPage } from "@/data/blogs";
 import { StoryblokStory } from "@storyblok/react/rsc";
 import { notFound } from "next/navigation";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import Image from "next/image";
 import { formatDateString } from "@/utils";
 import { Suspense } from "react";
