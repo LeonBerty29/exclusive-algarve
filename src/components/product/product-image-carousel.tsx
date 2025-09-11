@@ -11,7 +11,7 @@ import {
 import Image from "next/image";
 import { getProxiedImageUrl } from "@/lib/utils";
 import Autoplay from "embla-carousel-autoplay";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 
 interface ProductImageCarouselProps {
   imagePaths: string[];

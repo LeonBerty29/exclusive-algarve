@@ -1,6 +1,6 @@
 import { Poppins } from "next/font/google";
 import { cn } from "@/lib/utils";
-// import Link from "next/link";
+// import { Link } from "@/i18n/navigation";
 // import Image from "next/image";
 
 const font = Poppins({

@@ -96,7 +96,7 @@ const TeamMemberDialog: React.FC<TeamMemberDialogProps> = ({
                 </a>
               </div>
               <div className="flex items-center space-x-4">
-                <PhoneIncoming className="w-6 h-6 text-red-600" />
+                <PhoneIncoming className="w-6 h-6 text-primary" />
                 <span className="text-gray-700 text-lg">{member.office}</span>
               </div>
 
@@ -215,7 +215,7 @@ const TeamMembers: React.FC<TeamMembersProps> = ({ teamData }) => {
                     </a>
                   </div>
                   <div className="flex items-center space-x-4">
-                    <PhoneIncoming className="w-6 h-6 text-red-600" />
+                    <PhoneIncoming className="w-6 h-6 text-primary" />
                     <span className="text-gray-700 text-lg">
                       {selectedMember.office}
                     </span>

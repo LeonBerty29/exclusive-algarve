@@ -9,7 +9,7 @@ import {
 import { getProperties } from "@/data/properties";
 import { getProxiedImageUrl } from "@/lib/utils";
 import Image from "next/image";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 
 const RecentListing = async () => {
   const propertiresResponse = await getProperties({

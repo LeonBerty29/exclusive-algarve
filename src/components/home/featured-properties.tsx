@@ -8,7 +8,8 @@ import {
 import Image from "next/image";
 import { Property } from "@/types/property";
 import { getProxiedImageUrl } from "@/lib/utils";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
+import { useLocale } from "next-intl";
 
 export default function FeaturedProperties({
   properties,
@@ -21,7 +22,7 @@ export default function FeaturedProperties({
   //     offset: ["start start", "end end"]
   // });
 
-  const language = "en"
+  const language = useLocale() as keyof Property["seo"]["slugs"];
 
   return (
     <div ref={containerRef} className="relative h-[300vh]">

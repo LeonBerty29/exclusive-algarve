@@ -2,13 +2,13 @@ import { auth } from "@/auth";
 import { ProtectedRoute } from "@/components/protected/protected-route";
 import { UserProfileDisplay } from "@/components/settings/user-profile-display";
 import { getUserProfile } from "@/data/user";
-import { redirect } from "next/navigation";
+import { redirect } from "@/i18n/navigation";
 import React from "react";
 
 const page = async () => {
   const session = await auth();
   if (!session || !session?.user) {
-    return redirect("/login");
+    return redirect({ href: "/login", locale: "" });
   }
   const accessToken = session?.accessToken;
 

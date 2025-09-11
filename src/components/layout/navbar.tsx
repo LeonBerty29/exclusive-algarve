@@ -1,23 +1,18 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { ChevronDown, Globe, Menu, X } from "lucide-react";
+import { Link } from "@/i18n/navigation";
+import { usePathname } from "@/i18n/navigation";
+import { Menu, X } from "lucide-react";
 import { useState, useEffect } from "react";
 import useScroll from "@/lib/use-scroll";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import NavbarUserAuth from "../auth/navbar-user-auth";
 import BookMeeting from "../shared/book-meeting";
 import { BuyResourcesDropdown } from "./buy-resources-dropdown";
 import { SellResourcesDropdown } from "./sell-resources-dropdown";
+import { LanguageSwitcher } from "../shared/language-switcher";
 
 export default function NavBar({
   colorChange = false,
@@ -135,27 +130,7 @@ export default function NavBar({
                 : "text-gray-600"
             )}
           >
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="flex items-center space-x-1"
-                >
-                  <Globe className="h-4 w-4" />
-                  <span className="text-sm">ENG</span>
-                  <ChevronDown className="h-3 w-3" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-20">
-                <DropdownMenuItem className="cursor-pointer">
-                  <span className="text-sm">ENG</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem className="cursor-pointer">
-                  <span className="text-sm">FRE</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <LanguageSwitcher />
 
             <BookMeeting />
             <NavbarUserAuth />
@@ -163,26 +138,7 @@ export default function NavBar({
 
           {/* Mobile/Tablet Right Section */}
           <div className="flex lg:hidden items-center space-x-3">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="flex items-center space-x-1"
-                >
-                  <Globe className="h-4 w-4" />
-                  <span className="text-xs">ENG</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-20">
-                <DropdownMenuItem className="cursor-pointer">
-                  <span className="text-sm">ENG</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem className="cursor-pointer">
-                  <span className="text-sm">FRE</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <LanguageSwitcher />
 
             <Button
               variant="ghost"

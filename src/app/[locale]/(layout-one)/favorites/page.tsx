@@ -4,8 +4,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { getFavorites } from "@/data/favourites";
 import { getListOfProperties } from "@/data/property";
-import Link from "next/link";
-import { redirect } from "next/navigation";
+import { Link } from "@/i18n/navigation";
+import { redirect } from "@/i18n/navigation";
 import React, { Suspense } from "react";
 import { Heart, Search, ChevronLeft, ChevronRight } from "lucide-react";
 
@@ -199,7 +199,7 @@ async function ListFavourites({ currentPage }: { currentPage: number }) {
   // console.log({ token });
 
   if (!token || !session) {
-    return redirect("/login");
+    return redirect({ href: "/login", locale: "" });
   }
 
   const favoritesResponse = await getFavorites(token);

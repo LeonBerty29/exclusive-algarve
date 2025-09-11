@@ -1,6 +1,6 @@
 "use client";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
 import React from "react";
 
 export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {

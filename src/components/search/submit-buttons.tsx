@@ -3,11 +3,11 @@ import { addToFavorite } from "@/actions/favorites";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Heart, Loader2 } from "lucide-react";
-import { usePathname } from "next/navigation";
+import { usePathname } from "@/i18n/navigation";
 import { useActionState, useEffect } from "react";
 import { toast } from "sonner";
 import { DeleteFromFavoriteButton } from "../product/remove-favorite-button";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 
 export function AddToFavoriteButton({
   className,

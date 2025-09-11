@@ -2,7 +2,7 @@
 import { Heart, Loader2 } from "lucide-react";
 import { Button } from "../ui/button";
 import { useState } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 

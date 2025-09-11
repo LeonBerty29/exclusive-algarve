@@ -12,7 +12,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import ShareButton from "@/components/property/share-property";
 import PropertyImageGrid from "@/components/property-details/propert-image-grid";
 import SimilarProperties from "@/components/property-details/similar-properties";

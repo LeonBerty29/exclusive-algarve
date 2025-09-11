@@ -1,6 +1,6 @@
 import { Button } from "../ui/button";
 import { fetchAllBlogs } from "@/data/blogs";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import Image from "next/image";
 import { formatDateString } from "@/utils";
 import { Suspense } from "react";

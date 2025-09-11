@@ -2,7 +2,7 @@ import Image from "next/image";
 import React from "react";
 import DiscoverSection from "@/components/home/discover-section";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import AnimatedImagesSection from "@/components/shared/animated-image-section";
 import { ContactForm } from "@/components/shared/contact-form";
 
@@ -69,8 +69,8 @@ const BecomeAVendor = () => {
                   Property <br /> Documentation
                 </h3>
                 <p className="text-white/75 text-xs leading-relaxed">
-                  It&apos;s important that all your property documents are in
-                  order before listing your property in real estate agency.
+                  It&apos;s important that all your property documents are in order
+                  before listing your property in real estate agency.
                 </p>
               </li>
 

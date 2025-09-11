@@ -1,7 +1,7 @@
 import React from "react";
 import { Button } from "../ui/button";
 import { CarouselSlider } from "../carousel-slider";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 
 const DiscoverSection = () => {
   return (
