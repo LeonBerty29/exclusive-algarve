@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,19 +8,29 @@ import {
 import { Button } from "@/components/ui/button";
 import { Globe, ChevronDown } from "lucide-react";
 import { useLocale } from "next-intl";
-import { usePathname, useRouter } from "@/i18n/navigation";
+import { useRouter } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
+import { Property } from "@/types/property";
 
-export const LanguageSwitcher = () => {
+export const PropertiesLanguageSwitcherDropdown = ({
+  slugs,
+}: {
+  slugs: Property["seo"]["slugs"];
+}) => {
   const locale = useLocale();
-  const pathname = usePathname();
+  // const pathname = usePathname();
   const router = useRouter();
   const languages = routing.locales;
 
+  console.log({ slugs });
+
   const handleLanguageChange = (lang: string) => {
     if (lang !== locale) {
-      router.replace(pathname, { locale: lang });
+      alert(lang)
+
+      const path = slugs[lang as keyof typeof slugs];
+      router.replace(`${path}`, { locale: lang,});
       router.refresh();
     }
   };
@@ -49,7 +59,10 @@ export const LanguageSwitcher = () => {
           {languages.map((lang, index) => (
             <DropdownMenuItem
               key={`${lang}-${index}`}
-              className={cn("cursor-pointer", lang === locale && "text-primary")}
+              className={cn(
+                "cursor-pointer",
+                lang === locale && "text-primary"
+              )}
               onClick={() => handleLanguageChange(lang)}
             >
               <span className="text-base">{lang}</span>

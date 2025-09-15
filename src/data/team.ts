@@ -21,7 +21,7 @@ export const fetchTeam = async ({
       per_page: per_page || 10,
       page: page || 1,
       ...withTag,
-      ...sortBy
+      ...sortBy,
     });
 
     return response;

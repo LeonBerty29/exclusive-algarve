@@ -16,8 +16,10 @@ import { LanguageSwitcher } from "../shared/language-switcher";
 
 export default function NavBar({
   colorChange = false,
+  children,
 }: {
   colorChange?: boolean;
+  children?: React.ReactNode;
 }) {
   const scrolled = useScroll(50);
   const pathname = usePathname();
@@ -130,7 +132,7 @@ export default function NavBar({
                 : "text-gray-600"
             )}
           >
-            <LanguageSwitcher />
+            {children ? children : <LanguageSwitcher />}
 
             <BookMeeting />
             <NavbarUserAuth />
@@ -138,7 +140,7 @@ export default function NavBar({
 
           {/* Mobile/Tablet Right Section */}
           <div className="flex lg:hidden items-center space-x-3">
-            <LanguageSwitcher />
+            {children ? children : <LanguageSwitcher />}
 
             <Button
               variant="ghost"

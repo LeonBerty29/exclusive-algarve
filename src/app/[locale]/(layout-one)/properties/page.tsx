@@ -41,10 +41,6 @@ export default async function PropertiesPage(props: PageProps) {
   // Convert searchParams to the format expected by your API
   const searchParams = await props.searchParams;
 
-  console.log("why is search params not showing");
-
-  console.log({ searchParamsInPage: searchParams });
-
   // Handle price_ranges parameter - it comes from URL as price_ranges[]
   let priceRanges: string[] | undefined;
   if (searchParams["price_ranges[]"]) {
