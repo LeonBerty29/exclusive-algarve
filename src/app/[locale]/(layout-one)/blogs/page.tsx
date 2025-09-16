@@ -115,7 +115,10 @@ async function GetAndDisplayBlogs({
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-8">
           {blogs?.map((blog) => (
             <div key={blog.content._uid}>
-              <Link href={`/blogs/${blog.slug}`} className="w-full">
+              <Link href={{
+                pathname: "/blogs/[slug]",
+                params: { slug: blog.slug },
+              }} className="w-full">
                 <div className="relative w-full aspect-video">
                   <Image
                     src={blog.content.banner_image.filename}
@@ -186,7 +189,7 @@ function PaginationControls({
     if (tag) params.set("tag", tag);
     if (sortBy) params.set("sort_by", sortBy);
 
-    return `/blogs?${params.toString()}`;
+    return params.toString();
   };
 
   // Generate page numbers to show
@@ -227,7 +230,10 @@ function PaginationControls({
       {/* Previous Button */}
       {currentPage > 1 && (
         <Link
-          href={buildUrl(currentPage - 1)}
+          href={{
+            pathname: "/blogs",
+            search: buildUrl(currentPage - 1),
+          }}
           className="flex items-center px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 hover:text-gray-700 transition-colors"
         >
           <ChevronLeft className="w-4 h-4 mr-1" />
@@ -253,7 +259,10 @@ function PaginationControls({
           return (
             <Link
               key={pageNum}
-              href={buildUrl(pageNum as number)}
+              href={{
+                pathname: "/blogs",
+                search: buildUrl(pageNum as number),
+              }}
               className={`px-3 py-2 text-sm font-medium rounded-md transition-colors ${
                 isActive
                   ? "bg-primary text-white"
@@ -269,7 +278,10 @@ function PaginationControls({
       {/* Next Button */}
       {currentPage < totalPages && (
         <Link
-          href={buildUrl(currentPage + 1)}
+          href={{
+            pathname: "/blogs",
+            search: buildUrl(currentPage + 1),
+          }}
           className="flex items-center px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 hover:text-gray-700 transition-colors"
         >
           Next

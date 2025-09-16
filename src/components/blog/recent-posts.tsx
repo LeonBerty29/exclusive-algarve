@@ -8,8 +8,6 @@ export function RecentPosts({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   blogs: ISbStoryData<any>[];
 }) {
-
-
   return (
     <>
       {blogs.slice(0, 3).length > 0 && (
@@ -19,7 +17,10 @@ export function RecentPosts({
             {blogs.slice(0, 3).map((blog) => (
               <Link
                 key={blog.slug}
-                href={`/blogs/${blog.slug}`}
+                href={{
+                  pathname: "/blogs/[slug]",
+                  params: { slug: blog.slug },
+                }}
                 className="w-full min-h-32 bg-gray-200 p-4 rounded-xl"
               >
                 <div className="py-2">

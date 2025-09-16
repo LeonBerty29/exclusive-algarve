@@ -27,9 +27,10 @@ import PropertyDetailsPageLoading from "@/components/property/property-details-p
 import { getFavorites } from "@/data/favourites";
 import { auth } from "@/auth";
 import { AddToFavoriteButton } from "@/components/search/submit-buttons";
+import { setRequestLocale } from "next-intl/server";
 
 interface Props {
-  params: Promise<{ propertyId: string }>;
+  params: Promise<{ propertyId: string; locale: string }>;
 }
 
 // export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -131,7 +132,12 @@ interface Props {
 //   }
 // }
 
-export default function page(props: Props) {
+export default async function page(props: Props) {
+  const params = await props.params;
+  const locale = params.locale;
+
+  // Enable static rendering
+  setRequestLocale(locale);
   return (
     <div className="py-14">
       <Suspense fallback={<PropertyDetailsPageLoading />}>
@@ -209,7 +215,10 @@ const PageContent = async (props: Props) => {
 
       <div className="mt-10">
         <div className="2xl:container px-6 sm:px-8 md:px-10 lg:px-14 mx-auto min-h-full">
-          <PropertyImageGrid assets={property.assets} salesConsultant={property.sales_consultant} />
+          <PropertyImageGrid
+            assets={property.assets}
+            salesConsultant={property.sales_consultant}
+          />
 
           <div className="gap-x-6 flex flex-col lg:flex-row mb-8">
             <div className="w-full lg:flex-1 pt-4">

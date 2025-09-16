@@ -5,8 +5,11 @@ import Image from "next/image";
 import { Property } from "@/types/property";
 import { getProxiedImageUrl } from "@/lib/utils";
 import { Link } from "@/i18n/navigation";
+import { useLocale } from "next-intl";
 
 const HouseView = ({ property }: { property: Property }) => {
+  const locale = useLocale();
+
   if (!property) {
     return null;
   }
@@ -67,7 +70,19 @@ const HouseView = ({ property }: { property: Property }) => {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <Link href={`/properties/${property.id}`}> HAVE A LOOK</Link>
+                <Link
+                  href={{
+                    pathname: "/properties/[slug]",
+                    params: {
+                      slug: property.seo.slugs[
+                        locale as keyof typeof property.seo.slugs
+                      ],
+                    },
+                  }}
+                >
+                  {" "}
+                  HAVE A LOOK
+                </Link>
               </motion.div>
             </motion.div>
           )}

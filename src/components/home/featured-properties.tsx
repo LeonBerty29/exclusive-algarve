@@ -76,7 +76,14 @@ export default function FeaturedProperties({
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  <Link href={`/properties/${property.seo.slugs[language]}`}>HAVE A LOOK</Link>
+                  <Link
+                    href={{
+                      pathname: "/properties/[slug]",
+                      params: { slug: property.seo.slugs[language] },
+                    }}
+                  >
+                    HAVE A LOOK
+                  </Link>
                 </motion.button>
               </motion.div>
             </div>

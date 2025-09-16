@@ -6,10 +6,21 @@ import { ContactSection } from "@/components/shared/contact-section";
 import ClientTestimonial from "@/components/about-us/client-testimonial";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
-import { useTranslations } from "next-intl";
+// import { useTranslations } from "next-intl";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 
-const AboutUs = () => {
-  const t = useTranslations("about");
+interface Props {
+  params: Promise<{ locale: string }>;
+}
+
+const AboutUs = async (props: Props) => {
+  const t = await getTranslations("about");
+
+  const params = await props.params;
+    const locale = params.locale;
+  
+    // Enable static rendering
+    setRequestLocale(locale);
 
   const images = [
     "/images/awards/awards-badge.jpg",

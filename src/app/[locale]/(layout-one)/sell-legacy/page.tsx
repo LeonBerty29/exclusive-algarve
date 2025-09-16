@@ -276,14 +276,14 @@ const BecomeAVendor = () => {
                 If you have any questions in regards to listing your property
                 for sale with Exclusive Algarve Villas, please contact us on{" "}
                 <Link
-                  href="tel:+351282353019"
+                  href="/phone-contact1"
                   className="text-primary hover:underline"
                 >
                   +351 282 353 019
                 </Link>{" "}
                 or{" "}
                 <Link
-                  href="mailto:info@eavillas.com"
+                  href="/email"
                   className="text-primary hover:underline"
                 >
                   info@eavillas.com

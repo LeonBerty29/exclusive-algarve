@@ -1,11 +1,5 @@
-import { NextIntlClientProvider, hasLocale } from "next-intl";
+import { hasLocale } from "next-intl";
 import type { Metadata } from "next";
-import "./globals.css";
-import { poppins } from "@/fonts";
-import Footer from "@/components/layout/footer";
-import StoryblokProvider from "@/components/story-provider";
-import { SessionProvider } from "next-auth/react";
-import { Toaster } from "@/components/ui/sonner";
 import { routing } from "@/i18n/routing";
 import { notFound } from "next/navigation";
 import { setRequestLocale } from "next-intl/server";
@@ -25,29 +19,16 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
   params: Promise<{ locale: string }>;
+  locales: React.ReactNode;
 }>) {
   const { locale } = await params;
 
   if (!hasLocale(routing.locales, locale)) {
     return notFound();
+    
   }
 
-  setRequestLocale(locale)
+  setRequestLocale(locale);
 
-  return (
-    <StoryblokProvider>
-      <html lang="en">
-        <SessionProvider>
-          <body className={`${poppins.className} antialiased`}>
-            <NextIntlClientProvider>
-              <main className="w-full">{children}</main>
-
-              <Footer />
-              <Toaster />
-            </NextIntlClientProvider>
-          </body>
-        </SessionProvider>
-      </html>
-    </StoryblokProvider>
-  );
+  return <>{children}</>;
 }

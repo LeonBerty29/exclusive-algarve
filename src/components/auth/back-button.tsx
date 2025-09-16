@@ -4,7 +4,8 @@ import { Link } from "@/i18n/navigation";
 import { Button } from "../ui/button"
 
 interface BackButtonProps {
-  href: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  href: string | any;
   label: string
 }
 

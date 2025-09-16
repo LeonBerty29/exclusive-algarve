@@ -11,20 +11,35 @@ import { useLocale } from "next-intl";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
+import { Property } from "@/types/property";
+import { LanguageSwitcher } from "./language-switcher";
 
-export const LanguageSwitcher = () => {
+export const PropertiesLanguageSwitcherDropdown = ({
+  slugs,
+}: {
+  slugs: Property["seo"]["slugs"];
+}) => {
   const locale = useLocale();
   const pathname = usePathname();
   const router = useRouter();
+
+  const isPropertyPage = pathname.includes("/properties/");
+
+  if (!isPropertyPage) {
+    return <LanguageSwitcher />;
+  }
   const languages = routing.locales;
 
   const handleLanguageChange = (lang: string) => {
     if (lang !== locale) {
+      const path = slugs[lang as keyof typeof slugs];
+      const targetPath = {
+        pathname: "/properties/[slug]" as const,
+        params: { slug: path },
+      };
+
       router.refresh();
-      // @ts-expect-error -- Typescript will validate only known `params`
-      // are used in combination with a given `pathname`. Since the two will
-      // always match for the current route, we can skip runtime checks
-      router.replace(pathname, { locale: lang });
+      router.replace(targetPath, { locale: lang });
     }
   };
 

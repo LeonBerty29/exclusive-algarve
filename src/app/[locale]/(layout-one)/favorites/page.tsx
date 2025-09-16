@@ -61,7 +61,10 @@ function PaginationControls({
         >
           {hasPrev ? (
             <Link
-              href={`?page=${currentPage - 1}`}
+              href={{
+                pathname: "/favorites",
+                search: `?page=${currentPage - 1}`,
+              }}
               className="flex items-center gap-1"
             >
               <ChevronLeft className="w-4 h-4" />
@@ -84,7 +87,10 @@ function PaginationControls({
         >
           {hasNext ? (
             <Link
-              href={`?page=${currentPage + 1}`}
+              href={{
+                pathname: "/favorites",
+                search: `?page=${currentPage + 1}`,
+              }}
               className="flex items-center gap-1"
             >
               Next
@@ -176,7 +182,7 @@ function InvalidPageState({ totalPages }: { totalPages: number }) {
 
       <div className="flex flex-col sm:flex-row gap-4">
         <Button asChild className="bg-primary hover:bg-black text-white">
-          <Link href="?page=1" className="flex items-center gap-2">
+          <Link href={{ pathname: "/favorites", search: "?page=1" }} className="flex items-center gap-2">
             <Heart className="w-4 h-4" />
             Go to First Page
           </Link>
