@@ -21,7 +21,7 @@ async function apiRequest<T>(
   useBearer = false,
   token?: string
 ): Promise<T> {
-  const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}${endpoint}`;
+  const url = `${process.env.API_BASE_URL}${endpoint}`;
 
   const authHeader =
     useBearer && token
