@@ -1,4 +1,5 @@
 import { PropertyListResponse, PropertyResponse } from "@/types/property";
+import { getLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 
 function createBasicAuthHeader(): string {
@@ -84,7 +85,8 @@ async function apiRequest<T>(
 export const getProperty = async (
   propertyId: string
 ): Promise<PropertyResponse> => {
-  const endpoint = `/properties/${propertyId}`;
+  const locale = await getLocale();
+  const endpoint = `/properties/${propertyId}/?language=${locale === "sv" ? "se" : locale}`;
 
   return apiRequest<PropertyResponse>(endpoint);
 };
@@ -92,9 +94,9 @@ export const getProperty = async (
 export const getListOfProperties = async (
   propertyIds: number[]
 ): Promise<PropertyListResponse> => {
-  
+  const locale = await getLocale();  
   const ids = propertyIds.join(",");
-  const endpoint = `/properties?ids=${ids}`;
+  const endpoint = `/properties?ids=${ids}&language=${locale === "sv" ? "se" : locale}`;
 
   return apiRequest<PropertyListResponse>(endpoint);
 };

@@ -108,7 +108,12 @@ export function BuyResourcesDropdown({
                 asChild
                 className="cursor-pointer py-3 hover:bg-gray-100 text-gray-800 border-b border-gray-200"
               >
-                <Link href={`/buy/${resource.slug}`}>
+                <Link
+                  href={{
+                    pathname: "/buy/[slug]",
+                    params: { slug: resource.slug },
+                  }}
+                >
                   {resource.name}
                 </Link>
               </DropdownMenuItem>

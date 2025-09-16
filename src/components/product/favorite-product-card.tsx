@@ -9,6 +9,7 @@ import { Separator } from "../ui/separator";
 import { PriceFormat } from "../shared/price-format";
 import { Property } from "@/types/property";
 import { Link } from "@/i18n/navigation";
+import { getLocale } from "next-intl/server";
 
 interface Props {
   property: Property;
@@ -46,10 +47,15 @@ export const FavoriteProductCard = async ({
   // Show price only if show_price is true, else display "Contact for price"
   const showPrice = property.show_price;
 
+  const locale = await getLocale();
+
   return (
     <Card className="flex lg:!flex-row gap-0 rounded-none p-0">
       <CardHeader className="w-full lg:w-[50%] xl:w-[44%]  p-0 relative flex flex-col">
-        <ProductImageCarousel imagePaths={imagePaths} link={`/properties/${property.id}`} />
+        <ProductImageCarousel
+          imagePaths={imagePaths}
+          property={property}
+        />
         <div className="z-10 absolute top-2 left-2 right-2 flex items-center justify-between gap-3">
           <>
             <div className="flex items-center gap-[6px]">
@@ -84,7 +90,13 @@ export const FavoriteProductCard = async ({
         )}
       </CardHeader>
       <CardContent className="p-3 lg:flex-1 lg:p-6 lg:space-y-3 lg:flex lg:flex-col lg:justify-center">
-        <Link href={`/properties/${property.id}`} className="block space-y-3">
+        <Link
+          href={{
+            pathname: "/properties/[slug]",
+            params: { slug: property.seo.slugs[locale as keyof typeof property.seo.slugs] },
+          }}
+          className="block space-y-3"
+        >
           <div className="flex justify-between align-center flex-wrap gap-y-2 gap-x-5">
             {showPrice ? (
               <PriceFormat

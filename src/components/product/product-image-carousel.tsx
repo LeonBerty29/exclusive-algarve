@@ -12,18 +12,21 @@ import Image from "next/image";
 import { getProxiedImageUrl } from "@/lib/utils";
 import Autoplay from "embla-carousel-autoplay";
 import { Link } from "@/i18n/navigation";
+import { Property } from "@/types/property";
+import { useLocale } from "next-intl";
 
 interface ProductImageCarouselProps {
   imagePaths: string[];
-  link?: string;
+  property?: Property;
 }
 
 const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
   imagePaths,
-  link,
+  property,
 }) => {
   // ref for the carousel container
   const carouselContainerRef = useRef<HTMLDivElement>(null);
+  const locale = useLocale();
 
   const plugin = useRef(
     Autoplay({
@@ -44,6 +47,7 @@ const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
     }
   };
 
+
   return (
     <div ref={carouselContainerRef} className="relative w-full h-full">
       <Carousel
@@ -60,9 +64,16 @@ const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
             <CarouselItem key={`${item}--${index}`} className="p-0">
               <div className="relative w-full h-full">
                 {/* Image layer */}
-                {link ? (
+                {property ? (
                   <Link
-                    href={link}
+                    href={{
+                      pathname: "/properties/[slug]",
+                      params: {
+                        slug: property.seo.slugs[
+                          locale as keyof typeof property.seo.slugs
+                        ],
+                      },
+                    }}
                     className="relative w-full aspect-4/3 overflow-hidden block"
                   >
                     <Image

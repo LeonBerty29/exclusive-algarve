@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,8 +20,11 @@ export const LanguageSwitcher = () => {
 
   const handleLanguageChange = (lang: string) => {
     if (lang !== locale) {
-      router.replace(pathname, { locale: lang });
       router.refresh();
+      // @ts-expect-error -- Typescript will validate only known `params`
+      // are used in combination with a given `pathname`. Since the two will
+      // always match for the current route, we can skip runtime checks
+      router.replace(pathname, { locale: lang });
     }
   };
 
@@ -49,7 +52,10 @@ export const LanguageSwitcher = () => {
           {languages.map((lang, index) => (
             <DropdownMenuItem
               key={`${lang}-${index}`}
-              className={cn("cursor-pointer", lang === locale && "text-primary")}
+              className={cn(
+                "cursor-pointer",
+                lang === locale && "text-primary"
+              )}
               onClick={() => handleLanguageChange(lang)}
             >
               <span className="text-base">{lang}</span>

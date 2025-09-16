@@ -8,10 +8,11 @@ import {
 import { Button } from "@/components/ui/button";
 import { Globe, ChevronDown } from "lucide-react";
 import { useLocale } from "next-intl";
-import { useRouter } from "@/i18n/navigation";
+import { usePathname, useRouter } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
 import { Property } from "@/types/property";
+import { LanguageSwitcher } from "./language-switcher";
 
 export const PropertiesLanguageSwitcherDropdown = ({
   slugs,
@@ -19,19 +20,26 @@ export const PropertiesLanguageSwitcherDropdown = ({
   slugs: Property["seo"]["slugs"];
 }) => {
   const locale = useLocale();
-  // const pathname = usePathname();
+  const pathname = usePathname();
   const router = useRouter();
-  const languages = routing.locales;
 
-  console.log({ slugs });
+  const isPropertyPage = pathname.includes("/properties/");
+
+  if (!isPropertyPage) {
+    return <LanguageSwitcher />;
+  }
+  const languages = routing.locales;
 
   const handleLanguageChange = (lang: string) => {
     if (lang !== locale) {
-      alert(lang)
-
       const path = slugs[lang as keyof typeof slugs];
-      router.replace(`${path}`, { locale: lang,});
+      const targetPath = {
+        pathname: "/properties/[slug]" as const,
+        params: { slug: path },
+      };
+
       router.refresh();
+      router.replace(targetPath, { locale: lang });
     }
   };
 

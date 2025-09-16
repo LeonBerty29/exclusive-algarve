@@ -138,7 +138,10 @@ async function RelatedArticles({
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {relatedBlogs.map((blog, index) => (
           <div key={`${blog.slug}-${index}`}>
-            <Link href={`/blogs/${blog.slug}`} className="w-full">
+            <Link href={{
+              pathname: "/blogs/[slug]",
+              params: { slug: blog.slug },
+            }} className="w-full">
               <div className="relative w-full aspect-video">
                 <Image
                   src={blog.content.banner_image.filename}

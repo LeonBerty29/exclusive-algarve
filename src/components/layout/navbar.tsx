@@ -13,6 +13,8 @@ import BookMeeting from "../shared/book-meeting";
 import { BuyResourcesDropdown } from "./buy-resources-dropdown";
 import { SellResourcesDropdown } from "./sell-resources-dropdown";
 import { LanguageSwitcher } from "../shared/language-switcher";
+import { routing } from "@/i18n/routing";
+import { useLocale } from "next-intl";
 
 export default function NavBar({
   colorChange = false,
@@ -23,6 +25,7 @@ export default function NavBar({
 }) {
   const scrolled = useScroll(50);
   const pathname = usePathname();
+  const locale = useLocale();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navLinks = [
@@ -32,8 +35,8 @@ export default function NavBar({
     // { href: "/blogs", label: "Blog" },
     // { href: "/buying-process", label: "Buy" },
     // { href: "/become-a-vendor", label: "Sell" },
-    { href: "/about-eav", label: "About Us" },
-    { href: "/contact", label: "Contact" },
+    { href: Object.keys(routing.pathnames).find((key) => key === "/about-eav"), label: "About Us" },
+    { href: Object.keys(routing.pathnames).find((key) => key === "/contact"), label: "Contact" },
   ];
 
   const isActiveLink = (href: string) => {
@@ -88,7 +91,10 @@ export default function NavBar({
             {navLinks.map((link) => (
               <Link
                 key={link.href}
-                href={link.href}
+                href={
+                  link.href!
+                }
+                locale={locale}
                 className={cn(
                   "text-sm font-medium transition-colors hover:text-gray-900",
                   scrolled
@@ -96,7 +102,7 @@ export default function NavBar({
                     : colorChange
                     ? "text-white"
                     : "text-gray-600",
-                  isActiveLink(link.href) && "text-primary"
+                  isActiveLink(link.href!) && "text-primary"
                 )}
               >
                 {link.label}
@@ -140,7 +146,7 @@ export default function NavBar({
 
           {/* Mobile/Tablet Right Section */}
           <div className="flex lg:hidden items-center space-x-3">
-            {children ? children : <LanguageSwitcher />}
+             <LanguageSwitcher />
 
             <Button
               variant="ghost"
@@ -186,10 +192,10 @@ export default function NavBar({
               {navLinks.map((link, index) => (
                 <Link
                   key={link.href}
-                  href={link.href}
+                  href={link.href!}
                   onClick={() => setIsMobileMenuOpen(false)}
                   className={`block text-sm font-light py-4 transition-colors ${
-                    isActiveLink(link.href)
+                    isActiveLink(link.href!)
                       ? "text-primary border-l-2 border-primary pl-4"
                       : "text-gray-700 hover:text-gray-900 pl-0"
                   }`}

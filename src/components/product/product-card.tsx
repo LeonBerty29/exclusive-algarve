@@ -9,6 +9,7 @@ import { Separator } from "../ui/separator";
 import { PriceFormat } from "../shared/price-format";
 import { Property } from "@/types/property";
 import { Link } from "@/i18n/navigation";
+import { getLocale } from "next-intl/server";
 
 interface Props {
   property: Property;
@@ -44,12 +45,14 @@ export const ProductCard = async ({ property, favorites = [] }: Props) => {
   // Show price only if show_price is true, else display "Contact for price"
   const showPrice = property.show_price;
 
+  const locale = await getLocale();
+
   return (
     <Card className="flex flex-col gap-0 rounded-none p-0 h-full">
       <CardHeader className="p-0 relative w-full flex flex-col">
         <ProductImageCarousel
           imagePaths={imagePaths}
-          link={`/properties/${property.id}`}
+          property={property}
         />
         <div className="z-10 absolute top-2 left-2 right-2 flex items-center justify-between gap-3">
           <>
@@ -84,7 +87,10 @@ export const ProductCard = async ({ property, favorites = [] }: Props) => {
         )}
       </CardHeader>
       <CardContent className="p-4 flex-1">
-        <Link href={`/properties/${property.id}`} className="flex flex-col gap-3 h-full justify-between">
+        <Link href={{
+          pathname: "/properties/[slug]",
+          params: { slug: property.seo.slugs[locale as keyof typeof property.seo.slugs] },
+        }} className="flex flex-col gap-3 h-full justify-between">
           <div>
             <div className="flex justify-between align-center flex-wrap gap-y-2 gap-x-5">
               {showPrice ? (

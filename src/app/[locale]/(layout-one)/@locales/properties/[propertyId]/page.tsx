@@ -23,9 +23,7 @@ async function PropertiesLanguageSwitcher(props: Props) {
   const { propertyId } = await props.params;
   const response = await getProperty(propertyId);
   const slugs = response.data.seo.slugs;
-  console.log(slugs);
 
-  console.log({ response });
   return (
     <>
       <PropertiesLanguageSwitcherDropdown slugs={slugs} />

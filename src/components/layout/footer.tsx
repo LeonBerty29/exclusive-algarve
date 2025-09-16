@@ -4,9 +4,11 @@ import { NewsletterForm } from "./newsletter-form";
 import { MessageForm } from "./message-us-form";
 import Image from "next/image";
 import { FaFacebook, FaInstagram, FaTwitter } from "react-icons/fa";
+import { IconType } from "react-icons/lib";
 
 
-const navigations = [
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const navigations: { name: string; link: any }[] = [
   {
     name: "Buy",
     link: "/buying-process",
@@ -44,7 +46,8 @@ const navigations = [
   //   link: "/cookie-policy",
   // },
 ];
-const resources = [
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const resources: { name: string; link: any }[] = [
   {
     name: "The selling process",
     link: "/become-a-vendor",
@@ -67,7 +70,8 @@ const resources = [
   },
 ];
 
-const socialMediaplatforms = [
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const socialMediaplatforms: { name: string; link: any; icon: IconType }[] = [
   {
     name: "Facebook",
     link: "#",
@@ -85,7 +89,8 @@ const socialMediaplatforms = [
   },
 ];
 
-const locations = [
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const locations: { name: string; address: string; link: any; }[] = [
   {
     name: "Vilamoura",
     address: "Av.Tivoli, B, Bloco 3, R/C Esq8125-410 Vilamoura",
