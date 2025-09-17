@@ -149,3 +149,22 @@ button {
   background-color: #888;
   border-radius: 10px;
 } */
+
+
+.custom-scrollbar {
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: #9CA3AF #F3F4F6; /* Firefox */
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px; /* Webkit browsers */
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #F3F4F6;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #9CA3AF;
+  border-radius: 3px;
+}
