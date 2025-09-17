@@ -10,11 +10,11 @@ import { IconType } from "react-icons/lib";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const navigations: { name: string; link: any }[] = [
   {
-    name: "Buy",
+    name: "Buying Process",
     link: "/buying-process",
   },
   {
-    name: "Sell",
+    name: "Selling Process",
     link: "/become-a-vendor",
   },
   {

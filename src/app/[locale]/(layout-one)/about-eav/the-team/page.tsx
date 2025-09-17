@@ -5,6 +5,7 @@ import { fetchTeam } from "@/data/team";
 import TeamMembers from "@/components/the-team/team-members";
 import DiscoverSection from "@/components/home/discover-section";
 import { ContactForm } from "@/components/shared/contact-form";
+import { Team } from "@/types/team";
 
 interface BlogPageProps {
   searchParams: Promise<{ page?: string }>;
@@ -93,28 +94,15 @@ async function GetAndDisplayTeam({
     sort_by: sortBy,
   });
 
-//   const totalPages = Math.ceil(response.total / perPage);
-  const teamMembers = response.data.stories;
-
-  const teamMembersData = teamMembers.map((member) => ({
-    id: member.id,
-    name: member.content.name,
-    role: member.content.role,
-    details: member.content.details,
-    email: member.content.email,
-    mobile: member.content.mobile,
-    office: member.content.office,
-    image: member.content.image,
-    languages: member.content.languages,
-    description: member.content.description,
-  }));
+  //   const totalPages = Math.ceil(response.total / perPage);
+  const teams = response;
 
   // Check if the requested page is greater than total pages
-//   const isPageOutOfRange = page > totalPages && totalPages > 0;
+  //   const isPageOutOfRange = page > totalPages && totalPages > 0;
 
   return (
     <>
-      {teamMembersData.length > 0 && <TeamMembers teamData={teamMembersData} />}
+      {teams.length > 0 && <TeamMembers teams={teams as unknown as Team[]} />}
     </>
   );
 }
