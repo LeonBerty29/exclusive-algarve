@@ -30,9 +30,9 @@ const SellResourcePage = async (props: PageProps) => {
     <>
       <Suspense
         fallback={
-          <main className="lg:container w-full mx-auto px-6 sm:px-8 md:px-10 lg:px-14 py-10">
+          <div className="lg:container w-full mx-auto px-6 sm:px-8 md:px-10 lg:px-14 py-10">
             <Skeleton className="min-h-[80vh] w-full" />
-          </main>
+          </div>
         }
       >
         <SellResourceContent slug={params.slug as string} />

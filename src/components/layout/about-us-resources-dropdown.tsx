@@ -24,7 +24,7 @@ interface Resource {
   };
 }
 
-export function OwnResourcesDropdown({
+export function AboutUsResourcesDropdown({
   scrolled,
   colorChange,
 }: {
@@ -39,7 +39,7 @@ export function OwnResourcesDropdown({
   useEffect(() => {
     async function fetchResources() {
       try {
-        const response = await fetch("/api/resources/own-resources");
+        const response = await fetch("/api/resources/about-us-resources");
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -89,7 +89,7 @@ export function OwnResourcesDropdown({
                 : "text-gray-600"
             )}
           >
-            Own
+            About EAV
             <ChevronDown className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
@@ -105,7 +105,7 @@ export function OwnResourcesDropdown({
               >
                 <Link
                   href={{
-                    pathname: "/own/[slug]",
+                    pathname: "/about-eav/[slug]",
                     params: { slug: resource.slug },
                   }}
                 >
@@ -114,6 +114,18 @@ export function OwnResourcesDropdown({
               </DropdownMenuItem>
             ))
           )}
+          <DropdownMenuItem
+            asChild
+            className="cursor-pointer py-3 hover:bg-gray-100 text-gray-800 border-b border-gray-200"
+          >
+            <Link
+              href={{
+                pathname: "/about-eav/the-team",
+              }}
+            >
+              The Team
+            </Link>
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </div>
     </DropdownMenu>

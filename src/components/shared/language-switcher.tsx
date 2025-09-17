@@ -19,6 +19,9 @@ export const LanguageSwitcher = () => {
   const languages = routing.locales;
 
   const handleLanguageChange = (lang: string) => {
+    alert(`pathname = ${pathname}`);
+    alert(`locale = ${locale}`);
+    alert(`lang = ${lang}`);
     if (lang !== locale) {
       // @ts-expect-error -- Typescript will validate only known `params`
       // are used in combination with a given `pathname`. Since the two will
@@ -35,7 +38,7 @@ export const LanguageSwitcher = () => {
           <Button
             variant="ghost"
             size="sm"
-            className="flex items-center space-x-1"
+            className="flex items-center space-x-1 bg-red-200"
           >
             <Globe className="h-4 w-4" />
             <span className="text-sm">{locale}</span>

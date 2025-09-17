@@ -39,7 +39,7 @@ export function BuyResourcesDropdown({
   useEffect(() => {
     async function fetchResources() {
       try {
-        const response = await fetch("/api/buy-resources");
+        const response = await fetch("/api/resources/buy-resources");
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);

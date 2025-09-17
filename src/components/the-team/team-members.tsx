@@ -13,7 +13,11 @@ import {
 import { Button } from "@/components/ui/button";
 import { renderRichText } from "@storyblok/react";
 import { Separator } from "../ui/separator";
-import { TeamMemberDialogProps, TeamMember, TeamMembersProps,  } from "@/types/team";
+import {
+  TeamMemberDialogProps,
+  TeamMember,
+  TeamMembersProps,
+} from "@/types/team";
 
 // Dialog Component for Mobile
 const TeamMemberDialog: React.FC<TeamMemberDialogProps> = ({
@@ -121,7 +125,6 @@ const TeamMembers: React.FC<TeamMembersProps> = ({ teams }) => {
     setMobileSelectedMember(null);
   };
 
-  
   if (!teams?.length) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -222,44 +225,45 @@ const TeamMembers: React.FC<TeamMembersProps> = ({ teams }) => {
           {/* Right side - Team Grid */}
           <div className="flex-1">
             {teams?.map((team, index) => (
-              <>
-                <div className="" key={`team-${index}`}>
-                  <h3 className="text-xl lg:text-3xl font-normal mb-1 text-gray-600">{team.title}</h3>
-                  <Separator className="mb-8 text-gray-600" />
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6 mb-20">
-                    {team.data!.map((member) => (
-                      <div
-                        key={member.id}
-                        onClick={() => handleMemberSelect(member)}
-                        aria-label={`View details for ${member.content.name}`}
-                        className={`relative group cursor-pointer overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 ${
-                          selectedMember.id === member.id
-                            ? "ring-4 ring-primary ring-opacity-50"
-                            : ""
-                        }`}
-                      >
-                        <div className="aspect-[3/4] relative">
-                          <Image
-                            src={`https:${member.content.image}`}
-                            alt={member.name}
-                            width={400}
-                            height={533}
-                            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105 "
-                          />
+              <div className="" key={`team-${index}`}>
+                <h3 className="text-xl lg:text-3xl font-normal mb-1 text-gray-600">
+                  {team.title}
+                </h3>
+                <Separator className="mb-8 text-gray-600" />
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6 mb-20">
+                  {team.data!.map((member) => (
+                    <div
+                      key={member.id}
+                      onClick={() => handleMemberSelect(member)}
+                      aria-label={`View details for ${member.content.name}`}
+                      className={`relative group cursor-pointer overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 ${
+                        selectedMember.id === member.id
+                          ? "ring-4 ring-primary ring-opacity-50"
+                          : ""
+                      }`}
+                    >
+                      <div className="aspect-[3/4] relative">
+                        <Image
+                          src={`https:${member.content.image}`}
+                          alt={member.name}
+                          width={400}
+                          height={533}
+                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105 "
+                        />
 
-                          {/* Glass-like overlay */}
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-300">
-                            <div className="absolute bottom-0 left-0 right-0 p-2">
-                              <div className="backdrop-blur-sm bg-black/30 rounded-lg p-2 border border-white/20 space-y-1.5">
-                                <h3 className="text-white font-bold text-sm line-clamp-1">
-                                  {member.name}
-                                </h3>
-                                <p className="text-white/90 text-xs font-light line-clamp-1">
-                                  {member.content.role}
-                                </p>
+                        {/* Glass-like overlay */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-300">
+                          <div className="absolute bottom-0 left-0 right-0 p-2">
+                            <div className="backdrop-blur-sm bg-black/30 rounded-lg p-2 border border-white/20 space-y-1.5">
+                              <h3 className="text-white font-bold text-sm line-clamp-1">
+                                {member.name}
+                              </h3>
+                              <p className="text-white/90 text-xs font-light line-clamp-1">
+                                {member.content.role}
+                              </p>
 
-                                {/* Desktop button */}
-                                {/* <Button
+                              {/* Desktop button */}
+                              {/* <Button
                             onClick={() => handleMemberSelect(member)}
                             className="hidden lg:inline-flex bg-primary hover:bg-primary/80 text-white px-4 py-2 text-sm font-medium"
                             size="sm"
@@ -268,26 +272,23 @@ const TeamMembers: React.FC<TeamMembersProps> = ({ teams }) => {
                             See Details
                           </Button> */}
 
-                                {/* Mobile button */}
-                                <Button
-                                  onClick={() =>
-                                    handleMobileDetailsClick(member)
-                                  }
-                                  className="lg:hidden bg-primary hover:bg-primary/80 text-white px-4 py-2 text-xs font-medium"
-                                  size="sm"
-                                  aria-label={`View details for ${member.name}`}
-                                >
-                                  See Details
-                                </Button>
-                              </div>
+                              {/* Mobile button */}
+                              <Button
+                                onClick={() => handleMobileDetailsClick(member)}
+                                className="lg:hidden bg-primary hover:bg-primary/80 text-white px-4 py-2 text-xs font-medium"
+                                size="sm"
+                                aria-label={`View details for ${member.name}`}
+                              >
+                                See Details
+                              </Button>
                             </div>
                           </div>
                         </div>
                       </div>
-                    ))}
-                  </div>
+                    </div>
+                  ))}
                 </div>
-              </>
+              </div>
             ))}
           </div>
         </div>

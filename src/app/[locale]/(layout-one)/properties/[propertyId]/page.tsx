@@ -133,6 +133,7 @@ interface Props {
 // }
 
 export default async function page(props: Props) {
+  console.log({ PropertyIdNormal: "PropertyIDNormal" });
   const params = await props.params;
   const locale = params.locale;
 
