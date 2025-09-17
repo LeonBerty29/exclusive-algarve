@@ -66,12 +66,7 @@ export function SellResourcesDropdown({
 
   if (error) {
     return (
-      <button
-        className="px-4 py-2 border rounded-md bg-red-100 text-red-600"
-        disabled
-      >
-        Error loading resources
-      </button>
+      <Skeleton className="h-6 w-12 border rounded-md bg-red-200 text-red-600" />
     );
   }
 
@@ -108,10 +103,14 @@ export function SellResourcesDropdown({
                 asChild
                 className="cursor-pointer py-3 hover:bg-gray-100 text-gray-800 border-b border-gray-200"
               >
-                <Link href={{
-                  pathname: "/sell/[slug]",
-                  params: { slug: resource.slug },
-                }}>{resource.name}</Link>
+                <Link
+                  href={{
+                    pathname: "/sell/[slug]",
+                    params: { slug: resource.slug },
+                  }}
+                >
+                  {resource.name}
+                </Link>
               </DropdownMenuItem>
             ))
           )}
