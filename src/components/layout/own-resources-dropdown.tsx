@@ -24,7 +24,7 @@ interface Resource {
   };
 }
 
-export function BuyResourcesDropdown({
+export function OwnResourcesDropdown({
   scrolled,
   colorChange,
 }: {
@@ -39,7 +39,7 @@ export function BuyResourcesDropdown({
   useEffect(() => {
     async function fetchResources() {
       try {
-        const response = await fetch("/api/buy-resources");
+        const response = await fetch("/api/own-resources");
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -61,7 +61,7 @@ export function BuyResourcesDropdown({
   }, []);
 
   if (loading) {
-    return <Skeleton className="h-6 w-10" />;
+    return <Skeleton className="h-6 w-12" />;
   }
 
   if (error) {
@@ -89,7 +89,7 @@ export function BuyResourcesDropdown({
                 : "text-gray-600"
             )}
           >
-            Buy
+            Own
             <ChevronDown className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
@@ -105,7 +105,7 @@ export function BuyResourcesDropdown({
               >
                 <Link
                   href={{
-                    pathname: "/buy/[slug]",
+                    pathname: "/own/[slug]",
                     params: { slug: resource.slug },
                   }}
                 >

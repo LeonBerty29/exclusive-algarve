@@ -134,6 +134,15 @@ export const routing = defineRouting({
       nl: "/inloggen",
       ru: "/vhod",
     },
+    "/own/[slug]": {
+      en: "/own/[slug]",
+      pt: "/propriedades/[slug]",
+      de: "/immobilien/[slug]",
+      fr: "/proprietes/[slug]",
+      sv: "/fastigheter/[slug]",
+      nl: "/eigendommen/[slug]",
+      ru: "/nedvizhimost/[slug]",
+    },
     "/properties": {
       en: "/properties",
       pt: "/propriedades",

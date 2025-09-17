@@ -9,6 +9,7 @@ components: {
 	blog: Blog,
 	buyResources: Resources,
 	sellResources: Resources,
+	ownResources: Resources,
 },
 apiOptions: {
 	region: 'eu',

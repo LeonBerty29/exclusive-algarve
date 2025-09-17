@@ -15,6 +15,7 @@ import { SellResourcesDropdown } from "./sell-resources-dropdown";
 import { LanguageSwitcher } from "../shared/language-switcher";
 import { routing } from "@/i18n/routing";
 import { useLocale } from "next-intl";
+import { OwnResourcesDropdown } from "./own-resources-dropdown";
 
 export default function NavBar({
   colorChange = false,
@@ -35,8 +36,14 @@ export default function NavBar({
     // { href: "/blogs", label: "Blog" },
     // { href: "/buying-process", label: "Buy" },
     // { href: "/become-a-vendor", label: "Sell" },
-    { href: Object.keys(routing.pathnames).find((key) => key === "/about-eav"), label: "About Us" },
-    { href: Object.keys(routing.pathnames).find((key) => key === "/contact"), label: "Contact" },
+    {
+      href: Object.keys(routing.pathnames).find((key) => key === "/about-eav"),
+      label: "About Us",
+    },
+    {
+      href: Object.keys(routing.pathnames).find((key) => key === "/contact"),
+      label: "Contact",
+    },
   ];
 
   const isActiveLink = (href: string) => {
@@ -84,16 +91,19 @@ export default function NavBar({
               scrolled={scrolled}
               colorChange={colorChange}
             />
+            <OwnResourcesDropdown
+              scrolled={scrolled}
+              colorChange={colorChange}
+            />
             <SellResourcesDropdown
               scrolled={scrolled}
               colorChange={colorChange}
             />
+
             {navLinks.map((link) => (
               <Link
                 key={link.href}
-                href={
-                  link.href!
-                }
+                href={link.href!}
                 locale={locale}
                 className={cn(
                   "text-sm font-medium transition-colors hover:text-gray-900",
@@ -146,7 +156,7 @@ export default function NavBar({
 
           {/* Mobile/Tablet Right Section */}
           <div className="flex lg:hidden items-center space-x-3">
-             <LanguageSwitcher />
+            <LanguageSwitcher />
 
             <Button
               variant="ghost"
@@ -184,6 +194,10 @@ export default function NavBar({
               <div className="pb-4 space-y-3">
                 <div className="flex flex-col items-start space-y-2">
                   <BuyResourcesDropdown scrolled={true} colorChange={false} />
+                  <OwnResourcesDropdown
+                    scrolled={scrolled}
+                    colorChange={colorChange}
+                  />
                   <SellResourcesDropdown scrolled={true} colorChange={false} />
                 </div>
               </div>
