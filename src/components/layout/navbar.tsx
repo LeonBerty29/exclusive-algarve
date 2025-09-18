@@ -16,6 +16,7 @@ import { LanguageSwitcher } from "../shared/language-switcher";
 import { routing } from "@/i18n/routing";
 import { useLocale } from "next-intl";
 import { OwnResourcesDropdown } from "./own-resources-dropdown";
+import { AboutUsResourcesDropdown } from "./about-us-resources-dropdown";
 
 export default function NavBar({
   colorChange = false,
@@ -36,10 +37,10 @@ export default function NavBar({
     // { href: "/blogs", label: "Blog" },
     // { href: "/buying-process", label: "Buy" },
     // { href: "/become-a-vendor", label: "Sell" },
-    {
-      href: Object.keys(routing.pathnames).find((key) => key === "/about-eav"),
-      label: "About Us",
-    },
+    // {
+    //   href: Object.keys(routing.pathnames).find((key) => key === "/about-eav"),
+    //   label: "About Us",
+    // },
     {
       href: Object.keys(routing.pathnames).find((key) => key === "/contact"),
       label: "Contact",
@@ -96,6 +97,11 @@ export default function NavBar({
               colorChange={colorChange}
             />
             <SellResourcesDropdown
+              scrolled={scrolled}
+              colorChange={colorChange}
+            />
+
+            <AboutUsResourcesDropdown
               scrolled={scrolled}
               colorChange={colorChange}
             />
@@ -199,6 +205,7 @@ export default function NavBar({
                     colorChange={colorChange}
                   />
                   <SellResourcesDropdown scrolled={true} colorChange={false} />
+                  <AboutUsResourcesDropdown scrolled={true} colorChange={false} />
                 </div>
               </div>
 

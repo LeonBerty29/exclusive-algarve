@@ -35,7 +35,7 @@ export const LanguageSwitcher = () => {
           <Button
             variant="ghost"
             size="sm"
-            className="flex items-center space-x-1"
+            className="flex items-center space-x-1 bg-red-200"
           >
             <Globe className="h-4 w-4" />
             <span className="text-sm">{locale}</span>

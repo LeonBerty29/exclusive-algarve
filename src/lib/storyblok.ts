@@ -10,6 +10,7 @@ components: {
 	buyResources: Resources,
 	sellResources: Resources,
 	ownResources: Resources,
+	aboutResources: Resources,
 },
 apiOptions: {
 	region: 'eu',
