@@ -32,8 +32,6 @@ async function apiRequest<T>(
     },
   };
 
-  console.log({ url });
-
   // Helper function to get error status from Response
   const getErrorStatus = (error: unknown): number | undefined => {
     if (error instanceof Error && error.cause instanceof Response) {

@@ -145,12 +145,12 @@ export const routing = defineRouting({
     },
     "/own/[slug]": {
       en: "/own/[slug]",
-      pt: "/propriedades/[slug]",
-      de: "/immobilien/[slug]",
-      fr: "/proprietes/[slug]",
-      sv: "/fastigheter/[slug]",
-      nl: "/eigendommen/[slug]",
-      ru: "/nedvizhimost/[slug]",
+      pt: "/own/[slug]",
+      de: "/own/[slug]",
+      fr: "/own/[slug]",
+      sv: "/own/[slug]",
+      nl: "/own/[slug]",
+      ru: "/own/[slug]",
     },
     "/properties": {
       en: "/properties",

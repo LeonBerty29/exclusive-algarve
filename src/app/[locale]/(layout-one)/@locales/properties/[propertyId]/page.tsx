@@ -8,10 +8,9 @@ interface Props {
 }
 
 const PropertyIdLocales = (props: Props) => {
-  console.log({PropertyId: "PropertyId"})
   return (
     <>
-      <Suspense fallback={<Skeleton className="h-4 w-6" />}>
+      <Suspense fallback={<Skeleton className="h-10 w-16" />}>
         <PropertiesLanguageSwitcher {...props} />
       </Suspense>
     </>

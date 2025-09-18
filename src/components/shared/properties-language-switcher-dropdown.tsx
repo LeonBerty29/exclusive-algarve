@@ -32,9 +32,6 @@ export const PropertiesLanguageSwitcherDropdown = ({
 
   const handleLanguageChange = (lang: string) => {
     if (lang !== locale) {
-      alert(`pathname = ${pathname}`);
-      alert(`locale = ${locale}`);
-      alert(`lang = ${lang}`);
       const path = slugs[lang as keyof typeof slugs];
       const targetPath = {
         pathname: "/properties/[slug]" as const,
