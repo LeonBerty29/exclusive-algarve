@@ -45,7 +45,7 @@ export default async function PropertiesPage(props: PageProps) {
   let priceRanges: string[] | undefined;
   if (searchParams["price_ranges[]"]) {
     // Handle both single value and array of values
-    console.log("There are price ranges");
+    // console.log("There are price ranges");
     if (Array.isArray(searchParams["price_ranges[]"])) {
       priceRanges = searchParams["price_ranges[]"] as string[];
     } else {

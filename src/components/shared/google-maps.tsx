@@ -14,7 +14,6 @@ export function GoogleMap({
 
   useEffect(() => {
     const initMap = async () => {
-      console.log("map init");
 
       const loader = new Loader({
         apiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string,
