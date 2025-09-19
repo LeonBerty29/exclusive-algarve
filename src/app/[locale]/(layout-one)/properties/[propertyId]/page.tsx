@@ -159,7 +159,6 @@ const PageContent = async (props: Props) => {
   const favorites = favoritesResponse.favorite_properties;
   const response = await getProperty(propertyId);
   const property = response.data;
-  // console.log({ property });
   const isFavourite = favorites.includes(property.id);
 
   return (
