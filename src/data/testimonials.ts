@@ -47,7 +47,6 @@ async function apiRequest<T>(
 
     // Check for 404 specifically
     if (response.status === 404) {
-      console.log(response.status);
       throw new Error(`API Error: ${response.status} ${response.statusText}`, {
         cause: response,
       });

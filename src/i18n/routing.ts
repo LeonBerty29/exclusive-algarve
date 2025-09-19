@@ -26,6 +26,15 @@ export const routing = defineRouting({
       nl: "/over-eav/het-team",
       ru: "/o-eav/komanda",
     },
+    "/about-eav/client-testimonials": {
+      en: "/about-eav/client-testimonials",
+      pt: "/sobre-eav/depoimentos-de-clientes",
+      de: "/ueber-eav/kundenstimmen",
+      fr: "/a-propos-eav/temoignages-clients",
+      sv: "/om-eav/kundvitsord",
+      nl: "/over-eav/klantgetuigenissen",
+      ru: "/o-eav/otzyvy-klientov",
+    },
     "/about-eav/[slug]": {
       en: "/about-eav/[slug]",
       pt: "/sobre-eav/[slug]",

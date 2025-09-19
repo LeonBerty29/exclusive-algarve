@@ -6,9 +6,9 @@ import { usePathname } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
-interface FavoritesResponse {
-  favorite_properties: number[];
-}
+// interface FavoritesResponse {
+//   favorite_properties: number[];
+// }
 
 export function DeleteFromFavoriteButton({
   propertyId,
@@ -60,8 +60,8 @@ export function DeleteFromFavoriteButton({
       // For other successful responses with content
       const contentType = response.headers.get("content-type");
       if (contentType && contentType.includes("application/json")) {
-        const result: FavoritesResponse = await response.json();
-        console.log("Removed from favourites", result);
+        // const result: FavoritesResponse = await response.json();
+        // console.log("Removed from favourites", result);
         toast.success(`Successfully removed ${reference} from favorites`);
       } else {
         toast.success(`Successfully removed ${reference} from favorites`);

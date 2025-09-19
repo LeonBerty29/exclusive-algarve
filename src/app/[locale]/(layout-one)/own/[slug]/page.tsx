@@ -5,7 +5,7 @@ import { fetchOwnResourcePage } from "@/data/resources";
 import { Skeleton } from "@/components/ui/skeleton";
 
 type Params = {
-  [x: string]: string | string[];
+  [x: string]: string;
 };
 
 export type PageProps = {

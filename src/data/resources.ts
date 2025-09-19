@@ -1,5 +1,6 @@
 import { getStoryblokApi } from "@/lib/storyblok";
 import { StoryblokError } from "@/types";
+import { getLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 
 export const fetchBuyResources = async ({
@@ -179,11 +180,13 @@ export const fetchOwnResources = async ({
   page,
   tag,
   sort_by,
+  language,
 }: {
   per_page?: number;
   page?: number;
   tag?: string;
   sort_by?: string;
+  language: string;
 }) => {
   const client = getStoryblokApi();
   const withTag = tag ? { with_tag: tag } : {};
@@ -192,6 +195,7 @@ export const fetchOwnResources = async ({
     const response = await client.getStories({
       content_type: "ownResources",
       version: process.env.NODE_ENV === "development" ? "draft" : "published",
+      starts_with: `own/${language}`,
       per_page: per_page || 10,
       page: page || 1,
       ...withTag,
@@ -238,9 +242,15 @@ export const fetchOwnResourcePage = async (slug: string) => {
 
   const client = getStoryblokApi();
   try {
-    const response = await client.getStory(`own/${slug}`, {
+    const locale = await getLocale();
+    console.log({ localeFetchOwnResourcePage: locale });
+    const response = await client.getStory(`own/${locale}/${slug}`, {
       version: process.env.NODE_ENV === "development" ? "draft" : "published",
+      // resolve_links: "url",
+      // resolve_relations: "fr",
+      // resolve_level: 0,
     });
+
     return response.data.story;
   } catch (error: unknown) {
     const errorStatus = getErrorStatus(error);
