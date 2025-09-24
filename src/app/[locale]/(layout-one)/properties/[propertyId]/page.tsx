@@ -28,6 +28,8 @@ import { getFavorites } from "@/data/favourites";
 import { auth } from "@/auth";
 import { AddToFavoriteButton } from "@/components/search/submit-buttons";
 import { setRequestLocale } from "next-intl/server";
+import { AddPropertyNote } from "@/components/product/add-property-notes";
+import { getNote } from "@/data/notes";
 
 interface Props {
   params: Promise<{ propertyId: string; locale: string }>;
@@ -151,14 +153,17 @@ const PageContent = async (props: Props) => {
   const { propertyId } = await props.params;
   const session = await auth();
   const token = session?.accessToken;
-  const favoritesResponse = token
-    ? await getFavorites(token)
-    : {
-        favorite_properties: [],
-      };
+  
+  // Use Promise.all to fetch all data concurrently
+  const [propertyResponse, favoritesResponse, notesResponse] = await Promise.all([
+    getProperty(propertyId),
+    token ? getFavorites(token) : Promise.resolve({ favorite_properties: [] }),
+    token ? getNote() : Promise.resolve({ data: [] }),
+  ]);
+
+  const property = propertyResponse.data;
   const favorites = favoritesResponse.favorite_properties;
-  const response = await getProperty(propertyId);
-  const property = response.data;
+  const notes = notesResponse.data;
   const isFavourite = favorites.includes(property.id);
 
   return (
@@ -192,6 +197,12 @@ const PageContent = async (props: Props) => {
                 isFavourite={isFavourite}
               />
             }
+            <AddPropertyNote
+              propertyId={property.id}
+              reference={property.reference}
+              notes={notes || []}
+              styleClassname="!text-gray-800 size-4"
+            />
             <ShareButton />
           </div>
         </div>

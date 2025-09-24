@@ -44,3 +44,26 @@ export interface StoryblokError extends Error {
 export interface FavoritesResponse {
   favorite_properties: number[];
 }
+
+export interface NoteObject {
+  client_id: number;
+  property_id: number;
+  notes: string;
+  created_at: string;
+  updated_at: string;
+}
+
+
+export interface NotesResponse {
+  data: NoteObject[];
+}
+export interface CreateNotesResponse {
+  message: string;
+  data: {
+    client_id: number;
+    property_id: number;
+    notes: string;
+    created_at: string;
+    updated_at: string;
+  }[];
+}

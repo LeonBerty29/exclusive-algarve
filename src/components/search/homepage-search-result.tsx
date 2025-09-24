@@ -22,6 +22,7 @@ import { getFavorites } from "@/data/favourites";
 import { ListFilter } from "lucide-react";
 import { SortBy } from "@/components/search/sort-by";
 import { generateApiParams, generateSuspenseKey } from "@/lib/utils";
+import { getNote } from "@/data/notes";
 // import HeroSearch from "@/components/home/search-component";
 
 // interface PropertiesPageProps {
@@ -38,7 +39,7 @@ export async function HomepageSearchResult({
   const apiParams = generateApiParams(searchParams);
 
   // Create a key based on the search parameters that affect the data
-  const suspenseKey = generateSuspenseKey(apiParams)
+  const suspenseKey = generateSuspenseKey(apiParams);
 
   // Fetch properties from API
   // const propertiesResponse = await getPropertiesWithAll(apiParams);
@@ -97,22 +98,24 @@ async function PropertieList({
   const session = await auth();
   const token = session?.accessToken;
 
-  const favoritesResponse = token
-    ? await getFavorites(token)
-    : {
-        favorite_properties: [],
-      };
-  const favorites = favoritesResponse.favorite_properties;
-  const propertiesResponse = await getPropertiesWithAllPaginated(
-    apiParams,
-    PROPERTIES_PER_PAGE
-  );
-
-  const properties = propertiesResponse.data;
   // const hasFilters = hasActiveFilters(apiParams);
 
-  if(properties.length === 0) {
-    return <></>
+  // Fetch all data concurrently using Promise.all
+  const [propertiesResponse, favoritesResponse, notesResponse] =
+    await Promise.all([
+      getPropertiesWithAllPaginated(apiParams, PROPERTIES_PER_PAGE),
+      token
+        ? getFavorites(token)
+        : Promise.resolve({ favorite_properties: [] }),
+      token ? getNote() : Promise.resolve({ data: [] }),
+    ]);
+
+  const properties = propertiesResponse.data;
+  const favorites = favoritesResponse.favorite_properties;
+  const notes = notesResponse.data;
+
+  if (properties.length === 0) {
+    return <></>;
   }
 
   return (
@@ -141,7 +144,11 @@ async function PropertieList({
               {properties.length > 0 ? (
                 properties.map((property) => (
                   <div key={property.id} className="">
-                    <ProductCard property={property} favorites={favorites} />
+                    <ProductCard
+                      property={property}
+                      favorites={favorites}
+                      notes={notes}
+                    />
                   </div>
                 ))
               ) : (

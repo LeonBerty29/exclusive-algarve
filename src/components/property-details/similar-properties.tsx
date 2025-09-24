@@ -9,14 +9,31 @@ import { Button } from "../ui/button";
 import { getListOfProperties } from "@/data/property";
 import { ProductCard } from "../product/product-card";
 import { Link } from "@/i18n/navigation";
+import { getNote } from "@/data/notes";
+import { auth } from "@/auth";
+import { getFavorites } from "@/data/favourites";
 
 const SimilarProperties = async ({
   similarPropertiesId,
 }: {
   similarPropertiesId: number[];
 }) => {
-  const propertiesResponse = await getListOfProperties(similarPropertiesId);
+  const session = await auth();
+  const token = session?.accessToken;
+
+  // Fetch all data concurrently using Promise.all
+  const [propertiesResponse, favoritesResponse, notesResponse] =
+    await Promise.all([
+      await getListOfProperties(similarPropertiesId),
+      token
+        ? getFavorites(token)
+        : Promise.resolve({ favorite_properties: [] }),
+      token ? getNote() : Promise.resolve({ data: [] }),
+    ]);
+
   const properties = propertiesResponse.data;
+  const favorites = favoritesResponse.favorite_properties;
+  const notes = notesResponse.data;
 
   return (
     <>
@@ -55,7 +72,7 @@ const SimilarProperties = async ({
             {properties.map((property, index) => (
               <CarouselItem key={index} className="pl-1 md:basis-1/2 h-full">
                 <div className="p-1 py-0 max-w-[400px] mx-auto sm:max-w-full block h-full">
-                  <ProductCard property={property} />
+                  <ProductCard property={property} notes={notes || []} favorites={favorites || []} />
                 </div>
               </CarouselItem>
             ))}

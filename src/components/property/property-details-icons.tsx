@@ -16,9 +16,9 @@ const PropertyDetailsIcons = ({
 }) => {
   // console.log(typeof features.bathrooms);
   return (
-    <div className="items-center grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8 mt-5 mb-14">
+    <div className="items-center flex flex-wrap sm:grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8 mt-5 mb-14">
       {(features.bedrooms || features.bedrooms !== 0) && (
-        <div className="flex gap-3 items-center">
+        <div className="flex gap-3 items-center mr-auto sm:mr-0">
           <div className="flex items-center gap-3 justify-center border border-gray-500 bg-gray-200 p-3">
             <FaBed className="h-6 w-6 text-gray-500" />
           </div>
@@ -30,7 +30,7 @@ const PropertyDetailsIcons = ({
       )}
 
       {(features.bathrooms || features.bathrooms !== 0) && (
-        <div className="flex gap-3 items-center">
+        <div className="flex gap-3 items-center mr-auto sm:mr-0">
           <div className="flex items-center gap-3 justify-center border border-gray-500 bg-gray-200 p-3">
             <MdBathtub className="h-6 w-6 text-gray-500" />
           </div>
@@ -42,7 +42,7 @@ const PropertyDetailsIcons = ({
       )}
 
       {(features.construction_year || features.construction_year !== "0") && (
-        <div className="flex gap-3 items-center">
+        <div className="flex gap-3 items-center mr-auto sm:mr-0">
           <div className="flex items-center gap-3 justify-center border border-gray-500 bg-gray-200 p-3">
             <MdOutlineTimeline className="h-6 w-6 text-gray-500" />
           </div>
@@ -56,7 +56,7 @@ const PropertyDetailsIcons = ({
       )}
 
       {(features.private_area || features.private_area !== 0) && (
-        <div className="flex gap-3 items-center">
+        <div className="flex gap-3 items-center mr-auto sm:mr-0">
           <div className="flex items-center gap-3 justify-center border border-gray-500 bg-gray-200 p-3">
             <BiArea className="h-6 w-6 text-gray-500" />
           </div>
@@ -70,7 +70,7 @@ const PropertyDetailsIcons = ({
       )}
 
       {(features.plot_size || features.plot_size !== 0) && (
-        <div className="flex gap-3 items-center">
+        <div className="flex gap-3 items-center mr-auto sm:mr-0">
           <div className="flex items-center gap-3 justify-center border border-gray-500 bg-gray-200 p-3">
             <LiaExpandArrowsAltSolid className="h-6 w-6 text-gray-500" />
           </div>
@@ -84,7 +84,7 @@ const PropertyDetailsIcons = ({
       )}
 
       {(features.construction_area || features.construction_area !== 0) && (
-        <div className="flex gap-3 items-center">
+        <div className="flex gap-3 items-center mr-auto sm:mr-0">
           <div className="flex items-center gap-3 justify-center border border-gray-500 bg-gray-200 p-3">
             <MdAreaChart className="h-6 w-6 text-gray-500" />
           </div>
@@ -98,7 +98,7 @@ const PropertyDetailsIcons = ({
       )}
 
       {features.energy_class && (
-        <div className="flex gap-3 items-center">
+        <div className="flex gap-3 items-center mr-auto sm:mr-0">
           <div className="flex items-center gap-3 justify-center border border-gray-500 bg-gray-200 p-3">
             <GiElectric className="h-6 w-6 text-gray-500" />
           </div>
@@ -112,7 +112,7 @@ const PropertyDetailsIcons = ({
       )}
 
       {propertyType && (
-        <div className="flex gap-3 items-center">
+        <div className="flex gap-3 items-center mr-auto sm:mr-0">
           <div className="flex items-center gap-3 justify-center border border-gray-500 bg-gray-200 p-3">
             <Home className="h-6 w-6 text-gray-500" />
           </div>

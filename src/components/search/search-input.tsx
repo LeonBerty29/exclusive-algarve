@@ -6,9 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-export function SearchInput(
-  {className}: {className?: string}
-) {
+export function SearchInput({ className }: { className?: string }) {
   // console.log("Rendering <SearchInput />")
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -37,10 +35,9 @@ export function SearchInput(
     updateURL(searchValue);
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      handleSearch();
-    }
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    handleSearch();
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -54,21 +51,26 @@ export function SearchInput(
   }, [searchParams]);
 
   return (
-    <div className="flex items-center gap-0 flex-nowrap w-full relative">
+    <form
+      onSubmit={handleSubmit}
+      className="flex items-center gap-0 flex-nowrap w-full relative"
+    >
       <Input
         type="text"
         placeholder="Free search/Reference"
         value={searchValue}
         onChange={handleInputChange}
-        onKeyDown={handleKeyDown}
-        className={cn("w-full border-transparent border-b-primary bg-transparent focus:bg-transparent active:bg-transparent hover:bg-transparent rounded-none shadow-none min-h-[40px] text-white placeholder:text-white/70 placeholder:text-sm placeholder:md:text-base", className)}
+        className={cn(
+          "w-full border-transparent border-b-primary bg-transparent focus:bg-transparent active:bg-transparent hover:bg-transparent rounded-none shadow-none min-h-[40px] text-white placeholder:text-white/70 placeholder:text-sm placeholder:md:text-base",
+          className
+        )}
       />
       <Button
-        onClick={handleSearch}
+        type="submit"
         className="bg-primary hover:bg-primary/90 text-white absolute right-0 top-0 h-full"
       >
         <Search className="h-4 w-4" />
       </Button>
-    </div>
+    </form>
   );
 }

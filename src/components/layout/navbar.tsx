@@ -202,7 +202,7 @@ export default function NavBar({
                   <BuyResourcesDropdown scrolled={true} colorChange={false} />
                   <OwnResourcesDropdown
                     scrolled={scrolled}
-                    colorChange={colorChange}
+                    colorChange={false}
                   />
                   <SellResourcesDropdown scrolled={true} colorChange={false} />
                   <AboutUsResourcesDropdown scrolled={true} colorChange={false} />

@@ -22,6 +22,7 @@ import { Link } from "@/i18n/navigation";
 import { ListFilter } from "lucide-react";
 import { SortBy } from "@/components/search/sort-by";
 import { generateApiParams, hasActiveFilters } from "@/lib/utils";
+import { getNote } from "@/data/notes";
 // import HeroSearch from "@/components/home/search-component";
 
 // interface PropertiesPageProps {
@@ -145,18 +146,19 @@ async function PropertieList({
   const session = await auth();
   const token = session?.accessToken;
 
-  const favoritesResponse = token
-    ? await getFavorites(token)
-    : {
-        favorite_properties: [],
-      };
-  const favorites = favoritesResponse.favorite_properties;
-  const propertiesResponse = await getPropertiesWithAllPaginated(
-    apiParams,
-    PROPERTIES_PER_PAGE
-  );
+  // Fetch all data concurrently using Promise.all
+  const [propertiesResponse, favoritesResponse, notesResponse] =
+    await Promise.all([
+      getPropertiesWithAllPaginated(apiParams, PROPERTIES_PER_PAGE),
+      token
+        ? getFavorites(token)
+        : Promise.resolve({ favorite_properties: [] }),
+      token ? getNote() : Promise.resolve({ data: [] }),
+    ]);
 
   const properties = propertiesResponse.data;
+  const favorites = favoritesResponse.favorite_properties;
+  const notes = notesResponse.data;
   const hasFilters = hasActiveFilters(apiParams);
 
   return (
@@ -164,7 +166,11 @@ async function PropertieList({
       {properties.length > 0 ? (
         properties.map((property) => (
           <div key={property.id} className="">
-            <ProductCard property={property} favorites={favorites} />
+            <ProductCard
+              property={property}
+              favorites={favorites}
+              notes={notes}
+            />
           </div>
         ))
       ) : (

@@ -66,7 +66,7 @@ export const RequestInformationDialog: React.FC<
 
           <DialogFooter className="sm:justify-start">
             <DialogClose asChild>
-              <Button type="button" variant="secondary">
+              <Button type="button" className="bg-transparent border border-white hover:bg-primary hover:border-primary text-white px-8">
                 Close
               </Button>
             </DialogClose>
