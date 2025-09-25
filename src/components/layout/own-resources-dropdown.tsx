@@ -63,7 +63,7 @@ export function OwnResourcesDropdown({
     }
 
     fetchResources();
-  }, []);
+  }, [locale]);
 
   if (loading) {
     return <Skeleton className="h-6 w-12" />;

@@ -40,6 +40,11 @@ const NavbarUserAuth = () => {
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
+              <Link href="/annotations" className="cursor-pointer">
+                Annotations(Notes)
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
               <SignOutButton className="cursor-pointer w-full" />
             </DropdownMenuItem>
           </DropdownMenuContent>

@@ -126,6 +126,18 @@ export function AboutUsResourcesDropdown({
               The Team
             </Link>
           </DropdownMenuItem>
+          <DropdownMenuItem
+            asChild
+            className="cursor-pointer py-3 hover:bg-gray-100 text-gray-800 border-b border-gray-200"
+          >
+            <Link
+              href={{
+                pathname: "/about-eav/client-testimonials",
+              }}
+            >
+              Client Testimonials
+            </Link>
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </div>
     </DropdownMenu>
