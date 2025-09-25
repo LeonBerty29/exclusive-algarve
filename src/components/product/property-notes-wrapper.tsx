@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { useSearchParams } from "next/navigation";
 import { Pencil } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Link } from "@/i18n/navigation";
 
 export const PropertyNotesWrapperDialog = ({
   children,
@@ -63,9 +64,21 @@ export const PropertyNotesWrapperDialog = ({
               {children}
             </Suspense>
           </div>
+          <div className="flex justify-center pt-3">
+            <Link
+              href="/annotations"
+              className="text-gray-600 font-semibold hover:underline hover:text-black"
+            >
+              View all of your Notes
+            </Link>
+          </div>
           <DialogFooter className="sm:justify-start">
             <DialogClose asChild>
-              <Button type="button" variant="secondary">
+              <Button
+                type="button"
+                variant="ghost"
+                className="px-0 underline hover:text-primary bg-transparent hover:bg-transparent"
+              >
                 Close
               </Button>
             </DialogClose>

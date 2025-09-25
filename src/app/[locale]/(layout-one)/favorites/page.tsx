@@ -9,6 +9,7 @@ import { redirect } from "@/i18n/navigation";
 import React, { Suspense } from "react";
 import { Heart, Search, ChevronLeft, ChevronRight } from "lucide-react";
 import { getNote } from "@/data/notes";
+import { getLocale } from "next-intl/server";
 
 type PageProps = {
   searchParams?: Promise<{ [x: string]: string | string[] | undefined }>;
@@ -207,9 +208,13 @@ async function ListFavourites({ currentPage }: { currentPage: number }) {
   const session = await auth();
   const token = session?.accessToken;
   // console.log({ token });
+  const locale = await getLocale();
 
   if (!token || !session) {
-    return redirect({ href: "/login", locale: "" });
+    return redirect({
+      href: { pathname: "/login", query: { callbackUrl: "/favorites" } },
+      locale: locale,
+    });
   }
 
   const favoritesResponse = await getFavorites(token);

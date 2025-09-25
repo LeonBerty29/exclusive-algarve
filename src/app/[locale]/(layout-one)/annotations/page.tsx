@@ -9,6 +9,7 @@ import { redirect } from "@/i18n/navigation";
 import React, { Suspense } from "react";
 import { Search, ChevronLeft, ChevronRight } from "lucide-react";
 import { getNote } from "@/data/notes";
+import { getLocale } from "next-intl/server";
 
 type PageProps = {
   searchParams?: Promise<{ [x: string]: string | string[] | undefined }>;
@@ -130,7 +131,8 @@ function EmptyAnnotationsState() {
 
       <p className="text-gray-600 text-center max-w-md mb-8 leading-relaxed">
         Start exploring properties and add your personal notes and annotations.
-        Keep track of important details, observations, and thoughts about properties you&apos;re interested in.
+        Keep track of important details, observations, and thoughts about
+        properties you&apos;re interested in.
       </p>
 
       <div className="flex flex-col sm:flex-row gap-4">
@@ -149,8 +151,8 @@ function EmptyAnnotationsState() {
           Pro Tip
         </h3>
         <p className="text-gray-600 text-sm">
-          Add detailed annotations to properties to remember key features, 
-          potential concerns, or personal preferences. This helps you make 
+          Add detailed annotations to properties to remember key features,
+          potential concerns, or personal preferences. This helps you make
           better decisions when comparing multiple properties.
         </p>
       </div>
@@ -207,10 +209,14 @@ function InvalidPageState({ totalPages }: { totalPages: number }) {
 async function ListAnnotations({ currentPage }: { currentPage: number }) {
   const session = await auth();
   const token = session?.accessToken;
+  const locale = await getLocale();
   // console.log({ token });
 
   if (!token || !session) {
-    return redirect({ href: "/login", locale: "" });
+    return redirect({
+      href: { pathname: "/login", query: { callbackUrl: "/annotations" } },
+      locale: locale,
+    });
   }
 
   const notesResponse = await getNote();
@@ -263,7 +269,7 @@ async function ListAnnotations({ currentPage }: { currentPage: number }) {
   const paginatedPropertIds = propertyIds.slice(startIndex, endIndex);
 
   // Fetch all data concurrently using Promise.all
-  const [propertiesResponse, ] = await Promise.all([
+  const [propertiesResponse] = await Promise.all([
     getListOfProperties(paginatedPropertIds),
   ]);
 

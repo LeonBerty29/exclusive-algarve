@@ -156,7 +156,7 @@ const TeamMembers: React.FC<TeamMembersProps> = ({ teams }) => {
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Left side - Member Details (Desktop only) */}
           <div className="hidden lg:block lg:w-1/2 max-w-xl sticky top-16 bottom-0 h-fit">
-            <div className="bg-white overflow-hidden overflow-y-auto max-h-screen custom-scrollbar">
+            <div className="bg-white overflow-hidden overflow-y-auto max-h-screen custom-scrollbar pb-16">
               <div className="relative">
                 <Image
                   src={`https:${selectedMember.content.image}`}

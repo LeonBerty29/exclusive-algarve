@@ -3,12 +3,17 @@ import { ProtectedRoute } from "@/components/protected/protected-route";
 import { UserProfileDisplay } from "@/components/settings/user-profile-display";
 import { getUserProfile } from "@/data/user";
 import { redirect } from "@/i18n/navigation";
+import { getLocale } from "next-intl/server";
 import React from "react";
 
 const page = async () => {
   const session = await auth();
+  const locale = await getLocale();
   if (!session || !session?.user) {
-    return redirect({ href: "/login", locale: "" });
+    return redirect({
+      href: { pathname: "/login", query: { callbackUrl: "/settings" } },
+      locale: locale,
+    });
   }
   const accessToken = session?.accessToken;
 
