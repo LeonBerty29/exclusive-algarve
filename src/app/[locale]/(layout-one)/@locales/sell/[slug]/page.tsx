@@ -1,6 +1,6 @@
-import { OwnResourcesLanguageSwitcherDropdown } from "@/components/shared/own-resources-language-switcher-dropdown";
+import { SellResourcesLanguageSwitcherDropdown } from "@/components/shared/sell-resources-language-switcher-dropdown";
 import { Skeleton } from "@/components/ui/skeleton";
-import { fetchOwnResourcePage } from "@/data/resources";
+import { fetchSellResourcePage } from "@/data/resources";
 import { routing } from "@/i18n/routing";
 import { setRequestLocale } from "next-intl/server";
 import React, { Suspense } from "react";
@@ -9,23 +9,23 @@ interface Props {
   params: Promise<{ slug: string; locale: string }>;
 }
 
-const OwnResourceLocales = (props: Props) => {
+const SellResourceLocales = (props: Props) => {
   return (
     <>
       <Suspense fallback={<Skeleton className="h-10 w-16" />}>
-        <OwnResourceLanguageSwitcher {...props} />
+        <SellResourceLanguageSwitcher {...props} />
       </Suspense>
     </>
   );
 };
 
-export default OwnResourceLocales;
+export default SellResourceLocales;
 
-async function OwnResourceLanguageSwitcher(props: Props) {
+async function SellResourceLanguageSwitcher(props: Props) {
   const { slug } = await props.params;
   const { locale } = await props.params;
   setRequestLocale(locale as string);
-  const story = await fetchOwnResourcePage(slug);
+  const story = await fetchSellResourcePage(slug);
 
   //   console.log({ storyContent: story.content });
 
@@ -39,9 +39,10 @@ async function OwnResourceLanguageSwitcher(props: Props) {
     slugs[locale] = url as string;
   });
 
+
   return (
     <>
-      <OwnResourcesLanguageSwitcherDropdown slugs={slugs} />
+      <SellResourcesLanguageSwitcherDropdown slugs={slugs} />
     </>
   );
 }

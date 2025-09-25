@@ -1,9 +1,14 @@
 import { fetchSellResources } from "@/data/resources";
-import { NextResponse } from "next/server";
+import { getLocale } from "next-intl/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    const response = await fetchSellResources({});
+
+    const { searchParams } = new URL(request.url);
+    const locale = searchParams.get('locale') || await getLocale();
+    
+    const response = await fetchSellResources({language: locale});
     const data = response.data.stories;
 
     return NextResponse.json(data);
