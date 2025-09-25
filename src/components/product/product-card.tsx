@@ -10,13 +10,20 @@ import { PriceFormat } from "../shared/price-format";
 import { Property } from "@/types/property";
 import { Link } from "@/i18n/navigation";
 import { getLocale } from "next-intl/server";
+import { AddPropertyNote } from "./add-property-notes";
+import { NoteObject } from "@/types";
 
 interface Props {
   property: Property;
-  favorites?: number[];
+  favorites: number[];
+  notes: NoteObject[];
 }
 
-export const ProductCard = async ({ property, favorites = [] }: Props) => {
+export const ProductCard = async ({ 
+  property, 
+  favorites = [], 
+  notes
+}: Props) => {
   // Extract image URLs from assets.images.gallery
   const imagePaths =
     property.assets?.images?.gallery?.map((img) => img.url) || [];
@@ -28,7 +35,7 @@ export const ProductCard = async ({ property, favorites = [] }: Props) => {
   const favorite = favorites.includes(property.id);
   const reference = property.reference;
   const exclusive = property.agency.name === "EAV";
-  // const tag = { slug: "rsv", name: "Reserved" }; // placeholder tag
+  
   const grossArea = property.features.private_area;
   const plotSize = property.features.plot_size;
   const amenities = {
@@ -36,8 +43,6 @@ export const ProductCard = async ({ property, favorites = [] }: Props) => {
     bathrooms: property.features.bathrooms,
     garage: property.features.garage || 0,
   };
-  // Determine if live video button should show (check if videos exist)
-  // const liveVideo = property.assets.virtual_tours && property.assets.virtual_tours.length > 0;
 
   // Use property.currency for price formatting
   const currency = property.currency || "EUR";
@@ -50,10 +55,7 @@ export const ProductCard = async ({ property, favorites = [] }: Props) => {
   return (
     <Card className="flex flex-col gap-0 rounded-none p-0 h-full">
       <CardHeader className="p-0 relative w-full flex flex-col">
-        <ProductImageCarousel
-          imagePaths={imagePaths}
-          property={property}
-        />
+        <ProductImageCarousel imagePaths={imagePaths} property={property} />
         <div className="z-10 absolute top-2 left-2 right-2 flex items-center justify-between gap-3">
           <>
             <div className="flex items-center gap-[6px]">
@@ -61,22 +63,20 @@ export const ProductCard = async ({ property, favorites = [] }: Props) => {
                 <IoMdPricetag fill="none" strokeWidth={20} />
                 {reference}
               </div>
-              {/* {tag && (
-                <div
-                  className={cn(
-                    "min-w-fit rounded-none text-white text-sm px-2 py-1 h-fit flex items-center justify-center",
-                    tag.slug === "rsv" ? "bg-[#17BF62]" : "bg-red-700"
-                  )}
-                >
-                  {tag.name}
-                </div>
-              )} */}
             </div>
-            <AddToFavoriteButton
-              propertyId={property.id}
-              reference={property.reference}
-              isFavourite={favorite}
-            />
+            <div className="flex gap-2 items-center">
+              <AddToFavoriteButton
+                propertyId={property.id}
+                reference={property.reference}
+                isFavourite={favorite}
+              />
+
+              <AddPropertyNote
+                propertyId={property.id}
+                reference={property.reference}
+                notes={notes || []}
+              />
+            </div>
           </>
         </div>
 
@@ -87,10 +87,17 @@ export const ProductCard = async ({ property, favorites = [] }: Props) => {
         )}
       </CardHeader>
       <CardContent className="p-4 flex-1">
-        <Link href={{
-          pathname: "/properties/[slug]",
-          params: { slug: property.seo.slugs[locale as keyof typeof property.seo.slugs] },
-        }} className="flex flex-col gap-3 h-full justify-between">
+        <Link
+          href={{
+            pathname: "/properties/[slug]",
+            params: {
+              slug: property.seo.slugs[
+                locale as keyof typeof property.seo.slugs
+              ],
+            },
+          }}
+          className="flex flex-col gap-3 h-full justify-between"
+        >
           <div>
             <div className="flex justify-between align-center flex-wrap gap-y-2 gap-x-5">
               {showPrice ? (
@@ -108,10 +115,6 @@ export const ProductCard = async ({ property, favorites = [] }: Props) => {
               )}
             </div>
 
-            {/* <div
-            dangerouslySetInnerHTML={{ __html: property.description }}
-            className="text-neutral prose lg:prose-base line-clamp-2"
-          /> */}
             <h3 className="text-gray-500  text-sm md:text-base lg:text-lg line-clamp-2 mt-3">
               {property.title}
             </h3>
@@ -172,17 +175,6 @@ export const ProductCard = async ({ property, favorites = [] }: Props) => {
                   </div>
                 </div>
               </div>
-
-              {/* <div className='w-[52%] max-w-[140px] min-w[128px]'>
-  {
-    liveVideo && (
-      <Button type='button' className='text-[9px] font-semibold w-full rounded-none bg-black text-white hover:bg-black/90'>
-        <Play className='h-2 w-2 text-white fill-white' />
-        LIVE TOUR VIDEO
-      </Button>
-    )
-  }
-</div> */}
             </div>
           </div>
         </Link>

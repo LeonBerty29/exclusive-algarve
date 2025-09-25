@@ -5,7 +5,8 @@
 */
 export const privateRoutes = [
     "/settings",
-    "/favorites"
+    "/favorites",
+    "/annotations"
   ]
   
   

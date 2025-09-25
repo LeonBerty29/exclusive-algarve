@@ -53,6 +53,15 @@ export const routing = defineRouting({
       nl: "/makelaar",
       ru: "/agent",
     },
+    "/annotations": {
+      en: "/annotations",
+      pt: "/anotacoes",
+      de: "/anotierungen",
+      fr: "/annotations",
+      sv: "/anoteringar",
+      nl: "/annotaties",
+      ru: "/annotatsii",
+    },
     "/become-a-vendor": {
       en: "/become-a-vendor",
       pt: "/torne-se-vendedor",

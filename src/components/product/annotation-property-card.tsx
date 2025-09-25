@@ -12,6 +12,8 @@ import { Link } from "@/i18n/navigation";
 import { getLocale } from "next-intl/server";
 import { NoteObject } from "@/types";
 import { AddPropertyNote } from "./add-property-notes";
+import { Button } from "../ui/button";
+import { Pencil } from "lucide-react";
 
 interface Props {
   property: Property;
@@ -19,7 +21,7 @@ interface Props {
   notes: NoteObject[];
 }
 
-export const FavoriteProductCard = async ({
+export const AnnotationPropertyCard = async ({
   property,
   favorites,
   notes,
@@ -82,12 +84,6 @@ export const FavoriteProductCard = async ({
                 reference={property.reference}
                 isFavourite={favorite}
               />
-
-              <AddPropertyNote
-                propertyId={property.id}
-                reference={property.reference}
-                notes={notes || []}
-              />
             </div>
           </>
         </div>
@@ -99,6 +95,21 @@ export const FavoriteProductCard = async ({
         )}
       </CardHeader>
       <CardContent className="p-3 lg:flex-1 lg:p-6 lg:space-y-3 lg:flex lg:flex-col lg:justify-center">
+        <div className="pb-5 flex justify-end">
+          <AddPropertyNote
+            propertyId={property.id}
+            reference={property.reference}
+            notes={notes || []}
+          >
+            <Button
+              className="bg-black/85 text-white hover:bg-black transition colors shadow-2xl"
+              type="button"
+            >
+              Annotation (Note)
+              <Pencil className="size-4 text-primary shadow-2xl" />
+            </Button>
+          </AddPropertyNote>
+        </div>
         <Link
           href={{
             pathname: "/properties/[slug]",
