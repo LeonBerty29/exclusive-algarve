@@ -13,6 +13,7 @@ import { Button } from "../ui/button";
 import { Skeleton } from "../ui/skeleton";
 import { cn } from "@/lib/utils";
 import { Link } from "@/i18n/navigation";
+import { useLocale } from "next-intl";
 
 interface Resource {
   id: string;
@@ -36,10 +37,12 @@ export function AboutUsResourcesDropdown({
   const [error, setError] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
 
+  const locale = useLocale();
+
   useEffect(() => {
     async function fetchResources() {
       try {
-        const response = await fetch("/api/resources/about-us-resources");
+        const response = await fetch(`/api/resources/about-us-resources?locale=${locale}`);
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -58,7 +61,7 @@ export function AboutUsResourcesDropdown({
     }
 
     fetchResources();
-  }, []);
+  }, [locale]);
 
   if (loading) {
     return <Skeleton className="h-6 w-12" />;
