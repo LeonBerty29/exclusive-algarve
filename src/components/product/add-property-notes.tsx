@@ -11,11 +11,11 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "../ui/button";
 import { Pencil } from "lucide-react";
-import { Link } from "@/i18n/navigation";
 import { PropertyNotesWrapperDialog } from "./property-notes-wrapper";
 import { ListPropertyNoteForm } from "./property-notes-dialog";
 import { NoteObject } from "@/types";
 import { cn } from "@/lib/utils";
+import { AddNoteRedirectBtn } from "../shared/add-note-redirect-btn";
 
 interface AddPropertyNoteProps {
   propertyId: number;
@@ -67,9 +67,7 @@ export const AddPropertyNote = async ({
             </DialogHeader>
             <div className="flex flex-col gap-2">
               <p>You need to be Logged into your account to add a note</p>
-              <Button asChild className="bg-primary text-white">
-                <Link href="/login">Login</Link>
-              </Button>
+              <AddNoteRedirectBtn propertyId={propertyId} />
             </div>
             <DialogFooter className="sm:justify-start">
               <DialogClose asChild>

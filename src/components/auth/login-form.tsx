@@ -24,6 +24,8 @@ import { FormSuccess } from "./form-success";
 // import { signIn } from "@/auth";
 import { login } from "@/actions/login";
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
+import { useRouter } from "@/i18n/navigation";
+import { useSession } from "next-auth/react";
 // import { toast } from "sonner";
 
 export const LoginForm = ({
@@ -35,6 +37,9 @@ export const LoginForm = ({
   const [success, setSuccess] = useState<string | undefined>("");
 
   const [isPending, startTransition] = useTransition();
+  const router = useRouter();
+
+  const { update } = useSession();
 
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
@@ -53,14 +58,22 @@ export const LoginForm = ({
       login(
         values
         //  callbackUrl
-      ).then((data) => {
+      ).then(async(data) => {
         setError(data?.error);
         setSuccess(data?.success);
 
         if (data?.success) {
-          const link = document.createElement("a");
-          link.href = callbackUrl || DEFAULT_LOGIN_REDIRECT;
-          link.click();
+          // const link = document.createElement("a");
+          // link.href = callbackUrl || DEFAULT_LOGIN_REDIRECT;
+          // link.click();
+          await update();
+          router.refresh();
+
+
+          // @ts-expect-error -- Typescript will validate only known `params`
+          // are used in combination with a given `pathname`. Since the two will
+          // always match for the current route, we can skip runtime checks
+          router.push(callbackUrl || DEFAULT_LOGIN_REDIRECT);
         }
       });
     });
