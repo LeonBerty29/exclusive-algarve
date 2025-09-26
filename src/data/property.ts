@@ -86,7 +86,7 @@ export const getProperty = async (
   propertyId: string
 ): Promise<PropertyResponse> => {
   const locale = await getLocale();
-  const endpoint = `/properties/${propertyId}/?language=${locale === "sv" ? "se" : locale}`;
+  const endpoint = `/properties/${propertyId}/?language=${locale}`;
 
   return apiRequest<PropertyResponse>(endpoint);
 };
@@ -96,7 +96,7 @@ export const getListOfProperties = async (
 ): Promise<PropertyListResponse> => {
   const locale = await getLocale();  
   const ids = propertyIds.join(",");
-  const endpoint = `/properties?ids=${ids}&language=${locale === "sv" ? "se" : locale}`;
+  const endpoint = `/properties?ids=${ids}&language=${locale}`;
 
   return apiRequest<PropertyListResponse>(endpoint);
 };

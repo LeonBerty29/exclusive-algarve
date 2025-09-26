@@ -288,11 +288,13 @@ export const fetchAboutUsResources = async ({
   page,
   tag,
   sort_by,
+  language
 }: {
   per_page?: number;
   page?: number;
   tag?: string;
   sort_by?: string;
+  language?: string;
 }) => {
   const client = getStoryblokApi();
   const withTag = tag ? { with_tag: tag } : {};
@@ -302,6 +304,7 @@ export const fetchAboutUsResources = async ({
       content_type: "aboutResources",
       version: process.env.NODE_ENV === "development" ? "draft" : "published",
       per_page: per_page || 10,
+      starts_with: `about-us/${language}`,
       page: page || 1,
       ...withTag,
       ...sortBy,
@@ -347,7 +350,8 @@ export const fetchAboutUsResourcePage = async (slug: string) => {
 
   const client = getStoryblokApi();
   try {
-    const response = await client.getStory(`about-us/${slug}`, {
+    const locale = await getLocale();
+    const response = await client.getStory(`about-us/${locale}/${slug}`, {
       version: process.env.NODE_ENV === "development" ? "draft" : "published",
     });
     return response.data.story;
