@@ -61,7 +61,8 @@ export function PropertyVideoPlayer({
   const [duration, setDuration] = useState(0);
   const [seeking, setSeeking] = useState(false);
   const [showControls, setShowControls] = useState(true);
-  const [controlsTimeout, setControlsTimeout] = useState<NodeJS.Timeout | null>(null);
+  // const [controlsTimeout, setControlsTimeout] = useState<NodeJS.Timeout | null>(null);
+  const controlsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const playerRef = useRef<ReactPlayerInstance>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -83,9 +84,10 @@ export function PropertyVideoPlayer({
   useEffect(() => {
     if (isFullscreen) {
       const hideControls = () => {
-        if (controlsTimeout) clearTimeout(controlsTimeout);
-        const timeout = setTimeout(() => setShowControls(false), 3000);
-        setControlsTimeout(timeout);
+        if (controlsTimeoutRef.current) {
+          clearTimeout(controlsTimeoutRef.current);
+        }
+        controlsTimeoutRef.current = setTimeout(() => setShowControls(false), 3000);
       };
 
       const showControlsHandler = () => {
@@ -93,21 +95,27 @@ export function PropertyVideoPlayer({
         hideControls();
       };
 
-      containerRef.current?.addEventListener('mousemove', showControlsHandler);
-      containerRef.current?.addEventListener('touchstart', showControlsHandler);
+      const container = containerRef.current;
+      container?.addEventListener('mousemove', showControlsHandler);
+      container?.addEventListener('touchstart', showControlsHandler);
 
       hideControls();
 
       return () => {
-        if (controlsTimeout) clearTimeout(controlsTimeout);
-        containerRef.current?.removeEventListener('mousemove', showControlsHandler);
-        containerRef.current?.removeEventListener('touchstart', showControlsHandler);
+        if (controlsTimeoutRef.current) {
+          clearTimeout(controlsTimeoutRef.current);
+        }
+        container?.removeEventListener('mousemove', showControlsHandler);
+        container?.removeEventListener('touchstart', showControlsHandler);
       };
     } else {
       setShowControls(true);
-      if (controlsTimeout) clearTimeout(controlsTimeout);
+      if (controlsTimeoutRef.current) {
+        clearTimeout(controlsTimeoutRef.current);
+        controlsTimeoutRef.current = null;
+      }
     }
-  }, [isFullscreen, controlsTimeout]);
+  }, [isFullscreen]); // Only depend on isFullscreen
 
   const handlePlayPause = () => {
     setPlaying(!playing);
