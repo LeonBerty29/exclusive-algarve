@@ -162,7 +162,7 @@ export default function NavBar({
 
           {/* Mobile/Tablet Right Section */}
           <div className="flex lg:hidden items-center space-x-3">
-            <LanguageSwitcher />
+            {children ? children : <LanguageSwitcher />}
 
             <Button
               variant="ghost"
@@ -205,7 +205,10 @@ export default function NavBar({
                     colorChange={false}
                   />
                   <SellResourcesDropdown scrolled={true} colorChange={false} />
-                  <AboutUsResourcesDropdown scrolled={true} colorChange={false} />
+                  <AboutUsResourcesDropdown
+                    scrolled={true}
+                    colorChange={false}
+                  />
                 </div>
               </div>
 
