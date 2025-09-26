@@ -10,6 +10,8 @@ import {
   Maximize,
   Minimize,
   X,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import { PropertyVideo } from "@/types/property";
 
@@ -61,7 +63,6 @@ export function PropertyVideoPlayer({
   const [duration, setDuration] = useState(0);
   const [seeking, setSeeking] = useState(false);
   const [showControls, setShowControls] = useState(true);
-  // const [controlsTimeout, setControlsTimeout] = useState<NodeJS.Timeout | null>(null);
   const controlsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const playerRef = useRef<ReactPlayerInstance>(null);
@@ -76,8 +77,9 @@ export function PropertyVideoPlayer({
       setIsFullscreen(!!document.fullscreenElement);
     };
 
-    document.addEventListener('fullscreenchange', handleFullscreenChange);
-    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    return () =>
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
   }, []);
 
   // Auto-hide controls in fullscreen
@@ -87,7 +89,10 @@ export function PropertyVideoPlayer({
         if (controlsTimeoutRef.current) {
           clearTimeout(controlsTimeoutRef.current);
         }
-        controlsTimeoutRef.current = setTimeout(() => setShowControls(false), 3000);
+        controlsTimeoutRef.current = setTimeout(
+          () => setShowControls(false),
+          3000
+        );
       };
 
       const showControlsHandler = () => {
@@ -96,8 +101,8 @@ export function PropertyVideoPlayer({
       };
 
       const container = containerRef.current;
-      container?.addEventListener('mousemove', showControlsHandler);
-      container?.addEventListener('touchstart', showControlsHandler);
+      container?.addEventListener("mousemove", showControlsHandler);
+      container?.addEventListener("touchstart", showControlsHandler);
 
       hideControls();
 
@@ -105,8 +110,8 @@ export function PropertyVideoPlayer({
         if (controlsTimeoutRef.current) {
           clearTimeout(controlsTimeoutRef.current);
         }
-        container?.removeEventListener('mousemove', showControlsHandler);
-        container?.removeEventListener('touchstart', showControlsHandler);
+        container?.removeEventListener("mousemove", showControlsHandler);
+        container?.removeEventListener("touchstart", showControlsHandler);
       };
     } else {
       setShowControls(true);
@@ -189,7 +194,7 @@ export function PropertyVideoPlayer({
         await document.exitFullscreen();
       }
     } catch (error) {
-      console.error('Fullscreen error:', error);
+      console.error("Fullscreen error:", error);
     }
   };
 
@@ -232,12 +237,14 @@ export function PropertyVideoPlayer({
       <div
         ref={containerRef}
         className={`relative bg-black overflow-hidden shadow-lg ${
-          isFullscreen ? 'fixed inset-0 z-50' : 'rounded-lg'
+          isFullscreen ? "fixed inset-0 z-50" : "rounded-lg"
         }`}
       >
         {/* Video Player */}
-        <div 
-          className={`relative ${isFullscreen ? 'w-full h-full' : 'aspect-video'}`}
+        <div
+          className={`relative ${
+            isFullscreen ? "w-full h-full" : "aspect-video"
+          }`}
           onDoubleClick={handleDoubleClick}
         >
           <ReactPlayer
@@ -263,13 +270,13 @@ export function PropertyVideoPlayer({
           />
 
           {/* Custom Controls Overlay */}
-          <div 
+          <div
             className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent transition-opacity duration-300 ${
-              showControls ? 'opacity-100' : 'opacity-0'
-            } ${isFullscreen ? 'p-4 md:p-6' : 'p-2 sm:p-4'}`}
+              showControls ? "opacity-100" : "opacity-0"
+            } ${isFullscreen ? "p-4 md:p-6" : "p-2 sm:p-4"}`}
           >
             {/* Progress Bar */}
-            <div className={`${isFullscreen ? 'mb-4' : 'mb-2 sm:mb-3'}`}>
+            <div className={`${isFullscreen ? "mb-4" : "mb-2 sm:mb-3"}`}>
               <input
                 ref={progressRef}
                 type="range"
@@ -284,7 +291,7 @@ export function PropertyVideoPlayer({
                 onTouchEnd={handleSeekTouchEnd}
                 onClick={handleProgressClick}
                 className={`w-full appearance-none cursor-pointer bg-white/30 rounded-lg ${
-                  isFullscreen ? 'h-2' : 'h-1 sm:h-1.5'
+                  isFullscreen ? "h-1" : "h-0.5"
                 } progress-slider`}
               />
             </div>
@@ -297,14 +304,18 @@ export function PropertyVideoPlayer({
                   className="text-white hover:text-blue-400 transition-colors p-1"
                 >
                   {playing ? (
-                    <Pause size={isFullscreen ? 28 : 20} className="sm:w-6 sm:h-6" />
+                    <Pause size={isFullscreen ? 24 : 18} />
                   ) : (
-                    <Play size={isFullscreen ? 28 : 20} className="sm:w-6 sm:h-6" />
+                    <Play size={isFullscreen ? 24 : 18} />
                   )}
                 </button>
 
                 {/* Volume Controls - Show on larger screens or fullscreen */}
-                <div className={`${isFullscreen ? 'flex' : 'hidden sm:flex'} items-center space-x-2`}>
+                <div
+                  className={`${
+                    isFullscreen ? "flex" : "hidden sm:flex"
+                  } items-center space-x-2`}
+                >
                   <button
                     onClick={toggleMute}
                     className="text-white hover:text-blue-400 transition-colors p-1"
@@ -323,12 +334,16 @@ export function PropertyVideoPlayer({
                     value={muted ? 0 : volume}
                     onChange={handleVolumeChange}
                     className={`bg-white/30 rounded-lg appearance-none cursor-pointer h-1 ${
-                      isFullscreen ? 'w-24' : 'w-16 sm:w-20'
+                      isFullscreen ? "w-24" : "w-16 sm:w-20"
                     }`}
                   />
                 </div>
 
-                <div className={`text-white ${isFullscreen ? 'text-base' : 'text-xs sm:text-sm'}`}>
+                <div
+                  className={`text-white ${
+                    isFullscreen ? "text-base" : "text-xs sm:text-sm"
+                  }`}
+                >
                   {formatTime(played * duration)} / {formatTime(duration)}
                 </div>
               </div>
@@ -340,34 +355,42 @@ export function PropertyVideoPlayer({
                     <button
                       onClick={handlePrevious}
                       disabled={currentVideoIndex === 0}
-                      className={`${isFullscreen ? 'block' : 'hidden sm:block'} text-white hover:text-blue-400 disabled:text-gray-500 transition-colors px-2 py-1 rounded ${
-                        isFullscreen ? 'text-base' : 'text-sm'
-                      }`}
+                      className={`${
+                        isFullscreen ? "block" : "hidden sm:block"
+                      } text-white hover:text-blue-400 disabled:text-gray-500 transition-colors p-1`}
+                      title="Previous video"
                     >
-                      Previous
+                      <ChevronLeft size={isFullscreen ? 20 : 16} />
                     </button>
                     <button
                       onClick={handleNext}
                       disabled={currentVideoIndex === videos.length - 1}
-                      className={`${isFullscreen ? 'block' : 'hidden sm:block'} text-white hover:text-blue-400 disabled:text-gray-500 transition-colors px-2 py-1 rounded ${
-                        isFullscreen ? 'text-base' : 'text-sm'
-                      }`}
+                      className={`${
+                        isFullscreen ? "block" : "hidden sm:block"
+                      } text-white hover:text-blue-400 disabled:text-gray-500 transition-colors p-1`}
+                      title="Next video"
                     >
-                      Next
+                      <ChevronRight size={isFullscreen ? 20 : 16} />
                     </button>
                   </>
                 )}
-                
+
                 {/* Fullscreen Toggle - Always visible */}
                 <button
                   onClick={toggleFullscreen}
                   className="text-white hover:text-blue-400 transition-colors p-1"
-                  title={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
+                  title={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
                 >
                   {isFullscreen ? (
-                    <Minimize size={isFullscreen ? 24 : 18} className="sm:w-5 sm:h-5" />
+                    <Minimize
+                      size={isFullscreen ? 24 : 18}
+                      className="sm:w-5 sm:h-5"
+                    />
                   ) : (
-                    <Maximize size={isFullscreen ? 24 : 18} className="sm:w-5 sm:h-5" />
+                    <Maximize
+                      size={isFullscreen ? 24 : 18}
+                      className="sm:w-5 sm:h-5"
+                    />
                   )}
                 </button>
               </div>
@@ -375,14 +398,16 @@ export function PropertyVideoPlayer({
           </div>
 
           {/* Video Title Overlay */}
-          <div 
+          <div
             className={`absolute top-2 left-2 right-2 sm:top-4 sm:left-4 sm:right-4 transition-opacity duration-300 ${
-              showControls ? 'opacity-100' : 'opacity-0'
+              showControls ? "opacity-100" : "opacity-0"
             }`}
           >
-            <h3 className={`text-white font-semibold bg-black/60 px-2 py-1 sm:px-3 rounded backdrop-blur-sm ${
-              isFullscreen ? 'text-xl' : 'text-sm sm:text-lg'
-            }`}>
+            <h3
+              className={`text-white font-semibold bg-black/60 px-2 py-1 sm:px-3 rounded backdrop-blur-sm ${
+                isFullscreen ? "text-xl" : "text-sm sm:text-lg"
+              }`}
+            >
               {currentVideo.title}
             </h3>
           </div>
@@ -402,7 +427,9 @@ export function PropertyVideoPlayer({
       {/* Video Playlist - Hidden in fullscreen */}
       {showPlaylist && videos.length > 1 && !isFullscreen && (
         <div className="mt-4">
-          <h4 className="text-base sm:text-lg font-semibold mb-3">Property Videos</h4>
+          <h4 className="text-base sm:text-lg font-semibold mb-3">
+            Property Videos
+          </h4>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3">
             {videos.map((video, index) => (
               <button
@@ -434,18 +461,18 @@ export function PropertyVideoPlayer({
       <style jsx>{`
         .progress-slider::-webkit-slider-thumb {
           appearance: none;
-          width: ${isFullscreen ? '20px' : '16px'};
-          height: ${isFullscreen ? '20px' : '16px'};
+          width: ${isFullscreen ? "14px" : "12px"};
+          height: ${isFullscreen ? "14px" : "12px"};
           border-radius: 50%;
           background: #3b82f6;
           cursor: pointer;
           border: 2px solid white;
           box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
-        
+
         .progress-slider::-moz-range-thumb {
-          width: ${isFullscreen ? '20px' : '16px'};
-          height: ${isFullscreen ? '20px' : '16px'};
+          width: ${isFullscreen ? "14px" : "12px"};
+          height: ${isFullscreen ? "14px" : "12px"};
           border-radius: 50%;
           background: #3b82f6;
           cursor: pointer;
@@ -462,18 +489,18 @@ export function PropertyVideoPlayer({
           background: rgba(255, 255, 255, 0.3);
           border-radius: 4px;
         }
-        
+
         /* Enhanced mobile touch targets */
         @media (max-width: 640px) {
           .progress-slider::-webkit-slider-thumb {
-            width: 18px;
-            height: 18px;
-            transform: scale(1.2);
+            width: 14px;
+            height: 14px;
+            transform: scale(1);
           }
           .progress-slider::-moz-range-thumb {
-            width: 18px;
-            height: 18px;
-            transform: scale(1.2);
+            width: 14px;
+            height: 14px;
+            transform: scale(1);
           }
         }
 
