@@ -6,6 +6,7 @@ import TeamMembers from "@/components/the-team/team-members";
 import DiscoverSection from "@/components/home/discover-section";
 import { ContactForm } from "@/components/shared/contact-form";
 import { Team } from "@/types/team";
+import { getLocale } from "next-intl/server";
 
 interface BlogPageProps {
   searchParams: Promise<{ page?: string }>;
@@ -87,11 +88,13 @@ async function GetAndDisplayTeam({
   tag,
   sortBy,
 }: GetAndDisplayTeamProps) {
+  const locale = await getLocale();
   const response = await fetchTeam({
     page,
     per_page: perPage,
     tag,
     sort_by: sortBy,
+    language: locale,
   });
 
   //   const totalPages = Math.ceil(response.total / perPage);

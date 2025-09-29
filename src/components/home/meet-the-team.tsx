@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/carousel";
 import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
+import { Link } from "@/i18n/navigation";
 
 const teamMembers = [
   {
@@ -81,8 +82,8 @@ const MeetTheTeam = () => {
           {" "}
           Exclusive Algarve Villas{" "}
         </h2>
-        <Button className="bg-gray-300 text-neutral-900 rounded-none text-sm py-5 font-light mb-3">
-          MEET THE TEAM
+        <Button asChild className="bg-gray-300 text-neutral-900 rounded-none text-sm py-5 font-light mb-3 hover:text-white">
+          <Link href="/about-eav/the-team">MEET THE TEAM</Link>
         </Button>
         <p className="max-w-lg text-sm text-neutral-800 mt-16">
           Directors Marcela Boturao & Bart van Linden would like to welcome you

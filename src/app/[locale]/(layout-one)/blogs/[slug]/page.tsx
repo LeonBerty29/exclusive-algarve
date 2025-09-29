@@ -12,6 +12,7 @@ import {
   RecentPostsLoader,
   RelatedArticlesLoader,
 } from "@/components/blog/blog-loading-states";
+import { getLocale } from "next-intl/server";
 
 type Params = {
   [x: string]: string | string[];
@@ -56,7 +57,8 @@ const BlogPage = async (props: PageProps) => {
 export default BlogPage;
 
 async function BlogPageContent({ slug }: { slug: string }) {
-  const story = await fetchBlogPage(slug);
+  const locale = await getLocale()
+  const story = await fetchBlogPage(slug, locale);
   return (
     <>
       <div className="2xl:container w-full mx-auto px-6 sm:px-8 md:px-10 lg:px-14 py-10">
@@ -95,10 +97,12 @@ async function ListRecentBlogs({
 }: {
   excludeBlogWithSlug?: string;
 }) {
+  const locale = await getLocale()
   const blogsResponse = await fetchAllBlogs({
     per_page: 4,
     page: 1,
     sort_by: "created_at:desc",
+    language: locale,
   });
 
   
@@ -121,10 +125,12 @@ async function RelatedArticles({
   tag: string;
   excludeBlogWithSlug?: string;
 }) {
+  const locale = await getLocale()
   const relatedBlogsResponse = await fetchAllBlogs({
     per_page: 4,
     page: 1,
     tag: tag,
+    language: locale,
   });
 
 

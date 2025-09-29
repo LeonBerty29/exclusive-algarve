@@ -5,6 +5,7 @@ import Image from "next/image";
 import { formatDateString } from "@/utils";
 import { Suspense } from "react";
 import { LoadingBlogs } from "../blog/loading-blogs";
+import { getLocale } from "next-intl/server";
 
 const LatestNews = async () => {
   return (
@@ -25,10 +26,12 @@ const LatestNews = async () => {
 export default LatestNews;
 
 async function RecentBlogsGrid() {
+  const locale = await getLocale();
   const blogs = await fetchAllBlogs({
     per_page: 4,
     page: 1,
-    sort_by: "created_at:desc"
+    sort_by: "created_at:desc",
+    language: locale
   });
   
   const recentBlogs = blogs.data.stories;
