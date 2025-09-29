@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { Suspense } from "react";
 import { ChevronLeft, ChevronRight, AlertCircle } from "lucide-react";
+import { getLocale } from "next-intl/server";
 
 interface BlogPageProps {
   searchParams: Promise<{ page?: string }>;
@@ -92,11 +93,13 @@ async function GetAndDisplayBlogs({
   tag,
   sortBy,
 }: GetAndDisplayBlogsProps) {
+  const locale = await getLocale();
   const response = await fetchAllBlogs({
     page,
     per_page: perPage,
     tag,
     sort_by: sortBy,
+    language: locale, 
   });
 
   const totalPages = Math.ceil(response.total / perPage);
@@ -113,12 +116,15 @@ async function GetAndDisplayBlogs({
       ) : (
         // Show blogs normally
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-8">
-          {blogs?.map((blog) => (
-            <div key={blog.content._uid}>
-              <Link href={{
-                pathname: "/blogs/[slug]",
-                params: { slug: blog.slug },
-              }} className="w-full">
+          {blogs?.map((blog, index) => (
+            <div key={`blog--${blog.content._uid}-${index}`}>
+              <Link
+                href={{
+                  pathname: "/blogs/[slug]",
+                  params: { slug: blog.slug },
+                }}
+                className="w-full"
+              >
                 <div className="relative w-full aspect-video">
                   <Image
                     src={blog.content.banner_image.filename}

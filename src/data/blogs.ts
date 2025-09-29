@@ -6,12 +6,14 @@ export const fetchAllBlogs = async ({
   per_page,
   page,
   tag,
-  sort_by
+  sort_by,
+  language,
 }: {
   per_page?: number;
   page?: number;
   tag?: string;
   sort_by?: string;
+  language: string;
 }) => {
   const client = getStoryblokApi();
   const withTag = tag ? { with_tag: tag } : {};
@@ -22,6 +24,7 @@ export const fetchAllBlogs = async ({
       version: process.env.NODE_ENV === "development" ? "draft" : "published",
       per_page: per_page || 10,
       page: page || 1,
+      starts_with: `blogs/${language}`,
       ...withTag,
       ...sortBy
     });
@@ -38,8 +41,9 @@ export const fetchAllBlogs = async ({
   }
 };
 
-export const fetchBlogPage = async (slug: string) => {
+export const fetchBlogPage = async (slug: string, language: string) => {
   // Helper function to get error status
+
   const getErrorStatus = (error: unknown): number | undefined => {
     if (isStoryblokError(error)) {
       return error.status || error.response?.status;
@@ -66,7 +70,7 @@ export const fetchBlogPage = async (slug: string) => {
 
   const client = getStoryblokApi();
   try {
-    const response = await client.getStory(`blogs/${slug}`, {
+    const response = await client.getStory(`blogs/${language}/${slug}`, {
       version: process.env.NODE_ENV === "development" ? "draft" : "published",
     });
     return response.data.story;

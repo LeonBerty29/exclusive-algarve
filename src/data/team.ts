@@ -5,11 +5,13 @@ export const fetchTeam = async ({
   page,
   tag,
   sort_by,
+  language,
 }: {
   per_page?: number;
   page?: number;
   tag?: string;
   sort_by?: string;
+  language?: string;
 }) => {
   const client = getStoryblokApi();
   const withTag = tag ? { with_tag: tag } : {};
@@ -19,7 +21,7 @@ export const fetchTeam = async ({
     const requests = [
       client.getStories({
         content_type: "teamMembers",
-        starts_with: "team/algarve/",
+        starts_with: `team/algarve/${language}`,
         version: process.env.NODE_ENV === "development" ? "draft" : "published",
         per_page: per_page || 10,
         page: page || 1,
@@ -28,7 +30,7 @@ export const fetchTeam = async ({
       }),
       client.getStories({
         content_type: "teamMembers",
-        starts_with: "team/carvoeiro/",
+        starts_with: `team/carvoeiro/${language}`,
         version: process.env.NODE_ENV === "development" ? "draft" : "published",
         per_page: per_page || 10,
         page: page || 1,
@@ -37,7 +39,7 @@ export const fetchTeam = async ({
       }),
       client.getStories({
         content_type: "teamMembers",
-        starts_with: "team/lagos/",
+        starts_with: `team/lagos/${language}`,
         version: process.env.NODE_ENV === "development" ? "draft" : "published",
         per_page: per_page || 10,
         page: page || 1,
@@ -46,7 +48,7 @@ export const fetchTeam = async ({
       }),
       client.getStories({
         content_type: "teamMembers",
-        starts_with: "team/vilamoura/",
+        starts_with: `team/vilamoura/${language}`,
         version: process.env.NODE_ENV === "development" ? "draft" : "published",
         per_page: per_page || 10,
         page: page || 1,
@@ -55,7 +57,7 @@ export const fetchTeam = async ({
       }),
       client.getStories({
         content_type: "teamMembers",
-        starts_with: "team/belgium/",
+        starts_with: `team/belgium/${language}`,
         version: process.env.NODE_ENV === "development" ? "draft" : "published",
         per_page: per_page || 10,
         page: page || 1,
