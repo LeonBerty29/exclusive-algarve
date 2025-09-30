@@ -30,6 +30,7 @@ import {
 import { bookMeetingAction } from "@/actions/book-meeting";
 import { clientBookMeetingSchema } from "@/types/book-a-meeting";
 import { cn } from "@/lib/utils";
+import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 
 // Client-side form data interface
 interface FormData {
@@ -86,6 +87,8 @@ const BookMeetingDialog = ({ buttonStyle }: { buttonStyle?: string }) => {
 
   const [errors, setErrors] = useState<FormErrors>({});
   const [isDatePopoverOpen, setIsDatePopoverOpen] = useState(false);
+
+  const { executeRecaptcha } = useGoogleReCaptcha();
 
   // Get current page URL on mount
   useEffect(() => {
@@ -173,6 +176,17 @@ const BookMeetingDialog = ({ buttonStyle }: { buttonStyle?: string }) => {
       return;
     }
 
+    if (!executeRecaptcha) {
+      toast("ReCaptcha Error", {
+        description:
+          "ReCaptcha is not available. Please Refresh the page and try again.",
+        duration: 1500,
+      });
+      return;
+    }
+
+    const token = await executeRecaptcha("contactForm");
+
     const formDataToSubmit = new FormData();
     formDataToSubmit.append("first_name", formData.firstName);
     formDataToSubmit.append("last_name", formData.lastName);
@@ -196,6 +210,8 @@ const BookMeetingDialog = ({ buttonStyle }: { buttonStyle?: string }) => {
 
     formDataToSubmit.append("meeting_type", meetingType);
     formDataToSubmit.append("meeting_location", meetingLocation);
+    formDataToSubmit.append("recaptcha_token", token || "");
+
 
     startTransition(async () => {
       try {

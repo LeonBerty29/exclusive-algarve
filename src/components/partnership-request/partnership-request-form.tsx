@@ -37,6 +37,8 @@ import { cn } from "@/lib/utils";
 import * as z from "zod";
 import { PartnershipRequestFormAction } from "@/actions/partnership-requests";
 import { clientPartnershipRequestFormSchema } from "@/types/partnership-request";
+import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
+import { toast } from "sonner";
 
 export function PartnershipRequestForm() {
   const [isPending, startTransition] = useTransition();
@@ -45,6 +47,8 @@ export function PartnershipRequestForm() {
   const [error, setError] = useState<string | undefined>("");
   const [hasAttemptedSubmit, setHasAttemptedSubmit] = useState(false);
   const [isDatePopoverOpen, setIsDatePopoverOpen] = useState(false);
+
+  const { executeRecaptcha } = useGoogleReCaptcha();
 
   // Capture the source URL once when component mounts
   const sourceUrlRef = useRef<string>("");
@@ -87,9 +91,20 @@ export function PartnershipRequestForm() {
     mode: "onChange",
   });
 
-  const onSubmit = (
+  const onSubmit = async (
     values: z.infer<typeof clientPartnershipRequestFormSchema>
   ) => {
+    if (!executeRecaptcha) {
+      toast("ReCaptcha Error", {
+        description:
+          "ReCaptcha is not available. Please Refresh the page and try again.",
+        duration: 1500,
+      });
+      return;
+    }
+
+    const token = await executeRecaptcha("partnershipRequest");
+    
     setError("");
     setHasAttemptedSubmit(true);
 
@@ -116,6 +131,7 @@ export function PartnershipRequestForm() {
       values.interestedProperty || ""
     );
     formDataToSubmit.append("remarks", values.remarks || "");
+    formDataToSubmit.append("recaptcha_token", token || "");
 
     // Format date as YYYY-MM-DD if provided
     if (values.confirmedVisitDate) {

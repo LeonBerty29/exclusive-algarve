@@ -8,6 +8,7 @@ import { SessionProvider } from "next-auth/react";
 import { Toaster } from "@/components/ui/sonner";
 import { routing } from "@/i18n/routing";
 import { getMessages, setRequestLocale } from "next-intl/server";
+import RecaptchaProvider from "@/components/recaptcha-provider";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -35,7 +36,7 @@ export default async function RootLayout({
   //   return notFound();
   // }
 
-  setRequestLocale(locale)
+  setRequestLocale(locale);
 
   return (
     <StoryblokProvider>
@@ -43,9 +44,11 @@ export default async function RootLayout({
         <SessionProvider>
           <body className={`${poppins.className} antialiased`}>
             <NextIntlClientProvider messages={messages}>
-              <main className="w-full">{children}</main>
-              <Footer />
-              <Toaster />
+              <RecaptchaProvider>
+                <main className="w-full">{children}</main>
+                <Footer />
+                <Toaster />
+              </RecaptchaProvider>
             </NextIntlClientProvider>
           </body>
         </SessionProvider>

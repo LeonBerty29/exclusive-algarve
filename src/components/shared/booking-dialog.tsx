@@ -30,6 +30,7 @@ import {
 } from "@/components/ui/select";
 import { bookVisitAction } from "@/actions/book-visit";
 import { clientBookVisitSchema } from "@/types/book-a-visit";
+import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 
 // Client-side form data interface
 interface FormData {
@@ -77,6 +78,8 @@ const BookVisitDialog: React.FC = () => {
 
   const [errors, setErrors] = useState<FormErrors>({});
   const [isDatePopoverOpen, setIsDatePopoverOpen] = useState(false);
+
+  const { executeRecaptcha } = useGoogleReCaptcha();
 
   // Get current page URL on mount
   useEffect(() => {
@@ -153,6 +156,18 @@ const BookVisitDialog: React.FC = () => {
       return;
     }
 
+    if (!executeRecaptcha) {
+      toast("ReCaptcha Error", {
+        description:
+          "ReCaptcha is not available. Please Refresh the page and try again.",
+        duration: 1500,
+      });
+      return;
+    }
+
+    const token = await executeRecaptcha("contactForm");
+    // console.log("reCaptcha token: ", token);
+
     const formDataToSubmit = new FormData();
     formDataToSubmit.append("first_name", formData.first_name);
     formDataToSubmit.append("last_name", formData.last_name);
@@ -165,6 +180,7 @@ const BookVisitDialog: React.FC = () => {
     formDataToSubmit.append("visit_time", formData.visit_time);
     formDataToSubmit.append("additional_text", formData.additional_text);
     formDataToSubmit.append("source_url", formData.source_url);
+    formDataToSubmit.append("recaptcha_token", token || "");
 
     // Include acceptTerms if you need it on the server
     // formDataToSubmit.append("acceptTerms", formData.acceptTerms.toString());
