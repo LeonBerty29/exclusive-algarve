@@ -24,6 +24,8 @@ import * as z from "zod";
 import { contactFormAction } from "@/actions/contact-form";
 import { clientContactFormSchema } from "@/types/contact-form";
 import { CheckCircle } from "lucide-react";
+import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
+import { toast } from "sonner";
 
 interface ContactFormProps {
   theme?: "dark" | "light";
@@ -42,6 +44,8 @@ export function ContactForm({
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [error, setError] = useState<string | undefined>("");
+
+  const { executeRecaptcha } = useGoogleReCaptcha();
 
   // Capture the source URL once when component mounts
   const sourceUrlRef = useRef<string>("");
@@ -65,7 +69,20 @@ export function ContactForm({
     reValidateMode: "onChange",
   });
 
-  const onSubmit = (values: z.infer<typeof clientContactFormSchema>) => {
+  const onSubmit = async (values: z.infer<typeof clientContactFormSchema>) => {
+    if (!executeRecaptcha) {
+      toast("ReCaptcha Error", {
+        description:
+          "ReCaptcha is not available. Please Refresh the page and try again.",
+        duration: 1500,
+      });
+      return;
+    }
+
+    const token = await executeRecaptcha("contactForm");
+    // console.log("reCaptcha token: ", token);
+
+
     setError("");
 
     const formDataToSubmit = new FormData();
@@ -75,6 +92,7 @@ export function ContactForm({
     formDataToSubmit.append("email", values.email);
     formDataToSubmit.append("message", values.message || "");
     formDataToSubmit.append("source_url", values.sourceUrl || "");
+    formDataToSubmit.append("recaptcha_token", token || "");
 
     startTransition(async () => {
       try {
@@ -316,9 +334,7 @@ export function ContactForm({
           <div className="mt-8">
             <Button
               type="submit"
-              disabled={
-                isPending
-              }
+              disabled={isPending}
               className={cn(
                 "bg-primary hover:bg-primary/90 text-white font-medium py-5 px-14 rounded-none transition-colors disabled:opacity-50 disabled:cursor-not-allowed",
                 submitBtnStyling

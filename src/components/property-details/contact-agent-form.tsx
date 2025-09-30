@@ -18,6 +18,7 @@ import { ZodError, ZodIssue } from "zod";
 import { contactAgentAction } from "@/actions/contact-agent";
 import { clientContactAgentSchema } from "@/types/contact-agent";
 import { Property } from "@/types/property";
+import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 
 // Client-side form data interface
 interface FormData {
@@ -66,6 +67,8 @@ const ContactAgentForm = ({
   });
 
   const [errors, setErrors] = useState<FormErrors>({});
+
+  const { executeRecaptcha } = useGoogleReCaptcha();
 
   // Get current page URL on mount
   useEffect(() => {
@@ -122,6 +125,17 @@ const ContactAgentForm = ({
   const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
 
+    if (!executeRecaptcha) {
+      toast("ReCaptcha Error", {
+        description:
+          "ReCaptcha is not available. Please Refresh the page and try again.",
+        duration: 1500,
+      });
+      return;
+    }
+
+    const token = await executeRecaptcha("contactAgentForm");
+
     // Client-side validation first
     if (!validateClientForm()) {
       toast.error("Please fix the form errors before submitting");
@@ -139,6 +153,7 @@ const ContactAgentForm = ({
       formData.primaryContactChannel
     );
     formDataToSubmit.append("source_url", formData.sourceUrl);
+    formDataToSubmit.append("recaptcha_token", token || "");
 
     startTransition(async () => {
       try {
@@ -159,7 +174,7 @@ const ContactAgentForm = ({
             sourceUrl: formData.sourceUrl, // Keep the source URL
           });
           setErrors({});
-          if (onSuccess) onSuccess()
+          if (onSuccess) onSuccess();
         } else {
           // Handle server validation errors
           if (result.fieldErrors) {

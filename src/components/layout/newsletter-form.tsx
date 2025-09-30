@@ -23,6 +23,8 @@ import * as z from "zod";
 import { newsletterFormAction } from "@/actions/newsletter";
 import { clientNewsletterFormSchema } from "@/types/newsletter";
 import { CheckCircle } from "lucide-react";
+import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
+import { toast } from "sonner";
 
 interface NewsletterFormProps {
   className?: string;
@@ -33,6 +35,8 @@ export function NewsletterForm({ className = "" }: NewsletterFormProps) {
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [error, setError] = useState<string | undefined>("");
+
+  const { executeRecaptcha } = useGoogleReCaptcha();
 
   // Capture the source URL once when component mounts
   const source_urlRef = useRef<string>("");
@@ -53,12 +57,24 @@ export function NewsletterForm({ className = "" }: NewsletterFormProps) {
 
   // Get current page URL on mount
 
-  const onSubmit = (values: z.infer<typeof clientNewsletterFormSchema>) => {
+  const onSubmit = async(values: z.infer<typeof clientNewsletterFormSchema>) => {
+    if (!executeRecaptcha) {
+      toast("ReCaptcha Error", {
+        description:
+          "ReCaptcha is not available. Please Refresh the page and try again.",
+        duration: 1500,
+      });
+      return;
+    }
+
+    const token = await executeRecaptcha("contactForm");
+    
     setError("");
 
     const formDataToSubmit = new FormData();
     formDataToSubmit.append("email", values.email);
     formDataToSubmit.append("source_url", values.source_url || "");
+    formDataToSubmit.append("recaptcha_token", token || "");
 
     startTransition(async () => {
       try {

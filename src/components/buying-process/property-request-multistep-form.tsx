@@ -13,6 +13,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "../ui/button";
+import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
+import { toast } from "sonner";
 
 // Validation schemas for each step
 const stepOneSchema = z.object({
@@ -225,6 +227,8 @@ export const MultiStepPropertyForm = () => {
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [generalError, setGeneralError] = useState<string>("");
+
+  const { executeRecaptcha } = useGoogleReCaptcha();
 
   // Capture the source URL once when component mounts
   const sourceUrlRef = useRef<string>("");
@@ -458,7 +462,18 @@ export const MultiStepPropertyForm = () => {
     }
   };
 
-  const handleFinalSubmit = (): void => {
+  const handleFinalSubmit = async (): Promise<void> => {
+    if (!executeRecaptcha) {
+      toast("ReCaptcha Error", {
+        description:
+          "ReCaptcha is not available. Please Refresh the page and try again.",
+        duration: 1500,
+      });
+      return;
+    }
+
+    const token = await executeRecaptcha("propertyRequestForm");
+
     setGeneralError("");
 
     // Combine all form data
@@ -511,6 +526,7 @@ export const MultiStepPropertyForm = () => {
     );
     formDataToSubmit.append("source_url", combinedData.sourceUrl);
     formDataToSubmit.append("consent", combinedData.consent.toString());
+    formDataToSubmit.append("recaptcha_token", token || "");
 
     startTransition(async () => {
       try {

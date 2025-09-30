@@ -24,12 +24,16 @@ import * as z from "zod";
 import { messageFormAction } from "@/actions/message-us";
 import { clientMessageFormSchema } from "@/types/message-us";
 import { CheckCircle } from "lucide-react";
+import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
+import { toast } from "sonner";
 
 export function MessageForm() {
   const [isPending, startTransition] = useTransition();
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [error, setError] = useState<string | undefined>("");
+    const { executeRecaptcha } = useGoogleReCaptcha();
+  
 
   // Capture the source URL once when component mounts
   const sourceUrlRef = useRef<string>("");
@@ -51,7 +55,18 @@ export function MessageForm() {
     reValidateMode: "onChange",
   });
 
-  const onSubmit = (values: z.infer<typeof clientMessageFormSchema>) => {
+  const onSubmit = async (values: z.infer<typeof clientMessageFormSchema>) => {
+    if (!executeRecaptcha) {
+      toast("ReCaptcha Error", {
+        description:
+          "ReCaptcha is not available. Please Refresh the page and try again.",
+        duration: 1500,
+      });
+      return;
+    }
+
+    const token = await executeRecaptcha("messageUsForm");
+
     setError("");
 
     const formDataToSubmit = new FormData();
@@ -60,6 +75,7 @@ export function MessageForm() {
     formDataToSubmit.append("email", values.email);
     formDataToSubmit.append("message", values.message);
     formDataToSubmit.append("source_url", values.sourceUrl || "");
+    formDataToSubmit.append("recaptcha_token", token || "");
 
     startTransition(async () => {
       try {

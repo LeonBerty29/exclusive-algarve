@@ -35,6 +35,8 @@ export async function PartnershipRequestFormAction(
       source_url: (formData.get("source_url") as string) || undefined,
     };
 
+    const recaptchaToken = formData.get("recaptcha_token") as string;
+
     // Validate the data using Zod schema
     const validationResult = PartnershipFormSchema.safeParse(rawData);
 
@@ -52,6 +54,41 @@ export async function PartnershipRequestFormAction(
         success: false,
         message: "Please check the form for errors",
         fieldErrors,
+      };
+    }
+
+    if (!recaptchaToken) {
+      return {
+        success: false,
+        message: "ReCaptcha token is missing",
+      };
+    }
+
+    const secretKey = process.env.RECAPTCHA_SECRET_KEY;
+
+    const verificationResponse = await fetch(
+      `https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${recaptchaToken}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      }
+    );
+    const verification = await verificationResponse.json();
+
+    if (verification.success && verification.score > 0.5) {
+      console.log({ success: true, score: verification.score });
+    } else {
+      console.log({
+        success: false,
+        score: verification.score,
+        errorCodes: verification["error-codes"],
+      });
+      return {
+        success: false,
+        message:
+          "ReCaptcha verification failed. Please refresh the page and try again.",
       };
     }
 

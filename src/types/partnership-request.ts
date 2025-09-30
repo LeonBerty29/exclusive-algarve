@@ -49,11 +49,13 @@ export const PartnershipFormSchema = z.object({
 
   interested_property: z
     .string()
+    .min(1, "Interested property is required")
     .max(1000, "Interested property must be less than 1000 characters")
     .optional(),
 
   remarks: z
     .string()
+    .min(1, "Remarks is required")
     .max(1000, "Remarks must be less than 1000 characters")
     .optional(),
 
@@ -111,11 +113,13 @@ export const clientPartnershipRequestFormSchema = z.object({
 
   interestedProperty: z
     .string()
+    .min(1, "Interested property is required")
     .max(1000, "Interested property must be less than 1000 characters")
     .optional(),
 
   remarks: z
     .string()
+    .min(1, "Remarks is required")
     .max(1000, "Remarks must be less than 1000 characters")
     .optional(),
 
