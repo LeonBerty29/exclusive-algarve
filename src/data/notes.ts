@@ -122,7 +122,7 @@ async function apiRequest<T>(
 export const CreateNote = async (
   data: NoteType
 ): Promise<CreateNotesResponse> => {
-  const endpoint = `/client/notes`;
+  const endpoint = `/v1/client/notes`;
 
   const session = await auth();
   const token = session?.accessToken;
@@ -143,7 +143,7 @@ export const CreateNote = async (
 export const getNote = async (
   // token: string
 ): Promise<NotesResponse> => {
-  const endpoint = `/client/notes`;
+  const endpoint = `/v1/client/notes`;
 
   const session = await auth();
   const token = session?.accessToken;
@@ -162,7 +162,7 @@ export const RemoveFavorite = async (
   propertyId: number,
   token: string
 ): Promise<FavoritesResponse> => {
-  const endpoint = `/client/favorites/${propertyId}`;
+  const endpoint = `/v1/client/favorites/${propertyId}`;
 
   return apiRequest<FavoritesResponse>(
     endpoint,

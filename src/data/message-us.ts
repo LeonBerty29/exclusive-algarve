@@ -15,8 +15,9 @@ export async function submitMessageFormWithDetailedErrors(
   data: MessageFormRequest
 ): Promise<DetailedResult> {
   try {
+    const endpoint = "/v1/forms/message-us"
     const response = await fetch(
-      `${process.env.API_BASE_URL}/forms/message-us`,
+      `${process.env.API_BASE_URL}${endpoint}`,
       {
         method: "POST",
         headers: {

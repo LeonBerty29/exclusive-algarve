@@ -15,8 +15,9 @@ export async function submitContactFormWithDetailedErrors(
   data: ContactFormRequest
 ): Promise<DetailedResult> {
   try {
+    const endpoint = "/v1/forms/contact-us"
     const response = await fetch(
-      `${process.env.API_BASE_URL}/forms/contact-us`,
+      `${process.env.API_BASE_URL}${endpoint}`,
       {
         method: "POST",
         headers: {

@@ -28,7 +28,7 @@ export const updateProfile = async (
     const { first_name, last_name } = validatedFields.data;
 
   try {
-    const endpoint = `/user/update`;
+    const endpoint = `/v1/user/update`;
     const config: RequestInit = {
       method: "PUT",
       headers: {

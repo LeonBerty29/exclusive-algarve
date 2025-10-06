@@ -66,14 +66,14 @@ function buildQueryString(params: PropertySearchParams): string {
 export const getMetadata = cache(
   async (params?: PropertySearchParams): Promise<PropertyMetadata> => {
     const queryString = params ? buildQueryString(params) : "";
-    const endpoint = `/metadata${queryString}`;
+    const endpoint = `/v1/metadata${queryString}`;
 
     return apiRequest<PropertyMetadata>(endpoint);
   }
 );
 
 export const getRanges = cache(async (): Promise<Ranges> => {
-  const endpoint = `/metadata/ranges`;
+  const endpoint = `/v1/metadata/ranges`;
 
   return apiRequest<Ranges>(endpoint);
 });

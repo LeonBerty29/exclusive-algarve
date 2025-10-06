@@ -28,7 +28,7 @@ export const register = async (
   const newsletter = false;
 
   try {
-    const endpoint = `/client/register`;
+    const endpoint = `/v1/client/register`;
     const config: RequestInit = {
       method: "POST",
       headers: {

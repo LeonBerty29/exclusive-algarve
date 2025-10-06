@@ -15,8 +15,9 @@ export async function submitNewsletterFormWithDetailedErrors(
   data: NewsletterFormRequest
 ): Promise<DetailedResult> {
   try {
+    const endpoint = "/v1/forms/newsletter/subscribe";
     const response = await fetch(
-      `${process.env.API_BASE_URL}/forms/newsletter/subscribe`,
+      `${process.env.API_BASE_URL}${endpoint}`,
       {
         method: "POST",
         headers: {

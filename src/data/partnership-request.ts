@@ -15,8 +15,9 @@ export async function submitPartnershipRequestWithDetailedErrors(
   data: PartnershipRequestFormRequest
 ): Promise<DetailedResult> {
   try {
+    const endpoint = "/v1/forms/agent-partnership-request"
     const response = await fetch(
-      `${process.env.API_BASE_URL}/forms/agent-partnership-request`,
+      `${process.env.API_BASE_URL}${endpoint}`,
       {
         method: "POST",
         headers: {

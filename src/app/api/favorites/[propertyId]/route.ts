@@ -47,7 +47,7 @@ export async function DELETE(
       );
     }
 
-    const endpoint = `/client/favorites/${propertyId}`;
+    const endpoint = `/v1/client/favorites/${propertyId}`;
     const url = `${apiBaseUrl}${endpoint}`;
 
     const response = await fetch(url, {
