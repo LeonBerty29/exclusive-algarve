@@ -39,7 +39,7 @@ export const CardWrapper = ({
         )
       }
 
-      <CardFooter className="px-0">
+      <CardFooter className="px-0 border-t">
         <BackButton href={backButtonHref} label={backButtonLabel} />
       </CardFooter>
     </Card>

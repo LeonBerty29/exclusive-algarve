@@ -70,7 +70,7 @@ export async function bookVisitWithDetailedErrors(data: BookVisitRequest): Promi
   error?: string;
   validationErrors?: { [key: string]: string[] };
 }> {
-  const endpoint = "/forms/book-visit";
+  const endpoint = "/v1/forms/book-visit";
   try {
     const response = await fetch(`${process.env.API_BASE_URL}${endpoint}`, {
       method: 'POST',

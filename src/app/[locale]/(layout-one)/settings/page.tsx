@@ -18,7 +18,7 @@ const page = async () => {
   const accessToken = session?.accessToken;
 
   const userProfileResponse = await getUserProfile(accessToken);
-  const userProfile = userProfileResponse.client;
+  const userProfile = userProfileResponse.data.client;
   // console.log({ session });
 
   // console.log({ userProfile });

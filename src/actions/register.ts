@@ -28,7 +28,7 @@ export const register = async (
   const newsletter = false;
 
   try {
-    const endpoint = `/client/register`;
+    const endpoint = `/v1/auth/client/register`;
     const config: RequestInit = {
       method: "POST",
       headers: {
@@ -51,13 +51,15 @@ export const register = async (
     // console.log({response})
 
     if (!response.ok) {
-      const errorText = await response.text();
-      // console.log({ errorText });
+      const errorResponse = await response.json();
+      // console.log({ errorResponse });
       // console.log(response);
 
-      if (errorText || response.status === 422) {
+      if (errorResponse || response.status === 422) {
+        // const resJson = await response.json()
+        // console.log({resJson  })
         const error = {
-          message: "There was an error while creating the user",
+          message: errorResponse.message || "There was an error while creating the user",
           password: "",
           email: "",
           first_name: "",
@@ -65,10 +67,9 @@ export const register = async (
           password_confirmation: "",
         };
 
-        // console.log({errorText})
+        const errorObject = errorResponse.errors;
 
-        const responseErros = JSON.parse(errorText);
-        const errorObject = responseErros.errors;
+        // console.log({errorObject})
 
         if (errorObject.password) {
           error.password = errorObject.password[0];
@@ -90,13 +91,15 @@ export const register = async (
           error.password_confirmation = errorObject.password_confirmation[0];
         }
 
+        // console.log({error})
+
         return {
           error,
         };
       }
 
       throw new Error(
-        `API Error: ${response.status} ${response.statusText} - ${errorText}`,
+        `API Error: ${response.status} ${response.statusText} - ${errorResponse}`,
         {
           cause: response,
         }

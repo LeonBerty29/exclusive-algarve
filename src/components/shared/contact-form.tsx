@@ -79,9 +79,7 @@ export function ContactForm({
       return;
     }
 
-    const token = await executeRecaptcha("contactForm");
     // console.log("reCaptcha token: ", token);
-
 
     setError("");
 
@@ -92,9 +90,11 @@ export function ContactForm({
     formDataToSubmit.append("email", values.email);
     formDataToSubmit.append("message", values.message || "");
     formDataToSubmit.append("source_url", values.sourceUrl || "");
-    formDataToSubmit.append("recaptcha_token", token || "");
 
     startTransition(async () => {
+      const token = await executeRecaptcha("contactForm");
+      formDataToSubmit.append("recaptcha_token", token || "");
+
       try {
         const result = await contactFormAction(formDataToSubmit);
 

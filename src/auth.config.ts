@@ -23,33 +23,51 @@ export default {
 
           const response = await loginUser(loginData);
 
+          // console.log({ loginResponse: response });
+          // console.log({ data: response.data });
+
           // console.log({ response });
 
-          if (response.client && response.token) {
+          if (response.success && response.data?.client && response.data?.token) {
             const user = {
-              id: response.client.id.toString(),
-              email: response.client.email,
-              name: `${response.client.first_name} ${response.client.last_name}`,
-              firstName: response.client.first_name,
-              lastName: response.client.last_name,
-              accessToken: response.token,
-              reference: response.client.reference,
+              id: response.data.client.id.toString(),
+              email: response.data.client.email,
+              name: `${response.data.client.first_name} ${response.data.client.last_name}`,
+              firstName: response.data.client.first_name,
+              lastName: response.data.client.last_name,
+              accessToken: response.data.token,
+              reference: response.data.client.reference,
               // user: {
-              //   id: response.client.id.toString(),
-              //   email: response.client.email,
-              //   name: `${response.client.first_name} ${response.client.last_name}`,
-              //   firstName: response.client.first_name,
-              //   lastName: response.client.last_name,
-              //   reference: response.client.reference,
+              //   id: response.data.client.id.toString(),
+              //   email: response.data.client.email,
+              //   name: `${response.data.client.first_name} ${response.data.client.last_name}`,
+              //   firstName: response.data.client.first_name,
+              //   lastName: response.data.client.last_name,
+              //   reference: response.data.client.reference,
               // },
             };
 
+            // console.log({ userInAuthConfig: user });
+
             return user;
+          }
+
+          if (!response.success) {
+            throw new Error(response.message || "An Error occured", {
+              cause: {
+                response: response
+              }
+            });
           }
 
           return null;
         } catch (error) {
           console.error("Auth error:", error);
+          if (error instanceof Error) {
+            throw new Error(error.message || "Authentication failed", {
+              cause: error.cause
+            });
+          }
           return null;
         }
       },

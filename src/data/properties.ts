@@ -103,7 +103,7 @@ export const getProperties = cache(
   async (params: PropertySearchParams = {}): Promise<PropertyListResponse> => {
     const queryString = buildQueryString(params);
     const locale = await getLocale();
-    const endpoint = `/properties${queryString}&language=${locale}`;
+    const endpoint = `/v1/properties${queryString}&language=${locale}`;
 
     return apiRequest<PropertyListResponse>(endpoint);
   }
@@ -134,7 +134,7 @@ export async function getPropertyById(
   const locale = await getLocale();
 
   const queryString = buildQueryString(params);
-  const endpoint = `/properties/${id}${queryString}&language=${locale}`;
+  const endpoint = `/v1/properties/${id}${queryString}&language=${locale}`;
 
   return apiRequest<Property>(endpoint);
 }
@@ -152,7 +152,7 @@ export async function getPropertyBySlug(
   const locale = await getLocale();
 
   const queryString = buildQueryString(params);
-  const endpoint = `/properties/${slug}${queryString}&language=${locale}`;
+  const endpoint = `/v1/properties/${slug}${queryString}&language=${locale}`;
 
   return apiRequest<Property>(endpoint);
 }

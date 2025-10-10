@@ -4,6 +4,12 @@ import { CardWrapper } from "./card-wrapper";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useState, useTransition } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 import {
   Form,
@@ -24,8 +30,9 @@ import { FormSuccess } from "./form-success";
 // import { signIn } from "@/auth";
 import { login } from "@/actions/login";
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
-import { useRouter } from "@/i18n/navigation";
+import { Link, useRouter } from "@/i18n/navigation";
 import { useSession } from "next-auth/react";
+import { PiWarningCircle } from "react-icons/pi";
 // import { toast } from "sonner";
 
 export const LoginForm = ({
@@ -35,6 +42,15 @@ export const LoginForm = ({
 }) => {
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
+  const [responseError, setResponseError] = useState<{
+    message: string;
+    responseStatus: number | undefined;
+    email: string;
+  }>({
+    message: "",
+    responseStatus: undefined,
+    email: "",
+  });
 
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
@@ -58,7 +74,8 @@ export const LoginForm = ({
       login(
         values
         //  callbackUrl
-      ).then(async(data) => {
+      ).then(async (data) => {
+        // console.log({ dataResponse: data });
         setError(data?.error);
         setSuccess(data?.success);
 
@@ -69,11 +86,19 @@ export const LoginForm = ({
           await update();
           router.refresh();
 
-
           // @ts-expect-error -- Typescript will validate only known `params`
           // are used in combination with a given `pathname`. Since the two will
           // always match for the current route, we can skip runtime checks
           router.push(callbackUrl || DEFAULT_LOGIN_REDIRECT);
+        }
+
+        if (data.response?.responseStatus === 403) {
+          setResponseError({
+            // ...responseError,
+            message: data.error as string,
+            responseStatus: data.response?.responseStatus,
+            email: values.email,
+          });
         }
       });
     });
@@ -83,11 +108,11 @@ export const LoginForm = ({
     <>
       <CardWrapper
         headerLabel="Welcome back"
-        backButtonLabel="Don't have an account?"
+        backButtonLabel="Create new account"
         backButtonHref={`/register${
           callbackUrl ? `?callbackUrl=${callbackUrl}` : ""
         }`}
-        showSocial
+        showSocial={false}
       >
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -137,9 +162,59 @@ export const LoginForm = ({
             <Button type="submit" className="w-full" disabled={isPending}>
               Login
             </Button>
+
+            <Button
+              type="button"
+              variant={"ghost"}
+              className="flex  mx-auto bg-transparent hover:bg-transparent hover:text-primary text-primary hover:underline"
+              asChild
+            >
+              <Link href="/account/forgot-password">Forgot Password?</Link>
+            </Button>
           </form>
         </Form>
       </CardWrapper>
+
+      {/* Error Dialog - Token expired / 410 response */}
+      <Dialog open={responseError.responseStatus == 403}>
+        <DialogContent
+          showCloseButton={false}
+          className="sm:max-w-md rounded-2xl"
+        >
+          <DialogHeader className="text-center">
+            <div className="flex justify-center mb-4">
+              <PiWarningCircle className="h-16 w-16 text-orange-500" />
+            </div>
+            <DialogTitle className="text-xl text-center">Alert</DialogTitle>
+          </DialogHeader>
+
+          <div className="text-center space-y-4">
+            <p className="text-gray-600">{responseError.message}</p>
+          </div>
+
+          <div className="flex gap-4 justify-center pt-4 mb-2">
+            <Button className="bg-gray-200 text-black hover:bg-gray-300 transition-colors">
+              <Link href={"/"}>Home</Link>
+            </Button>
+            <Button
+              className=" bg-primary text-white hover:bg-black transition-colors"
+              asChild
+            >
+              <Link
+                href={{
+                  pathname: "/account/resend-activation",
+                  query: {
+                    email: responseError.email,
+                    callbackUrl: callbackUrl,
+                  },
+                }}
+              >
+                Activate account
+              </Link>
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </>
   );
 };

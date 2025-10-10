@@ -126,7 +126,7 @@ export const getTestimonials = async (
   }
 
   const queryString = queryParams.toString();
-  const endpoint = `/cms/testimonials${queryString ? `?${queryString}` : ""}`;
+  const endpoint = `/v1/cms/testimonials${queryString ? `?${queryString}` : ""}`;
 
   return apiRequest<TestimonialsResponse>(endpoint, {
     method: "GET",

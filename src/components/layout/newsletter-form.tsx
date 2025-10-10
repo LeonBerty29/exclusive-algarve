@@ -57,7 +57,9 @@ export function NewsletterForm({ className = "" }: NewsletterFormProps) {
 
   // Get current page URL on mount
 
-  const onSubmit = async(values: z.infer<typeof clientNewsletterFormSchema>) => {
+  const onSubmit = async (
+    values: z.infer<typeof clientNewsletterFormSchema>
+  ) => {
     if (!executeRecaptcha) {
       toast("ReCaptcha Error", {
         description:
@@ -67,16 +69,15 @@ export function NewsletterForm({ className = "" }: NewsletterFormProps) {
       return;
     }
 
-    const token = await executeRecaptcha("contactForm");
-    
     setError("");
 
     const formDataToSubmit = new FormData();
     formDataToSubmit.append("email", values.email);
     formDataToSubmit.append("source_url", values.source_url || "");
-    formDataToSubmit.append("recaptcha_token", token || "");
 
     startTransition(async () => {
+      const token = await executeRecaptcha("contactForm");
+      formDataToSubmit.append("recaptcha_token", token || "");
       try {
         const result = await newsletterFormAction(formDataToSubmit);
 

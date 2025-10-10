@@ -2,36 +2,29 @@
 "use server";
 
 import { ZodIssue } from "zod";
-import { contactAgentSchema } from "@/types/contact-agent";
-import { contactAgentWithDetailedErrors } from "@/data/contact-agent";
+import { ForgotPasswordSchema } from "@/schema/schema.forgot-password";
+import { forgotPassword } from "@/data/user";
 
-export interface ContactAgentActionResult {
+export interface ForgotPasswordResult {
   success: boolean;
   message?: string;
   errors?: { [key: string]: string[] };
   fieldErrors?: { [key: string]: string };
 }
 
-export async function contactAgentAction(
+export async function forgotPasswordAction(
   formData: FormData
-): Promise<ContactAgentActionResult> {
+): Promise<ForgotPasswordResult> {
   try {
     // Extract data from FormData
     const rawData = {
-      first_name: formData.get("first_name") as string,
-      last_name: formData.get("last_name") as string,
-      phone: formData.get("phone") as string,
       email: formData.get("email") as string,
-      message: (formData.get("message") as string) || undefined,
-      primary_contact_channel:
-        (formData.get("primary_contact_channel") as string) || undefined,
-      source_url: (formData.get("source_url") as string) || undefined,
     };
 
     const recaptchaToken = formData.get("recaptcha_token") as string;
 
     // Validate the data using Zod schema
-    const validationResult = contactAgentSchema.safeParse(rawData);
+    const validationResult = ForgotPasswordSchema.safeParse(rawData);
 
     if (!validationResult.success) {
       // Convert Zod errors to field errors with proper typing
@@ -86,22 +79,24 @@ export async function contactAgentAction(
     }
 
     // Call the API
-    const result = await contactAgentWithDetailedErrors(validationResult.data);
+    const result = await forgotPassword(validationResult.data);
+
+    // console.log({result})
 
     if (!result.success) {
       return {
         success: false,
-        message: result.error || "Failed to submit request",
-        errors: result.validationErrors,
+        message: result.message || "Failed to submit request",
+        errors: result.errors,
       };
     }
 
     return {
       success: true,
-      message: result.data?.message || "Request submitted successfully!",
+      message: result.message || "Request submitted successfully! Check your email",
     };
   } catch (error) {
-    console.error("Contact agent action error:", error);
+    console.error("Error in forgot password action:", error);
 
     return {
       success: false,

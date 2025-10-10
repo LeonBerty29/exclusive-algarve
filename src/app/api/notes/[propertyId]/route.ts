@@ -42,7 +42,7 @@ export async function PUT(
       );
     }
 
-    const endpoint = `/client/notes/${propertyId}`;
+    const endpoint = `/v1/client/notes/${propertyId}`;
     const url = `${apiBaseUrl}${endpoint}`;
 
     const response = await fetch(url, {
@@ -150,7 +150,7 @@ export async function DELETE(
       );
     }
 
-    const endpoint = `/client/notes/${propertyId}`;
+    const endpoint = `/v1/client/notes/${propertyId}`;
     const url = `${apiBaseUrl}${endpoint}`;
 
     const response = await fetch(url, {

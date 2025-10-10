@@ -13,7 +13,7 @@ export async function contactAgentWithDetailedErrors(
   error?: string;
   validationErrors?: { [key: string]: string[] };
 }> {
-  const endpoint = "/forms/request-information";
+  const endpoint = "/v1/forms/request-information";
   try {
     const response = await fetch(`${process.env.API_BASE_URL}${endpoint}`, {
       method: "POST",

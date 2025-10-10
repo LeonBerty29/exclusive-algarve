@@ -2,36 +2,33 @@
 "use server";
 
 import { ZodIssue } from "zod";
-import { contactAgentSchema } from "@/types/contact-agent";
-import { contactAgentWithDetailedErrors } from "@/data/contact-agent";
+import { ResetPasswordFormSchema } from "@/schema/schema.reset-password";
+import { resetPassword } from "@/data/user";
 
-export interface ContactAgentActionResult {
+export interface ForgotPasswordResult {
   success: boolean;
   message?: string;
   errors?: { [key: string]: string[] };
   fieldErrors?: { [key: string]: string };
+  responseStatus?: number
 }
 
-export async function contactAgentAction(
+export async function ResetPasswordAction(
   formData: FormData
-): Promise<ContactAgentActionResult> {
+): Promise<ForgotPasswordResult> {
   try {
     // Extract data from FormData
     const rawData = {
-      first_name: formData.get("first_name") as string,
-      last_name: formData.get("last_name") as string,
-      phone: formData.get("phone") as string,
       email: formData.get("email") as string,
-      message: (formData.get("message") as string) || undefined,
-      primary_contact_channel:
-        (formData.get("primary_contact_channel") as string) || undefined,
-      source_url: (formData.get("source_url") as string) || undefined,
+      password: formData.get("password") as string,
+      password_confirmation: formData.get("password_confirmation") as string,
+      token: formData.get("token") as string
     };
 
     const recaptchaToken = formData.get("recaptcha_token") as string;
 
     // Validate the data using Zod schema
-    const validationResult = contactAgentSchema.safeParse(rawData);
+    const validationResult = ResetPasswordFormSchema.safeParse(rawData);
 
     if (!validationResult.success) {
       // Convert Zod errors to field errors with proper typing
@@ -71,13 +68,13 @@ export async function contactAgentAction(
     const verification = await verificationResponse.json();
 
     if (verification.success && verification.score > 0.5) {
-      // console.log({ success: true, score: verification.score });
+    //   console.log({ success: true, score: verification.score });
     } else {
-      // console.log({
-      //   success: false,
-      //   score: verification.score,
-      //   errorCodes: verification["error-codes"],
-      // });
+    //   console.log({
+    //     success: false,
+    //     score: verification.score,
+    //     errorCodes: verification["error-codes"],
+    //   });
       return {
         success: false,
         message:
@@ -86,22 +83,25 @@ export async function contactAgentAction(
     }
 
     // Call the API
-    const result = await contactAgentWithDetailedErrors(validationResult.data);
+    const result = await resetPassword(validationResult.data);
+
+    // console.log({result})
 
     if (!result.success) {
       return {
         success: false,
-        message: result.error || "Failed to submit request",
-        errors: result.validationErrors,
+        message: result.message || "Failed to submit request",
+        errors: result.errors,
+        responseStatus: result.responseStatus
       };
     }
 
     return {
       success: true,
-      message: result.data?.message || "Request submitted successfully!",
+      message: result.message || "Password Reset is sucessful. You can now login with your new password",
     };
   } catch (error) {
-    console.error("Contact agent action error:", error);
+    console.error("Error in reset password action:", error);
 
     return {
       success: false,

@@ -14,9 +14,10 @@ import {
   export async function submitPropertyFormWithDetailedErrors(
     data: PropertyFormRequest
   ): Promise<DetailedResult> {
+    const endpoint = '/v1/forms/request-for-property'
     try {
       const response = await fetch(
-        `${process.env.API_BASE_URL}/forms/request-for-property`,
+        `${process.env.API_BASE_URL}${endpoint}`,
         {
           method: "POST",
           headers: {

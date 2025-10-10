@@ -121,7 +121,7 @@ export const AddToFavorites = async (
   propertyId: number,
   token: string
 ): Promise<FavoritesResponse> => {
-  const endpoint = `/client/favorites?property_id=${propertyId}`;
+  const endpoint = `/v1/client/favorites?property_id=${propertyId}`;
 
   return apiRequest<FavoritesResponse>(
     endpoint,
@@ -136,7 +136,7 @@ export const AddToFavorites = async (
 export const getFavorites = async (
   token: string
 ): Promise<FavoritesResponse> => {
-  const endpoint = `/client/favorites`;
+  const endpoint = `/v1/client/favorites`;
 
   return apiRequest<FavoritesResponse>(
     endpoint,
@@ -151,7 +151,7 @@ export const RemoveFavorite = async (
   propertyId: number,
   token: string
 ): Promise<FavoritesResponse> => {
-  const endpoint = `/client/favorites/${propertyId}`;
+  const endpoint = `/v1/client/favorites/${propertyId}`;
 
   return apiRequest<FavoritesResponse>(
     endpoint,

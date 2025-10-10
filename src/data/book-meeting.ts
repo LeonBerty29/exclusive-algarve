@@ -12,7 +12,7 @@ export async function bookMeetingWithDetailedErrors(
   error?: string;
   validationErrors?: { [key: string]: string[] };
 }> {
-  const endpoint = "/forms/book-meeting";
+  const endpoint = "/v1/forms/book-meeting";
   try {
     const response = await fetch(`${process.env.API_BASE_URL}${endpoint}`, {
       method: "POST",

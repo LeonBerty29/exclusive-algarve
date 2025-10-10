@@ -472,8 +472,6 @@ export const MultiStepPropertyForm = () => {
       return;
     }
 
-    const token = await executeRecaptcha("propertyRequestForm");
-
     setGeneralError("");
 
     // Combine all form data
@@ -526,9 +524,11 @@ export const MultiStepPropertyForm = () => {
     );
     formDataToSubmit.append("source_url", combinedData.sourceUrl);
     formDataToSubmit.append("consent", combinedData.consent.toString());
-    formDataToSubmit.append("recaptcha_token", token || "");
 
     startTransition(async () => {
+      const token = await executeRecaptcha("propertyRequestForm");
+      formDataToSubmit.append("recaptcha_token", token || "");
+
       try {
         const result = await propertyFormAction(formDataToSubmit);
 

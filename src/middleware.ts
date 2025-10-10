@@ -144,7 +144,7 @@ export default auth((req) => {
     }
 
     const loginUrl = new URL(`/${locale}/login`, nextUrl.origin);
-    loginUrl.searchParams.set("callbackUrl", nextUrl.pathname);
+    loginUrl.searchParams.set("callbackUrl", pathnameWithoutLocale);
     return NextResponse.redirect(loginUrl);
   }
 
