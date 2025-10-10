@@ -1,13 +1,6 @@
 "use client";
 import React from "react"; // ReactNode
 import { Card, CardContent } from "@/components/ui/card";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
 // import { GiWaterDrop } from "react-icons/gi";
 // import { FaHotTub } from "react-icons/fa";
 // import { FcElectricity } from "react-icons/fc";
@@ -171,19 +164,12 @@ export const PropertyFeatures = ({
         </p>
         {additionalFeatures.length > 0 ? (
           <div className="w-full max-w-full">
-            <Carousel
-              opts={{
-                align: "start",
-              }}
-              className="w-full"
+            <div
+              className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
             >
-              <CarouselContent>
                 {additionalFeatures.map((additionalFeature, index) => (
-                  <CarouselItem
-                    key={`additionalFeature--${index}`}
-                    className="w-auto sm:basis-1/2 xl:basis-1/3"
-                  >
-                    <div className="p-1 w-full bg-gray-100 h-full">
+                  
+                    <div className="p-1 w-full bg-gray-100 h-full" key={`additionalFeature--${index}`}>
                       <Card className="border-none rounded-none shadow-none bg-transparent w-full">
                         <CardContent className="p-0">
                           <div className="text-center flex flex-col gap-1.5 items-center">
@@ -213,12 +199,8 @@ export const PropertyFeatures = ({
                         </CardContent>
                       </Card>
                     </div>
-                  </CarouselItem>
                 ))}
-              </CarouselContent>
-              <CarouselPrevious className="rounded-none" hideOnDisable={true} />
-              <CarouselNext className="rounded-none" hideOnDisable={true} />
-            </Carousel>
+            </div>
           </div>
         ) : (
           <p className="text-sm text-gray-500">
