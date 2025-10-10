@@ -1,13 +1,6 @@
 "use client";
 import React from "react"; // ReactNode
 import { Card, CardContent } from "@/components/ui/card";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
 // import { GiWaterDrop } from "react-icons/gi";
 // import { FaHotTub } from "react-icons/fa";
 // import { FcElectricity } from "react-icons/fc";
@@ -72,32 +65,32 @@ export const PropertyFeatures = ({
   // );
 
   // Static amenities - you can expand this based on your needs
-  const amenities: Amenity[] = [
-    {
-      name: "Wifi",
-      icon: Wifi,
-    },
-    {
-      name: "Parking space",
-      icon: LuCircleParking,
-    },
-    {
-      name: "Security cameras",
-      icon: BsCameraVideo,
-    },
-    {
-      name: "Pets allowed",
-      icon: MdOutlinePets,
-    },
-    {
-      name: "Laundry",
-      icon: PiWashingMachineThin,
-    },
-    {
-      name: "Air conditioner",
-      icon: TbAirConditioningDisabled,
-    },
-  ];
+  // const amenities: Amenity[] = [
+  //   {
+  //     name: "Wifi",
+  //     icon: Wifi,
+  //   },
+  //   {
+  //     name: "Parking space",
+  //     icon: LuCircleParking,
+  //   },
+  //   {
+  //     name: "Security cameras",
+  //     icon: BsCameraVideo,
+  //   },
+  //   {
+  //     name: "Pets allowed",
+  //     icon: MdOutlinePets,
+  //   },
+  //   {
+  //     name: "Laundry",
+  //     icon: PiWashingMachineThin,
+  //   },
+  //   {
+  //     name: "Air conditioner",
+  //     icon: TbAirConditioningDisabled,
+  //   },
+  // ];
 
   // Find specific amenities from additional features
   const extractedAmenities: Amenity[] = [];
@@ -139,15 +132,15 @@ export const PropertyFeatures = ({
   });
 
   // Combine extracted amenities with default ones, removing duplicates
-  const combinedAmenities = [...new Set([...extractedAmenities, ...amenities])];
+  // const combinedAmenities = [...new Set([...extractedAmenities, ...amenities])];
 
-  const chunkArray = (arr: Amenity[], size: number) => {
-    return Array.from({ length: Math.ceil(arr.length / size) }, (_, i) =>
-      arr.slice(i * size, i * size + size)
-    );
-  };
+  // const chunkArray = (arr: Amenity[], size: number) => {
+  //   return Array.from({ length: Math.ceil(arr.length / size) }, (_, i) =>
+  //     arr.slice(i * size, i * size + size)
+  //   );
+  // };
 
-  const chunkArrayOfAmenities = chunkArray(combinedAmenities, 4);
+  // const chunkArrayOfAmenities = chunkArray(combinedAmenities, 4);
 
   const getIcon = (icon: string) => {
     // console.log({ icon });
@@ -171,19 +164,12 @@ export const PropertyFeatures = ({
         </p>
         {additionalFeatures.length > 0 ? (
           <div className="w-full max-w-full">
-            <Carousel
-              opts={{
-                align: "start",
-              }}
-              className="w-full"
+            <div
+              className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
             >
-              <CarouselContent>
                 {additionalFeatures.map((additionalFeature, index) => (
-                  <CarouselItem
-                    key={`additionalFeature--${index}`}
-                    className="w-auto sm:basis-1/2 xl:basis-1/3"
-                  >
-                    <div className="p-1 w-full bg-gray-100 h-full">
+                  
+                    <div className="p-1 w-full bg-gray-100 h-full" key={`additionalFeature--${index}`}>
                       <Card className="border-none rounded-none shadow-none bg-transparent w-full">
                         <CardContent className="p-0">
                           <div className="text-center flex flex-col gap-1.5 items-center">
@@ -213,12 +199,8 @@ export const PropertyFeatures = ({
                         </CardContent>
                       </Card>
                     </div>
-                  </CarouselItem>
                 ))}
-              </CarouselContent>
-              <CarouselPrevious className="rounded-none" hideOnDisable={true} />
-              <CarouselNext className="rounded-none" hideOnDisable={true} />
-            </Carousel>
+            </div>
           </div>
         ) : (
           <p className="text-sm text-gray-500">
@@ -227,7 +209,7 @@ export const PropertyFeatures = ({
         )}
       </section>
 
-      <section>
+      {/* <section>
         <p className="text-base font-bold text-primary mb-4">AMENITIES</p>
 
         {chunkArrayOfAmenities.length > 0 ? (
@@ -260,7 +242,7 @@ export const PropertyFeatures = ({
         ) : (
           <p className="text-sm text-gray-500">No amenities available.</p>
         )}
-      </section>
+      </section> */}
     </div>
   );
 };
