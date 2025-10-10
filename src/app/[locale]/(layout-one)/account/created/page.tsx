@@ -74,10 +74,7 @@ const page = async (props: Props) => {
         >
           <Link
             href={{
-              pathname:
-                routing.pathnames["/account/resend-activation"][
-                  locale as keyof (typeof routing.pathnames)["/account/resend-activation"]
-                ],
+              pathname:"/account/resend-activation",
               query: {
                 email,
                 callbackUrl,

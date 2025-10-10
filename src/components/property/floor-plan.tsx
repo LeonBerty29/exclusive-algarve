@@ -29,9 +29,11 @@ export const FloorPlanTab = ({
     document.body.removeChild(link);
   };
 
+  console.log({floorPlans})
+
   return (
     <div>
-      {floorPlans.length > 1 && (
+      {floorPlans.length > 0 && (
         <div className="px-3 relative w-full mb-6">
           <Carousel className="w-full">
             <CarouselContent>

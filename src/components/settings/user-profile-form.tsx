@@ -33,6 +33,7 @@ interface UserProfileFormProps {
     firstName?: string;
     lastName?: string;
     phoneNumber?: string | null;
+    newsletter?: boolean;
   } | null;
   accessToken: string | undefined;
   onSuccess?: () => void;
@@ -50,6 +51,7 @@ export function UserProfileForm({
       first_name: initialData?.firstName || "",
       last_name: initialData?.lastName || "",
       phone_number: initialData?.phoneNumber || "",
+      newsletter: initialData?.newsletter || false,
     },
   });
 
