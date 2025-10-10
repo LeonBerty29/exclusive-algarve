@@ -134,8 +134,6 @@ const ContactAgentForm = ({
       return;
     }
 
-    const token = await executeRecaptcha("contactAgentForm");
-
     // Client-side validation first
     if (!validateClientForm()) {
       toast.error("Please fix the form errors before submitting");
@@ -153,9 +151,11 @@ const ContactAgentForm = ({
       formData.primaryContactChannel
     );
     formDataToSubmit.append("source_url", formData.sourceUrl);
-    formDataToSubmit.append("recaptcha_token", token || "");
 
     startTransition(async () => {
+      const token = await executeRecaptcha("contactAgentForm");
+      formDataToSubmit.append("recaptcha_token", token || "");
+
       try {
         const result = await contactAgentAction(formDataToSubmit);
 

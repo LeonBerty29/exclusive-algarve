@@ -19,11 +19,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       // Check if token is still valid by making a test request
       if (token.accessToken) {
         try {
+          // console.log({ accessTokenInAuthTs: token.accessToken });
           const response = await getUserProfile(token.accessToken as string);
 
           if (response) {
             // Update user data from the me endpoint
-            const userData = response;
+            const userData = response.data;
             token.user = {
               ...token.user,
               id: userData.client.id.toString(),

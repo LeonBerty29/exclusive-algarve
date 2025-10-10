@@ -32,8 +32,7 @@ export function MessageForm() {
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [error, setError] = useState<string | undefined>("");
-    const { executeRecaptcha } = useGoogleReCaptcha();
-  
+  const { executeRecaptcha } = useGoogleReCaptcha();
 
   // Capture the source URL once when component mounts
   const sourceUrlRef = useRef<string>("");
@@ -65,8 +64,6 @@ export function MessageForm() {
       return;
     }
 
-    const token = await executeRecaptcha("messageUsForm");
-
     setError("");
 
     const formDataToSubmit = new FormData();
@@ -75,9 +72,11 @@ export function MessageForm() {
     formDataToSubmit.append("email", values.email);
     formDataToSubmit.append("message", values.message);
     formDataToSubmit.append("source_url", values.sourceUrl || "");
-    formDataToSubmit.append("recaptcha_token", token || "");
 
     startTransition(async () => {
+      const token = await executeRecaptcha("messageUsForm");
+      formDataToSubmit.append("recaptcha_token", token || "");
+
       try {
         const result = await messageFormAction(formDataToSubmit);
 

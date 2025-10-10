@@ -1,27 +1,22 @@
-"use client"
+"use client";
 
 import { Link } from "@/i18n/navigation";
-import { Button } from "../ui/button"
+import { Button } from "../ui/button";
 
 interface BackButtonProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   href: string | any;
-  label: string
+  label: string;
 }
 
-export const BackButton = ({
-  href,
-  label
-}: BackButtonProps) => {
+export const BackButton = ({ href, label }: BackButtonProps) => {
   return (
     <Button
-      variant="link"
-      className="font-normal w-full"
+      variant="default"
+      className="font-normal flex mx-auto border md:px-10 bg-gray-200 text-black hover:bg-black hover:text-white transition-colors"
       size="sm"
     >
-      <Link href={href}>
-        {label}
-      </Link>
+      <Link href={href}>{label}</Link>
     </Button>
-  )
-}
+  );
+};

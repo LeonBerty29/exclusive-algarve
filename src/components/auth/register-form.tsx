@@ -21,10 +21,11 @@ import { Button } from "../ui/button";
 import { FormError } from "./form-error";
 import { FormSuccess } from "./form-success";
 import { register } from "@/actions/register";
-import { signIn } from "next-auth/react";
-import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
+// import { signIn } from "next-auth/react";
+// import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 import { AuthError } from "next-auth";
 import { toast } from "sonner";
+import { useRouter } from "@/i18n/navigation";
 
 type ErrorType = {
   message: string;
@@ -51,6 +52,8 @@ export const RegisterForm = ({
   const [success, setSuccess] = useState<string | undefined>("");
 
   const [isPending, startTransition] = useTransition();
+
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof RegisterSchema>>({
     resolver: zodResolver(RegisterSchema),
@@ -81,13 +84,22 @@ export const RegisterForm = ({
 
         if (data.success) {
           try {
-            signIn("credentials", {
-              email: values.email,
-              password: values.password,
-              redirectTo: callbackUrl || DEFAULT_LOGIN_REDIRECT,
-            });
+            // signIn("credentials", {
+            //   email: values.email,
+            //   password: values.password,
+            //   redirectTo: callbackUrl || DEFAULT_LOGIN_REDIRECT,
+            // });
 
-            return { success: "Login successful!" };
+            // return { success: "Login successful!" };
+
+            toast.success("User successfully created!");
+            router.push({
+              pathname: "/account/created",
+              query: {
+                email: values.email,
+                callbackUrl: callbackUrl,
+              },
+            });
           } catch (error) {
             if (error instanceof AuthError) {
               // switch (error.type) {
@@ -100,12 +112,10 @@ export const RegisterForm = ({
               //     };
               // }
 
-              toast.error(
-                "User successfully created, but an error occured while signing you in, Try to sign in"
-              );
+              toast.error("An unexpected Error occured");
             }
 
-            console.log(error);
+            // console.log(error);
 
             // throw error;
           }
@@ -120,7 +130,7 @@ export const RegisterForm = ({
         headerLabel="Create an account"
         backButtonLabel="Alreay have an account?"
         backButtonHref="/login"
-        showSocial
+        showSocial={false}
       >
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">

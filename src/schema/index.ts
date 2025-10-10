@@ -70,3 +70,54 @@ export const UserProfileSchema = z.object({
       }
     ),
 });
+
+
+export const ResetPasswordPageSearchParamsSchema = z
+.object({
+  email: z
+    .string()
+    .min(1, {
+      message: "Email is required",
+    })
+    .email(),
+  token: z
+    .string()
+    .min(1, {
+      message: "Token is required",
+    })
+})
+
+export const ActivatePageSearchParamsSchema = z
+.object({
+  email: z
+    .string()
+    .min(1, {
+      message: "Email is required",
+    })
+    .email(),
+  token: z
+    .string()
+    .min(1, {
+      message: "Token is required",
+    })
+})
+
+export const ResendActivatePageSearchParamsSchema = z
+.object({
+  email: z
+    .string()
+    .min(1, {
+      message: "Email is required",
+    })
+    .email(),
+})
+
+export const CreatedPageSearchParamsSchema = z
+.object({
+  email: z
+    .string()
+    .min(1, {
+      message: "Email is required",
+    })
+    .email(),
+})

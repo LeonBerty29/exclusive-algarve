@@ -1,5 +1,3 @@
-import { notFound } from "next/navigation";
-
 // Types for user-related API responses
 export interface User {
   id: number;
@@ -31,16 +29,34 @@ export interface RegisterResponse {
 }
 
 export interface LoginResponse {
-  client: User;
-  token: string;
+  success: boolean;
+  message: string;
+  data: {
+    client: User;
+    token: string;
+  };
 }
 
 export interface ProfileResponse {
-  client: User;
+  success: boolean;
+  data: {
+    client: User;
+  };
 }
 
 export interface LogoutResponse {
   message: string;
+}
+
+interface ActivateResponse {
+  success: boolean;
+  message: string;
+}
+interface ForgotPasswordResponse {
+  success: boolean;
+  message: string;
+  errors?: { [key: string]: string[] };
+  responseStatus?: number
 }
 
 function createBasicAuthHeader(): string {
@@ -95,35 +111,19 @@ async function apiRequest<T>(
   try {
     const response: Response = await fetch(url, config);
 
-    // Check for 404 specifically
-    if (response.status === 404) {
-      // console.log(response.status);
-      throw new Error(`API Error: ${response.status} ${response.statusText}`, {
-        cause: response,
-      });
-    }
+    // console.log({ apiRequestResponse: response });
 
     // Check if response is ok
     if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(
-        `API Error: ${response.status} ${response.statusText} - ${errorText}`,
-        {
-          cause: response,
-          
-        }
-      );
+      return {
+        ...(await response.json()),
+        responseStatus: response.status,
+      };
     }
 
     return response.json();
   } catch (error: unknown) {
     const errorStatus = getErrorStatus(error);
-
-    // console.log({ errorStatus });
-
-    if (errorStatus === 404) {
-      notFound();
-    }
 
     if (errorStatus === 401) {
       throw error;
@@ -160,7 +160,7 @@ export const registerUser = async (
 export const loginUser = async (
   credentials: LoginRequest
 ): Promise<LoginResponse> => {
-  const endpoint = `/v1/client/login`;
+  const endpoint = `/v1/auth/client/login`;
 
   return apiRequest<LoginResponse>(endpoint, {
     method: "POST",
@@ -171,7 +171,7 @@ export const loginUser = async (
 export const getUserProfile = async (
   token: string
 ): Promise<ProfileResponse> => {
-  const endpoint = `/v1/client/me`;
+  const endpoint = `/v1/auth/client/profile`;
 
   return apiRequest<ProfileResponse>(
     endpoint,
@@ -183,8 +183,111 @@ export const getUserProfile = async (
   );
 };
 
+export const activateUser = async (
+  activationToken: string,
+  email: string
+): Promise<ActivateResponse> => {
+  const endpoint = `/v1/auth/client/activate`;
+
+  // console.log({ endpoint });
+
+  try {
+    const res = await apiRequest<ActivateResponse>(endpoint, {
+      method: "POST",
+      body: JSON.stringify({ token: activationToken, email }),
+    });
+
+    return res;
+  } catch (error: unknown) {
+    console.log("Error while activating user", error);
+
+    return {
+      success: false,
+      message: "An Error occured while activating your account",
+    };
+  }
+};
+
+export const resendActivationLink = async (
+  email: string
+): Promise<ActivateResponse> => {
+  const endpoint = `/v1/auth/client/resend-activation`;
+
+  // console.log({ endpoint });
+
+  try {
+    const res = await apiRequest<ActivateResponse>(endpoint, {
+      method: "POST",
+      body: JSON.stringify({ email }),
+    });
+
+    return res;
+  } catch (error: unknown) {
+    console.log("Error while activating user", error);
+
+    return {
+      success: false,
+      message: "An Error occured while activating your account",
+    };
+  }
+};
+
+export const forgotPassword = async ({
+  email,
+}: {
+  email: string;
+}): Promise<ForgotPasswordResponse> => {
+  const endpoint = `/v1/auth/client/forgot-password`;
+
+  try {
+    const res = await apiRequest<ForgotPasswordResponse>(endpoint, {
+      method: "POST",
+      body: JSON.stringify({ email }),
+    });
+
+    return res;
+  } catch (error: unknown) {
+    console.log("Error while requesting new reset password link", error);
+
+    return {
+      success: false,
+      message: "An Error occured while requesting new password link",
+    };
+  }
+};
+
+export const resetPassword = async ({
+  email,
+  password,
+  password_confirmation,
+  token,
+}: {
+  email: string;
+  password: string;
+  password_confirmation: string;
+  token: string;
+}): Promise<ForgotPasswordResponse> => {
+  const endpoint = `/v1/auth/client/reset-password`;
+
+  try {
+    const res = await apiRequest<ForgotPasswordResponse>(endpoint, {
+      method: "POST",
+      body: JSON.stringify({ email, password, password_confirmation, token }),
+    });
+
+    return res;
+  } catch (error: unknown) {
+    console.log("Error while resetting password", error);
+
+    return {
+      success: false,
+      message: "An Error occured while resetting your password",
+    };
+  }
+};
+
 export const logoutUser = async (token: string): Promise<LogoutResponse> => {
-  const endpoint = `/v1/client/logout`;
+  const endpoint = `/v1/auth/client/logout`;
 
   return apiRequest<LogoutResponse>(
     endpoint,

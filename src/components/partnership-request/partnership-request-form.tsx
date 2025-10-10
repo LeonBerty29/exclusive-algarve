@@ -103,8 +103,6 @@ export function PartnershipRequestForm() {
       return;
     }
 
-    const token = await executeRecaptcha("partnershipRequest");
-    
     setError("");
     setHasAttemptedSubmit(true);
 
@@ -131,7 +129,6 @@ export function PartnershipRequestForm() {
       values.interestedProperty || ""
     );
     formDataToSubmit.append("remarks", values.remarks || "");
-    formDataToSubmit.append("recaptcha_token", token || "");
 
     // Format date as YYYY-MM-DD if provided
     if (values.confirmedVisitDate) {
@@ -148,6 +145,9 @@ export function PartnershipRequestForm() {
     formDataToSubmit.append("source_url", values.sourceUrl || "");
 
     startTransition(async () => {
+      const token = await executeRecaptcha("partnershipRequest");
+      formDataToSubmit.append("recaptcha_token", token || "");
+
       try {
         const result = await PartnershipRequestFormAction(formDataToSubmit);
 
