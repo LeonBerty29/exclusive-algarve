@@ -69,6 +69,7 @@ export const UserProfileSchema = z.object({
         message: "Phone number must be at least 10 digits",
       }
     ),
+    newsletter: z.boolean().optional(),
 });
 
 

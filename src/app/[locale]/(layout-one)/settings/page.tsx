@@ -40,6 +40,7 @@ const page = async () => {
               firstName: userProfile.first_name,
               lastName: userProfile.last_name,
               phoneNumber: userProfile.phone,
+              newsletter: userProfile.newsletter,
             }}
             accessToken={accessToken}
           />

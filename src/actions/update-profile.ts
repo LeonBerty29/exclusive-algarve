@@ -25,10 +25,12 @@ export const updateProfile = async (
   const session = await auth();
   const accessToken = session?.accessToken;
 
-    const { first_name, last_name } = validatedFields.data;
+  // console.log({validatedFieldsData: validatedFields.data})
 
+  const { first_name, last_name, phone_number, newsletter } = validatedFields.data;
+  // console.log({ first_name, last_name, phone_number, newsletter })
   try {
-    const endpoint = `/v1/user/update`;
+    const endpoint = `/v1/auth/client/update`;
     const config: RequestInit = {
       method: "PUT",
       headers: {
@@ -38,19 +40,34 @@ export const updateProfile = async (
       body: JSON.stringify({
         first_name: first_name,
         last_name: last_name,
+        phone: phone_number,
+        newsletter: newsletter,
       }),
     };
 
     const url = `${process.env.API_BASE_URL}${endpoint}`;
 
     const response: Response = await fetch(url, config);
+    // console.log({ response });
 
     if (!response.ok) {
-      const errorText = await response.text();
+
+      if(response.status === 401){
+        return {
+          error: {
+            message: "We are unable to update your profile. Please try again later and contact us if problem persists",
+            first_name: "",
+            last_name: "",
+          },
+        };
+      }
+
+      const responseErrors = await response.json();
+
       // console.log({ errorText });
       // console.log(response);
 
-      if (errorText || response.status === 422) {
+      if (response.status === 422) {
         const error = {
           message: "There was an error while creating the user",
           first_name: "",
@@ -59,8 +76,7 @@ export const updateProfile = async (
 
         // console.log({ errorText });
 
-        const responseErros = JSON.parse(errorText);
-        const errorObject = responseErros.errors;
+        const errorObject = responseErrors.errors;
 
         // console.log(errorObject);
 
@@ -72,8 +88,8 @@ export const updateProfile = async (
           error.last_name = errorObject.last_name[0];
         }
 
-        if (responseErros.message) {
-          error.message = responseErros.message;
+        if (responseErrors.message) {
+          error.message = responseErrors.message;
         }
 
         return {
@@ -81,12 +97,13 @@ export const updateProfile = async (
         };
       }
 
-      throw new Error(
-        `API Error: ${response.status} ${response.statusText} - ${errorText}`,
-        {
-          cause: response,
-        }
-      );
+      return {
+        error: {
+          message: responseErrors.message,
+          first_name: "",
+          last_name: "",
+        },
+      };
     }
 
     const user = await response.json();
@@ -111,6 +128,15 @@ export const updateProfile = async (
     // const err = await error.cause.response.text();
 
     // console.log({ err });
+    if (error instanceof Error) {
+      return {
+        error: {
+          message: error.message,
+          first_name: "",
+          last_name: "",
+        },
+      };
+    }
     return {
       error: {
         message:

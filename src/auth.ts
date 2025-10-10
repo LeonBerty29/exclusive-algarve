@@ -1,5 +1,4 @@
 import NextAuth from "next-auth";
-import { getUserProfile } from "./data/user";
 import authConfig from "./auth.config";
 // import { CustomUser } from "./next-auth";
 import { JWT } from "next-auth/jwt";
@@ -16,40 +15,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         // console.log({ token });
       }
 
-      // Check if token is still valid by making a test request
-      if (token.accessToken) {
-        try {
-          // console.log({ accessTokenInAuthTs: token.accessToken });
-          const response = await getUserProfile(token.accessToken as string);
-
-          if (response) {
-            // Update user data from the me endpoint
-            const userData = response.data;
-            token.user = {
-              ...token.user,
-              id: userData.client.id.toString(),
-              email: userData.client.email,
-              name: `${userData.client.first_name} ${userData.client.last_name}`,
-              firstName: userData.client.first_name,
-              lastName: userData.client.last_name,
-              reference: userData.client.reference,
-            };
-          }
-        } catch (error) {
-          console.error("Token validation error:", error);
-
-          if (error instanceof Error && error.cause instanceof Response) {
-            if (error.cause.status === 401) {
-              return null;
-            }
-          }
-
-          throw error;
-        }
-      }
-
-      // console.log({ tokenUser: user });
-      // console.log({ token });
       return token;
     },
     async session({ session, token }) {
@@ -70,7 +35,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
   },
   pages: {
-    signIn: "/auth/login",
+    signIn: "/login",
   },
   session: {
     strategy: "jwt",

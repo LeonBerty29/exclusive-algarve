@@ -1,9 +1,4 @@
 import React from "react";
-import { PiCityThin } from "react-icons/pi";
-import { TbBeach } from "react-icons/tb";
-import { IoRestaurantOutline } from "react-icons/io5";
-import { IoGolfOutline } from "react-icons/io5";
-import { PiAirplaneLight } from "react-icons/pi";
 import { DrivingDistance } from "@/types/property";
 import { GoogleMap } from "../shared/google-maps";
 
@@ -16,54 +11,54 @@ export const LocationTab = ({
   longitude: number;
   drivingDistances: DrivingDistance[];
 }) => {
-  interface DrivingDistanceInfo {
-    destination: string;
-    minutes: number;
-    icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
-  }
-  const drivingDistanceInfo: DrivingDistanceInfo[] = [
-    {
-      destination: "Town",
-      minutes: 5,
-      icon: PiCityThin,
-    },
-    {
-      destination: "Beach",
-      minutes: 5,
-      icon: TbBeach,
-    },
-    {
-      destination: "Restaurant",
-      minutes: 5,
-      icon: IoRestaurantOutline,
-    },
-    {
-      destination: "Shop",
-      minutes: 5,
-      icon: PiCityThin,
-    },
-    {
-      destination: "Golf",
-      minutes: 5,
-      icon: IoGolfOutline,
-    },
-    {
-      destination: "Airport",
-      minutes: 5,
-      icon: PiAirplaneLight,
-    },
-  ];
+  // interface DrivingDistanceInfo {
+  //   destination: string;
+  //   minutes: number;
+  //   icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+  // }
+  // const drivingDistanceInfo: DrivingDistanceInfo[] = [
+  //   {
+  //     destination: "Town",
+  //     minutes: 5,
+  //     icon: PiCityThin,
+  //   },
+  //   {
+  //     destination: "Beach",
+  //     minutes: 5,
+  //     icon: TbBeach,
+  //   },
+  //   {
+  //     destination: "Restaurant",
+  //     minutes: 5,
+  //     icon: IoRestaurantOutline,
+  //   },
+  //   {
+  //     destination: "Shop",
+  //     minutes: 5,
+  //     icon: PiCityThin,
+  //   },
+  //   {
+  //     destination: "Golf",
+  //     minutes: 5,
+  //     icon: IoGolfOutline,
+  //   },
+  //   {
+  //     destination: "Airport",
+  //     minutes: 5,
+  //     icon: PiAirplaneLight,
+  //   },
+  // ];
 
   return (
     <div>
       <GoogleMap longitude={longitude} latitude={latitude} />
+      {drivingDistances.length > 0 && (
+        <div className="pt-4">
+          <p className="text-sm text-primary font-semibold mb-5">
+            DRIVING DISTANCE
+          </p>
 
-      <div className="pt-4">
-        <p className="text-sm text-primary font-semibold mb-5">
-          DRIVING DISTANCE
-        </p>
-
-        <div className="flex gap-6 flex-wrap">
+          {/* <div className="flex gap-6 flex-wrap">
           {drivingDistanceInfo.length > 0 && (
             <ul className="flex gap-8 flex-wrap">
               {drivingDistanceInfo.map((info: DrivingDistanceInfo, index) => {
@@ -87,9 +82,8 @@ export const LocationTab = ({
               })}
             </ul>
           )}
-        </div>
-        <div className="flex gap-6 flex-wrap mt-6">
-          {drivingDistances.length > 0 && (
+        </div> */}
+          <div className="flex gap-6 flex-wrap mt-6">
             <ul className="flex gap-8 flex-wrap">
               {drivingDistances.map(
                 (drivingDistance: DrivingDistance, index) => {
@@ -113,9 +107,9 @@ export const LocationTab = ({
                 }
               )}
             </ul>
-          )}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
