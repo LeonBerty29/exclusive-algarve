@@ -72,32 +72,32 @@ export const PropertyFeatures = ({
   // );
 
   // Static amenities - you can expand this based on your needs
-  const amenities: Amenity[] = [
-    {
-      name: "Wifi",
-      icon: Wifi,
-    },
-    {
-      name: "Parking space",
-      icon: LuCircleParking,
-    },
-    {
-      name: "Security cameras",
-      icon: BsCameraVideo,
-    },
-    {
-      name: "Pets allowed",
-      icon: MdOutlinePets,
-    },
-    {
-      name: "Laundry",
-      icon: PiWashingMachineThin,
-    },
-    {
-      name: "Air conditioner",
-      icon: TbAirConditioningDisabled,
-    },
-  ];
+  // const amenities: Amenity[] = [
+  //   {
+  //     name: "Wifi",
+  //     icon: Wifi,
+  //   },
+  //   {
+  //     name: "Parking space",
+  //     icon: LuCircleParking,
+  //   },
+  //   {
+  //     name: "Security cameras",
+  //     icon: BsCameraVideo,
+  //   },
+  //   {
+  //     name: "Pets allowed",
+  //     icon: MdOutlinePets,
+  //   },
+  //   {
+  //     name: "Laundry",
+  //     icon: PiWashingMachineThin,
+  //   },
+  //   {
+  //     name: "Air conditioner",
+  //     icon: TbAirConditioningDisabled,
+  //   },
+  // ];
 
   // Find specific amenities from additional features
   const extractedAmenities: Amenity[] = [];
@@ -139,15 +139,15 @@ export const PropertyFeatures = ({
   });
 
   // Combine extracted amenities with default ones, removing duplicates
-  const combinedAmenities = [...new Set([...extractedAmenities, ...amenities])];
+  // const combinedAmenities = [...new Set([...extractedAmenities, ...amenities])];
 
-  const chunkArray = (arr: Amenity[], size: number) => {
-    return Array.from({ length: Math.ceil(arr.length / size) }, (_, i) =>
-      arr.slice(i * size, i * size + size)
-    );
-  };
+  // const chunkArray = (arr: Amenity[], size: number) => {
+  //   return Array.from({ length: Math.ceil(arr.length / size) }, (_, i) =>
+  //     arr.slice(i * size, i * size + size)
+  //   );
+  // };
 
-  const chunkArrayOfAmenities = chunkArray(combinedAmenities, 4);
+  // const chunkArrayOfAmenities = chunkArray(combinedAmenities, 4);
 
   const getIcon = (icon: string) => {
     // console.log({ icon });
@@ -227,7 +227,7 @@ export const PropertyFeatures = ({
         )}
       </section>
 
-      <section>
+      {/* <section>
         <p className="text-base font-bold text-primary mb-4">AMENITIES</p>
 
         {chunkArrayOfAmenities.length > 0 ? (
@@ -260,7 +260,7 @@ export const PropertyFeatures = ({
         ) : (
           <p className="text-sm text-gray-500">No amenities available.</p>
         )}
-      </section>
+      </section> */}
     </div>
   );
 };
