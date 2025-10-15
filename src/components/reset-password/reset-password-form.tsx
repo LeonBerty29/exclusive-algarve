@@ -16,6 +16,7 @@ import { CheckCircle } from "lucide-react";
 import { ResetPasswordFormSchema } from "@/schema/schema.reset-password";
 import { ResetPasswordAction } from "@/actions/reset-password";
 import { PiWarningCircle } from "react-icons/pi";
+import { useTranslations } from "next-intl";
 
 // Client-side form data interface
 interface FormData {
@@ -38,12 +39,14 @@ type FormField = keyof FormData;
 export const ResetPasswordForm = ({
   token,
   email,
-  callbackUrl
+  callbackUrl,
 }: {
   token: string;
   email: string;
   callbackUrl: string;
 }) => {
+  const t = useTranslations("resetPasswordForm");
+
   const [isPending, startTransition] = useTransition();
   const [formData, setFormData] = useState<FormData>({
     email: email,
@@ -108,9 +111,8 @@ export const ResetPasswordForm = ({
     e.preventDefault();
 
     if (!executeRecaptcha) {
-      toast("ReCaptcha Error", {
-        description:
-          "ReCaptcha is not available. Please Refresh the page and try again.",
+      toast(t("recaptchaErrorTitle"), {
+        description: t("recaptchaErrorDescription"),
         duration: 1500,
       });
       return;
@@ -118,7 +120,7 @@ export const ResetPasswordForm = ({
 
     // Client-side validation first
     if (!validateClientForm()) {
-      toast.error("Please fix the form errors before submitting");
+      toast.error(t("fixFormErrors"));
       return;
     }
 
@@ -141,7 +143,7 @@ export const ResetPasswordForm = ({
 
         if (result.success) {
           setShowSuccessDialogMessage(
-            result.message || "Request submitted successfully!"
+            result.message || t("requestSubmittedSuccessfully")
           );
 
           // Reset form
@@ -156,12 +158,11 @@ export const ResetPasswordForm = ({
           // Handle server validation errors
           if (result.responseStatus === 410 || result.responseStatus == 404) {
             setResponseError({
-              // ...responseError,
               message: result.message as string,
               responseStatus: result.responseStatus,
             });
           }
-          // console.log({ result });
+
           if (result.fieldErrors) {
             const newErrors: FormErrors = {};
             Object.entries(result.fieldErrors).forEach(([key, message]) => {
@@ -179,23 +180,19 @@ export const ResetPasswordForm = ({
           }
 
           if (result.errors) {
-            // Handle detailed validation errors from API
             const errorMessages = Object.entries(result.errors)
               .map(([field, messages]) => `${field}: ${messages.join(", ")}`)
               .join("; ");
-            toast.error(`Validation errors: ${errorMessages}`, {
+            toast.error(`${t("validationErrors")} ${errorMessages}`, {
               duration: 2000,
             });
           } else {
-            toast.error(
-              result.message || "Failed to submit request. Please try again."
-            );
+            toast.error(result.message || t("failedSubmitRequest"));
           }
-
         }
       } catch (error) {
         console.error("Submit error:", error);
-        toast.error("An unexpected error occurred. Please try again.", {
+        toast.error(t("unexpectedError"), {
           duration: 2000,
         });
       }
@@ -215,7 +212,7 @@ export const ResetPasswordForm = ({
         <div className="border-b border-gray-200">
           <Input
             type="email"
-            placeholder="E-mail address"
+            placeholder={t("emailPlaceholder")}
             value={formData.email}
             onChange={handleInputChangeEvent("email")}
             className={`py-5 bg-transparent border rounded-none text-gray-600 placeholder:text-gray-400 focus:!border-transparent focus-visible:ring-amber-100  ${
@@ -230,7 +227,7 @@ export const ResetPasswordForm = ({
         <div className="border-b border-gray-200">
           <Input
             type="password"
-            placeholder="Enter your new password"
+            placeholder={t("newPasswordPlaceholder")}
             value={formData.password}
             onChange={handleInputChangeEvent("password")}
             className={`py-5 bg-transparent border rounded-none text-gray-600 placeholder:text-gray-400 focus:!border-transparent focus-visible:ring-amber-100  ${
@@ -245,7 +242,7 @@ export const ResetPasswordForm = ({
         <div className="border-b border-gray-200">
           <Input
             type="password"
-            placeholder="Confirm your new password"
+            placeholder={t("confirmPasswordPlaceholder")}
             value={formData.password_confirmation}
             onChange={handleInputChangeEvent("password_confirmation")}
             className={`py-5 bg-transparent border rounded-none text-gray-600 placeholder:text-gray-400 focus:!border-transparent focus-visible:ring-amber-100  ${
@@ -268,7 +265,9 @@ export const ResetPasswordForm = ({
             className="w-fit bg-primary text-white hover:bg-primary/80 hover:text-white rounded-none transition colors"
             disabled={isPending}
           >
-            <span className="">{isPending ? "Submiting..." : "Submit"}</span>
+            <span className="">
+              {isPending ? t("submitting") : t("submit")}
+            </span>
           </Button>
         </div>
       </form>
@@ -283,7 +282,9 @@ export const ResetPasswordForm = ({
             <div className="flex justify-center mb-4">
               <CheckCircle className="h-16 w-16 text-green-500" />
             </div>
-            <DialogTitle className="text-xl text-center">Success!!</DialogTitle>
+            <DialogTitle className="text-xl text-center">
+              {t("successTitle")}
+            </DialogTitle>
           </DialogHeader>
 
           <div className="text-center space-y-4">
@@ -292,20 +293,25 @@ export const ResetPasswordForm = ({
 
           <div className="flex gap-4 justify-center pt-4 mb-2">
             <Button className="bg-primary text-white hover:bg-black transition-colors">
-              <Link href={"/"}>Home</Link>
+              <Link href={"/"}>{t("home")}</Link>
             </Button>
             <Button
               className="bg-gray-200 text-black hover:bg-gray-300 transition-colors"
               asChild
             >
-              <Link href={"/login"}>Login</Link>
+              <Link href={"/login"}>{t("login")}</Link>
             </Button>
           </div>
         </DialogContent>
       </Dialog>
 
       {/* Error Dialog - Token expired / 410 response */}
-      <Dialog open={responseError.responseStatus == 410 || responseError.responseStatus === 404}>
+      <Dialog
+        open={
+          responseError.responseStatus == 410 ||
+          responseError.responseStatus === 404
+        }
+      >
         <DialogContent
           showCloseButton={false}
           className="sm:max-w-md rounded-2xl"
@@ -314,36 +320,45 @@ export const ResetPasswordForm = ({
             <div className="flex justify-center mb-4">
               <PiWarningCircle className="h-16 w-16 text-orange-500" />
             </div>
-            <DialogTitle className="text-xl text-center">Alert</DialogTitle>
+            <DialogTitle className="text-xl text-center">
+              {t("alertTitle")}
+            </DialogTitle>
           </DialogHeader>
 
           <div className="text-center space-y-4">
             <p className="text-gray-600">{responseError.message}</p>
           </div>
 
-          <Link href={{
-            pathname: "/account/forgot-password",
-            query: {
-              callbackUrl: callbackUrl,
-            },
-          }} className="block mx-auto text-center underline text-orange-500">
-            Request new reset link
+          <Link
+            href={{
+              pathname: "/account/forgot-password",
+              query: {
+                callbackUrl: callbackUrl,
+              },
+            }}
+            className="block mx-auto text-center underline text-orange-500"
+          >
+            {t("requestNewResetLink")}
           </Link>
 
           <div className="flex gap-4 justify-center pt-4 mb-2">
             <Button className="bg-primary text-white hover:bg-black transition-colors">
-              <Link href={"/"}>Home</Link>
+              <Link href={"/"}>{t("home")}</Link>
             </Button>
             <Button
               className="bg-gray-200 text-black hover:bg-gray-300 transition-colors"
               asChild
             >
-              <Link href={{
-                pathname: "/login",
-                query: {
-                  callbackUrl: callbackUrl,
-                },
-              }}>Login</Link>
+              <Link
+                href={{
+                  pathname: "/login",
+                  query: {
+                    callbackUrl: callbackUrl,
+                  },
+                }}
+              >
+                {t("login")}
+              </Link>
             </Button>
           </div>
         </DialogContent>

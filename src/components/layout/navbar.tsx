@@ -14,7 +14,7 @@ import { BuyResourcesDropdown } from "./buy-resources-dropdown";
 import { SellResourcesDropdown } from "./sell-resources-dropdown";
 import { LanguageSwitcher } from "../shared/language-switcher";
 import { routing } from "@/i18n/routing";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { OwnResourcesDropdown } from "./own-resources-dropdown";
 import { AboutUsResourcesDropdown } from "./about-us-resources-dropdown";
 
@@ -29,6 +29,7 @@ export default function NavBar({
   const pathname = usePathname();
   const locale = useLocale();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const t = useTranslations("navbar");
 
   const navLinks = [
     // { href: "/", label: "Home" },
@@ -245,7 +246,7 @@ export default function NavBar({
               asChild
             >
               <Link href="/login" onClick={() => setIsMobileMenuOpen(false)}>
-                SIGN IN
+                {t("signIn")}
               </Link>
             </Button>
           </div>

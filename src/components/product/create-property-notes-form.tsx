@@ -16,6 +16,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { CheckCircle } from "lucide-react";
+import { useTranslations } from "next-intl"; // client component translation hook
 
 export const CreatePropertyNoteForm = ({
   propertyId,
@@ -24,12 +25,13 @@ export const CreatePropertyNoteForm = ({
   propertyId: number;
   reference: string;
 }) => {
+  const t = useTranslations("createPropertyNotesForm"); // single top-level translation key
+
   const [state, formAction, isPending] = useActionState(createNote, {});
   const [isSuccessDialogOpen, setIsSuccessDialogOpen] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
 
   const router = useRouter();
-
   const [pendingTransition, startTransition] = useTransition();
 
   // Handle toast notifications based on state changes
@@ -38,36 +40,32 @@ export const CreatePropertyNoteForm = ({
       startTransition(() => {
         router.refresh();
       });
-      toast.success(`${state.success}`);
+      toast.success(state.success);
       setIsSuccessDialogOpen(true);
       setSuccessMessage(state.success);
     }
     if (state.error) {
-      toast.error(`${state.error}`);
+      toast.error(state.error);
     }
     if (state.authenticated) {
-      toast.error(`${state.authenticated}`, {
+      toast.error(state.authenticated, {
         duration: 2000,
         action: (
           <>
-            {/* <label htmlFor=""></label> */}
             <Button asChild className="bg-primary text-white hover:bg-black">
-              <Link href={"/login"}>Login</Link>
+              <Link href={"/login"}>{t("login")}</Link>
             </Button>
           </>
         ),
       });
     }
-
-    if (state.timestamp) {
-    }
   }, [
     state.success,
     state.error,
     state.authenticated,
-    state.timestamp,
-    reference,
     router,
+    reference,
+    t,
   ]);
 
   return (
@@ -75,12 +73,11 @@ export const CreatePropertyNoteForm = ({
       <form className="grid flex-1 gap-2" action={formAction}>
         <input type="hidden" name="propertyId" value={propertyId} />
         <input type="hidden" name="reference" value={reference} />
-        {/* <input type="hidden" name="pathName" value={pathname} /> */}
         <Label htmlFor="link" className="sr-only">
-          Update your notes
+          {t("updateYourNotes")}
         </Label>
         <Textarea
-          placeholder={`Add notes for ${reference}`}
+          placeholder={`${t("addNotesFor")} ${reference}`}
           name="note"
           className="w-full"
         />
@@ -89,7 +86,7 @@ export const CreatePropertyNoteForm = ({
           className="w-full inline-block ml-auto bg-primary text-white"
           disabled={isPending || pendingTransition}
         >
-          Add Note
+          {t("addNote")}
         </Button>
       </form>
 
@@ -100,7 +97,7 @@ export const CreatePropertyNoteForm = ({
               <CheckCircle className="h-12 w-12 text-green-500" />
             </div>
             <DialogTitle className="text-center text-xl font-semibold">
-              Success!!
+              {t("success")}
             </DialogTitle>
             <DialogDescription className="text-center text-gray-600 mt-2">
               {successMessage}
@@ -109,7 +106,7 @@ export const CreatePropertyNoteForm = ({
           <div className="flex justify-center mt-6">
             <DialogClose asChild>
               <Button className="bg-primary hover:bg-primary/90 text-white px-8">
-                Close
+                {t("close")}
               </Button>
             </DialogClose>
           </div>

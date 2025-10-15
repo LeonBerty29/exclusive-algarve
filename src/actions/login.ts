@@ -1,25 +1,22 @@
 "use server";
 
 import * as z from "zod";
-
 import { LoginSchema } from "@/schema";
 import { signIn } from "@/auth";
-// import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 import { AuthError } from "next-auth";
+import { getTranslations } from "next-intl/server";
 
 interface ErrResponse {
   message: string;
   responseStatus: number;
 }
 
-export const login = async (
-  values: z.infer<typeof LoginSchema>
-  // callbackUrl: string | undefined
-) => {
+export const login = async (values: z.infer<typeof LoginSchema>) => {
+  const t = await getTranslations("loginAction");
   const validatedFields = LoginSchema.safeParse(values);
 
   if (!validatedFields.success) {
-    return { error: "Invalid fields!" };
+    return { error: t("invalidFields") };
   }
 
   const { email, password } = validatedFields.data;
@@ -28,38 +25,32 @@ export const login = async (
     await signIn("credentials", {
       email,
       password,
-      // redirectTo: callbackUrl || DEFAULT_LOGIN_REDIRECT,
       redirect: false,
     });
 
-    return { success: "Login successful!" };
+    return { success: t("loginSuccessful") };
   } catch (error) {
     if (error instanceof AuthError) {
       const response: ErrResponse = error.cause?.response as ErrResponse;
 
       switch (error.type) {
         case "CredentialsSignin":
-          // The custom error message will be in error.cause
           const errorMessage = error.cause?.err?.message;
           return {
-            error: errorMessage || "Invalid credentials",
+            error: errorMessage || t("invalidCredentials"),
             response,
           };
 
         default:
           return {
-            error:
-              error.cause?.err?.message ||
-              "Something went wrong. Please check your internet connection and try again",
+            error: error.cause?.err?.message || t("somethingWentWrong"),
             response,
           };
       }
     }
 
-    // throw error;
     return {
-      error:
-        "Something went wrong. Please check your internet connection and try again",
+      error: t("somethingWentWrong"),
     };
   }
 };

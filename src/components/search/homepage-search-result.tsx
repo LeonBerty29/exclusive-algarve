@@ -23,6 +23,7 @@ import { ListFilter } from "lucide-react";
 import { SortBy } from "@/components/search/sort-by";
 import { generateApiParams, generateSuspenseKey } from "@/lib/utils";
 import { getNote } from "@/data/notes";
+import { getTranslations } from "next-intl/server";
 // import HeroSearch from "@/components/home/search-component";
 
 // interface PropertiesPageProps {
@@ -34,17 +35,10 @@ export async function HomepageSearchResult({
 }: {
   searchParams: PropertySearchParams;
 }) {
-  // Convert searchParams to the format expected by your API
-  //   const searchParams = await props.searchParams;
   const apiParams = generateApiParams(searchParams);
 
   // Create a key based on the search parameters that affect the data
   const suspenseKey = generateSuspenseKey(apiParams);
-
-  // Fetch properties from API
-  // const propertiesResponse = await getPropertiesWithAll(apiParams);
-
-  // console.log(propertiesResponse.meta);
 
   if (!Object.keys(searchParams).length) {
     return null;
@@ -96,6 +90,7 @@ async function PropertieList({
   apiParams: PropertySearchParams;
 }) {
   const session = await auth();
+  const t = await getTranslations("homepageSearchResult");
   const token = session?.accessToken;
 
   // const hasFilters = hasActiveFilters(apiParams);
@@ -134,7 +129,7 @@ async function PropertieList({
       <div className="2xl:container px-6 sm:px-8 md:px-10 lg:px-14 mx-auto">
         <div className="flex items-center gap-1 md:gap-4 justify-end">
           <div className="flex items-center gap-2 text-xs md:text-sm">
-            <ListFilter className="w-4 h-4 hidden sm:block" /> Sort by:
+            <ListFilter className="w-4 h-4 hidden sm:block" /> {t("sortBy")}
           </div>
           <SortBy />
         </div>

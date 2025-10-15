@@ -19,6 +19,7 @@ import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { UserProfileSchema } from "@/schema";
 import { updateProfile } from "@/actions/update-profile";
+import { useTranslations } from "next-intl"; // assuming next-intl or similar
 
 type ErrorType = {
   message: string;
@@ -45,6 +46,8 @@ export function UserProfileForm({
   onSuccess,
   onCancel,
 }: UserProfileFormProps) {
+  const t = useTranslations("userProfileForm");
+
   const form = useForm<UserProfileFormValues>({
     resolver: zodResolver(UserProfileSchema),
     defaultValues: {
@@ -73,8 +76,8 @@ export function UserProfileForm({
     startTransition(() => {
       updateProfile(values).then((data) => {
         if (data.success) {
-          toast.success("Profile updated", {
-            description: "Your profile has been successfully updated.",
+          toast.success(t("profileUpdated"), {
+            description: t("profileUpdatedDescription"),
           });
         }
 
@@ -97,16 +100,16 @@ export function UserProfileForm({
             name="first_name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>First Name</FormLabel>
+                <FormLabel>{t("firstName")}</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="Enter your first name"
+                    placeholder={t("firstNamePlaceholder")}
                     {...field}
                     disabled={isPending}
                   />
                 </FormControl>
                 <FormDescription className="sr-only">
-                  This is your public display first name.
+                  {t("firstNameDescription")}
                 </FormDescription>
                 <FormMessage />
                 {error?.first_name && (
@@ -123,16 +126,16 @@ export function UserProfileForm({
             name="last_name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Last Name</FormLabel>
+                <FormLabel>{t("lastName")}</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="Enter your last name"
+                    placeholder={t("lastNamePlaceholder")}
                     {...field}
                     disabled={isPending}
                   />
                 </FormControl>
                 <FormDescription className="sr-only">
-                  This is your public display last name.
+                  {t("lastNameDescription")}
                 </FormDescription>
                 <FormMessage />
                 {error?.last_name && (
@@ -150,17 +153,17 @@ export function UserProfileForm({
           name="phone_number"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Phone Number</FormLabel>
+              <FormLabel>{t("phoneNumber")}</FormLabel>
               <FormControl>
                 <Input
-                  placeholder="Enter your phone number"
+                  placeholder={t("phoneNumberPlaceholder")}
                   {...field}
                   disabled={isPending}
                   type="tel"
                 />
               </FormControl>
               <FormDescription className="sr-only">
-                Your phone number for account verification and notifications.
+                {t("phoneNumberDescription")}
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -174,7 +177,7 @@ export function UserProfileForm({
             onClick={() => onCancel?.()}
             disabled={isPending}
           >
-            Cancel
+            {t("cancel")}
           </Button>
           <Button
             type="submit"
@@ -182,7 +185,7 @@ export function UserProfileForm({
             className="bg-primary text-white hover:bg-black transition-colors"
           >
             {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            {isPending ? "Saving..." : "Save Changes"}
+            {isPending ? t("saving") : t("saveChanges")}
           </Button>
         </div>
       </form>

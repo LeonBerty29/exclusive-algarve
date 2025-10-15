@@ -1,17 +1,14 @@
 import NavBar from "@/components/layout/navbar";
 
-
-
-
 export default function LayoutOne({
-    children,
+  children,
 }: Readonly<{
-    children: React.ReactNode;
+  children: React.ReactNode;
 }>) {
-    return (
-        <>
-            <NavBar colorChange={true} />
-            {children}
-        </>
-    );
+  return (
+    <>
+      <NavBar colorChange={true} />
+      {children}
+    </>
+  );
 }

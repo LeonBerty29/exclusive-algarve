@@ -1,8 +1,9 @@
 import React from "react";
 import { DrivingDistance } from "@/types/property";
 import { GoogleMap } from "../shared/google-maps";
+import { getTranslations } from "next-intl/server";
 
-export const LocationTab = ({
+export const LocationTab = async({
   latitude,
   longitude,
   drivingDistances,
@@ -49,13 +50,15 @@ export const LocationTab = ({
   //   },
   // ];
 
+  const t = await getTranslations("locationTab")
+
   return (
     <div>
       <GoogleMap longitude={longitude} latitude={latitude} />
       {drivingDistances.length > 0 && (
         <div className="pt-4">
           <p className="text-sm text-primary font-semibold mb-5">
-            DRIVING DISTANCE
+            {t("drivingDistance")}
           </p>
 
           {/* <div className="flex gap-6 flex-wrap">
@@ -99,7 +102,7 @@ export const LocationTab = ({
                           {drivingDistance.label}
                         </span>
                         <span className="text-sm font-bold">
-                          {drivingDistance.value} min
+                          {drivingDistance.value} {t("min")}
                         </span>
                       </div>
                     </li>

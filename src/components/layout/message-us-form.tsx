@@ -26,8 +26,10 @@ import { clientMessageFormSchema } from "@/types/message-us";
 import { CheckCircle } from "lucide-react";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 
 export function MessageForm() {
+  const t = useTranslations("messageUsForm");
   const [isPending, startTransition] = useTransition();
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
@@ -56,9 +58,8 @@ export function MessageForm() {
 
   const onSubmit = async (values: z.infer<typeof clientMessageFormSchema>) => {
     if (!executeRecaptcha) {
-      toast("ReCaptcha Error", {
-        description:
-          "ReCaptcha is not available. Please Refresh the page and try again.",
+      toast(`${t("toastReCaptchaErrorTitle")}`, {
+        description: t("toastReCaptchaErrorDescription"),
         duration: 1500,
       });
       return;
@@ -82,7 +83,7 @@ export function MessageForm() {
 
         if (result.success) {
           // Show success dialog
-          setSuccessMessage(result.message || "Message sent successfully!");
+          setSuccessMessage(result.message || t("successMessageDefault"));
           setShowSuccessDialog(true);
 
           // Reset form but keep sourceUrl
@@ -96,7 +97,6 @@ export function MessageForm() {
         } else {
           // Handle server validation errors
           if (result.fieldErrors) {
-            // Map server field names to client field names and set form errors
             Object.entries(result.fieldErrors).forEach(([key, message]) => {
               const fieldMapping: {
                 [key: string]: keyof z.infer<typeof clientMessageFormSchema>;
@@ -119,20 +119,17 @@ export function MessageForm() {
           }
 
           if (result.errors) {
-            // Handle detailed validation errors from API
             const errorMessages = Object.entries(result.errors)
               .map(([field, messages]) => `${field}: ${messages.join(", ")}`)
               .join("; ");
-            setError(`Validation errors: ${errorMessages}`);
+            setError(`${t("errorValidationPrefix")} ${errorMessages}`);
           } else {
-            setError(
-              result.message || "Failed to send message. Please try again."
-            );
+            setError(result.message || t("errorMessageGeneric"));
           }
         }
       } catch (error) {
         console.error("Submit error:", error);
-        setError("An unexpected error occurred. Please try again.");
+        setError(t("errorMessageUnexpected"));
       }
     });
   };
@@ -152,7 +149,7 @@ export function MessageForm() {
                     <Input
                       {...field}
                       type="text"
-                      placeholder="FIRST NAME"
+                      placeholder={t("placeholderFirstName")}
                       className="indent-4 bg-black text-white placeholder:text-gray-400 border-none rounded-none py-5 focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-black placeholder:text-sm"
                       disabled={isPending}
                     />
@@ -171,7 +168,7 @@ export function MessageForm() {
                     <Input
                       {...field}
                       type="text"
-                      placeholder="LAST NAME"
+                      placeholder={t("placeholderLastName")}
                       className="indent-4 bg-black text-white placeholder:text-gray-400 border-none rounded-none py-5 focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-black placeholder:text-sm"
                       disabled={isPending}
                     />
@@ -192,7 +189,7 @@ export function MessageForm() {
                   <Input
                     {...field}
                     type="email"
-                    placeholder="EMAIL ADDRESS"
+                    placeholder={t("placeholderEmail")}
                     className="indent-4 bg-black text-white placeholder:text-gray-400 border-none rounded-none py-5 focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-black placeholder:text-sm"
                     disabled={isPending}
                   />
@@ -211,7 +208,7 @@ export function MessageForm() {
                 <FormControl>
                   <Textarea
                     {...field}
-                    placeholder="MESSAGE..."
+                    placeholder={t("placeholderMessage")}
                     className="indent-4 bg-black text-white placeholder:text-gray-400 border-none rounded-none py-5 focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-black min-h-[120px]"
                     disabled={isPending}
                   />
@@ -242,7 +239,7 @@ export function MessageForm() {
               "bg-primary hover:bg-primary/90 text-white font-medium py-5 px-8 rounded-none transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             )}
           >
-            {isPending ? "Sending..." : "Send Message"}
+            {isPending ? t("buttonSending") : t("buttonSendMessage")}
           </Button>
 
           {/* Show general error message */}
@@ -262,7 +259,7 @@ export function MessageForm() {
               <CheckCircle className="h-12 w-12 text-green-500" />
             </div>
             <DialogTitle className="text-center text-xl font-semibold">
-              Message Sent Successfully!
+              {t("dialogTitleSuccess")}
             </DialogTitle>
             <DialogDescription className="text-center text-gray-600 mt-2">
               {successMessage}
@@ -273,7 +270,7 @@ export function MessageForm() {
               onClick={() => setShowSuccessDialog(false)}
               className="bg-primary hover:bg-primary/90 text-white px-8"
             >
-              Close
+              {t("buttonClose")}
             </Button>
           </div>
         </DialogContent>

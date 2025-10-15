@@ -1,5 +1,6 @@
 "use server";
 
+import { getTranslations } from "next-intl/server";
 import { ZodIssue } from "zod";
 import { PartnershipFormSchema } from "@/types/partnership-request";
 import { submitPartnershipRequestWithDetailedErrors } from "@/data/partnership-request";
@@ -14,6 +15,8 @@ export interface PartnershipFormActionResult {
 export async function PartnershipRequestFormAction(
   formData: FormData
 ): Promise<PartnershipFormActionResult> {
+  const t = await getTranslations("partnershipRequestAction");
+
   try {
     // Extract data from FormData with the correct field names that match the API
     const rawData = {
@@ -52,7 +55,7 @@ export async function PartnershipRequestFormAction(
 
       return {
         success: false,
-        message: "Please check the form for errors",
+        message: t("formValidationFailed"),
         fieldErrors,
       };
     }
@@ -60,7 +63,7 @@ export async function PartnershipRequestFormAction(
     if (!recaptchaToken) {
       return {
         success: false,
-        message: "ReCaptcha token is missing",
+        message: t("recaptchaMissing"),
       };
     }
 
@@ -87,8 +90,7 @@ export async function PartnershipRequestFormAction(
       });
       return {
         success: false,
-        message:
-          "ReCaptcha verification failed. Please refresh the page and try again.",
+        message: t("recaptchaVerificationFailed"),
       };
     }
 
@@ -100,22 +102,21 @@ export async function PartnershipRequestFormAction(
     if (!result.success) {
       return {
         success: false,
-        message: result.error || "Failed to submit partnership request",
+        message: result.error || t("requestSubmissionFailed"),
         errors: result.validationErrors,
       };
     }
 
     return {
       success: true,
-      message:
-        result.data?.message || "Partnership request submitted successfully!",
+      message: result.data?.message || t("requestSubmissionSuccessful"),
     };
   } catch (error) {
     console.error("Partnership request action error:", error);
 
     return {
       success: false,
-      message: "An unexpected error occurred. Please try again.",
+      message: t("unexpectedErrorOccurred"),
     };
   }
 }

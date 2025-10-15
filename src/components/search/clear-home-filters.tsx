@@ -4,6 +4,7 @@ import { useRouter } from "@/i18n/navigation";
 import { Button } from "../ui/button";
 import { hasActiveFilters } from "@/lib/utils";
 import { PropertySearchParams } from "@/types/property";
+import { useTranslations } from "next-intl";
 
 export const ClearHomeFilters = ({
   apiParams,
@@ -11,6 +12,7 @@ export const ClearHomeFilters = ({
   apiParams: PropertySearchParams;
 }) => {
   const router = useRouter();
+  const t = useTranslations("clearHomeFilters")
   const clearAllFilters = () => {
     router.push("/");
   };
@@ -21,7 +23,7 @@ export const ClearHomeFilters = ({
       onClick={clearAllFilters}
       disabled={!hasFilters}
     >
-      Reset
+      {t("reset")}
     </Button>
   );
 };

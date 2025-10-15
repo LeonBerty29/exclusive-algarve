@@ -20,8 +20,10 @@ import {
 import Image from "next/image";
 import { PropertyImage } from "@/types/property";
 import { getProxiedImageUrl } from "@/lib/utils";
+import { getTranslations } from "next-intl/server";
 
-const PropertyImagesModal = ({ images }: { images: PropertyImage[] }) => {
+const PropertyImagesModal = async({ images }: { images: PropertyImage[] }) => {
+  const t = await getTranslations("propertyImagesModal");
   const totalImages = images.length;
   const remainingPhotos = totalImages - 3;
 
@@ -32,17 +34,17 @@ const PropertyImagesModal = ({ images }: { images: PropertyImage[] }) => {
           <div className="absolute inset-0 bg-black/60 flex items-center justify-center cursor-pointer">
             <Button className="bg-black text-white hover:bg-gray-800 rounded-none px-6 py-3 flex items-center gap-2">
               <Camera className="w-4 h-4" />
-              {remainingPhotos} MORE PHOTOS
+              {remainingPhotos} {t("morePhotos")}
             </Button>
           </div>
         </DialogTrigger>
         <DialogContent className="w-full mx-auto !max-w-full !top-16 !bottom-0 !left-0 !right-0 !translate-x-0 !translate-y-0 overflow-y-auto !bg-white">
           <DialogHeader>
             <DialogTitle className="sr-only">
-              Property Images Gallery
+              {t("propertyImagesGallery")}
             </DialogTitle>
             <DialogDescription className="sr-only">
-              Browse through all property images
+              {t("browseThroughAllPropertyImages")}
             </DialogDescription>
           </DialogHeader>
           <div className="flex items-center justify-center min-h-[60vh] p-4">
@@ -53,7 +55,7 @@ const PropertyImagesModal = ({ images }: { images: PropertyImage[] }) => {
                     <div className="relative w-full h-[500px] md:h-[600px]">
                       <Image
                         src={getProxiedImageUrl(image.url)}
-                        alt={`Property image ${index + 1}`}
+                        alt={`${t("propertyImageAltPrefix")} ${index + 1}`}
                         fill
                         className="object-contain w-auto h-auto"
                       />
@@ -68,7 +70,7 @@ const PropertyImagesModal = ({ images }: { images: PropertyImage[] }) => {
           <DialogFooter className="sm:justify-start">
             <DialogClose asChild>
               <Button type="button" variant="secondary">
-                Close
+                {t("close")}
               </Button>
             </DialogClose>
           </DialogFooter>

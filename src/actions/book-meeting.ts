@@ -3,6 +3,7 @@
 import { ZodIssue } from "zod";
 import { bookMeetingSchema } from "@/types/book-a-meeting";
 import { bookMeetingWithDetailedErrors } from "@/data/book-meeting";
+import { getTranslations } from "next-intl/server";
 
 export interface BookMeetingActionResult {
   success: boolean;
@@ -14,6 +15,7 @@ export interface BookMeetingActionResult {
 export async function bookMeetingAction(
   formData: FormData
 ): Promise<BookMeetingActionResult> {
+  const t = await getTranslations("bookMeetingAction");
   try {
     // Extract data from FormData
     const rawData = {
@@ -46,7 +48,7 @@ export async function bookMeetingAction(
 
       return {
         success: false,
-        message: "Please check the form for errors",
+        message: t("checkFormForErrors"),
         fieldErrors,
       };
     }
@@ -54,7 +56,7 @@ export async function bookMeetingAction(
     if (!recaptchaToken) {
       return {
         success: false,
-        message: "ReCaptcha token is missing",
+        message: t("recaptchaTokenMissing"),
       };
     }
 
@@ -81,8 +83,7 @@ export async function bookMeetingAction(
       });
       return {
         success: false,
-        message:
-          "ReCaptcha verification failed. Please refresh the page and try again.",
+        message: t("recaptchaVerificationFailed"),
       };
     }
 
@@ -92,21 +93,23 @@ export async function bookMeetingAction(
     if (!result.success) {
       return {
         success: false,
-        message: result.error || "Failed to book meeting",
+        message: result.error ? result.error : t("failedToBookMeeting"),
         errors: result.validationErrors,
       };
     }
 
     return {
       success: true,
-      message: result.data?.message || "Meeting booked successfully!",
+      message: result.data?.message
+        ? result.data.message
+        : t("meetingBookedSuccessfully"),
     };
   } catch (error) {
     console.error("Book meeting action error:", error);
 
     return {
       success: false,
-      message: "An unexpected error occurred. Please try again.",
+      message: t("unexpectedError"),
     };
   }
 }

@@ -17,10 +17,14 @@ import {
 } from "@/components/ui/dialog";
 import { CheckCircle, Trash2, AlertTriangle } from "lucide-react";
 import { NotesResponse } from "@/types";
+import { useTranslations } from "next-intl";
 
 // Zod validation schema
 const noteFormSchema = z.object({
-  note: z.string().min(1, "Note cannot be empty").max(1000, "Note is too long"),
+  note: z
+    .string()
+    .min(1, "propertyNotesForm.noteCannotBeEmpty")
+    .max(1000, "propertyNotesForm.noteIsTooLong"),
 });
 
 type NoteFormData = z.infer<typeof noteFormSchema>;
@@ -34,6 +38,7 @@ export const PropertyNoteForm = ({
   reference: string;
   note: NotesResponse["data"][number];
 }) => {
+  const t = useTranslations("propertyNotesForm");
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [isLoading, setIsLoading] = useState(false);
@@ -73,12 +78,12 @@ export const PropertyNoteForm = ({
 
       startTransition(() => {
         router.refresh();
-        setSuccessMessage("Your note has been updated successfully!");
+        setSuccessMessage(t("yourNoteHasBeenUpdatedSuccessfully"));
         setIsSuccessDialogOpen(true);
       });
     } catch (error) {
       console.error("Error updating note:", error);
-      toast.error("Failed to update note. Please try again.");
+      toast.error(t("failedToUpdateNotePleaseTryAgain"));
     } finally {
       setIsLoading(false);
     }
@@ -106,12 +111,12 @@ export const PropertyNoteForm = ({
 
       startTransition(() => {
         router.refresh();
-        setSuccessMessage("Your note has been deleted successfully!");
+        setSuccessMessage(t("yourNoteHasBeenDeletedSuccessfully"));
         setIsSuccessDialogOpen(true);
       });
     } catch (error) {
       console.error("Error deleting note:", error);
-      toast.error("Failed to delete note. Please try again.");
+      toast.error(t("failedToDeleteNotePleaseTryAgain"));
     } finally {
       setIsDeleting(false);
     }
@@ -132,19 +137,21 @@ export const PropertyNoteForm = ({
     <>
       <form onSubmit={handleSubmit(onSubmit)} className="grid flex-1 gap-2">
         <Label htmlFor="note" className="sr-only">
-          Update your notes
+          {t("updateYourNotes")}
         </Label>
 
         <Textarea
           {...register("note")}
           rows={8}
-          placeholder={`Add notes for ${reference}`}
+          placeholder={`${t("addNotesFor")} ${reference}`}
           className={`w-full ${errors.note ? "border-red-500" : ""}`}
           disabled={isAnyOperationPending}
         />
 
         {errors.note && (
-          <p className="text-sm text-red-500 mt-1">{errors.note.message}</p>
+          <p className="text-sm text-red-500 mt-1">
+            {t(errors.note.message as string)}
+          </p>
         )}
 
         <div className="flex items-center gap-4 mt-5">
@@ -152,13 +159,18 @@ export const PropertyNoteForm = ({
             onDelete={handleDeleteClick}
             isDeleting={isDeleting}
             disabled={isAnyOperationPending}
+            t={t}
           />
           <Button
             type="submit"
             disabled={isAnyOperationPending}
             className="inline-block bg-primary text-white flex-1"
           >
-            {isLoading ? "Updating..." : isPending ? "Refreshing..." : "Update"}
+            {isLoading
+              ? t("updating")
+              : isPending
+              ? t("refreshing")
+              : t("update")}
           </Button>
         </div>
       </form>
@@ -171,11 +183,11 @@ export const PropertyNoteForm = ({
               <AlertTriangle className="h-12 w-12 text-red-500" />
             </div>
             <DialogTitle className="text-center text-xl font-semibold">
-              Delete Note
+              {t("deleteNote")}
             </DialogTitle>
             <DialogDescription className="text-center text-gray-600 mt-2">
-              Are you sure you want to delete this note for {reference}? This
-              action cannot be undone.
+              {t("areYouSureDeleteNoteFor")} {reference}
+              {t("thisActionCannotBeUndone")}
             </DialogDescription>
           </DialogHeader>
           <div className="flex gap-3 mt-6">
@@ -185,14 +197,14 @@ export const PropertyNoteForm = ({
               className="flex-1"
               disabled={isDeleting}
             >
-              Cancel
+              {t("cancel")}
             </Button>
             <Button
               onClick={handleDeleteConfirm}
               className="flex-1 bg-red-500 hover:bg-red-600 text-white"
               disabled={isDeleting}
             >
-              {isDeleting ? "Deleting..." : "Yes, Delete"}
+              {isDeleting ? t("deleting") : t("yesDelete")}
             </Button>
           </div>
         </DialogContent>
@@ -206,7 +218,7 @@ export const PropertyNoteForm = ({
               <CheckCircle className="h-12 w-12 text-green-500" />
             </div>
             <DialogTitle className="text-center text-xl font-semibold">
-              Success!!
+              {t("success")}
             </DialogTitle>
             <DialogDescription className="text-center text-gray-600 mt-2">
               {successMessage}
@@ -218,7 +230,7 @@ export const PropertyNoteForm = ({
               disabled={isPending}
               className="flex-1 bg-primary hover:bg-primary/90 text-white px-8"
             >
-              {isPending ? "Refreshing..." : "Close"}
+              {isPending ? t("refreshing") : t("close")}
             </Button>
           </div>
         </DialogContent>
@@ -231,10 +243,12 @@ const DeleteNoteButton = ({
   onDelete,
   isDeleting,
   disabled,
+  t,
 }: {
   onDelete: () => void;
   isDeleting: boolean;
   disabled: boolean;
+  t: (key: string) => string;
 }) => {
   return (
     <Button
@@ -244,13 +258,13 @@ const DeleteNoteButton = ({
       className="bg-transparent border border-gray-800 text-gray-800 hover:text-white hover:bg-gray-800 transition-colors flex-1 flex items-center justify-center gap-2 disabled:opacity-50"
     >
       {isDeleting ? (
-        "Deleting..."
+        t("deleting")
       ) : disabled ? (
-        "Please wait..."
+        t("pleaseWait")
       ) : (
         <>
           <Trash2 className="h-4 w-4" />
-          Delete
+          {t("delete")}
         </>
       )}
     </Button>

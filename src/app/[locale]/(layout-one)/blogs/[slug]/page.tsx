@@ -12,7 +12,7 @@ import {
   RecentPostsLoader,
   RelatedArticlesLoader,
 } from "@/components/blog/blog-loading-states";
-import { getLocale } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 
 type Params = {
   [x: string]: string | string[];
@@ -31,7 +31,6 @@ export type AwaitedPageProps = {
 const BlogPage = async (props: PageProps) => {
   const params = await props.params;
 
-  // Better null/undefined checking
   if (!params?.slug) {
     notFound();
   }
@@ -57,8 +56,10 @@ const BlogPage = async (props: PageProps) => {
 export default BlogPage;
 
 async function BlogPageContent({ slug }: { slug: string }) {
-  const locale = await getLocale()
+  const locale = await getLocale();
+  const t = await getTranslations("blogDetailsPage");
   const story = await fetchBlogPage(slug, locale);
+
   return (
     <>
       <div className="2xl:container w-full mx-auto px-6 sm:px-8 md:px-10 lg:px-14 py-10">
@@ -70,7 +71,7 @@ async function BlogPageContent({ slug }: { slug: string }) {
               <>
                 <Separator className="my-6" />
                 <h3 className="text-2xl xl:text-3xl font-normal mb-5">
-                  Related Articles
+                  {t("relatedArticles")}
                 </h3>
 
                 <Suspense fallback={<RelatedArticlesLoader />}>
@@ -97,7 +98,7 @@ async function ListRecentBlogs({
 }: {
   excludeBlogWithSlug?: string;
 }) {
-  const locale = await getLocale()
+  const locale = await getLocale();
   const blogsResponse = await fetchAllBlogs({
     per_page: 4,
     page: 1,
@@ -105,10 +106,10 @@ async function ListRecentBlogs({
     language: locale,
   });
 
-  
-
   const blogs = excludeBlogWithSlug
-    ? blogsResponse.data.stories.filter((blog) => blog.slug !== excludeBlogWithSlug)
+    ? blogsResponse.data.stories.filter(
+        (blog) => blog.slug !== excludeBlogWithSlug
+      )
     : blogsResponse.data.stories;
 
   return (
@@ -125,7 +126,8 @@ async function RelatedArticles({
   tag: string;
   excludeBlogWithSlug?: string;
 }) {
-  const locale = await getLocale()
+  const locale = await getLocale();
+  const t = await getTranslations("blogDetailsPage");
   const relatedBlogsResponse = await fetchAllBlogs({
     per_page: 4,
     page: 1,
@@ -133,10 +135,10 @@ async function RelatedArticles({
     language: locale,
   });
 
-
-
   const relatedBlogs = excludeBlogWithSlug
-    ? relatedBlogsResponse.data.stories.filter((blog) => blog.slug !== excludeBlogWithSlug)
+    ? relatedBlogsResponse.data.stories.filter(
+        (blog) => blog.slug !== excludeBlogWithSlug
+      )
     : relatedBlogsResponse.data.stories;
 
   return (
@@ -144,10 +146,13 @@ async function RelatedArticles({
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {relatedBlogs.map((blog, index) => (
           <div key={`${blog.slug}-${index}`}>
-            <Link href={{
-              pathname: "/blogs/[slug]",
-              params: { slug: blog.slug },
-            }} className="w-full">
+            <Link
+              href={{
+                pathname: "/blogs/[slug]",
+                params: { slug: blog.slug },
+              }}
+              className="w-full"
+            >
               <div className="relative w-full aspect-video">
                 <Image
                   src={blog.content.banner_image.filename}
@@ -160,7 +165,8 @@ async function RelatedArticles({
               <div className="py-2">
                 <p className="text-neutral-900 flex items-center justify-between text-[11px]">
                   <span>
-                    <span>{blog.content.read_time_in_minutes}</span> min read
+                    <span>{blog.content.read_time_in_minutes}</span>{" "}
+                    {t("minRead")}
                   </span>
 
                   <span className="text-muted-foreground/85">

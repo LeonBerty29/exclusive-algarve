@@ -8,6 +8,7 @@ import { useActionState, useEffect } from "react";
 import { toast } from "sonner";
 import { DeleteFromFavoriteButton } from "../product/remove-favorite-button";
 import { Link } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 
 export function AddToFavoriteButton({
   className,
@@ -21,6 +22,7 @@ export function AddToFavoriteButton({
   isFavourite: boolean;
 }) {
   const pathname = usePathname();
+  const t = useTranslations("submitButtons");
   const [state, formAction, isPending] = useActionState(addToFavorite, {});
 
   // Handle toast notifications based on state changes
@@ -38,7 +40,7 @@ export function AddToFavoriteButton({
           <>
             {/* <label htmlFor=""></label> */}
             <Button asChild className="bg-primary text-white hover:bg-black">
-              <Link href={"/login"}>Login</Link>
+              <Link href={"/login"}>{t("login")}</Link>
             </Button>
           </>
         ),

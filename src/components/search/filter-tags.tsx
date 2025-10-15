@@ -16,11 +16,13 @@ import {
 } from "lucide-react";
 import { getCurrencySymbol } from "../shared/price-format";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 
 const FilterTags = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const t = useTranslations("filterTags");
 
   // Function to remove a specific filter
   const removeFilter = (filterKey: string) => {
@@ -186,7 +188,7 @@ const FilterTags = () => {
           variant="ghost"
           onClick={clearAllFilters}
         >
-          <X className="h-4 w-4" strokeWidth={3} /> Clear all
+          <X className="h-4 w-4" strokeWidth={3} /> {t("clearAll")}
         </Button>
       )}
     </>

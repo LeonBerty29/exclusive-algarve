@@ -1,21 +1,23 @@
 "use server";
 
 import * as z from "zod";
-
 import { UserProfileSchema } from "@/schema";
 import { auth } from "@/auth";
 import { revalidatePath } from "next/cache";
+import { getTranslations } from "next-intl/server";
 
 export const updateProfile = async (
   values: z.infer<typeof UserProfileSchema>
   // callbackUrl: string | undefined
 ) => {
+  const t = await getTranslations("updateProfileAction");
+
   const validatedFields = UserProfileSchema.safeParse(values);
 
   if (!validatedFields.success) {
     return {
       error: {
-        message: "Invalid fields!",
+        message: t("invalidFields"),
         first_name: "",
         last_name: "",
       },
@@ -25,10 +27,9 @@ export const updateProfile = async (
   const session = await auth();
   const accessToken = session?.accessToken;
 
-  // console.log({validatedFieldsData: validatedFields.data})
+  const { first_name, last_name, phone_number, newsletter } =
+    validatedFields.data;
 
-  const { first_name, last_name, phone_number, newsletter } = validatedFields.data;
-  // console.log({ first_name, last_name, phone_number, newsletter })
   try {
     const endpoint = `/v1/auth/client/update`;
     const config: RequestInit = {
@@ -46,16 +47,13 @@ export const updateProfile = async (
     };
 
     const url = `${process.env.API_BASE_URL}${endpoint}`;
-
     const response: Response = await fetch(url, config);
-    // console.log({ response });
 
     if (!response.ok) {
-
-      if(response.status === 401){
+      if (response.status === 401) {
         return {
           error: {
-            message: "We are unable to update your profile. Please try again later and contact us if problem persists",
+            message: t("unableToUpdateProfile"),
             first_name: "",
             last_name: "",
           },
@@ -64,21 +62,14 @@ export const updateProfile = async (
 
       const responseErrors = await response.json();
 
-      // console.log({ errorText });
-      // console.log(response);
-
       if (response.status === 422) {
         const error = {
-          message: "There was an error while creating the user",
+          message: t("userCreationError"),
           first_name: "",
           last_name: "",
         };
 
-        // console.log({ errorText });
-
         const errorObject = responseErrors.errors;
-
-        // console.log(errorObject);
 
         if (errorObject.first_name) {
           error.first_name = errorObject.first_name[0];
@@ -111,7 +102,7 @@ export const updateProfile = async (
     if (!user) {
       return {
         error: {
-          message: "There was an error while Updating profile",
+          message: t("updatingProfileError"),
           first_name: "",
           last_name: "",
         },
@@ -119,15 +110,7 @@ export const updateProfile = async (
     }
   } catch (error) {
     console.log(error);
-    // console.log({error})
-    // console.log({errorCause: error.cause})
-    // console.log({errorStatus: error.cause.status})
-    // console.log({errorText: error.cause.statusText})
-    // console.log({errorBody: error.cause.body})
 
-    // const err = await error.cause.response.text();
-
-    // console.log({ err });
     if (error instanceof Error) {
       return {
         error: {
@@ -139,17 +122,14 @@ export const updateProfile = async (
     }
     return {
       error: {
-        message:
-          "An error occcured while Updating your profile. Please check your internet Connection and try again",
+        message: t("connectionError"),
         first_name: "",
         last_name: "",
       },
     };
   }
 
-  /* TODO: send verification token email */
-
   revalidatePath("/settings");
 
-  return { success: "Profile Updated" };
+  return { success: t("profileUpdated") };
 };

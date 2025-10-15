@@ -3,6 +3,7 @@
 import { ZodIssue } from "zod";
 import { contactFormSchema } from "@/types/contact-form";
 import { submitContactFormWithDetailedErrors } from "@/data/contact-form";
+import { getTranslations } from "next-intl/server";
 
 export interface ContactFormActionResult {
   success: boolean;
@@ -14,6 +15,8 @@ export interface ContactFormActionResult {
 export async function contactFormAction(
   formData: FormData
 ): Promise<ContactFormActionResult> {
+  const t = await getTranslations("contactFormAction");
+
   try {
     // Extract data from FormData
     const rawData = {
@@ -42,7 +45,7 @@ export async function contactFormAction(
 
       return {
         success: false,
-        message: "Please check the form for errors",
+        message: t("checkFormForErrors"),
         fieldErrors,
       };
     }
@@ -50,7 +53,7 @@ export async function contactFormAction(
     if (!recaptchaToken) {
       return {
         success: false,
-        message: "ReCaptcha token is missing",
+        message: t("recaptchaTokenMissing"),
       };
     }
 
@@ -77,8 +80,7 @@ export async function contactFormAction(
       });
       return {
         success: false,
-        message:
-          "ReCaptcha verification failed. Please refresh the page and try again.",
+        message: t("recaptchaVerificationFailed"),
       };
     }
 
@@ -90,21 +92,21 @@ export async function contactFormAction(
     if (!result.success) {
       return {
         success: false,
-        message: result.error || "Failed to submit contact form",
+        message: result.error || t("submitFailed"),
         errors: result.validationErrors,
       };
     }
 
     return {
       success: true,
-      message: result.data?.message || "Contact form submitted successfully!",
+      message: result.data?.message || t("submitSuccess"),
     };
   } catch (error) {
     console.error("Contact form action error:", error);
 
     return {
       success: false,
-      message: "An unexpected error occurred. Please try again.",
+      message: t("unexpectedError"),
     };
   }
 }

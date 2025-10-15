@@ -14,6 +14,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { PropertyVideo } from "@/types/property";
+import { useTranslations } from "next-intl";
 
 // Dynamically import ReactPlayer to avoid SSR issues
 const ReactPlayer = dynamic(() => import("react-player/lazy"), {
@@ -54,6 +55,8 @@ export function PropertyVideoPlayer({
   autoPlay = false,
   showPlaylist = true,
 }: PropertyVideoPlayerProps) {
+  const t = useTranslations("propertyVideoPlayer");
+
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
   const [playing, setPlaying] = useState(autoPlay);
   const [muted, setMuted] = useState(false);
@@ -120,7 +123,7 @@ export function PropertyVideoPlayer({
         controlsTimeoutRef.current = null;
       }
     }
-  }, [isFullscreen]); // Only depend on isFullscreen
+  }, [isFullscreen]);
 
   const handlePlayPause = () => {
     setPlaying(!playing);
@@ -227,7 +230,7 @@ export function PropertyVideoPlayer({
   if (!videos || videos.length === 0) {
     return (
       <div className="w-full aspect-video bg-gray-100 rounded-lg flex items-center justify-center">
-        <p className="text-gray-500">No videos available</p>
+        <p className="text-gray-500">{t("noVideosAvailable")}</p>
       </div>
     );
   }
@@ -358,7 +361,7 @@ export function PropertyVideoPlayer({
                       className={`${
                         isFullscreen ? "block" : "hidden sm:block"
                       } text-white hover:text-blue-400 disabled:text-gray-500 transition-colors p-1`}
-                      title="Previous video"
+                      title={t("previousVideo")}
                     >
                       <ChevronLeft size={isFullscreen ? 20 : 16} />
                     </button>
@@ -368,7 +371,7 @@ export function PropertyVideoPlayer({
                       className={`${
                         isFullscreen ? "block" : "hidden sm:block"
                       } text-white hover:text-blue-400 disabled:text-gray-500 transition-colors p-1`}
-                      title="Next video"
+                      title={t("nextVideo")}
                     >
                       <ChevronRight size={isFullscreen ? 20 : 16} />
                     </button>
@@ -379,7 +382,9 @@ export function PropertyVideoPlayer({
                 <button
                   onClick={toggleFullscreen}
                   className="text-white hover:text-blue-400 transition-colors p-1"
-                  title={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
+                  title={
+                    isFullscreen ? t("exitFullscreen") : t("enterFullscreen")
+                  }
                 >
                   {isFullscreen ? (
                     <Minimize
@@ -428,7 +433,7 @@ export function PropertyVideoPlayer({
       {showPlaylist && videos.length > 1 && !isFullscreen && (
         <div className="mt-4">
           <h4 className="text-base sm:text-lg font-semibold mb-3">
-            Property Videos
+            {t("propertyVideos")}
           </h4>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3">
             {videos.map((video, index) => (

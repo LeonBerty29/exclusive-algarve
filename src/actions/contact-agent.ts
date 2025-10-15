@@ -4,6 +4,7 @@
 import { ZodIssue } from "zod";
 import { contactAgentSchema } from "@/types/contact-agent";
 import { contactAgentWithDetailedErrors } from "@/data/contact-agent";
+import { getTranslations } from "next-intl/server";
 
 export interface ContactAgentActionResult {
   success: boolean;
@@ -15,6 +16,8 @@ export interface ContactAgentActionResult {
 export async function contactAgentAction(
   formData: FormData
 ): Promise<ContactAgentActionResult> {
+  const t = await getTranslations("contactAgentAction");
+
   try {
     // Extract data from FormData
     const rawData = {
@@ -45,7 +48,7 @@ export async function contactAgentAction(
 
       return {
         success: false,
-        message: "Please check the form for errors",
+        message: t("pleaseCheckFormForErrors"),
         fieldErrors,
       };
     }
@@ -53,7 +56,7 @@ export async function contactAgentAction(
     if (!recaptchaToken) {
       return {
         success: false,
-        message: "ReCaptcha token is missing",
+        message: t("recaptchaTokenMissing"),
       };
     }
 
@@ -73,15 +76,9 @@ export async function contactAgentAction(
     if (verification.success && verification.score > 0.5) {
       // console.log({ success: true, score: verification.score });
     } else {
-      // console.log({
-      //   success: false,
-      //   score: verification.score,
-      //   errorCodes: verification["error-codes"],
-      // });
       return {
         success: false,
-        message:
-          "ReCaptcha verification failed. Please refresh the page and try again.",
+        message: t("recaptchaVerificationFailed"),
       };
     }
 
@@ -91,21 +88,21 @@ export async function contactAgentAction(
     if (!result.success) {
       return {
         success: false,
-        message: result.error || "Failed to submit request",
+        message: result.error || t("failedToSubmitRequest"),
         errors: result.validationErrors,
       };
     }
 
     return {
       success: true,
-      message: result.data?.message || "Request submitted successfully!",
+      message: result.data?.message || t("requestSubmittedSuccessfully"),
     };
   } catch (error) {
     console.error("Contact agent action error:", error);
 
     return {
       success: false,
-      message: "An unexpected error occurred. Please try again.",
+      message: t("unexpectedErrorOccurred"),
     };
   }
 }

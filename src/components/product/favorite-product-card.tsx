@@ -12,6 +12,7 @@ import { Link } from "@/i18n/navigation";
 import { getLocale } from "next-intl/server";
 import { NoteObject } from "@/types";
 import { AddPropertyNote } from "./add-property-notes";
+import { getTranslations } from "next-intl/server";
 
 interface Props {
   property: Property;
@@ -24,6 +25,8 @@ export const FavoriteProductCard = async ({
   favorites,
   notes,
 }: Props) => {
+  const t = await getTranslations("favoriteProductCard");
+
   // Extract image URLs from assets.images.gallery
   const imagePaths =
     property.assets?.images?.gallery?.map((img) => img.url) || [];
@@ -42,9 +45,6 @@ export const FavoriteProductCard = async ({
     bathrooms: property.features.bathrooms,
     garage: property.features.garage || 0,
   };
-  // Determine if live video button should show (check if videos exist)
-  // const liveVideo = property.assets.virtual_tours && property.assets.virtual_tours.length > 0;
-
   // Use property.currency for price formatting
   const currency = property.currency || "EUR";
 
@@ -64,16 +64,6 @@ export const FavoriteProductCard = async ({
                 <IoMdPricetag fill="none" strokeWidth={20} />
                 {reference}
               </div>
-              {/* {tag && (
-                <div
-                  className={cn(
-                    "min-w-fit rounded-none text-white text-sm px-2 py-1 h-fit flex items-center justify-center",
-                    tag.slug === "rsv" ? "bg-[#17BF62]" : "bg-red-700"
-                  )}
-                >
-                  {tag.name}
-                </div>
-              )} */}
             </div>
 
             <div className="flex gap-2 items-center">
@@ -94,7 +84,7 @@ export const FavoriteProductCard = async ({
 
         {exclusive && (
           <div className="bg-primary h-6 text-center text-xs font-bold text-white absolute bottom-0 w-full flex items-center justify-center z-10">
-            EXCLUSIVE LISTING BY EAV
+            {t("exclusiveListingByEav")}
           </div>
         )}
       </CardHeader>
@@ -121,7 +111,7 @@ export const FavoriteProductCard = async ({
               />
             ) : (
               <span className="text-xl font-semibold flex items-center gap-1 text-primary">
-                Contact for price
+                {t("contactForPrice")}
               </span>
             )}
           </div>
@@ -137,7 +127,7 @@ export const FavoriteProductCard = async ({
             <div className="max-w-[47%]">
               <div>
                 <p className="text-sm font-light text-gray-400 mb-3">
-                  Location
+                  {t("location")}
                 </p>
                 <p className="text-sm font-semibold text-black line-clamp-1">
                   {location}
@@ -148,7 +138,7 @@ export const FavoriteProductCard = async ({
             <div className="max-w-[52%] min-w-fit flex gap-2">
               <div className="flex-1 max-w-fit">
                 <p className="text-sm font-light text-gray-400 mb-3">
-                  Gross Area
+                  {t("grossArea")}
                 </p>
                 <p className="text-sm text-black font-semibold">
                   {grossArea} m<sup>2</sup>
@@ -156,7 +146,7 @@ export const FavoriteProductCard = async ({
               </div>
               <div className="flex-1 max-w-fit">
                 <p className="text-sm font-light text-gray-400 mb-3">
-                  Plot Size
+                  {t("plotSize")}
                 </p>
                 <p className="text-sm font-semibold text-black">
                   {plotSize} m<sup>2</sup>
@@ -185,17 +175,6 @@ export const FavoriteProductCard = async ({
                 </div>
               </div>
             </div>
-
-            {/* <div className='w-[52%] max-w-[140px] min-w[128px]'>
-            {
-              liveVideo && (
-                <Button type='button' className='text-[9px] font-semibold w-full rounded-none bg-black text-white hover:bg-black/90'>
-                  <Play className='h-2 w-2 text-white fill-white' />
-                  LIVE TOUR VIDEO
-                </Button>
-              )
-            }
-          </div> */}
           </div>
         </Link>
       </CardContent>

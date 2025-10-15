@@ -5,9 +5,9 @@ import { useState } from "react";
 import { usePathname } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
-
+import { useTranslations } from "next-intl";
 // interface FavoritesResponse {
-//   favorite_properties: number[];
+//   favorite_properties: number[];
 // }
 
 export function DeleteFromFavoriteButton({
@@ -19,6 +19,8 @@ export function DeleteFromFavoriteButton({
   className?: string;
   reference: string;
 }) {
+  "use client";
+  const t = useTranslations("removeFavoriteButton");
   const [pending, setPending] = useState(false);
   const pathname = usePathname();
 
@@ -40,7 +42,7 @@ export function DeleteFromFavoriteButton({
 
       if (!response.ok) {
         // Try to get error message from response
-        let errorMessage = "Failed to remove favorite";
+        let errorMessage = t("failedToRemoveFavorite");
         try {
           const errorData = await response.json();
           errorMessage = errorData.error || errorMessage;
@@ -53,7 +55,11 @@ export function DeleteFromFavoriteButton({
 
       // Handle 204 No Content (successful deletion)
       if (response.status === 204) {
-        toast.success(`Successfully removed ${reference} from favorites`);
+        toast.success(
+          `${t("successfullyRemovedFromFavorites")} ${reference} ${t(
+            "fromFavorites"
+          )}`
+        );
         return;
       }
 
@@ -62,14 +68,21 @@ export function DeleteFromFavoriteButton({
       if (contentType && contentType.includes("application/json")) {
         // const result: FavoritesResponse = await response.json();
         // console.log("Removed from favourites", result);
-        toast.success(`Successfully removed ${reference} from favorites`);
+        toast.success(
+          `${t("successfullyRemovedFromFavorites")} ${reference} ${t(
+            "fromFavorites"
+          )}`
+        );
       } else {
-        toast.success(`Successfully removed ${reference} from favorites`);
+        toast.success(
+          `${t("successfullyRemovedFromFavorites")} ${reference} ${t(
+            "fromFavorites"
+          )}`
+        );
       }
     } catch (error) {
       console.error("Error deleting favorite:", error);
-      // You might want to show a toast notification here
-      toast.error(`Error deleting ${reference} from favorites`);
+      toast.error(`${t("errorDeletingFromFavorites")} ${reference} ${t("fromFavorites")}`);
     } finally {
       setPending(false);
     }

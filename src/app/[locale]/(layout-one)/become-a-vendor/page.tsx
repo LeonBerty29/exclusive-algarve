@@ -5,40 +5,35 @@ import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
 import AnimatedImagesSection from "@/components/shared/animated-image-section";
 import { ContactForm } from "@/components/shared/contact-form";
+import { getTranslations } from "next-intl/server";
 
-const BecomeAVendor = () => {
+const BecomeAVendor = async() => {
+  const t = await getTranslations("becomeAVendorPage");
+
   return (
     <>
       <div className="lg:container mx-auto px-6 md:px-12 lg:px-14 pt-24 pb-12">
         <div className="flex items-start gap-y-5 justify-between py-5 md:py-8 flex-wrap">
           <div className="w-full lg:w-[50%] md:pr-8 lg:pr-14">
             <p className="text-primary font-light text-sm mb-2">
-              BECOME A VENDOR
+              {t("becomeAVendor")}
             </p>
             <h1 className="text-2xl lg:text-3xl font-semibold sm:max-w-70 mb-6">
-              SELL MY PROPERTY IN THE ALGARVE
+              {t("sellMyPropertyInTheAlgarve")}
             </h1>
 
             <p className="text-black font-medium mb-4 text-sm xl:text-base">
-              You decided to sell your property in the Algarve, and now what?
+              {t("youDecidedToSellYourPropertyInTheAlgarve")}
             </p>
             <div className="space-y-4">
               <p className="text-black/75 text-sm xl:text-base">
-                Vendors often feel overwhelmed with bureaucracy, unsure of where
-                to start from, when they decide on selling a property in the
-                Algarve. At Exclusive Algarve Villas we are here to assist you
-                all the way with the sale of your property and ensure that you
-                optimize all aspects of selling your real estate asset towards a
-                successful sale.
+                {t("vendorsOftenFeelOverwhelmedWithBureaucracy")}
               </p>
               <p className="text-black/75 text-sm xl:text-base">
-                Observe your property prior to put it on the market for sale,
-                and now answer, how appealing is your property to buyers? What
-                can you do to improve your villa or apartment for sale in the
-                Algarve?
+                {t("observeYourPropertyPriorToMarket")}
               </p>
               <p className="text-black/75 text-sm xl:text-base">
-                You guess it right, there&apos;s homework to do!
+                {t("youGuessItRight")}
               </p>
             </div>
           </div>
@@ -52,11 +47,10 @@ const BecomeAVendor = () => {
                   1
                 </div>
                 <h3 className="text-primary font-semibold mb-3 text-sm">
-                  Stage Your Property
+                  {t("stageYourProperty")}
                 </h3>
                 <p className="text-black/75 text-xs leading-relaxed">
-                  Observe your property prior to put it on the market for sale,
-                  and now answer, how appealing is your property to buyers?
+                  {t("observeYourPropertyPriorToMarket")}
                 </p>
               </li>
 
@@ -66,11 +60,10 @@ const BecomeAVendor = () => {
                   2
                 </div>
                 <h3 className="text-white font-semibold mb-3 text-sm">
-                  Property <br /> Documentation
+                  {t("propertyDocumentation")}
                 </h3>
                 <p className="text-white/75 text-xs leading-relaxed">
-                  It&apos;s important that all your property documents are in order
-                  before listing your property in real estate agency.
+                  {t("importantPropertyDocumentsInOrder")}
                 </p>
               </li>
 
@@ -80,11 +73,10 @@ const BecomeAVendor = () => {
                   3
                 </div>
                 <h3 className="text-white font-semibold mb-3 text-sm">
-                  Ready To Sell
+                  {t("readyToSell")}
                 </h3>
                 <p className="text-white/90 text-xs leading-relaxed">
-                  Now that your property is looking at its best and you signed
-                  the mediation contract, you are ready to sell!
+                  {t("propertyLookingBestAndSignedContract")}
                 </p>
               </li>
 
@@ -94,11 +86,10 @@ const BecomeAVendor = () => {
                   4
                 </div>
                 <h3 className="text-primary font-semibold mb-3 text-sm">
-                  Marketing
+                  {t("marketing")}
                 </h3>
                 <p className="text-black/75 text-xs leading-relaxed">
-                  Your property will be displayed on our wide network of
-                  international property portals and websites.
+                  {t("propertyDisplayedWideNetwork")}
                 </p>
               </li>
             </ol>
@@ -108,8 +99,8 @@ const BecomeAVendor = () => {
 
       <div className="bg-neutral-900 text-primary py-18">
         <h2 className="text-center text-2xl lg:text-3xl font-semibold mb-4 px-4">
-          IS MY PROPERTY’S
-          <br /> MAINTENANCE ALL DONE?
+          {t("isMyPropertyMaintenanceAllDoneLine1")}
+          <br /> {t("isMyPropertyMaintenanceAllDoneLine2")}
         </h2>
         <div className="lg:container mx-auto px-6 md:px-12 lg:px-14">
           <div className="flex items-center gap-y-5 justify-between py-5 md:py-8 flex-wrap">
@@ -118,28 +109,17 @@ const BecomeAVendor = () => {
             <div className="w-full lg:w-[50%] lg:min-w-[unset] lg:pl-14 order-1 lg:order-2">
               <div className="space-y-4">
                 <p className="text-white/75 text-sm xl:text-base">
-                  Staging your property for sale is essential to attract buyers
-                  in today´s real estate market. Make sure that you keep your
-                  villa or apartment clean of clutter and personal items, use
-                  neutral colors throughout, open windows and turn on lights
-                  during viewings.
+                  {t("stagingYourPropertyIsEssential")}
                 </p>
                 <p className="text-white/75 text-sm xl:text-base">
-                  It is equally essential to present your property for sale to
-                  buyers well maintained. When you’ve been living in the
-                  property for many years, small maintenance jobs can be
-                  overlooked. Is your home in need of tender love and care?
+                  {t("presentYourPropertyWellMaintained")}
                 </p>
                 <p className="text-white/75 text-sm xl:text-base">
-                  Take care of any repairs needed before putting the property on
-                  the market for sale, to achieve the best selling price on your
-                  villa or apartment for sale. If you think that your property
-                  needs a new kitchen or bathroom, leave it to the next owner,
-                  as the buyers often welcome the idea of small refurbishments.
+                  {t("takeCareOfRepairsBeforeMarket")}
                 </p>
 
                 <Button className="text-white bg-primary hover:bg-black transition-colors mt-4">
-                  BECOME A VENDOR
+                  {t("becomeAVendor")}
                 </Button>
               </div>
             </div>
@@ -151,12 +131,10 @@ const BecomeAVendor = () => {
         <div className="flex items-center gap-y-5 justify-between flex-wrap pt-12 lg:pt-0">
           <div className="w-full lg:w-[50%] md:pr-8 lg:pr-14">
             <h2 className="text-2xl lg:text-3xl font-semibold mb-6">
-              IS MY PROPERTY <br /> DOCUMENTATION IN ORDER
+              {t("isMyPropertyDocumentationInOrder")}
             </h2>
             <p className="text-neutral-700 text-sm xl:text-base mb-5 md:mb-0">
-              It&apos;s important that all your property documents are in order
-              before listing your property with our real estate agency. We can
-              meet with you and go through this together.
+              {t("importantDocumentsBeforeListing")}
             </p>
           </div>
 
@@ -171,7 +149,7 @@ const BecomeAVendor = () => {
         </div>
       </div>
 
-      <RealEstateChecklist />
+      <RealEstateChecklist t={t} />
 
       <div className="lg:container mx-auto px-6 md:px-12 lg:px-14 py-12">
         <div className="flex items-center gap-y-5 justify-between py-5 md:py-8 flex-wrap">
@@ -186,27 +164,18 @@ const BecomeAVendor = () => {
 
           <div className="w-full lg:w-[50%] lg:min-w-[unset] lg:pl-14 order-1 lg:order-2">
             <h3 className="text-2xl lg:text-3xl font-semibold sm:max-w-70 mb-6">
-              NO CONTRACT <br /> NO SALE!!
+              {t("noContractNoSale")}
             </h3>
             <div className="space-y-3">
               <p className="text-neutral-700 text-sm xl:text-base">
-                Exclusive Algarve Villas is a licensed real estate agency with
-                the license number AMI-7516 by Exclusive Living Mediaçao
-                Imobilaria Lda.
+                {t("licensedRealEstateAgency")}
               </p>
               <p className="text-neutral-700 text-sm xl:text-base">
-                As a licensed real estate agency, we are required to have a
-                signed mediation contract (Agency agreement) in order to
-                officially list your property for sale. So,{" "}
-                <b>NO CONTRACT = NO SALE!!</b>
+                {/* Note: bold text remains static or part of translation as needed */}
+                <>{t("signedContractRequiredForListing")}</>
               </p>
               <p className="text-neutral-700 text-sm xl:text-base">
-                Mediation contracts are normally valid for a 6 months with
-                renewable equal periods, and can be on an “exclusive” or a
-                “non-exclusive” basis. We use the standard contract approved by
-                IMPIC, the organ regulating the real estate and building
-                licenses. Any questions on the contract can be clarified by our
-                sales team.
+                {t("mediationContractsValidSixMonths")}
               </p>
             </div>
           </div>
@@ -215,27 +184,18 @@ const BecomeAVendor = () => {
         <div className="flex items-center gap-y-5 justify-between py-5 md:py-8 flex-wrap">
           <div className="w-full lg:w-[50%] md:pr-8 lg:pr-14">
             <h3 className="text-2xl lg:text-3xl font-semibold sm:max-w-70 mb-6">
-              READY TO SELL?
+              {t("readyToSell")}
             </h3>
 
             <div className="space-y-3">
               <p className="text-neutral-700 text-sm xl:text-base">
-                Now that your property is looking at its best, all the documents
-                of the property are in order and you signed the mediation
-                contract, you are ready to sell your property!
+                {t("propertyLookingBestDocumentsInOrder")}
               </p>
               <p className="text-neutral-700 text-sm xl:text-base">
-                Our professional team at Exclusive Algarve Villas market your
-                property for sale with the assistance of our in-house
-                photographer and works with you on the property description,
-                ensuring that all property’s features and equipment are well
-                documented and presented.
+                {t("professionalTeamMarketsProperty")}
               </p>
               <p className="text-neutral-700 text-sm xl:text-base">
-                For high-end luxury real estate, sea front villas and unique
-                exclusive homes for sale in the West and Central Algarve, we
-                also use the services of professional photographers and drone
-                video services.
+                {t("highEndLuxuryRealEstateServices")}
               </p>
             </div>
           </div>
@@ -262,47 +222,37 @@ const BecomeAVendor = () => {
 
           <div className="w-full lg:w-[50%] lg:min-w-[unset] lg:pl-14 order-1 lg:order-2">
             <h3 className="text-2xl lg:text-3xl font-semibold sm:max-w-70 mb-6">
-              MARKETING
+              {t("marketing")}
             </h3>
             <div className="space-y-3">
               <p className="text-neutral-700 text-sm xl:text-base">
-                As soon as you confirm all the details, your property will be
-                displayed on our wide network of international property portals
-                and websites. We also work with trusted national and
-                international real estate agencies and investment contacts to
-                find the right buyer for your property.
+                {t("propertyDisplayedWideNetwork")}
               </p>
               <p className="text-neutral-700 text-sm xl:text-base">
-                If you have any questions in regards to listing your property
-                for sale with Exclusive Algarve Villas, please contact us on{" "}
                 <Link
                   href={"/phone-contact1"}
-
                   className="text-primary hover:underline"
                 >
                   +351 282 353 019
                 </Link>{" "}
-                or{" "}
+                {t("or")}{" "}
                 <Link
                   href="/email"
                   className="text-primary hover:underline"
                 >
                   info@eavillas.com
                 </Link>{" "}
-                and we&apos;ll be happy to assist you.
+                {t("happyToAssistYou")}
               </p>
               <p className="text-neutral-700 text-sm xl:text-base">
-                Alternatively, you can use the webform below to submit
-                information on the property you have for sale and one member of
-                our sales team will be in touch with you shortly.
+                {t("useWebformBelow")}
               </p>
               <p className="text-neutral-700 text-sm xl:text-base">
-                Thank you for your trust, we look forward to working with you
-                soon!
+                {t("thankYouForTrust")}
               </p>
 
               <Button className="text-white bg-primary hover:bg-black transition-colors mt-4">
-                DISCOVER OUR STRATEGY
+                {t("discoverOurStrategy")}
               </Button>
             </div>
           </div>
@@ -326,19 +276,19 @@ const BecomeAVendor = () => {
 
 export default BecomeAVendor;
 
-function RealEstateChecklist() {
+function RealEstateChecklist({ t }: { t: (key: string) => string }) {
   const checklistItems = [
-    "Passport or other ID of the seller(s)",
-    "Copy of the Fiscal ID Number (NIF)",
-    "If a company is selling the property, the share certificates and holders of these need to be identified",
-    "Caderneta predial (finanças)",
-    "Certidao de teor (conservatoria do registro)",
-    "Licenca de habitacao (camara)",
-    "Ficha tecnica (camara)",
-    "Energy certificate",
-    "Floor plans (Final approved version with the stamp from the camara)",
-    "Borehole registration (if applicable)",
-    "Septic tank registration (if applicable)",
+    t("passportOrOtherIdOfSeller"),
+    t("copyOfFiscalIdNumber"),
+    t("companySellingPropertyShareCertificates"),
+    t("cadernetaPredialFinancas"),
+    t("certidaoDeTeorConservatoria"),
+    t("licencaDeHabitacaoCamara"),
+    t("fichaTecnicaCamara"),
+    t("energyCertificate"),
+    t("floorPlansFinalVersion"),
+    t("boreholeRegistrationIfApplicable"),
+    t("septicTankRegistrationIfApplicable"),
   ];
 
   return (
@@ -348,22 +298,13 @@ function RealEstateChecklist() {
           <div className="bg-gray-200">
             <div className="lg:container mx-auto px-6 md:px-12 lg:px-14 py-10 md:py-24">
               <h3 className="text-2xl lg:text-3xl font-semibold uppercase w-full md:w-1/2 pr-5 lg:max-w-[450px]">
-                Here&apos;s a quick checklist of documents required for real
-                estate owned in Portugal:
+                {t("quickChecklistTitle")}
               </h3>
             </div>
           </div>
           <div className="lg:container mx-auto px-6 md:px-12 lg:px-14 py-10 md:py-24">
             <p className="w-full md:w-1/2 max-w-[650px]  pr-5 text-neutral-700 text-sm xl:text-base md:mb-0">
-              This checklist outlines the essential documents required to
-              legally sell real estate in Portugal. Its main goal is to ensure
-              the property is fully compliant with local regulations and that
-              the seller&apos;s identity and ownership are properly verified.
-              The documents include personal or corporate identification, proof
-              of property registration and technical specifications, as well as
-              legal permits like the habitation license and energy
-              certificate—ensuring a smooth and transparent transaction for both
-              seller and buyer.
+              {t("checklistPurposeDescription")}
             </p>
           </div>
         </div>
@@ -372,9 +313,7 @@ function RealEstateChecklist() {
           {checklistItems.map((item, index) => (
             <div key={index} className="flex items-start gap-3">
               <div className="size-5 border border-gray-500"></div>
-              <span className="flex-1 text-neutral-700 text-sm xl:text-base leading-relaxed">
-                {item}
-              </span>
+              <span className="flex-1 text-neutral-700 text-sm xl:text-base leading-relaxed">{item}</span>
             </div>
           ))}
         </div>

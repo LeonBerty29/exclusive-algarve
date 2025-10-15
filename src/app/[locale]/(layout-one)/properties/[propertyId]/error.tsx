@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { RefreshCw, AlertTriangle, Search, Building2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 
 interface ErrorProps {
   error: Error & { digest?: string };
@@ -11,6 +12,8 @@ interface ErrorProps {
 }
 
 export default function PropertyError({ error, reset }: ErrorProps) {
+  const t = useTranslations("propertyDetailsErrorPage");
+
   useEffect(() => {
     // Log the error to your error reporting service
     console.error("Property page error:", error);
@@ -24,37 +27,32 @@ export default function PropertyError({ error, reset }: ErrorProps) {
   const getErrorMessage = () => {
     if (is404Error) {
       return {
-        title: "Property Not Found",
-        description:
-          "The property you're looking for doesn't exist or has been removed from our listings.",
-        suggestion:
-          "Browse our available properties or search for something else.",
+        title: t("propertyNotFoundTitle"),
+        description: t("propertyNotFoundDescription"),
+        suggestion: t("propertyNotFoundSuggestion"),
       };
     }
 
     if (isNetworkError) {
       return {
-        title: "Connection Problem",
-        description:
-          "We're having trouble connecting to our servers right now.",
-        suggestion: "Please check your internet connection and try again.",
+        title: t("connectionProblemTitle"),
+        description: t("connectionProblemDescription"),
+        suggestion: t("connectionProblemSuggestion"),
       };
     }
 
     if (isAPIError) {
       return {
-        title: "Service Unavailable",
-        description: "Our property service is temporarily unavailable.",
-        suggestion:
-          "We're working to fix this. Please try again in a few moments.",
+        title: t("serviceUnavailableTitle"),
+        description: t("serviceUnavailableDescription"),
+        suggestion: t("serviceUnavailableSuggestion"),
       };
     }
 
     return {
-      title: "Something Went Wrong",
-      description: "An unexpected error occurred while loading this property.",
-      suggestion:
-        "Please try refreshing the page or contact support if the problem persists.",
+      title: t("somethingWentWrongTitle"),
+      description: t("somethingWentWrongDescription"),
+      suggestion: t("somethingWentWrongSuggestion"),
     };
   };
 
@@ -97,7 +95,7 @@ export default function PropertyError({ error, reset }: ErrorProps) {
                 className="flex-1 hover:scale-105 bg-black hover:bg-primary text-white font-medium py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center gap-2 group"
               >
                 <RefreshCw className="w-4 h-4 group-hover:rotate-180 transition-transform duration-300" />
-                Try Again
+                {t("tryAgainButton")}
               </Button>
 
               <Button
@@ -106,7 +104,7 @@ export default function PropertyError({ error, reset }: ErrorProps) {
               >
                 <Link href="/properties">
                   <Search className="w-5 h-5" />
-                  Browse Properties
+                  {t("browsePropertiesButton")}
                 </Link>
               </Button>
             </div>
@@ -114,12 +112,12 @@ export default function PropertyError({ error, reset }: ErrorProps) {
 
           <div className="mt-8 pt-6 border-t border-gray-200">
             <p className="text-sm text-gray-500">
-              If you believe this is an error, please{" "}
+              {t("believeErrorTextPart1")}{" "}
               <Link
                 href="/contact"
                 className="text-blue-600 hover:text-blue-800 underline"
               >
-                contact us
+                {t("contactUsLinkText")}
               </Link>
             </p>
           </div>
@@ -128,20 +126,20 @@ export default function PropertyError({ error, reset }: ErrorProps) {
           {process.env.NODE_ENV === "development" && (
             <details className="mt-6 p-4 bg-slate-50 rounded-lg border">
               <summary className="cursor-pointer text-sm font-medium text-slate-700 hover:text-slate-900">
-                Error Details (Development)
+                {t("errorDetailsDevelopment")}
               </summary>
               <div className="mt-2 text-xs text-slate-600 font-mono bg-white p-3 rounded border overflow-auto">
                 <div className="mb-2">
-                  <strong>Message:</strong> {error.message}
+                  <strong>{t("messageLabel")}:</strong> {error.message}
                 </div>
                 {error.digest && (
                   <div className="mb-2">
-                    <strong>Digest:</strong> {error.digest}
+                    <strong>{t("digestLabel")}:</strong> {error.digest}
                   </div>
                 )}
                 {error.stack && (
                   <div>
-                    <strong>Stack:</strong>
+                    <strong>{t("stackLabel")}:</strong>
                     <pre className="whitespace-pre-wrap text-xs mt-1">
                       {error.stack}
                     </pre>

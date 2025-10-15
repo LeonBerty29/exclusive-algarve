@@ -1,9 +1,7 @@
 import { ProductCard } from "@/components/product/product-card";
 import { PropertiesPagination } from "@/components/property/properties-pagination";
 import SearchHeader from "@/components/search/search-header";
-// import SideFilters from "@/components/search/side-filters";
 import {
-  // getPropertiesWithAll,
   getPropertiesWithAllPaginated,
 } from "@/data/properties";
 import { PropertySearchParams } from "@/types/property";
@@ -23,11 +21,7 @@ import { ListFilter } from "lucide-react";
 import { SortBy } from "@/components/search/sort-by";
 import { generateApiParams, hasActiveFilters } from "@/lib/utils";
 import { getNote } from "@/data/notes";
-// import HeroSearch from "@/components/home/search-component";
-
-// interface PropertiesPageProps {
-//   searchParams: PropertySearchParams;
-// }
+import { getTranslations } from "next-intl/server";
 
 type Params = {
   [x: string]: string | string[];
@@ -39,20 +33,19 @@ interface PageProps {
 }
 
 export default async function PropertiesPage(props: PageProps) {
+  const t = await getTranslations("propertiesPage");
+
   // Convert searchParams to the format expected by your API
   const searchParams = await props.searchParams;
 
   // Handle price_ranges parameter - it comes from URL as price_ranges[]
   let priceRanges: string[] | undefined;
   if (searchParams["price_ranges[]"]) {
-    // Handle both single value and array of values
-    // console.log("There are price ranges");
     if (Array.isArray(searchParams["price_ranges[]"])) {
       priceRanges = searchParams["price_ranges[]"] as string[];
     } else {
       priceRanges = [searchParams["price_ranges[]"] as string];
     }
-
     console.log({ priceRanges });
   }
 
@@ -90,11 +83,6 @@ export default async function PropertiesPage(props: PageProps) {
     page: apiParams.page,
   });
 
-  // Fetch properties from API
-  // const propertiesResponse = await getPropertiesWithAll(apiParams);
-
-  // console.log(propertiesResponse.meta);
-
   return (
     <>
       <div className="pt-24 w-full">
@@ -112,7 +100,7 @@ export default async function PropertiesPage(props: PageProps) {
         <div className="2xl:container px-6 sm:px-8 md:px-10 lg:px-14 mx-auto">
           <div className="flex items-center gap-1 md:gap-4 justify-end">
             <div className="flex items-center gap-2 text-xs md:text-sm">
-              <ListFilter className="w-4 h-4 hidden sm:block" /> Sort by:
+              <ListFilter className="w-4 h-4 hidden sm:block" /> {t("sortBy")}
             </div>
             <SortBy />
           </div>
@@ -143,6 +131,7 @@ async function PropertieList({
 }: {
   apiParams: PropertySearchParams;
 }) {
+  const t = await getTranslations("propertiesPage");
   const session = await auth();
   const token = session?.accessToken;
 
@@ -150,9 +139,7 @@ async function PropertieList({
   const [propertiesResponse, favoritesResponse, notesResponse] =
     await Promise.all([
       getPropertiesWithAllPaginated(apiParams, PROPERTIES_PER_PAGE),
-      token
-        ? getFavorites(token)
-        : Promise.resolve({ favorite_properties: [] }),
+      token ? getFavorites(token) : Promise.resolve({ favorite_properties: [] }),
       token ? getNote() : Promise.resolve({ data: [] }),
     ]);
 
@@ -166,11 +153,7 @@ async function PropertieList({
       {properties.length > 0 ? (
         properties.map((property) => (
           <div key={property.id} className="">
-            <ProductCard
-              property={property}
-              favorites={favorites}
-              notes={notes}
-            />
+            <ProductCard property={property} favorites={favorites} notes={notes} />
           </div>
         ))
       ) : (
@@ -193,11 +176,10 @@ async function PropertieList({
               {/* Error Message */}
               <div className="mb-6">
                 <h1 className="text-3xl font-bold text-gray-900 mb-3">
-                  No Properties Found
+                  {t("noPropertiesFound")}
                 </h1>
                 <p className="text-gray-600 text-lg">
-                  We couldn&apos;t find any properties matching your current
-                  search criteria.
+                  {t("noPropertiesMatchSearch")}
                 </p>
               </div>
 
@@ -205,7 +187,7 @@ async function PropertieList({
               {hasFilters ? (
                 <div className="space-y-4">
                   <p className="text-sm text-gray-500 mb-4">
-                    Try clearing your filters to see more results
+                    {t("tryClearingFilters")}
                   </p>
                   <Button
                     asChild
@@ -213,15 +195,14 @@ async function PropertieList({
                   >
                     <Link href="/properties">
                       <FilterX className="w-5 h-5" />
-                      Clear All Filters
+                      {t("clearAllFilters")}
                     </Link>
                   </Button>
                 </div>
               ) : (
                 <div className="space-y-4">
                   <p className="text-sm text-gray-500 mb-4">
-                    No properties are currently available. Try browsing our full
-                    catalog or return home.
+                    {t("noPropertiesAvailable")}
                   </p>
                   <div className="flex gap-3 justify-center">
                     <Button
@@ -230,7 +211,7 @@ async function PropertieList({
                     >
                       <Link href="/">
                         <Home className="w-5 h-5" />
-                        Home
+                        {t("home")}
                       </Link>
                     </Button>
 
@@ -240,7 +221,7 @@ async function PropertieList({
                     >
                       <Link href="/properties">
                         <Search className="w-5 h-5" />
-                        Browse Properties
+                        {t("browseProperties")}
                       </Link>
                     </Button>
                   </div>

@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useState } from "react";
 
@@ -51,6 +52,8 @@ const LifeStyle = () => {
     },
   ]);
 
+  const t = useTranslations("lifestyle");
+
   // const [selectedImage, setSelectedImage] = useState<GalleryImage | null>(null);
 
   // const openLightbox = (image: GalleryImage) => {
@@ -64,7 +67,7 @@ const LifeStyle = () => {
   return (
     <div className="container mx-auto px-4 py-8 sm:py-14 lg:py-16 xl:py-20">
       <h1 className="text-3xl font-normal text-center mb-8 lg:mb-12 text-neutral-800">
-        The Algarve&apos;s Lifestyle
+        {t("theAlgarvesLifestyle")}
       </h1>
 
       {/* Gallery Grid */}

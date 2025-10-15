@@ -5,10 +5,11 @@ import Image from "next/image";
 import { Property } from "@/types/property";
 import { getProxiedImageUrl } from "@/lib/utils";
 import { Link } from "@/i18n/navigation";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 const HouseView = ({ property }: { property: Property }) => {
   const locale = useLocale();
+  const t = useTranslations("houseView");
 
   if (!property) {
     return null;
@@ -81,7 +82,7 @@ const HouseView = ({ property }: { property: Property }) => {
                   }}
                 >
                   {" "}
-                  HAVE A LOOK
+                  {t("cta")}
                 </Link>
               </motion.div>
             </motion.div>

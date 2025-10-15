@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { ChevronDown, ChevronUp, Filter, X } from "lucide-react";
 import React from "react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
+import { useTranslations } from "next-intl";
 
 interface CollapsibleFiltersProps {
   children: React.ReactNode;
@@ -14,6 +15,7 @@ export const CollapsibleFilters = ({
   children,
   visibleCount = 4,
 }: CollapsibleFiltersProps) => {
+  const t = useTranslations("collapsibleFilters");
   const [showAll, setShowAll] = useState(false);
   const [isFixed, setIsFixed] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -125,7 +127,7 @@ export const CollapsibleFilters = ({
         className="flex items-center gap-2 px-3 py-2 bg-amber-50 border border-amber-50 rounded-md shadow-md hover:shadow-lg transition-all hover:bg-gray-50"
       >
         <Filter className="w-4 h-4" />
-        <span className="text-sm font-medium">Filters</span>
+        <span className="text-sm font-medium">{t("filters")}</span>
       </button>
     </div>
   );
@@ -172,7 +174,7 @@ export const CollapsibleFilters = ({
                   </button>
                 </TooltipTrigger>
                 <TooltipContent className="text-white bg-primary">
-                  <p>Minimize filters</p>
+                  <p>{t("minimizeFilters")}</p>
                 </TooltipContent>
               </Tooltip>
             </div>
@@ -211,18 +213,18 @@ export const CollapsibleFilters = ({
                         {showAll ? (
                           <>
                             <ChevronUp className="w-6 h-6" />
-                            {/* <span>Show Less</span> */}
+                            {/* <span>{t("showLess")}</span> */}
                           </>
                         ) : (
                           <>
                             <ChevronDown className="w-6 h-6" />
-                            {/* <span>More Filters</span> */}
+                            {/* <span>{t("moreFilters")}</span> */}
                           </>
                         )}
                       </button>
                     </TooltipTrigger>
                     <TooltipContent className="text-white bg-primary">
-                      <p>{showAll ? "Show Less" : "More Filters"}</p>
+                      <p>{showAll ? t("showLess") : t("moreFilters")}</p>
                     </TooltipContent>
                   </Tooltip>
                 </div>
@@ -263,12 +265,12 @@ export const CollapsibleFilters = ({
                   {showAll ? (
                     <>
                       <ChevronUp className="w-6 h-6" />
-                      {/* <span>Show Less</span> */}
+                      {/* <span>{t("showLess")}</span> */}
                     </>
                   ) : (
                     <>
                       <ChevronDown className="w-6 h-6" />
-                      {/* <span>More Filters</span> */}
+                      {/* <span>{t("moreFilters")}</span> */}
                     </>
                   )}
                 </button>

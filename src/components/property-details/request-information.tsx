@@ -14,6 +14,7 @@ import { Button } from "../ui/button";
 import { Property } from "@/types/property";
 import ContactAgentForm from "./contact-agent-form";
 import { CheckCircle } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface RequestInformationDialogProps {
   salesConsultant: Property["sales_consultant"];
@@ -23,6 +24,7 @@ interface RequestInformationDialogProps {
 export const RequestInformationDialog: React.FC<
   RequestInformationDialogProps
 > = ({ salesConsultant, children }) => {
+  const t = useTranslations("requestInformation");
   const [isOpen, setIsOpen] = React.useState(false);
   const [showSuccessDialog, setShowSuccessDialog] = React.useState(false);
 
@@ -41,7 +43,7 @@ export const RequestInformationDialog: React.FC<
               className="text-sm font-semibold w-full rounded-none bg-white text-black !px-6 hover:text-white hover:bg-black transition-all"
             >
               <LiaEdit className="h-3 w-3" />
-              REQUEST INFORMATION
+              {t("requestInformationButton")}
             </Button>
           )}
         </DialogTrigger>
@@ -53,7 +55,7 @@ export const RequestInformationDialog: React.FC<
           <div>
             <DialogHeader>
               <DialogTitle className="text-white text-center">
-                Contact Sales Consultant
+                {t("contactSalesConsultant")}
               </DialogTitle>
             </DialogHeader>
             <div className="px-2 py-4">
@@ -66,8 +68,11 @@ export const RequestInformationDialog: React.FC<
 
           <DialogFooter className="sm:justify-start">
             <DialogClose asChild>
-              <Button type="button" className="bg-transparent border border-white hover:bg-primary hover:border-primary text-white px-8">
-                Close
+              <Button
+                type="button"
+                className="bg-transparent border border-white hover:bg-primary hover:border-primary text-white px-8"
+              >
+                {t("close")}
               </Button>
             </DialogClose>
           </DialogFooter>
@@ -82,14 +87,12 @@ export const RequestInformationDialog: React.FC<
               <CheckCircle className="h-16 w-16 text-green-500" />
             </div>
             <DialogTitle className="text-xl text-center">
-              Request Submitted Successfully!
+              {t("requestSubmittedSuccessfully")}
             </DialogTitle>
           </DialogHeader>
 
           <div className="text-center space-y-4">
-            <p className="text-gray-600">
-              Thank you for your request. We will contact you shortly.
-            </p>
+            <p className="text-gray-600">{t("thankYouMessage")}</p>
           </div>
 
           <div className="flex justify-center pt-4 mb-2">
@@ -97,7 +100,7 @@ export const RequestInformationDialog: React.FC<
               onClick={() => setShowSuccessDialog(false)}
               className="bg-primary text-white hover:bg-black transition-colors"
             >
-              Close
+              {t("close")}
             </Button>
           </div>
         </DialogContent>

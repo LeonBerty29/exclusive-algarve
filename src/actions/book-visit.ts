@@ -1,5 +1,6 @@
 "use server";
 
+import { getTranslations } from "next-intl/server";
 import { ZodIssue } from "zod";
 import { bookVisitWithDetailedErrors } from "@/data/book-visit";
 import { bookVisitSchema } from "@/types/book-a-visit";
@@ -14,6 +15,8 @@ export interface BookVisitActionResult {
 export async function bookVisitAction(
   formData: FormData
 ): Promise<BookVisitActionResult> {
+  const t = await getTranslations("bookVisitAction");
+
   try {
     // Extract data from FormData
     const rawData = {
@@ -48,7 +51,7 @@ export async function bookVisitAction(
 
       return {
         success: false,
-        message: "Please check the form for errors",
+        message: t("formError"),
         fieldErrors,
       };
     }
@@ -56,7 +59,7 @@ export async function bookVisitAction(
     if (!recaptchaToken) {
       return {
         success: false,
-        message: "ReCaptcha token is missing",
+        message: t("recaptchaMissing"),
       };
     }
 
@@ -83,8 +86,7 @@ export async function bookVisitAction(
       });
       return {
         success: false,
-        message:
-          "ReCaptcha verification failed. Please refresh the page and try again.",
+        message: t("recaptchaFailed"),
       };
     }
 
@@ -94,21 +96,21 @@ export async function bookVisitAction(
     if (!result.success) {
       return {
         success: false,
-        message: result.error || "Failed to book visit",
+        message: result.error || t("apiGenericFailure"),
         errors: result.validationErrors,
       };
     }
 
     return {
       success: true,
-      message: result.data?.message || "Visit booked successfully!",
+      message: result.data?.message || t("success"),
     };
   } catch (error) {
     console.error("Book visit action error:", error);
 
     return {
       success: false,
-      message: "An unexpected error occurred. Please try again.",
+      message: t("unexpectedError"),
     };
   }
 }

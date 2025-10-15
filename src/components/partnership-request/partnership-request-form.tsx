@@ -39,8 +39,11 @@ import { PartnershipRequestFormAction } from "@/actions/partnership-requests";
 import { clientPartnershipRequestFormSchema } from "@/types/partnership-request";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 
 export function PartnershipRequestForm() {
+  const t = useTranslations("partnershipRequestForm");
+
   const [isPending, startTransition] = useTransition();
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
@@ -95,9 +98,8 @@ export function PartnershipRequestForm() {
     values: z.infer<typeof clientPartnershipRequestFormSchema>
   ) => {
     if (!executeRecaptcha) {
-      toast("ReCaptcha Error", {
-        description:
-          "ReCaptcha is not available. Please Refresh the page and try again.",
+      toast(t("recaptchaError"), {
+        description: t("recaptchaErrorDescription"),
         duration: 1500,
       });
       return;
@@ -111,7 +113,7 @@ export function PartnershipRequestForm() {
 
     // Check if form is valid before proceeding
     if (!form.formState.isValid) {
-      setError("Please fill in all required fields correctly.");
+      setError(t("pleaseFillAllRequiredFieldsCorrectly"));
       return;
     }
 
@@ -154,7 +156,7 @@ export function PartnershipRequestForm() {
         if (result.success) {
           // Show success dialog
           setSuccessMessage(
-            result.message || "Partnership request submitted successfully!"
+            result.message || t("partnershipRequestSubmittedSuccessfully")
           );
           setShowSuccessDialog(true);
 
@@ -181,7 +183,6 @@ export function PartnershipRequestForm() {
         } else {
           // Handle server validation errors
           if (result.fieldErrors) {
-            // Map server field names to client field names and set form errors
             Object.entries(result.fieldErrors).forEach(([key, message]) => {
               const fieldMapping: {
                 [key: string]: keyof z.infer<
@@ -216,21 +217,17 @@ export function PartnershipRequestForm() {
           }
 
           if (result.errors) {
-            // Handle detailed validation errors from API
             const errorMessages = Object.entries(result.errors)
               .map(([field, messages]) => `${field}: ${messages.join(", ")}`)
               .join("; ");
-            setError(`Validation errors: ${errorMessages}`);
+            setError(`${t("validationErrors")}: ${errorMessages}`);
           } else {
-            setError(
-              result.message ||
-                "Failed to submit partnership request. Please try again."
-            );
+            setError(result.message || t("failedToSubmitPartnershipRequest"));
           }
         }
       } catch (error) {
         console.error("Submit error:", error);
-        setError("An unexpected error occurred. Please try again.");
+        setError(t("unexpectedErrorOccurred"));
       }
     });
   };
@@ -272,7 +269,7 @@ export function PartnershipRequestForm() {
                     <Input
                       {...field}
                       type="text"
-                      placeholder="COMPANY NAME*"
+                      placeholder={t("companyName")}
                       className="indent-4 bg-gray-100 text-black placeholder:text-gray-600 border-none rounded-none py-5 focus:ring-2 focus:ring-gray-400 placeholder:text-sm"
                       disabled={isPending}
                     />
@@ -294,7 +291,7 @@ export function PartnershipRequestForm() {
                     <Input
                       {...field}
                       type="email"
-                      placeholder="COMPANY EMAIL*"
+                      placeholder={t("companyEmail")}
                       className="indent-4 bg-gray-100 text-black placeholder:text-gray-600 border-none rounded-none py-5 focus:ring-2 focus:ring-gray-400 placeholder:text-sm"
                       disabled={isPending}
                     />
@@ -318,7 +315,7 @@ export function PartnershipRequestForm() {
                     <Input
                       {...field}
                       type="tel"
-                      placeholder="COMPANY PHONE*"
+                      placeholder={t("companyPhone")}
                       className="indent-4 bg-gray-100 text-black placeholder:text-gray-600 border-none rounded-none py-5 focus:ring-2 focus:ring-gray-400 placeholder:text-sm"
                       disabled={isPending}
                     />
@@ -340,7 +337,7 @@ export function PartnershipRequestForm() {
                     <Input
                       {...field}
                       type="text"
-                      placeholder="CONTACT PERSON*"
+                      placeholder={t("contactPerson")}
                       className="indent-4 bg-gray-100 text-black placeholder:text-gray-600 border-none rounded-none py-5 focus:ring-2 focus:ring-gray-400 placeholder:text-sm"
                       disabled={isPending}
                     />
@@ -356,7 +353,7 @@ export function PartnershipRequestForm() {
 
           {/* Client Details Section */}
           <h3 className="text-black text-lg font-semibold mb-4 mt-6">
-            CLIENT DETAILS
+            {t("clientDetails")}
           </h3>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -369,7 +366,7 @@ export function PartnershipRequestForm() {
                     <Input
                       {...field}
                       type="text"
-                      placeholder="CLIENT FIRST NAME*"
+                      placeholder={t("clientFirstName")}
                       className="indent-4 bg-gray-100 text-black placeholder:text-gray-600 border-none rounded-none py-5 focus:ring-2 focus:ring-gray-400 placeholder:text-sm"
                       disabled={isPending}
                     />
@@ -391,7 +388,7 @@ export function PartnershipRequestForm() {
                     <Input
                       {...field}
                       type="text"
-                      placeholder="CLIENT LAST NAME*"
+                      placeholder={t("clientLastName")}
                       className="indent-4 bg-gray-100 text-black placeholder:text-gray-600 border-none rounded-none py-5 focus:ring-2 focus:ring-gray-400 placeholder:text-sm"
                       disabled={isPending}
                     />
@@ -415,7 +412,7 @@ export function PartnershipRequestForm() {
                     <Input
                       {...field}
                       type="text"
-                      placeholder="PARTIAL CLIENT EMAIL*"
+                      placeholder={t("partialClientEmail")}
                       className="indent-4 bg-gray-100 text-black placeholder:text-gray-600 border-none rounded-none py-5 focus:ring-2 focus:ring-gray-400 placeholder:text-sm"
                       disabled={isPending}
                     />
@@ -437,7 +434,7 @@ export function PartnershipRequestForm() {
                     <Input
                       {...field}
                       type="tel"
-                      placeholder="PARTIAL CLIENT PHONE*"
+                      placeholder={t("partialClientPhone")}
                       className="indent-4 bg-gray-100 text-black placeholder:text-gray-600 border-none rounded-none py-5 focus:ring-2 focus:ring-gray-400 placeholder:text-sm"
                       disabled={isPending}
                     />
@@ -460,7 +457,7 @@ export function PartnershipRequestForm() {
                 <FormControl>
                   <Textarea
                     {...field}
-                    placeholder="PROPERTY THE CLIENT IS INTERESTED IN..."
+                    placeholder={t("interestedProperty")}
                     className="indent-4 bg-gray-100 text-black placeholder:text-gray-600 border-none rounded-none py-5 focus:ring-2 focus:ring-gray-400 min-h-[120px] w-full"
                     disabled={isPending}
                   />
@@ -482,7 +479,7 @@ export function PartnershipRequestForm() {
                 <FormControl>
                   <Textarea
                     {...field}
-                    placeholder="ADDITIONAL NOTES OR REMARKS..."
+                    placeholder={t("remarks")}
                     className="indent-4 bg-gray-100 text-black placeholder:text-gray-600 border-none rounded-none py-5 focus:ring-2 focus:ring-gray-400 min-h-[120px] w-full"
                     disabled={isPending}
                   />
@@ -495,7 +492,7 @@ export function PartnershipRequestForm() {
 
           {/* Visit Date and Time Section */}
           <h3 className="text-black text-lg font-semibold mb-4 mt-6">
-            CONFIRMED VISIT (Optional)
+            {t("confirmedVisitOptional")}
           </h3>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -520,7 +517,7 @@ export function PartnershipRequestForm() {
                           <Calendar className="mr-2 h-4 w-4" />
                           {field.value
                             ? field.value.toLocaleDateString()
-                            : "CONFIRMED VISIT DATE"}
+                            : t("confirmedVisitDate")}
                         </Button>
                       </PopoverTrigger>
                       <PopoverContent className="w-auto p-0" align="start">
@@ -554,7 +551,7 @@ export function PartnershipRequestForm() {
                       disabled={isPending}
                     >
                       <SelectTrigger className="w-full indent-4 bg-gray-100 text-black placeholder:text-gray-600 border-none rounded-none py-5 focus:ring-2 focus:ring-gray-400">
-                        <SelectValue placeholder="CONFIRMED VISIT TIME" />
+                        <SelectValue placeholder={t("confirmedVisitTime")} />
                       </SelectTrigger>
                       <SelectContent>
                         {timeSlots.map((time: string) => (
@@ -589,8 +586,7 @@ export function PartnershipRequestForm() {
                   />
                 </FormControl>
                 <label className="text-black text-xs">
-                  By requesting information you are authorizing Exclusive
-                  Algarve Villas to use your data in order to contact you.
+                  {t("acceptTermsText")}
                 </label>
                 {(hasAttemptedSubmit ||
                   form.formState.touchedFields.acceptTerms) && <FormMessage />}
@@ -626,7 +622,7 @@ export function PartnershipRequestForm() {
                 "bg-primary hover:bg-primary/90 text-white font-medium py-5 px-14 rounded-none transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               )}
             >
-              {isPending ? "Submitting..." : "Submit"}
+              {isPending ? t("submitting") : t("submit")}
             </Button>
           </div>
         </form>
@@ -640,7 +636,7 @@ export function PartnershipRequestForm() {
               <CheckCircle className="h-12 w-12 text-green-500" />
             </div>
             <DialogTitle className="text-center text-xl font-semibold">
-              Partnership Request Submitted!
+              {t("partnershipRequestSubmittedTitle")}
             </DialogTitle>
             <DialogDescription className="text-center text-gray-600 mt-2">
               {successMessage}
@@ -651,7 +647,7 @@ export function PartnershipRequestForm() {
               onClick={() => setShowSuccessDialog(false)}
               className="bg-primary hover:bg-primary/90 text-white px-8"
             >
-              Close
+              {t("close")}
             </Button>
           </div>
         </DialogContent>

@@ -25,12 +25,14 @@ import { clientNewsletterFormSchema } from "@/types/newsletter";
 import { CheckCircle } from "lucide-react";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 
 interface NewsletterFormProps {
   className?: string;
 }
 
 export function NewsletterForm({ className = "" }: NewsletterFormProps) {
+  const t = useTranslations("newsletterForm");
   const [isPending, startTransition] = useTransition();
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
@@ -38,10 +40,8 @@ export function NewsletterForm({ className = "" }: NewsletterFormProps) {
 
   const { executeRecaptcha } = useGoogleReCaptcha();
 
-  // Capture the source URL once when component mounts
   const source_urlRef = useRef<string>("");
 
-  // Initialize source_url on first render
   if (!source_urlRef.current && typeof window !== "undefined") {
     source_urlRef.current = window.location.href;
   }
@@ -55,15 +55,12 @@ export function NewsletterForm({ className = "" }: NewsletterFormProps) {
     reValidateMode: "onChange",
   });
 
-  // Get current page URL on mount
-
   const onSubmit = async (
     values: z.infer<typeof clientNewsletterFormSchema>
   ) => {
     if (!executeRecaptcha) {
-      toast("ReCaptcha Error", {
-        description:
-          "ReCaptcha is not available. Please Refresh the page and try again.",
+      toast(t("toastReCaptchaError"), {
+        description: t("toastReCaptchaDescription"),
         duration: 1500,
       });
       return;
@@ -82,21 +79,15 @@ export function NewsletterForm({ className = "" }: NewsletterFormProps) {
         const result = await newsletterFormAction(formDataToSubmit);
 
         if (result.success) {
-          // Show success dialog
-          setSuccessMessage(
-            result.message || "Successfully subscribed to newsletter!"
-          );
+          setSuccessMessage(result.message || t("successDialogTitle"));
           setShowSuccessDialog(true);
 
-          // Reset form but keep source_url
           form.reset({
             email: "",
             source_url: source_urlRef.current,
           });
         } else {
-          // Handle server validation errors
           if (result.fieldErrors) {
-            // Map server field names to client field names and set form errors
             Object.entries(result.fieldErrors).forEach(([key, message]) => {
               const fieldMapping: {
                 [key: string]: keyof z.infer<typeof clientNewsletterFormSchema>;
@@ -116,21 +107,17 @@ export function NewsletterForm({ className = "" }: NewsletterFormProps) {
           }
 
           if (result.errors) {
-            // Handle detailed validation errors from API
             const errorMessages = Object.entries(result.errors)
               .map(([field, messages]) => `${field}: ${messages.join(", ")}`)
               .join("; ");
             setError(`Validation errors: ${errorMessages}`);
           } else {
-            setError(
-              result.message ||
-                "Failed to subscribe to newsletter. Please try again."
-            );
+            setError(result.message || t("errorFailedSubscribe"));
           }
         }
       } catch (error) {
         console.error("Submit error:", error);
-        setError("An unexpected error occurred. Please try again.");
+        setError(t("errorUnexpected"));
       }
     });
   };
@@ -155,7 +142,7 @@ export function NewsletterForm({ className = "" }: NewsletterFormProps) {
                     <Input
                       {...field}
                       type="email"
-                      placeholder="ENTER YOUR EMAIL"
+                      placeholder={t("emailPlaceholder")}
                       className="indent-4 h-12 rounded-none bg-black text-white placeholder:text-gray-400 border-none placeholder:text-xs"
                       onKeyDown={handleKeyDown}
                       disabled={isPending}
@@ -169,11 +156,10 @@ export function NewsletterForm({ className = "" }: NewsletterFormProps) {
               disabled={isPending}
               className="bg-primary hover:bg-primary/90 rounded-none text-white px-6 h-12 flex items-center justify-center"
             >
-              {isPending ? "Subscribing..." : "Subscribe"}
+              {isPending ? t("buttonSubscribing") : t("buttonSubscribe")}
             </Button>
           </div>
 
-          {/* Show form validation errors */}
           <div className="max-w-lg mx-auto">
             <FormField
               control={form.control}
@@ -188,14 +174,12 @@ export function NewsletterForm({ className = "" }: NewsletterFormProps) {
             />
           </div>
 
-          {/* Show general error message */}
           {error && (
             <div className="flex justify-center mt-2">
               <p className="text-red-500 text-sm">{error}</p>
             </div>
           )}
 
-          {/* Hidden source_url field */}
           <FormField
             control={form.control}
             name="source_url"
@@ -210,7 +194,6 @@ export function NewsletterForm({ className = "" }: NewsletterFormProps) {
         </form>
       </Form>
 
-      {/* Success Dialog */}
       <Dialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
         <DialogContent className="sm:max-w-md rounded-2xl">
           <DialogHeader>
@@ -218,7 +201,7 @@ export function NewsletterForm({ className = "" }: NewsletterFormProps) {
               <CheckCircle className="h-12 w-12 text-green-500" />
             </div>
             <DialogTitle className="text-center text-xl font-semibold">
-              Successfully Subscribed!
+              {t("successDialogTitle")}
             </DialogTitle>
             <DialogDescription className="text-center text-gray-600 mt-2">
               {successMessage}
@@ -229,7 +212,7 @@ export function NewsletterForm({ className = "" }: NewsletterFormProps) {
               onClick={() => setShowSuccessDialog(false)}
               className="bg-primary hover:bg-primary/90 text-white px-8"
             >
-              Close
+              {t("buttonClose")}
             </Button>
           </div>
         </DialogContent>

@@ -15,27 +15,28 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Share2, Copy, Check } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 
 export default function ShareButton() {
+  const t = useTranslations("shareProperty");
+
   const [isOpen, setIsOpen] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  // Generate the current page URL or your custom share URL
   const shareUrl = typeof window !== "undefined" ? window.location.href : "";
 
   const handleCopyLink = async () => {
     try {
       await navigator.clipboard.writeText(shareUrl);
       setCopied(true);
-      toast.success("Link copied to clipboard!");
+      toast.success(t("linkCopiedToClipboard"));
 
-      // Reset copied state after 2 seconds
       setTimeout(() => {
         setCopied(false);
       }, 2000);
     } catch (err) {
       console.error("Failed to copy: ", err);
-      toast.error("Failed to copy link");
+      toast.error(t("failedToCopyLink"));
     }
   };
 
@@ -53,16 +54,14 @@ export default function ShareButton() {
 
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Share this page</DialogTitle>
-            <DialogDescription>
-              Anyone with this link will be able to view this page.
-            </DialogDescription>
+            <DialogTitle>{t("shareThisPage")}</DialogTitle>
+            <DialogDescription>{t("anyoneWithLinkCanView")}</DialogDescription>
           </DialogHeader>
 
           <div className="flex items-center space-x-2">
             <div className="grid flex-1 gap-2">
               <Label htmlFor="link" className="sr-only">
-                Link
+                {t("link")}
               </Label>
               <Input
                 id="link"
@@ -77,7 +76,7 @@ export default function ShareButton() {
               className="px-3"
               onClick={handleCopyLink}
             >
-              <span className="sr-only">Copy</span>
+              <span className="sr-only">{t("copy")}</span>
               {copied ? (
                 <Check className="h-4 w-4" />
               ) : (
@@ -92,7 +91,7 @@ export default function ShareButton() {
               variant="secondary"
               onClick={() => setIsOpen(false)}
             >
-              Close
+              {t("close")}
             </Button>
           </DialogFooter>
         </DialogContent>

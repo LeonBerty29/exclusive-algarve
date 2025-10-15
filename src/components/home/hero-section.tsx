@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 import { Link } from "@/i18n/navigation";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 
 const videos = [
   "/videos/hero-video-1.mp4",
@@ -24,6 +25,7 @@ export default function HeroSection({
   const [isMobile, setIsMobile] = useState<boolean | null>(null);
   const [isClient, setIsClient] = useState(false);
   const [videosLoaded, setVideosLoaded] = useState(false);
+  const t = useTranslations("heroSection");
 
   // Fix: Properly type the ref as an array of HTMLVideoElement refs
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
@@ -63,7 +65,7 @@ export default function HeroSection({
         <div className="absolute left-1/2 top-1/2 -translate-y-1/2 w-full max-w-7xl -translate-x-1/2 px-4">
           <div className="glassmorphism rounded-xl p-6">{children}</div>
           <Button className="bg-primary text-white hover:bg-primary/80 transition-all !mx-auto block text-base lg:text-lg">
-            <Link href="/properties">ALL PROPERTIES</Link>
+            <Link href="/properties">{t("allProperties")}</Link>
           </Button>
         </div>
       </section>
@@ -167,7 +169,7 @@ export default function HeroSection({
         <div className="glassmorphism rounded-xl p-6">{children}</div>
 
         <Button className="bg-white text-black hover:bg-black hover:text-white transition-all !mx-auto block">
-          <Link href="/properties">ALL PROPERTIES</Link>
+          <Link href="/properties">{t("allProperties")}</Link>
         </Button>
       </div>
     </section>

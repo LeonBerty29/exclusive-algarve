@@ -17,6 +17,7 @@ import { useSearchParams } from "next/navigation";
 import { Pencil } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Link } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 
 export const PropertyNotesWrapperDialog = ({
   children,
@@ -31,6 +32,7 @@ export const PropertyNotesWrapperDialog = ({
   styleClassname?: string;
   customTrigger?: React.ReactNode;
 }) => {
+  const t = useTranslations("propertyNotesWrapper");
   const searchParams = useSearchParams();
   const addNote = searchParams.get("addNote");
   const isDefaultOpen = addNote === propertyId.toString();
@@ -54,9 +56,11 @@ export const PropertyNotesWrapperDialog = ({
         </DialogTrigger>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Add a note for property {reference}</DialogTitle>
+            <DialogTitle>
+              {t("addNoteForProperty")} {reference}
+            </DialogTitle>
             <DialogDescription>
-              You can keep a note for this property.
+              {t("keepNoteForThisProperty")}
             </DialogDescription>
           </DialogHeader>
           <div className="flex items-center gap-2">
@@ -69,7 +73,7 @@ export const PropertyNotesWrapperDialog = ({
               href="/annotations"
               className="text-gray-600 font-semibold hover:underline hover:text-black"
             >
-              View all of your Notes
+              {t("viewAllYourNotes")}
             </Link>
           </div>
           <DialogFooter className="sm:justify-start">
@@ -79,7 +83,7 @@ export const PropertyNotesWrapperDialog = ({
                 variant="ghost"
                 className="px-0 underline hover:text-primary bg-transparent hover:bg-transparent"
               >
-                Close
+                {t("close")}
               </Button>
             </DialogClose>
           </DialogFooter>

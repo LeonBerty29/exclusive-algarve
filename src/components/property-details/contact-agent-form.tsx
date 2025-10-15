@@ -19,8 +19,8 @@ import { contactAgentAction } from "@/actions/contact-agent";
 import { clientContactAgentSchema } from "@/types/contact-agent";
 import { Property } from "@/types/property";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
+import { useTranslations } from "next-intl";
 
-// Client-side form data interface
 interface FormData {
   firstName: string;
   lastName: string;
@@ -47,13 +47,14 @@ type FormField = keyof FormData;
 
 type ContactAgentFormProps = {
   salesConsultant: Property["sales_consultant"];
-  onSuccess?: () => void; // new prop optional callback
+  onSuccess?: () => void;
 };
 
 const ContactAgentForm = ({
   salesConsultant,
   onSuccess,
 }: ContactAgentFormProps) => {
+  const t = useTranslations("contactAgentForm");
   const [isPending, startTransition] = useTransition();
   const [formData, setFormData] = useState<FormData>({
     firstName: "",
@@ -70,7 +71,6 @@ const ContactAgentForm = ({
 
   const { executeRecaptcha } = useGoogleReCaptcha();
 
-  // Get current page URL on mount
   useEffect(() => {
     if (typeof window !== "undefined") {
       setFormData((prev) => ({
@@ -91,7 +91,6 @@ const ContactAgentForm = ({
       [field]: value,
     }));
 
-    // Clear error when user starts typing
     if (errors[field]) {
       setErrors((prev) => ({
         ...prev,
@@ -126,17 +125,15 @@ const ContactAgentForm = ({
     e.preventDefault();
 
     if (!executeRecaptcha) {
-      toast("ReCaptcha Error", {
-        description:
-          "ReCaptcha is not available. Please Refresh the page and try again.",
+      toast(t("recaptchaError"), {
+        description: t("recaptchaErrorDescription"),
         duration: 1500,
       });
       return;
     }
 
-    // Client-side validation first
     if (!validateClientForm()) {
-      toast.error("Please fix the form errors before submitting");
+      toast.error(t("fixFormErrors"));
       return;
     }
 
@@ -160,9 +157,8 @@ const ContactAgentForm = ({
         const result = await contactAgentAction(formDataToSubmit);
 
         if (result.success) {
-          toast.success(result.message || "Request submitted successfully!");
+          toast.success(result.message || t("submitSuccess"));
 
-          // Reset form
           setFormData({
             firstName: "",
             lastName: "",
@@ -171,16 +167,14 @@ const ContactAgentForm = ({
             message: "",
             primaryContactChannel: "",
             acceptTerms: false,
-            sourceUrl: formData.sourceUrl, // Keep the source URL
+            sourceUrl: formData.sourceUrl,
           });
           setErrors({});
           if (onSuccess) onSuccess();
         } else {
-          // Handle server validation errors
           if (result.fieldErrors) {
             const newErrors: FormErrors = {};
             Object.entries(result.fieldErrors).forEach(([key, message]) => {
-              // Map server field names to client field names
               const fieldMapping: { [key: string]: keyof FormErrors } = {
                 first_name: "firstName",
                 last_name: "lastName",
@@ -190,7 +184,6 @@ const ContactAgentForm = ({
                 primary_contact_channel: "primaryContactChannel",
                 source_url: "sourceUrl",
               };
-
               const clientFieldName =
                 fieldMapping[key] || (key as keyof FormErrors);
               newErrors[clientFieldName] = message;
@@ -199,20 +192,17 @@ const ContactAgentForm = ({
           }
 
           if (result.errors) {
-            // Handle detailed validation errors from API
             const errorMessages = Object.entries(result.errors)
               .map(([field, messages]) => `${field}: ${messages.join(", ")}`)
               .join("; ");
-            toast.error(`Validation errors: ${errorMessages}`);
+            toast.error(`${t("validationErrorsPrefix")} ${errorMessages}`);
           } else {
-            toast.error(
-              result.message || "Failed to submit request. Please try again."
-            );
+            toast.error(result.message || t("submitFailed"));
           }
         }
       } catch (error) {
         console.error("Submit error:", error);
-        toast.error("An unexpected error occurred. Please try again.");
+        toast.error(t("unexpectedError"));
       }
     });
   };
@@ -233,7 +223,6 @@ const ContactAgentForm = ({
 
   return (
     <>
-      {/* Agent Info */}
       <div className="flex items-center gap-4 mb-6">
         <div className="w-16 h-16 rounded-full overflow-hidden bg-gray-700 flex-shrink-0">
           {salesConsultant.profile_picture && (
@@ -250,17 +239,16 @@ const ContactAgentForm = ({
           <h3 className="text-lg font-bold text-white">
             {salesConsultant.name}
           </h3>
-          <p className="text-sm text-gray-300">Request more information</p>
+          <p className="text-sm text-gray-300">{t("requestMoreInformation")}</p>
         </div>
       </div>
 
-      {/* Contact Form */}
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="grid grid-cols-1 gap-4">
           <div>
             <Input
               type="text"
-              placeholder="First Name"
+              placeholder={t("firstNamePlaceholder")}
               value={formData.firstName}
               onChange={handleInputChangeEvent("firstName")}
               className={`bg-transparent border-0 border-b rounded-none text-white placeholder:text-white/70 focus:border-primary focus-visible:ring-0 focus-visible:ring-offset-0 px-0 pb-2 ${
@@ -275,7 +263,7 @@ const ContactAgentForm = ({
           <div>
             <Input
               type="text"
-              placeholder="Last Name"
+              placeholder={t("lastNamePlaceholder")}
               value={formData.lastName}
               onChange={handleInputChangeEvent("lastName")}
               className={`bg-transparent border-0 border-b rounded-none text-white placeholder:text-white/70 focus:border-primary focus-visible:ring-0 focus-visible:ring-offset-0 px-0 pb-2 ${
@@ -292,7 +280,7 @@ const ContactAgentForm = ({
         <div>
           <Input
             type="tel"
-            placeholder="Phone number"
+            placeholder={t("phoneNumberPlaceholder")}
             value={formData.phone}
             onChange={handleInputChangeEvent("phone")}
             className={`bg-transparent border-0 border-b rounded-none text-white placeholder:text-white/70 focus:border-primary focus-visible:ring-0 focus-visible:ring-offset-0 px-0 pb-2 ${
@@ -308,7 +296,7 @@ const ContactAgentForm = ({
         <div>
           <Input
             type="email"
-            placeholder="E-mail address"
+            placeholder={t("emailAddressPlaceholder")}
             value={formData.email}
             onChange={handleInputChangeEvent("email")}
             className={`bg-transparent border-0 border-b rounded-none text-white placeholder:text-white/70 focus:border-primary focus-visible:ring-0 focus-visible:ring-offset-0 px-0 pb-2 ${
@@ -323,7 +311,7 @@ const ContactAgentForm = ({
 
         <div>
           <Textarea
-            placeholder="Message"
+            placeholder={t("messagePlaceholder")}
             rows={4}
             value={formData.message}
             onChange={handleInputChangeEvent("message")}
@@ -351,7 +339,7 @@ const ContactAgentForm = ({
               }`}
             >
               <SelectValue
-                placeholder="Primary contact Channel"
+                placeholder={t("primaryContactChannelPlaceholder")}
                 className="text-white/70"
               />
             </SelectTrigger>
@@ -386,7 +374,7 @@ const ContactAgentForm = ({
             htmlFor="terms"
             className="text-sm text-white/90 cursor-pointer"
           >
-            I agree to the terms and conditions
+            {t("termsAndConditions")}
           </label>
           {errors.acceptTerms && (
             <p className="text-red-500 text-sm mt-1">{errors.acceptTerms}</p>
@@ -399,7 +387,7 @@ const ContactAgentForm = ({
           disabled={isPending}
         >
           <span className="absolute left-1/2 transform -translate-x-1/2 font-semibold">
-            {isPending ? "SUBMITTING..." : "REQUEST INFORMATION"}
+            {isPending ? t("submitting") : t("requestInformation")}
           </span>
           <Send className="w-4 h-4 absolute right-4" />
         </Button>

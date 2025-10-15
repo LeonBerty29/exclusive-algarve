@@ -14,6 +14,7 @@ import { Skeleton } from "../ui/skeleton";
 import { cn } from "@/lib/utils";
 import { Link } from "@/i18n/navigation";
 import { useLocale } from "next-intl";
+import { useTranslations } from "next-intl"; // import useTranslations for client components
 
 interface Resource {
   id: string;
@@ -32,6 +33,7 @@ export function AboutUsResourcesDropdown({
   scrolled: boolean;
   colorChange?: boolean;
 }) {
+  const t = useTranslations("aboutUsResourceDropdown"); // import translations
   const [resources, setResources] = useState<Resource[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -42,7 +44,9 @@ export function AboutUsResourcesDropdown({
   useEffect(() => {
     async function fetchResources() {
       try {
-        const response = await fetch(`/api/resources/about-us-resources?locale=${locale}`);
+        const response = await fetch(
+          `/api/resources/about-us-resources?locale=${locale}`
+        );
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -52,7 +56,7 @@ export function AboutUsResourcesDropdown({
         setResources(data);
       } catch (err) {
         setError(
-          err instanceof Error ? err.message : "Failed to fetch resources"
+          err instanceof Error ? err.message : t("failedToFetchResources")
         );
         console.error("Error fetching resources:", err);
       } finally {
@@ -61,15 +65,18 @@ export function AboutUsResourcesDropdown({
     }
 
     fetchResources();
-  }, [locale]);
+  }, [locale, t]);
 
   if (loading) {
-    return <Skeleton className="h-6 w-12" />;
+    return <Skeleton className="h-6 w-12" aria-label={t("loading")} />;
   }
 
   if (error) {
     return (
-      <Skeleton className="h-6 w-12 border rounded-md bg-red-200 text-red-600" />
+      <Skeleton
+        className="h-6 w-12 border rounded-md bg-red-200 text-red-600"
+        aria-label={t("errorLoading")}
+      />
     );
   }
 
@@ -92,13 +99,15 @@ export function AboutUsResourcesDropdown({
                 : "text-gray-600"
             )}
           >
-            About EAV
+            {t("aboutEAV")}
             <ChevronDown className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-80 p-3">
           {resources.length === 0 ? (
-            <DropdownMenuItem disabled>No resources available</DropdownMenuItem>
+            <DropdownMenuItem disabled>
+              {t("noResourcesAvailable")}
+            </DropdownMenuItem>
           ) : (
             resources.map((resource) => (
               <DropdownMenuItem
@@ -121,24 +130,16 @@ export function AboutUsResourcesDropdown({
             asChild
             className="cursor-pointer py-3 hover:bg-gray-100 text-gray-800 border-b border-gray-200"
           >
-            <Link
-              href={{
-                pathname: "/about-eav/the-team",
-              }}
-            >
-              The Team
+            <Link href={{ pathname: "/about-eav/the-team" }}>
+              {t("theTeam")}
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem
             asChild
             className="cursor-pointer py-3 hover:bg-gray-100 text-gray-800 border-b border-gray-200"
           >
-            <Link
-              href={{
-                pathname: "/about-eav/client-testimonials",
-              }}
-            >
-              Client Testimonials
+            <Link href={{ pathname: "/about-eav/client-testimonials" }}>
+              {t("clientTestimonials")}
             </Link>
           </DropdownMenuItem>
         </DropdownMenuContent>

@@ -2,6 +2,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ChevronDown, Check } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import {
   DropdownMenu,
@@ -31,6 +32,7 @@ export function PriceSelect({
   priceRange: Ranges["price"];
   modal?: boolean;
 }) {
+  const t = useTranslations("priceSelect");
   const router = useRouter();
   const searchParams = useSearchParams();
   const [selectedValues, setSelectedValues] = useState<string[]>([]);
@@ -43,12 +45,12 @@ export function PriceSelect({
 
     // Define standard range boundaries
     const standardRanges = [
-      { min: 0, max: 500000, label: "0 to €500K" },
-      { min: 500000, max: 1000000, label: "€500K - €1M" },
-      { min: 1000000, max: 2000000, label: "€1M - €2M" },
-      { min: 2000000, max: 3000000, label: "€2M - €3M" },
-      { min: 3000000, max: 4000000, label: "€3M - €4M" },
-      { min: 4000000, max: 5000000, label: "€4M - €5M" },
+      { min: 0, max: 500000, label: t("range0to500k") },
+      { min: 500000, max: 1000000, label: t("range500kTo1m") },
+      { min: 1000000, max: 2000000, label: t("range1mTo2m") },
+      { min: 2000000, max: 3000000, label: t("range2mTo3m") },
+      { min: 3000000, max: 4000000, label: t("range3mTo4m") },
+      { min: 4000000, max: 5000000, label: t("range4mTo5m") },
     ];
 
     // Add standard ranges that overlap with your data
@@ -77,7 +79,7 @@ export function PriceSelect({
         ranges.push({
           min: finalRangeMin,
           max: 10000000,
-          label: "€5M - €10M",
+          label: t("range5mTo10m"),
           value: `${finalRangeMin}-10000000`,
         });
       } else {
@@ -85,21 +87,21 @@ export function PriceSelect({
         ranges.push({
           min: finalRangeMin,
           max: 10000000,
-          label: "€5M - €10M",
+          label: t("range5mTo10m"),
           value: `${finalRangeMin}-10000000`,
         });
 
         ranges.push({
           min: 10000000,
           max: max,
-          label: "€10M+",
+          label: t("range10mPlus"),
           value: `10000000-${max}`,
         });
       }
     }
 
     return ranges;
-  }, [priceRange.min, priceRange.max]);
+  }, [priceRange.min, priceRange.max, t]);
 
   // Determine current selected values based on URL params
   useEffect(() => {
@@ -199,17 +201,17 @@ export function PriceSelect({
 
   const getDisplayText = () => {
     if (selectedValues.length === 0) {
-      return "Price Range";
+      return t("priceRange");
     }
 
     if (selectedValues.length === 1) {
       const selectedRange = priceRanges.find(
         (range) => range.value === selectedValues[0]
       );
-      return selectedRange?.label || "Price Range";
+      return selectedRange?.label || t("priceRange");
     }
 
-    return `${selectedValues.length} price ranges selected`;
+    return `${selectedValues.length} ${t("priceRangesSelected")}`;
   };
 
   return (
@@ -228,14 +230,14 @@ export function PriceSelect({
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-80 p-0" align="start">
           <Command>
-            <CommandEmpty>No price range found.</CommandEmpty>
+            <CommandEmpty>{t("noPriceRangeFound")}</CommandEmpty>
             <CommandGroup>
               {selectedValues.length > 0 && (
                 <CommandItem
                   onSelect={clearAllSelections}
                   className="cursor-pointer text-red-600 border-b border-gray-100 mb-1"
                 >
-                  Clear all selections
+                  {t("clearAllSelections")}
                 </CommandItem>
               )}
               {priceRanges.map((range) => (
