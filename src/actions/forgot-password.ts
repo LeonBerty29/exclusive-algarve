@@ -1,6 +1,6 @@
-// actions/contact-agent.ts
 "use server";
 
+import { getTranslations } from "next-intl/server";
 import { ZodIssue } from "zod";
 import { ForgotPasswordSchema } from "@/schema/schema.forgot-password";
 import { forgotPassword } from "@/data/user";
@@ -15,6 +15,8 @@ export interface ForgotPasswordResult {
 export async function forgotPasswordAction(
   formData: FormData
 ): Promise<ForgotPasswordResult> {
+  const t = await getTranslations("forgotPasswordAction");
+
   try {
     // Extract data from FormData
     const rawData = {
@@ -38,7 +40,7 @@ export async function forgotPasswordAction(
 
       return {
         success: false,
-        message: "Please check the form for errors",
+        message: t("checkFormErrors"),
         fieldErrors,
       };
     }
@@ -46,7 +48,7 @@ export async function forgotPasswordAction(
     if (!recaptchaToken) {
       return {
         success: false,
-        message: "ReCaptcha token is missing",
+        message: t("recaptchaTokenMissing"),
       };
     }
 
@@ -64,43 +66,35 @@ export async function forgotPasswordAction(
     const verification = await verificationResponse.json();
 
     if (verification.success && verification.score > 0.5) {
-      // console.log({ success: true, score: verification.score });
+      // Passed verification
     } else {
-      // console.log({
-      //   success: false,
-      //   score: verification.score,
-      //   errorCodes: verification["error-codes"],
-      // });
       return {
         success: false,
-        message:
-          "ReCaptcha verification failed. Please refresh the page and try again.",
+        message: t("recaptchaFailed"),
       };
     }
 
     // Call the API
     const result = await forgotPassword(validationResult.data);
 
-    // console.log({result})
-
     if (!result.success) {
       return {
         success: false,
-        message: result.message || "Failed to submit request",
+        message: result.message || t("requestFailed"),
         errors: result.errors,
       };
     }
 
     return {
       success: true,
-      message: result.message || "Request submitted successfully! Check your email",
+      message: result.message || t("requestSubmitted"),
     };
   } catch (error) {
     console.error("Error in forgot password action:", error);
 
     return {
       success: false,
-      message: "An unexpected error occurred. Please try again.",
+      message: t("unexpectedError"),
     };
   }
 }

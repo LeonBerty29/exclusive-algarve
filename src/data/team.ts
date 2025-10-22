@@ -1,4 +1,5 @@
 import { getStoryblokApi } from "@/lib/storyblok";
+import { getTranslations } from "next-intl/server";
 
 export const fetchTeam = async ({
   per_page,
@@ -13,6 +14,7 @@ export const fetchTeam = async ({
   sort_by?: string;
   language?: string;
 }) => {
+  const t = await getTranslations("teamData");
   const client = getStoryblokApi();
   const withTag = tag ? { with_tag: tag } : {};
   const sortBy = sort_by ? { sort_by: sort_by } : {};
@@ -76,23 +78,23 @@ export const fetchTeam = async ({
 
     return [
       {
-        title: "Team in Algarve",
+        title: t("teamInAlgarve"),
         data: responseAlgarve.data.stories,
       },
       {
-        title: "Team in Carvoeiro",
+        title: t("teamInCarvoeiro"),
         data: responseCarvoeiro.data.stories,
       },
       {
-        title: "Team in Lagos",
+        title: t("teamInLagos"),
         data: responseLagos.data.stories,
       },
       {
-        title: "Team in Vilamoura",
+        title: t("teamInVilamoura"),
         data: responseVilamoura.data.stories,
       },
       {
-        title: "Team in Belgium",
+        title: t("teamInBelgium"),
         data: responseBelgium.data.stories,
       },
     ];
@@ -102,7 +104,7 @@ export const fetchTeam = async ({
     if (error instanceof Error) {
       throw error;
     } else {
-      throw new Error(`Failed to fetch team: ${String(error)}`);
+      throw new Error(`${t("failedToFetchTeam")} ${String(error)}`);
     }
   }
 };

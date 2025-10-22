@@ -22,12 +22,16 @@ import {
 import { cn } from "@/lib/utils";
 import * as z from "zod";
 import { messageFormAction } from "@/actions/message-us";
-import { clientMessageFormSchema } from "@/types/message-us";
 import { CheckCircle } from "lucide-react";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
+import { getMessageFormSchema } from "@/types/message-us";
 
 export function MessageForm() {
+  const t = useTranslations("messageUsForm");
+  const messageFormSchemaTranslation = useTranslations("messageFormSchema");
+  const messageFormSchema = getMessageFormSchema(messageFormSchemaTranslation);
   const [isPending, startTransition] = useTransition();
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
@@ -42,23 +46,22 @@ export function MessageForm() {
     sourceUrlRef.current = window.location.href;
   }
 
-  const form = useForm<z.infer<typeof clientMessageFormSchema>>({
-    resolver: zodResolver(clientMessageFormSchema),
+  const form = useForm<z.infer<typeof messageFormSchema>>({
+    resolver: zodResolver(messageFormSchema),
     defaultValues: {
-      firstName: "",
-      lastName: "",
+      first_name: "",
+      last_name: "",
       email: "",
       message: "",
-      sourceUrl: sourceUrlRef.current,
+      source_url: sourceUrlRef.current,
     },
     reValidateMode: "onChange",
   });
 
-  const onSubmit = async (values: z.infer<typeof clientMessageFormSchema>) => {
+  const onSubmit = async (values: z.infer<typeof messageFormSchema>) => {
     if (!executeRecaptcha) {
-      toast("ReCaptcha Error", {
-        description:
-          "ReCaptcha is not available. Please Refresh the page and try again.",
+      toast(`${t("toastReCaptchaErrorTitle")}`, {
+        description: t("toastReCaptchaErrorDescription"),
         duration: 1500,
       });
       return;
@@ -67,11 +70,11 @@ export function MessageForm() {
     setError("");
 
     const formDataToSubmit = new FormData();
-    formDataToSubmit.append("first_name", values.firstName);
-    formDataToSubmit.append("last_name", values.lastName);
+    formDataToSubmit.append("first_name", values.first_name);
+    formDataToSubmit.append("last_name", values.last_name);
     formDataToSubmit.append("email", values.email);
     formDataToSubmit.append("message", values.message);
-    formDataToSubmit.append("source_url", values.sourceUrl || "");
+    formDataToSubmit.append("source_url", values.source_url || "");
 
     startTransition(async () => {
       const token = await executeRecaptcha("messageUsForm");
@@ -82,35 +85,34 @@ export function MessageForm() {
 
         if (result.success) {
           // Show success dialog
-          setSuccessMessage(result.message || "Message sent successfully!");
+          setSuccessMessage(result.message || t("successMessageDefault"));
           setShowSuccessDialog(true);
 
           // Reset form but keep sourceUrl
           form.reset({
-            firstName: "",
-            lastName: "",
+            first_name: "",
+            last_name: "",
             email: "",
             message: "",
-            sourceUrl: sourceUrlRef.current,
+            source_url: sourceUrlRef.current,
           });
         } else {
           // Handle server validation errors
           if (result.fieldErrors) {
-            // Map server field names to client field names and set form errors
             Object.entries(result.fieldErrors).forEach(([key, message]) => {
               const fieldMapping: {
-                [key: string]: keyof z.infer<typeof clientMessageFormSchema>;
+                [key: string]: keyof z.infer<typeof messageFormSchema>;
               } = {
-                first_name: "firstName",
-                last_name: "lastName",
+                first_name: "first_name",
+                last_name: "last_name",
                 email: "email",
                 message: "message",
-                source_url: "sourceUrl",
+                source_url: "source_url",
               };
 
               const clientFieldName =
                 fieldMapping[key] ||
-                (key as keyof z.infer<typeof clientMessageFormSchema>);
+                (key as keyof z.infer<typeof messageFormSchema>);
               form.setError(clientFieldName, {
                 type: "server",
                 message: message,
@@ -119,20 +121,17 @@ export function MessageForm() {
           }
 
           if (result.errors) {
-            // Handle detailed validation errors from API
             const errorMessages = Object.entries(result.errors)
               .map(([field, messages]) => `${field}: ${messages.join(", ")}`)
               .join("; ");
-            setError(`Validation errors: ${errorMessages}`);
+            setError(`${t("errorValidationPrefix")} ${errorMessages}`);
           } else {
-            setError(
-              result.message || "Failed to send message. Please try again."
-            );
+            setError(result.message || t("errorMessageGeneric"));
           }
         }
       } catch (error) {
         console.error("Submit error:", error);
-        setError("An unexpected error occurred. Please try again.");
+        setError(t("errorMessageUnexpected"));
       }
     });
   };
@@ -145,14 +144,14 @@ export function MessageForm() {
           <div className="grid grid-cols-2 gap-4">
             <FormField
               control={form.control}
-              name="firstName"
+              name="first_name"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
                     <Input
                       {...field}
                       type="text"
-                      placeholder="FIRST NAME"
+                      placeholder={t("placeholderFirstName")}
                       className="indent-4 bg-black text-white placeholder:text-gray-400 border-none rounded-none py-5 focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-black placeholder:text-sm"
                       disabled={isPending}
                     />
@@ -164,14 +163,14 @@ export function MessageForm() {
 
             <FormField
               control={form.control}
-              name="lastName"
+              name="last_name"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
                     <Input
                       {...field}
                       type="text"
-                      placeholder="LAST NAME"
+                      placeholder={t("placeholderLastName")}
                       className="indent-4 bg-black text-white placeholder:text-gray-400 border-none rounded-none py-5 focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-black placeholder:text-sm"
                       disabled={isPending}
                     />
@@ -192,7 +191,7 @@ export function MessageForm() {
                   <Input
                     {...field}
                     type="email"
-                    placeholder="EMAIL ADDRESS"
+                    placeholder={t("placeholderEmail")}
                     className="indent-4 bg-black text-white placeholder:text-gray-400 border-none rounded-none py-5 focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-black placeholder:text-sm"
                     disabled={isPending}
                   />
@@ -211,7 +210,7 @@ export function MessageForm() {
                 <FormControl>
                   <Textarea
                     {...field}
-                    placeholder="MESSAGE..."
+                    placeholder={t("placeholderMessage")}
                     className="indent-4 bg-black text-white placeholder:text-gray-400 border-none rounded-none py-5 focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-black min-h-[120px]"
                     disabled={isPending}
                   />
@@ -224,7 +223,7 @@ export function MessageForm() {
           {/* Hidden sourceUrl field */}
           <FormField
             control={form.control}
-            name="sourceUrl"
+            name="source_url"
             render={({ field }) => (
               <FormItem className="hidden">
                 <FormControl>
@@ -242,7 +241,7 @@ export function MessageForm() {
               "bg-primary hover:bg-primary/90 text-white font-medium py-5 px-8 rounded-none transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             )}
           >
-            {isPending ? "Sending..." : "Send Message"}
+            {isPending ? t("buttonSending") : t("buttonSendMessage")}
           </Button>
 
           {/* Show general error message */}
@@ -262,7 +261,7 @@ export function MessageForm() {
               <CheckCircle className="h-12 w-12 text-green-500" />
             </div>
             <DialogTitle className="text-center text-xl font-semibold">
-              Message Sent Successfully!
+              {t("dialogTitleSuccess")}
             </DialogTitle>
             <DialogDescription className="text-center text-gray-600 mt-2">
               {successMessage}
@@ -273,7 +272,7 @@ export function MessageForm() {
               onClick={() => setShowSuccessDialog(false)}
               className="bg-primary hover:bg-primary/90 text-white px-8"
             >
-              Close
+              {t("buttonClose")}
             </Button>
           </div>
         </DialogContent>

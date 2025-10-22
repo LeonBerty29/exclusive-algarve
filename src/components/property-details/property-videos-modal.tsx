@@ -12,12 +12,17 @@ import { Button } from "../ui/button";
 import { Play } from "lucide-react";
 import PropertyVideoDetails from "../property/property-video-details";
 import { PropertyVideo } from "@/types/property";
+import { getTranslations } from "next-intl/server";
 
 interface PropertyVideosModalProps {
   videos: PropertyVideo[];
 }
 
-const ProperyVideosModal: React.FC<PropertyVideosModalProps> = ({ videos }) => {
+export const PropertyVideosModal: React.FC<PropertyVideosModalProps> = async({
+  videos,
+}) => {
+  const t = await getTranslations("propertyVideosModal");
+
   // Don't render the modal if no videos are available
   if (!videos || videos.length === 0) {
     return null;
@@ -33,9 +38,11 @@ const ProperyVideosModal: React.FC<PropertyVideosModalProps> = ({ videos }) => {
         </DialogTrigger>
         <DialogContent className="mx-auto !max-w-full !top-16 !bottom-0 !left-0 !right-0 !translate-x-0 !translate-y-0 overflow-y-auto !bg-white">
           <DialogHeader>
-            <DialogTitle className="sr-only">Property Video player</DialogTitle>
+            <DialogTitle className="sr-only">
+              {t("propertyVideoPlayer")}
+            </DialogTitle>
             <DialogDescription className="sr-only">
-              Play videos of the property
+              {t("playVideosOfProperty")}
             </DialogDescription>
           </DialogHeader>
           <div>
@@ -44,7 +51,7 @@ const ProperyVideosModal: React.FC<PropertyVideosModalProps> = ({ videos }) => {
           <DialogFooter className="sm:justify-start">
             <DialogClose asChild>
               <Button type="button" variant="secondary">
-                Close
+                {t("close")}
               </Button>
             </DialogClose>
           </DialogFooter>
@@ -53,5 +60,3 @@ const ProperyVideosModal: React.FC<PropertyVideosModalProps> = ({ videos }) => {
     </>
   );
 };
-
-export default ProperyVideosModal;

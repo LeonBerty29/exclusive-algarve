@@ -1,9 +1,6 @@
 import React, { Suspense } from "react";
-// import { PriceSlider } from "@/components/search/price-slider-2";
 import { SearchInput } from "./search-input";
 import { Skeleton } from "../ui/skeleton";
-// import { BathroomSlider } from "./bathrooms-slider";
-// import { BedroomsSlider } from "./bedrooms-slider";
 import { PropertySearchParams } from "@/types/property";
 import { Button } from "../ui/button";
 import {
@@ -22,19 +19,21 @@ import {
   ListPropertyTypes,
   ListRegionSelect,
 } from "./listing-filters";
+import { getTranslations } from "next-intl/server";
 
-export const HomepageSearchEngine = ({
+export const HomepageSearchEngine = async({
   searchParams,
 }: {
   searchParams: PropertySearchParams;
 }) => {
+  const t = await getTranslations("homepageSearchEngine");
   const apiParams = generateApiParams(searchParams);
   const suspenseKey = generateSuspenseKey(apiParams);
   return (
     <>
       <h1 className="text-2xl sm:text-4xl lg:text-6xl leading-snug font-extralight text-white mb-6 text-center">
-        FIND YOUR DREAM HOME <br />
-        PROPERTY IN ALGARVE
+        {t("findYourDreamHome")} <br />
+        {t("propertyInAlgarve")}
       </h1>
       <div className="w-full max-w-6xl mx-auto p-4 sm:p-6 bg-black/30 shadow-lg">
         <div className="flex flex-col gap-4 lg:flex-row lg:gap-8">
@@ -111,6 +110,7 @@ export async function ShowResultsButton({
 }: {
   apiParams: PropertySearchParams;
 }) {
+  const t = await getTranslations("homepageSearchEngine");
   const hasFilters = hasActiveFilters(apiParams);
   if (!hasFilters) {
     return (
@@ -118,26 +118,23 @@ export async function ShowResultsButton({
         className="bg-primary border border-primary hover:border-primary/80 text-white flex-1"
         disabled={true}
       >
-        Show Result
+        {t("showResult")}
       </Button>
     );
   }
   const response = await getPropertiesWithAllPaginated(apiParams, 12);
   const total = response.meta.total;
-  return (
-    <>
-      <ScrollToResultsButton total={total} hasFilters={hasFilters} />
-    </>
-  );
+  return <ScrollToResultsButton total={total} hasFilters={hasFilters} />;
 }
 
-function ShowResultsButtonLoading() {
+async function ShowResultsButtonLoading() {
+  const t = await getTranslations("homepageSearchEngine");
   return (
     <Button
       className="bg-primary border border-primary hover:border-primary/80 text-white flex-1"
       disabled={true}
     >
-      Show Result <Loader2 className="w-4 h-4 animate-spin" />
+      {t("showResult")} <Loader2 className="w-4 h-4 animate-spin" />
     </Button>
   );
 }

@@ -14,6 +14,7 @@ import { Skeleton } from "../ui/skeleton";
 import { cn } from "@/lib/utils";
 import { Link } from "@/i18n/navigation";
 import { useLocale } from "next-intl";
+import { useTranslations } from "next-intl";
 
 interface Resource {
   id: string;
@@ -32,6 +33,8 @@ export function OwnResourcesDropdown({
   scrolled: boolean;
   colorChange?: boolean;
 }) {
+  const t = useTranslations("ownResourcesDropdown");
+
   const [resources, setResources] = useState<Resource[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -54,7 +57,7 @@ export function OwnResourcesDropdown({
         setResources(data);
       } catch (err) {
         setError(
-          err instanceof Error ? err.message : "Failed to fetch resources"
+          err instanceof Error ? err.message : t("failedFetchResources")
         );
         console.error("Error fetching resources:", err);
       } finally {
@@ -63,7 +66,7 @@ export function OwnResourcesDropdown({
     }
 
     fetchResources();
-  }, [locale]);
+  }, [locale, t]);
 
   if (loading) {
     return <Skeleton className="h-6 w-12" />;
@@ -94,13 +97,15 @@ export function OwnResourcesDropdown({
                 : "text-gray-600"
             )}
           >
-            Own
+            {t("own")}
             <ChevronDown className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-80 p-3">
           {resources.length === 0 ? (
-            <DropdownMenuItem disabled>No resources available</DropdownMenuItem>
+            <DropdownMenuItem disabled>
+              {t("noResourcesAvailable")}
+            </DropdownMenuItem>
           ) : (
             resources.map((resource) => (
               <DropdownMenuItem

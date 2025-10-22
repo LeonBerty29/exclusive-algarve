@@ -26,6 +26,7 @@ import { register } from "@/actions/register";
 import { AuthError } from "next-auth";
 import { toast } from "sonner";
 import { useRouter } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 
 type ErrorType = {
   message: string;
@@ -41,6 +42,7 @@ export const RegisterForm = ({
 }: {
   callbackUrl: string | undefined;
 }) => {
+  const t = useTranslations("registerForm");
   const [error, setError] = useState<ErrorType | undefined>({
     message: "",
     password: "",
@@ -90,9 +92,7 @@ export const RegisterForm = ({
             //   redirectTo: callbackUrl || DEFAULT_LOGIN_REDIRECT,
             // });
 
-            // return { success: "Login successful!" };
-
-            toast.success("User successfully created!");
+            toast.success(t("toastUserCreated"));
             router.push({
               pathname: "/account/created",
               query: {
@@ -112,10 +112,8 @@ export const RegisterForm = ({
               //     };
               // }
 
-              toast.error("An unexpected Error occured");
+              toast.error(t("toastUnexpectedError"));
             }
-
-            // console.log(error);
 
             // throw error;
           }
@@ -127,8 +125,8 @@ export const RegisterForm = ({
   return (
     <div>
       <CardWrapper
-        headerLabel="Create an account"
-        backButtonLabel="Alreay have an account?"
+        headerLabel={t("headerLabel")}
+        backButtonLabel={t("backButtonLabel")}
         backButtonHref="/login"
         showSocial={false}
       >
@@ -140,11 +138,11 @@ export const RegisterForm = ({
                 name="first_name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>First Name</FormLabel>
+                    <FormLabel>{t("firstNameLabel")}</FormLabel>
                     <FormControl>
                       <Input
                         {...field}
-                        placeholder="Enter your First Name"
+                        placeholder={t("firstNamePlaceholder")}
                         type="text"
                         disabled={isPending}
                       />
@@ -158,11 +156,11 @@ export const RegisterForm = ({
                 name="last_name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Last Name</FormLabel>
+                    <FormLabel>{t("lastNameLabel")}</FormLabel>
                     <FormControl>
                       <Input
                         {...field}
-                        placeholder="Enter your Last Name"
+                        placeholder={t("lastNamePlaceholder")}
                         type="text"
                         disabled={isPending}
                       />
@@ -177,11 +175,11 @@ export const RegisterForm = ({
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel>{t("emailLabel")}</FormLabel>
                     <FormControl>
                       <Input
                         {...field}
-                        placeholder="johndoe@example.com"
+                        placeholder={t("emailPlaceholder")}
                         type="email"
                         disabled={isPending}
                       />
@@ -196,7 +194,7 @@ export const RegisterForm = ({
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Password</FormLabel>
+                    <FormLabel>{t("passwordLabel")}</FormLabel>
                     <FormControl>
                       <Input
                         {...field}
@@ -215,7 +213,7 @@ export const RegisterForm = ({
                 name="password_confirmation"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Confirm Password</FormLabel>
+                    <FormLabel>{t("confirmPasswordLabel")}</FormLabel>
                     <FormControl>
                       <Input
                         {...field}
@@ -234,7 +232,7 @@ export const RegisterForm = ({
             <FormSuccess message={success} />
 
             <Button type="submit" className="w-full" disabled={isPending}>
-              Create an account
+              {t("createAccountButton")}
             </Button>
           </form>
         </Form>

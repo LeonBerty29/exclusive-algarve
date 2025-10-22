@@ -11,6 +11,7 @@ import { Property } from "@/types/property";
 import { Link } from "@/i18n/navigation";
 import { getLocale } from "next-intl/server";
 import { AddPropertyNote } from "./add-property-notes";
+import { getTranslations } from "next-intl/server";
 import { NoteObject } from "@/types";
 
 interface Props {
@@ -19,11 +20,13 @@ interface Props {
   notes: NoteObject[];
 }
 
-export const ProductCard = async ({ 
-  property, 
-  favorites = [], 
-  notes
+export const ProductCard = async ({
+  property,
+  favorites = [],
+  notes,
 }: Props) => {
+  const t = await getTranslations("productCard");
+
   // Extract image URLs from assets.images.gallery
   const imagePaths =
     property.assets?.images?.gallery?.map((img) => img.url) || [];
@@ -35,7 +38,7 @@ export const ProductCard = async ({
   const favorite = favorites.includes(property.id);
   const reference = property.reference;
   const exclusive = property.agency.name === "EAV";
-  
+
   const grossArea = property.features.private_area;
   const plotSize = property.features.plot_size;
   const amenities = {
@@ -82,7 +85,7 @@ export const ProductCard = async ({
 
         {exclusive && (
           <div className="bg-primary h-6 text-center text-xs font-bold text-white absolute bottom-0 w-full flex items-center justify-center z-10">
-            EXCLUSIVE LISTING BY EAV
+            {t("exclusiveListingByEav")}
           </div>
         )}
       </CardHeader>
@@ -110,7 +113,7 @@ export const ProductCard = async ({
                 />
               ) : (
                 <span className="text-xl font-semibold flex items-center gap-1 text-primary">
-                  Contact for price
+                  {t("contactForPrice")}
                 </span>
               )}
             </div>
@@ -127,7 +130,7 @@ export const ProductCard = async ({
               <div className="max-w-[47%]">
                 <div>
                   <p className="text-sm font-light text-gray-400 mb-3">
-                    Location
+                    {t("location")}
                   </p>
                   <p className="text-sm font-semibold text-black line-clamp-1">
                     {location}
@@ -138,7 +141,7 @@ export const ProductCard = async ({
               <div className="max-w-[52%] min-w-fit flex gap-2">
                 <div className="flex-1 max-w-fit">
                   <p className="text-sm font-light text-gray-400 mb-3">
-                    Gross Area
+                    {t("grossArea")}
                   </p>
                   <p className="text-sm text-black font-semibold">
                     {grossArea} m<sup>2</sup>
@@ -146,7 +149,7 @@ export const ProductCard = async ({
                 </div>
                 <div className="flex-1 max-w-fit">
                   <p className="text-sm font-light text-gray-400 mb-3">
-                    Plot Size
+                    {t("plotSize")}
                   </p>
                   <p className="text-sm font-semibold text-black">
                     {plotSize} m<sup>2</sup>

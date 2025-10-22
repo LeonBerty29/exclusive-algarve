@@ -12,12 +12,14 @@ import { Link } from "@/i18n/navigation";
 import { getNote } from "@/data/notes";
 import { auth } from "@/auth";
 import { getFavorites } from "@/data/favourites";
+import { getTranslations } from "next-intl/server";
 
 const SimilarProperties = async ({
   similarPropertiesId,
 }: {
   similarPropertiesId: number[];
 }) => {
+  const t = await getTranslations("similarProperties");
   const session = await auth();
   const token = session?.accessToken;
 
@@ -25,9 +27,7 @@ const SimilarProperties = async ({
   const [propertiesResponse, favoritesResponse, notesResponse] =
     await Promise.all([
       await getListOfProperties(similarPropertiesId),
-      token
-        ? getFavorites(token)
-        : Promise.resolve({ favorite_properties: [] }),
+      token ? getFavorites(token) : Promise.resolve({ favorite_properties: [] }),
       token ? getNote() : Promise.resolve({ data: [] }),
     ]);
 
@@ -45,15 +45,15 @@ const SimilarProperties = async ({
       >
         <div className="flex flex-col sm:flex-row gap-5 justify-between sm:items-end w-full px-4 md:px-10">
           <h3 className="text-3xl font-medium">
-            SIMILAR <span className="text-primary">PROPERTIES</span> OF{" "}
-            <span className="text-primary">INTEREST</span>
+            {t("similar")} <span className="text-primary">{t("properties")}</span> {t("of")}{" "}
+            <span className="text-primary">{t("interest")}</span>
           </h3>
 
           <Button
             asChild
             className="bg-black text-white hover:opacity-85 text-xs order-3 hidden sm:flex"
           >
-            <Link href="/properties">VIEW ALL PROPERTIES</Link>
+            <Link href="/properties">{t("viewAllProperties")}</Link>
           </Button>
         </div>
 
@@ -83,11 +83,8 @@ const SimilarProperties = async ({
           </CarouselContent>
 
           <div className="w-full flex justify-center sm:hidden pt-2">
-            <Button
-              asChild
-              className="bg-black text-white hover:opacity-85 text-xs order-3"
-            >
-              <Link href="/properties">VIEW ALL PROPERTIES</Link>
+            <Button asChild className="bg-black text-white hover:opacity-85 text-xs order-3">
+              <Link href="/properties">{t("viewAllProperties")}</Link>
             </Button>
           </div>
         </div>

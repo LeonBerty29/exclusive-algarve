@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 import { CardWrapper } from "./card-wrapper";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -40,6 +42,8 @@ export const LoginForm = ({
 }: {
   callbackUrl: string | undefined;
 }) => {
+  const t = useTranslations("loginForm");
+
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const [responseError, setResponseError] = useState<{
@@ -107,8 +111,8 @@ export const LoginForm = ({
   return (
     <>
       <CardWrapper
-        headerLabel="Welcome back"
-        backButtonLabel="Create new account"
+        headerLabel={t("welcomeBack")}
+        backButtonLabel={t("createNewAccount")}
         backButtonHref={`/register${
           callbackUrl ? `?callbackUrl=${callbackUrl}` : ""
         }`}
@@ -122,11 +126,11 @@ export const LoginForm = ({
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel>{t("email")}</FormLabel>
                     <FormControl>
                       <Input
                         {...field}
-                        placeholder="johndoe@example.com"
+                        placeholder={t("emailPlaceholder")}
                         type="email"
                         disabled={isPending}
                       />
@@ -141,7 +145,7 @@ export const LoginForm = ({
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Password</FormLabel>
+                    <FormLabel>{t("password")}</FormLabel>
                     <FormControl>
                       <Input
                         {...field}
@@ -160,16 +164,16 @@ export const LoginForm = ({
             <FormSuccess message={success} />
 
             <Button type="submit" className="w-full" disabled={isPending}>
-              Login
+              {t("login")}
             </Button>
 
             <Button
               type="button"
               variant={"ghost"}
-              className="flex  mx-auto bg-transparent hover:bg-transparent hover:text-primary text-primary hover:underline"
+              className="flex mx-auto bg-transparent hover:bg-transparent hover:text-primary text-primary hover:underline"
               asChild
             >
-              <Link href="/account/forgot-password">Forgot Password?</Link>
+              <Link href="/account/forgot-password">{t("forgotPassword")}</Link>
             </Button>
           </form>
         </Form>
@@ -185,7 +189,9 @@ export const LoginForm = ({
             <div className="flex justify-center mb-4">
               <PiWarningCircle className="h-16 w-16 text-orange-500" />
             </div>
-            <DialogTitle className="text-xl text-center">Alert</DialogTitle>
+            <DialogTitle className="text-xl text-center">
+              {t("alert")}
+            </DialogTitle>
           </DialogHeader>
 
           <div className="text-center space-y-4">
@@ -194,7 +200,7 @@ export const LoginForm = ({
 
           <div className="flex gap-4 justify-center pt-4 mb-2">
             <Button className="bg-gray-200 text-black hover:bg-gray-300 transition-colors">
-              <Link href={"/"}>Home</Link>
+              <Link href="/">{t("home")}</Link>
             </Button>
             <Button
               className=" bg-primary text-white hover:bg-black transition-colors"
@@ -209,7 +215,7 @@ export const LoginForm = ({
                   },
                 }}
               >
-                Activate account
+                {t("activateAccount")}
               </Link>
             </Button>
           </div>

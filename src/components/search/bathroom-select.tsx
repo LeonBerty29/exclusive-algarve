@@ -1,4 +1,5 @@
 "use client";
+
 import { useState, useEffect, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ChevronsUpDown } from "lucide-react";
@@ -10,6 +11,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Ranges } from "@/types/property";
+import { useTranslations } from "next-intl";
 
 export function BathroomsDropdown({
   bathroomRange,
@@ -18,6 +20,7 @@ export function BathroomsDropdown({
   bathroomRange: Ranges["bathrooms"];
   modal?: boolean;
 }) {
+  const t = useTranslations("bathroomSelect");
   const router = useRouter();
   const searchParams = useSearchParams();
   const previousValuesRef = useRef<[number, number] | undefined>(undefined);
@@ -34,25 +37,24 @@ export function BathroomsDropdown({
   });
 
   const handleMinChange = (value: number) => {
-    const newMax = Math.max(value, selectedValues[1]); // Ensure max is at least equal to min
+    const newMax = Math.max(value, selectedValues[1]);
     const newValues: [number, number] = [value, newMax];
     setSelectedValues(newValues);
     updateURL(newValues);
-    setOpen(false); // Close dropdown after selection
+    setOpen(false);
   };
 
   const handleMaxChange = (value: number) => {
-    const newMin = Math.min(selectedValues[0], value); // Ensure min is at most equal to max
+    const newMin = Math.min(selectedValues[0], value);
     const newValues: [number, number] = [newMin, value];
     setSelectedValues(newValues);
     updateURL(newValues);
-    setOpen(false); // Close dropdown after selection
+    setOpen(false);
   };
 
   const updateURL = (newValues: [number, number]) => {
     const params = new URLSearchParams(searchParams.toString());
 
-    // Only set params if they're different from defaults
     if (newValues[0] !== bathroomRange.min) {
       params.set("min_bathrooms", newValues[0].toString());
     } else {
@@ -65,7 +67,6 @@ export function BathroomsDropdown({
       params.delete("max_bathrooms");
     }
 
-    // Only reset to first page when bathroom VALUES actually change
     const previousValues = previousValuesRef.current;
     const valuesChanged =
       !previousValues ||
@@ -76,7 +77,6 @@ export function BathroomsDropdown({
       params.delete("page");
     }
 
-    // Update the ref with current values
     previousValuesRef.current = newValues;
 
     router.replace(`?${params.toString()}`);
@@ -94,7 +94,6 @@ export function BathroomsDropdown({
     setSelectedValues(newValues);
   }, [searchParams, bathroomRange.min, bathroomRange.max]);
 
-  // Generate options for min and max selects
   const generateOptions = () => {
     const options = [];
     for (let i = bathroomRange.min; i <= bathroomRange.max; i++) {
@@ -103,21 +102,20 @@ export function BathroomsDropdown({
     return options;
   };
 
-  // Check if values are different from defaults
   const isFiltered =
     selectedValues[0] !== bathroomRange.min ||
     selectedValues[1] !== bathroomRange.max;
 
   const getDisplayText = () => {
     if (!isFiltered) {
-      return "Bathrooms";
+      return t("bathrooms");
     }
     if (selectedValues[0] === selectedValues[1]) {
-      return `${selectedValues[0]} bathroom${
-        selectedValues[0] === 1 ? "" : "s"
+      return `${selectedValues[0]} ${
+        selectedValues[0] === 1 ? t("bathroom") : t("bathrooms")
       }`;
     }
-    return `${selectedValues[0]} - ${selectedValues[1]} bathrooms`;
+    return `${selectedValues[0]} - ${selectedValues[1]} ${t("bathrooms")}`;
   };
 
   return (
@@ -135,8 +133,8 @@ export function BathroomsDropdown({
         <DropdownMenuContent className="w-80 p-4" align="start">
           <Tabs defaultValue="min" className="w-full">
             <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="min">Min</TabsTrigger>
-              <TabsTrigger value="max">Max</TabsTrigger>
+              <TabsTrigger value="min">{t("min")}</TabsTrigger>
+              <TabsTrigger value="max">{t("max")}</TabsTrigger>
             </TabsList>
 
             <TabsContent value="min" className="space-y-2 mt-4">

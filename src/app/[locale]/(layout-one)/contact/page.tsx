@@ -5,13 +5,16 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import React from "react";
+import { getTranslations } from "next-intl/server";
 
-const ContactPage = () => {
+const ContactPage = async() => {
+  const t = await getTranslations("contactPage");
+
   return (
     <>
       <div className="pt-24">
         <ContactSection
-          title="CONTACT US"
+          title={t("contactUs")}
           imageSrc=""
           theme="light"
           formTitle={false}
@@ -22,20 +25,12 @@ const ContactPage = () => {
         <div className="flex items-center gap-y-5 justify-between py-5 md:py-8 flex-wrap">
           <div className="w-full md:w-[47%] 2xl:w-[44%]">
             <h1 className="text-2xl font-semibold mb-6">
-              BOOK A MEETING WITH US
+              {t("bookAMeetingWithUs")}
             </h1>
             <p className="text-neutral-700 text-sm xl:text-base mb-7">
-              Exclusive Algarve Villas has been a known name in the sale of
-              luxurious and unique Properties in the Western and Central Algarve
-              since 2006. With many years of experience, we lead a team of
-              property professionals who are knowledgeable in their work area
-              and will be dedicated to show you all the ins and outs of the
-              Algarve region.
+              {t("exclusiveAlgarveVillasDescription")}
             </p>
 
-            {/* <Button className="bg-primary text-white hover:bg-black transition-colors">
-              BOOK A MEETING
-            </Button> */}
             <BookMeeting
               buttonStyle={
                 "bg-primary border-primary text-white hover:bg-black hover:text-white transition-colors"
@@ -56,12 +51,15 @@ const ContactPage = () => {
 
       <section className="lg:container mx-auto px-6 md:px-12 lg:px-14 py-14 xl:pb-20">
         <div className="flex flex-col items-center gap-3">
-            <h4 className="uppercase font-bold text-2xl text-center text-primary">Request an agenet partnership</h4>
-            <Button asChild className="bg-black hover:bg-black/90 px-8 text-white transition-colors">
-              <Link href="/agent">
-                REQUEST
-              </Link>
-            </Button>
+          <h4 className="uppercase font-bold text-2xl text-center text-primary">
+            {t("requestAnAgentPartnership")}
+          </h4>
+          <Button
+            asChild
+            className="bg-black hover:bg-black/90 px-8 text-white transition-colors"
+          >
+            <Link href="/agent">{t("request")}</Link>
+          </Button>
         </div>
       </section>
 

@@ -1,8 +1,9 @@
 "use server";
 
 import { ZodIssue } from "zod";
-import { bookMeetingSchema } from "@/types/book-a-meeting";
+import { getClientBookMeetingSchema } from "@/types/book-a-meeting";
 import { bookMeetingWithDetailedErrors } from "@/data/book-meeting";
+import { getTranslations } from "next-intl/server";
 
 export interface BookMeetingActionResult {
   success: boolean;
@@ -14,6 +15,7 @@ export interface BookMeetingActionResult {
 export async function bookMeetingAction(
   formData: FormData
 ): Promise<BookMeetingActionResult> {
+  const t = await getTranslations("bookMeetingAction");
   try {
     // Extract data from FormData
     const rawData = {
@@ -21,21 +23,33 @@ export async function bookMeetingAction(
       last_name: formData.get("last_name") as string,
       phone: formData.get("phone") as string,
       email: formData.get("email") as string,
-      meeting_date: formData.get("meeting_date") as string,
+      meeting_date: new Date(formData.get("meeting_date") as string),
       meeting_time: formData.get("meeting_time") as string,
       meeting_type: formData.get("meeting_type") as string,
       meeting_location: formData.get("meeting_location") as string,
       additional_text: (formData.get("additional_text") as string) || undefined,
       source_url: (formData.get("source_url") as string) || undefined,
+      accept_terms: Boolean(formData.get("accept_terms")) || undefined,
     };
+
+    console.log({ rawData });
 
     const recaptchaToken = formData.get("recaptcha_token") as string;
 
     // Validate the data using Zod schema
+    const bookMeetingSchemaJson = await getTranslations(
+      "clientBookMeetingSchema"
+    );
+    const bookMeetingSchema = getClientBookMeetingSchema(bookMeetingSchemaJson);
     const validationResult = bookMeetingSchema.safeParse(rawData);
+
+    // console.log({ validationResult });
+    // console.log({ error: validationResult.error });
 
     if (!validationResult.success) {
       // Convert Zod errors to field errors with proper typing
+      // console.log({ errorsSSSS: validationResult.error.errors });
+      // console.log({ errorsPath: validationResult.error.errors[0].path });
       const fieldErrors: { [key: string]: string } = {};
       validationResult.error.errors.forEach((error: ZodIssue) => {
         const fieldName = error.path[0];
@@ -44,9 +58,11 @@ export async function bookMeetingAction(
         }
       });
 
+      // console.log({ fieldErrors });
+
       return {
         success: false,
-        message: "Please check the form for errors",
+        message: t("checkFormForErrors"),
         fieldErrors,
       };
     }
@@ -54,7 +70,7 @@ export async function bookMeetingAction(
     if (!recaptchaToken) {
       return {
         success: false,
-        message: "ReCaptcha token is missing",
+        message: t("recaptchaTokenMissing"),
       };
     }
 
@@ -72,7 +88,7 @@ export async function bookMeetingAction(
     const verification = await verificationResponse.json();
 
     if (verification.success && verification.score > 0.5) {
-      console.log({ success: true, score: verification.score });
+      // console.log({ success: true, score: verification.score });
     } else {
       console.log({
         success: false,
@@ -81,8 +97,7 @@ export async function bookMeetingAction(
       });
       return {
         success: false,
-        message:
-          "ReCaptcha verification failed. Please refresh the page and try again.",
+        message: t("recaptchaVerificationFailed"),
       };
     }
 
@@ -92,21 +107,23 @@ export async function bookMeetingAction(
     if (!result.success) {
       return {
         success: false,
-        message: result.error || "Failed to book meeting",
+        message: result.error ? result.error : t("failedToBookMeeting"),
         errors: result.validationErrors,
       };
     }
 
     return {
       success: true,
-      message: result.data?.message || "Meeting booked successfully!",
+      message: result.data?.message
+        ? result.data.message
+        : t("meetingBookedSuccessfully"),
     };
   } catch (error) {
     console.error("Book meeting action error:", error);
 
     return {
       success: false,
-      message: "An unexpected error occurred. Please try again.",
+      message: t("unexpectedError"),
     };
   }
 }

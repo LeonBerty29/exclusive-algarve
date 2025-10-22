@@ -1,5 +1,5 @@
 import { PropertyListResponse, PropertyResponse } from "@/types/property";
-import { getLocale } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 
 function createBasicAuthHeader(): string {
@@ -16,6 +16,7 @@ async function apiRequest<T>(
   endpoint: string,
   options: RequestInit = {}
 ): Promise<T> {
+  const t = await getTranslations("propertyData");
   const url = `${process.env.API_BASE_URL}${endpoint}`;
 
   const defaultHeaders = {
@@ -46,16 +47,21 @@ async function apiRequest<T>(
     // Check for 404 specifically
     if (response.status === 404) {
       // console.log(response.status);
-      throw new Error(`API Error: ${response.status} ${response.statusText}`, {
-        cause: response,
-      });
+      throw new Error(
+        `${t("apiError")} ${response.status} ${response.statusText}`,
+        {
+          cause: response,
+        }
+      );
     }
 
     // Check if response is ok
     if (!response.ok) {
       const errorText = await response.text();
       throw new Error(
-        `API Error: ${response.status} ${response.statusText} - ${errorText}`,
+        `${t("apiError")} ${response.status} ${
+          response.statusText
+        } - ${errorText}`,
         {
           cause: response,
         }
@@ -77,7 +83,7 @@ async function apiRequest<T>(
     if (error instanceof Error) {
       throw error;
     } else {
-      throw new Error(`Failed to fetch from API: ${String(error)}`);
+      throw new Error(`${t("failedToFetchFromApi")} ${String(error)}`);
     }
   }
 }
@@ -94,7 +100,7 @@ export const getProperty = async (
 export const getListOfProperties = async (
   propertyIds: number[]
 ): Promise<PropertyListResponse> => {
-  const locale = await getLocale();  
+  const locale = await getLocale();
   const ids = propertyIds.join(",");
   const endpoint = `/v1/properties?ids=${ids}&language=${locale}`;
 

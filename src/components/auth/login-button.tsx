@@ -23,7 +23,7 @@ export const LoginButton = ({
   if(mode === "modal") {
     return (
       <span>
-        TODO: implement modal
+        {/* TODO: implement modal */}
       </span>
     )
   }

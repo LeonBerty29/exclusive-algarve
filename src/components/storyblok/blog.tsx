@@ -2,6 +2,7 @@ import { Timer } from "lucide-react";
 import Image from "next/image";
 import React from "react";
 import { renderRichText, StoryblokRichTextNode } from "@storyblok/react";
+import { getTranslations } from "next-intl/server";
 
 
 export const Blog = async (props: {
@@ -15,6 +16,8 @@ export const Blog = async (props: {
     body: StoryblokRichTextNode<string | TrustedHTML>;
   };
 }) => {
+
+  const t = await getTranslations("blog");
   
   return (
     <>
@@ -35,7 +38,7 @@ export const Blog = async (props: {
         <div className="flex items-center gap-1 flex-nowrap w-fit">
           <Timer className="h-4 w-4 text-primary" />
           <p className="text-xs text-primary">
-            {props.blok.read_time_in_minutes} min read
+            {props.blok.read_time_in_minutes} {t("minRead")}
           </p>
         </div>
       </div>

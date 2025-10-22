@@ -14,41 +14,47 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "../ui/button";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
+
+// Mock data for property types
+const mockPropertyTypes = [
+  { id: "apartment", nameKey: "propertyTypeApartment" },
+  { id: "house", nameKey: "propertyTypeHouse" },
+  { id: "villa", nameKey: "propertyTypeVilla" },
+  { id: "condo", nameKey: "propertyTypeCondo" },
+  { id: "townhouse", nameKey: "propertyTypeTownhouse" },
+  { id: "penthouse", nameKey: "propertyTypePenthouse" },
+];
 
 // Validation schemas for each step
 const stepOneSchema = z.object({
-  firstName: z.string().min(1, "First name is required"),
-  lastName: z.string().min(1, "Last name is required"),
-  email: z
-    .string()
-    .min(1, "Email is required")
-    .email("Please enter a valid email address"),
-  phone: z.string().min(1, "Phone number is required"),
+  first_name: z.string().min(1, "firstNameRequired"),
+  last_name: z.string().min(1, "lastNameRequired"),
+  email: z.string().min(1, "emailRequired").email("emailInvalid"),
+  phone: z.string().min(1, "phoneRequired"),
   consent: z.boolean().refine((val) => val === true, {
-    message: "You must authorize us to contact you",
+    message: "consentRequired",
   }),
 });
 
 // Base schema for form resolver (without refinements)
 const stepTwoBaseSchema = z.object({
-  propertyTypes: z
-    .array(z.string())
-    .min(1, "At least one property type is required"),
-  minBudget: z.string().min(1, "Minimum budget is required"),
-  maxBudget: z.string().min(1, "Maximum budget is required"),
-  location: z.string().min(1, "Location is required"),
-  minBedrooms: z.string().min(1, "Minimum bedrooms is required"),
-  maxBedrooms: z.string().min(1, "Maximum bedrooms is required"),
-  minBathrooms: z.string().min(1, "Minimum bathrooms is required"),
-  maxBathrooms: z.string().min(1, "Maximum bathrooms is required"),
-  hasPool: z.boolean(),
-  hasGarage: z.boolean(),
+  property_types: z.array(z.string()).min(1, "propertyTypesRequired"),
+  min_budget: z.string().min(1, "minBudgetRequired"),
+  max_budget: z.string().min(1, "maxBudgetRequired"),
+  location: z.string().min(1, "locationRequired"),
+  min_bedrooms: z.string().min(1, "minBedroomsRequired"),
+  max_bedrooms: z.string().min(1, "maxBedroomsRequired"),
+  min_bathrooms: z.string().min(1, "minBathroomsRequired"),
+  max_bathrooms: z.string().min(1, "maxBathroomsRequired"),
+  has_pool: z.boolean(),
+  has_garage: z.boolean(),
 });
 
 const stepThreeSchema = z.object({
-  additionalInfo: z.string().optional(),
-  sourceUrl: z.string().min(1, "Source URL is required"),
+  additional_info: z.string().optional(),
+  source_url: z.string().min(1, "sourceUrlRequired"),
 });
 
 // Combined base schema for form data structure
@@ -58,37 +64,34 @@ const combinedBaseSchema = stepOneSchema
 
 // Validation function for min/max relationships
 const validateMinMaxRelationships = (
-  data: z.infer<typeof combinedBaseSchema>
+  data: z.infer<typeof combinedBaseSchema>,
+  t: (key: string) => string
 ) => {
   const errors: string[] = [];
 
   // Validate budget
-  const minBudget = parseFloat(data.minBudget);
-  const maxBudget = parseFloat(data.maxBudget);
+  const minBudget = parseFloat(data.min_budget);
+  const maxBudget = parseFloat(data.max_budget);
   if (!isNaN(minBudget) && !isNaN(maxBudget) && minBudget > maxBudget) {
-    errors.push("Minimum budget must be less than or equal to maximum budget");
+    errors.push(t("budgetInvalid"));
   }
 
   // Validate bedrooms
-  const minBedrooms = parseInt(data.minBedrooms);
-  const maxBedrooms = parseInt(data.maxBedrooms);
+  const minBedrooms = parseInt(data.min_bedrooms);
+  const maxBedrooms = parseInt(data.max_bedrooms);
   if (!isNaN(minBedrooms) && !isNaN(maxBedrooms) && minBedrooms > maxBedrooms) {
-    errors.push(
-      "Minimum bedrooms must be less than or equal to maximum bedrooms"
-    );
+    errors.push(t("bedroomsInvalid"));
   }
 
   // Validate bathrooms
-  const minBathrooms = parseInt(data.minBathrooms);
-  const maxBathrooms = parseInt(data.maxBathrooms);
+  const minBathrooms = parseInt(data.min_bathrooms);
+  const maxBathrooms = parseInt(data.max_bathrooms);
   if (
     !isNaN(minBathrooms) &&
     !isNaN(maxBathrooms) &&
     minBathrooms > maxBathrooms
   ) {
-    errors.push(
-      "Minimum bathrooms must be less than or equal to maximum bathrooms"
-    );
+    errors.push(t("bathroomsInvalid"));
   }
 
   return errors;
@@ -102,7 +105,7 @@ type CombinedFormData = z.infer<typeof combinedBaseSchema>;
 // Types
 interface PropertyType {
   id: string;
-  name: string;
+  nameKey: string;
 }
 
 interface CheckboxProps {
@@ -116,17 +119,8 @@ interface PropertyTypesProps {
   typologies: PropertyType[];
   selectedItems: string[];
   onSelectionChange: (selected: string[]) => void;
+  t: (key: string) => string;
 }
-
-// Mock data for property types
-const mockPropertyTypes: PropertyType[] = [
-  { id: "apartment", name: "Apartment" },
-  { id: "house", name: "House" },
-  { id: "villa", name: "Villa" },
-  { id: "condo", name: "Condo" },
-  { id: "townhouse", name: "Townhouse" },
-  { id: "penthouse", name: "Penthouse" },
-];
 
 // Simple Checkbox component
 const Checkbox: React.FC<CheckboxProps> = ({
@@ -175,6 +169,7 @@ const PropertyTypes: React.FC<PropertyTypesProps> = ({
   typologies,
   selectedItems,
   onSelectionChange,
+  t,
 }) => {
   const handleCheckboxChange = (itemId: string, checked: boolean): void => {
     let newSelection: string[];
@@ -212,7 +207,7 @@ const PropertyTypes: React.FC<PropertyTypesProps> = ({
                 "font-bold text-yellow-600"
               }`}
             >
-              {typology.name}
+              {t(typology.nameKey)}
             </label>
           </div>
         </div>
@@ -222,6 +217,7 @@ const PropertyTypes: React.FC<PropertyTypesProps> = ({
 };
 
 export const MultiStepPropertyForm = () => {
+  const t = useTranslations("propertyRequestMultistepForm");
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [isPending, startTransition] = useTransition();
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
@@ -242,8 +238,8 @@ export const MultiStepPropertyForm = () => {
   const stepOneForm = useForm<StepOneData>({
     resolver: zodResolver(stepOneSchema),
     defaultValues: {
-      firstName: "",
-      lastName: "",
+      first_name: "",
+      last_name: "",
       email: "",
       phone: "",
       consent: false,
@@ -254,16 +250,16 @@ export const MultiStepPropertyForm = () => {
   const stepTwoForm = useForm<StepTwoData>({
     resolver: zodResolver(stepTwoBaseSchema),
     defaultValues: {
-      propertyTypes: [],
-      minBudget: "",
-      maxBudget: "",
+      property_types: [],
+      min_budget: "",
+      max_budget: "",
       location: "",
-      minBedrooms: "",
-      maxBedrooms: "",
-      minBathrooms: "",
-      maxBathrooms: "",
-      hasPool: false,
-      hasGarage: false,
+      min_bedrooms: "",
+      max_bedrooms: "",
+      min_bathrooms: "",
+      max_bathrooms: "",
+      has_pool: false,
+      has_garage: false,
     },
     mode: "onChange",
   });
@@ -271,8 +267,8 @@ export const MultiStepPropertyForm = () => {
   const stepThreeForm = useForm<StepThreeData>({
     resolver: zodResolver(stepThreeSchema),
     defaultValues: {
-      additionalInfo: "",
-      sourceUrl: sourceUrlRef.current,
+      additional_info: "",
+      source_url: sourceUrlRef.current,
     },
     mode: "onChange",
   });
@@ -345,16 +341,16 @@ export const MultiStepPropertyForm = () => {
   };
 
   // Watch form values for min/max validation
-  const minBedrooms = stepTwoForm.watch("minBedrooms");
-  const maxBedrooms = stepTwoForm.watch("maxBedrooms");
-  const minBathrooms = stepTwoForm.watch("minBathrooms");
-  const maxBathrooms = stepTwoForm.watch("maxBathrooms");
-  const minBudget = stepTwoForm.watch("minBudget");
-  const maxBudget = stepTwoForm.watch("maxBudget");
+  const minBedrooms = stepTwoForm.watch("min_bedrooms");
+  const maxBedrooms = stepTwoForm.watch("max_bedrooms");
+  const minBathrooms = stepTwoForm.watch("min_bathrooms");
+  const maxBathrooms = stepTwoForm.watch("max_bathrooms");
+  const minBudget = stepTwoForm.watch("min_budget");
+  const maxBudget = stepTwoForm.watch("max_budget");
 
   // Handle budget validation on change
   const handleBudgetChange = (
-    field: "minBudget" | "maxBudget",
+    field: "min_budget" | "max_budget",
     value: string
   ) => {
     stepTwoForm.setValue(field, value, { shouldValidate: true });
@@ -364,26 +360,24 @@ export const MultiStepPropertyForm = () => {
     const updatedValues = { ...currentValues, [field]: value };
 
     // Validate budget range
-    if (updatedValues.minBudget && updatedValues.maxBudget) {
-      const minBudget = parseFloat(updatedValues.minBudget);
-      const maxBudget = parseFloat(updatedValues.maxBudget);
+    if (updatedValues.min_budget && updatedValues.max_budget) {
+      const minBudget = parseFloat(updatedValues.min_budget);
+      const maxBudget = parseFloat(updatedValues.max_budget);
 
       if (!isNaN(minBudget) && !isNaN(maxBudget)) {
         if (minBudget > maxBudget) {
           // Set errors when minimum is greater than maximum
-          stepTwoForm.setError("minBudget", {
+          stepTwoForm.setError("min_budget", {
             type: "manual",
-            message:
-              "Minimum budget must be less than or equal to maximum budget",
+            message: "budgetInvalid",
           });
-          stepTwoForm.setError("maxBudget", {
+          stepTwoForm.setError("max_budget", {
             type: "manual",
-            message:
-              "Maximum budget must be greater than or equal to minimum budget",
+            message: "budgetMaxInvalid",
           });
         } else {
           // Clear errors when the relationship is valid
-          stepTwoForm.clearErrors(["minBudget", "maxBudget"]);
+          stepTwoForm.clearErrors(["min_budget", "max_budget"]);
         }
       }
     }
@@ -391,7 +385,7 @@ export const MultiStepPropertyForm = () => {
 
   // Handle bedroom validation on change
   const handleBedroomChange = (
-    field: "minBedrooms" | "maxBedrooms",
+    field: "min_bedrooms" | "max_bedrooms",
     value: string
   ) => {
     stepTwoForm.setValue(field, value, { shouldValidate: true });
@@ -399,35 +393,35 @@ export const MultiStepPropertyForm = () => {
     const currentValues = stepTwoForm.getValues();
     const updatedValues = { ...currentValues, [field]: value };
 
-    if (updatedValues.minBedrooms && updatedValues.maxBedrooms) {
-      const minBedrooms = parseInt(updatedValues.minBedrooms);
-      const maxBedrooms = parseInt(updatedValues.maxBedrooms);
+    if (updatedValues.min_bedrooms && updatedValues.max_bedrooms) {
+      const minBedrooms = parseInt(updatedValues.min_bedrooms);
+      const maxBedrooms = parseInt(updatedValues.max_bedrooms);
 
       if (
         !isNaN(minBedrooms) &&
         !isNaN(maxBedrooms) &&
         minBedrooms > maxBedrooms
       ) {
-        if (field === "minBedrooms") {
-          stepTwoForm.setError("minBedrooms", {
+        if (field === "min_bedrooms") {
+          stepTwoForm.setError("min_bedrooms", {
             type: "manual",
-            message: "Minimum bedrooms cannot be greater than maximum bedrooms",
+            message: "bedroomsMinInvalid",
           });
         } else {
-          stepTwoForm.setError("maxBedrooms", {
+          stepTwoForm.setError("max_bedrooms", {
             type: "manual",
-            message: "Maximum bedrooms cannot be less than minimum bedrooms",
+            message: "bedroomsMaxInvalid",
           });
         }
       } else {
-        stepTwoForm.clearErrors(["minBedrooms", "maxBedrooms"]);
+        stepTwoForm.clearErrors(["min_bedrooms", "max_bedrooms"]);
       }
     }
   };
 
   // Handle bathroom validation on change
   const handleBathroomChange = (
-    field: "minBathrooms" | "maxBathrooms",
+    field: "min_bathrooms" | "max_bathrooms",
     value: string
   ) => {
     stepTwoForm.setValue(field, value, { shouldValidate: true });
@@ -435,38 +429,36 @@ export const MultiStepPropertyForm = () => {
     const currentValues = stepTwoForm.getValues();
     const updatedValues = { ...currentValues, [field]: value };
 
-    if (updatedValues.minBathrooms && updatedValues.maxBathrooms) {
-      const minBathrooms = parseInt(updatedValues.minBathrooms);
-      const maxBathrooms = parseInt(updatedValues.maxBathrooms);
+    if (updatedValues.min_bathrooms && updatedValues.max_bathrooms) {
+      const minBathrooms = parseInt(updatedValues.min_bathrooms);
+      const maxBathrooms = parseInt(updatedValues.max_bathrooms);
 
       if (
         !isNaN(minBathrooms) &&
         !isNaN(maxBathrooms) &&
         minBathrooms > maxBathrooms
       ) {
-        if (field === "minBathrooms") {
-          stepTwoForm.setError("minBathrooms", {
+        if (field === "min_bathrooms") {
+          stepTwoForm.setError("min_bathrooms", {
             type: "manual",
-            message:
-              "Minimum bathrooms cannot be greater than maximum bathrooms",
+            message: "bathroomsMinInvalid",
           });
         } else {
-          stepTwoForm.setError("maxBathrooms", {
+          stepTwoForm.setError("max_bathrooms", {
             type: "manual",
-            message: "Maximum bathrooms cannot be less than minimum bathrooms",
+            message: "bathroomsMaxInvalid",
           });
         }
       } else {
-        stepTwoForm.clearErrors(["minBathrooms", "maxBathrooms"]);
+        stepTwoForm.clearErrors(["min_bathrooms", "max_bathrooms"]);
       }
     }
   };
 
   const handleFinalSubmit = async (): Promise<void> => {
     if (!executeRecaptcha) {
-      toast("ReCaptcha Error", {
-        description:
-          "ReCaptcha is not available. Please Refresh the page and try again.",
+      toast(t("recaptchaErrorTitle"), {
+        description: t("recaptchaErrorMessage"),
         duration: 1500,
       });
       return;
@@ -488,12 +480,12 @@ export const MultiStepPropertyForm = () => {
     // Validate the base schema first
     const baseValidationResult = combinedBaseSchema.safeParse(combinedData);
     if (!baseValidationResult.success) {
-      setGeneralError("Please check all form fields for errors");
+      setGeneralError(t("formValidationError"));
       return;
     }
 
     // Validate min/max relationships
-    const relationshipErrors = validateMinMaxRelationships(combinedData);
+    const relationshipErrors = validateMinMaxRelationships(combinedData, t);
     if (relationshipErrors.length > 0) {
       setGeneralError(relationshipErrors.join("; "));
       return;
@@ -501,28 +493,28 @@ export const MultiStepPropertyForm = () => {
 
     // Create FormData for submission
     const formDataToSubmit = new FormData();
-    formDataToSubmit.append("first_name", combinedData.firstName);
-    formDataToSubmit.append("last_name", combinedData.lastName);
+    formDataToSubmit.append("first_name", combinedData.first_name);
+    formDataToSubmit.append("last_name", combinedData.last_name);
     formDataToSubmit.append("email", combinedData.email);
     formDataToSubmit.append("phone", combinedData.phone);
     formDataToSubmit.append(
       "property_types",
-      combinedData.propertyTypes.join(",")
+      combinedData.property_types.join(",")
     );
-    formDataToSubmit.append("budget_min", combinedData.minBudget);
-    formDataToSubmit.append("budget_max", combinedData.maxBudget);
+    formDataToSubmit.append("budget_min", combinedData.min_budget);
+    formDataToSubmit.append("budget_max", combinedData.max_budget);
     formDataToSubmit.append("location", combinedData.location);
-    formDataToSubmit.append("bedrooms_min", combinedData.minBedrooms);
-    formDataToSubmit.append("bedrooms_max", combinedData.maxBedrooms);
-    formDataToSubmit.append("bathrooms_min", combinedData.minBathrooms);
-    formDataToSubmit.append("bathrooms_max", combinedData.maxBathrooms);
-    formDataToSubmit.append("with_pool", combinedData.hasPool.toString());
-    formDataToSubmit.append("with_garage", combinedData.hasGarage.toString());
+    formDataToSubmit.append("bedrooms_min", combinedData.min_bedrooms);
+    formDataToSubmit.append("bedrooms_max", combinedData.max_bedrooms);
+    formDataToSubmit.append("bathrooms_min", combinedData.min_bathrooms);
+    formDataToSubmit.append("bathrooms_max", combinedData.max_bathrooms);
+    formDataToSubmit.append("with_pool", combinedData.has_pool.toString());
+    formDataToSubmit.append("with_garage", combinedData.has_garage.toString());
     formDataToSubmit.append(
       "additional_text",
-      combinedData.additionalInfo || ""
+      combinedData.additional_info || ""
     );
-    formDataToSubmit.append("source_url", combinedData.sourceUrl);
+    formDataToSubmit.append("source_url", combinedData.source_url);
     formDataToSubmit.append("consent", combinedData.consent.toString());
 
     startTransition(async () => {
@@ -534,34 +526,32 @@ export const MultiStepPropertyForm = () => {
 
         if (result.success) {
           // Show success dialog
-          setSuccessMessage(
-            result.message || "Property request submitted successfully!"
-          );
+          setSuccessMessage(result.message || t("successfulSubmissionTitle"));
           setShowSuccessDialog(true);
 
           // Reset all forms
           stepOneForm.reset({
-            firstName: "",
-            lastName: "",
+            first_name: "",
+            last_name: "",
             email: "",
             phone: "",
             consent: false,
           });
           stepTwoForm.reset({
-            propertyTypes: [],
-            minBudget: "",
-            maxBudget: "",
+            property_types: [],
+            min_budget: "",
+            max_budget: "",
             location: "",
-            minBedrooms: "",
-            maxBedrooms: "",
-            minBathrooms: "",
-            maxBathrooms: "",
-            hasPool: false,
-            hasGarage: false,
+            min_bedrooms: "",
+            max_bedrooms: "",
+            min_bathrooms: "",
+            max_bathrooms: "",
+            has_pool: false,
+            has_garage: false,
           });
           stepThreeForm.reset({
-            additionalInfo: "",
-            sourceUrl: sourceUrlRef.current,
+            additional_info: "",
+            source_url: sourceUrlRef.current,
           });
           setCurrentStep(1);
         } else {
@@ -574,24 +564,24 @@ export const MultiStepPropertyForm = () => {
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 [key: string]: { form: any; field: string };
               } = {
-                first_name: { form: stepOneForm, field: "firstName" },
-                last_name: { form: stepOneForm, field: "lastName" },
+                first_name: { form: stepOneForm, field: "first_name" },
+                last_name: { form: stepOneForm, field: "last_name" },
                 email: { form: stepOneForm, field: "email" },
                 phone: { form: stepOneForm, field: "phone" },
                 consent: { form: stepOneForm, field: "consent" },
-                property_types: { form: stepTwoForm, field: "propertyTypes" },
-                budget_min: { form: stepTwoForm, field: "minBudget" },
-                budget_max: { form: stepTwoForm, field: "maxBudget" },
+                property_types: { form: stepTwoForm, field: "property_types" },
+                budget_min: { form: stepTwoForm, field: "min_budget" },
+                budget_max: { form: stepTwoForm, field: "max_budget" },
                 location: { form: stepTwoForm, field: "location" },
-                bedrooms_min: { form: stepTwoForm, field: "minBedrooms" },
-                bedrooms_max: { form: stepTwoForm, field: "maxBedrooms" },
-                bathrooms_min: { form: stepTwoForm, field: "minBathrooms" },
-                bathrooms_max: { form: stepTwoForm, field: "maxBathrooms" },
+                bedrooms_min: { form: stepTwoForm, field: "min_bedrooms" },
+                bedrooms_max: { form: stepTwoForm, field: "max_bedrooms" },
+                bathrooms_min: { form: stepTwoForm, field: "min_bathrooms" },
+                bathrooms_max: { form: stepTwoForm, field: "max_bathrooms" },
                 additional_text: {
                   form: stepThreeForm,
-                  field: "additionalInfo",
+                  field: "additional_info",
                 },
-                source_url: { form: stepThreeForm, field: "sourceUrl" },
+                source_url: { form: stepThreeForm, field: "source_url" },
               };
 
               const mapping = fieldMapping[key];
@@ -637,17 +627,14 @@ export const MultiStepPropertyForm = () => {
             const errorMessages = Object.entries(result.errors)
               .map(([field, messages]) => `${field}: ${messages.join(", ")}`)
               .join("; ");
-            setGeneralError(`Validation errors: ${errorMessages}`);
+            setGeneralError(`${t("validationErrorsPrefix")} ${errorMessages}`);
           } else {
-            setGeneralError(
-              result.message ||
-                "Failed to submit property request. Please try again."
-            );
+            setGeneralError(result.message || t("submissionFailedMessage"));
           }
         }
       } catch (error) {
         console.error("Submit error:", error);
-        setGeneralError("An unexpected error occurred. Please try again.");
+        setGeneralError(t("unexpectedErrorMessage"));
       }
     });
   };
@@ -683,32 +670,38 @@ export const MultiStepPropertyForm = () => {
         return (
           <div className="space-y-6">
             <h2 className="text-2xl font-medium text-center text-black mb-8">
-              Contact Information
+              {t("contactInfoHeading")}
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <input
-                  {...stepOneForm.register("firstName")}
+                  {...stepOneForm.register("first_name")}
                   type="text"
-                  placeholder="FIRST NAME *"
+                  placeholder={t("firstNamePlaceholder")}
                   className="w-full px-4 py-3 bg-gray-100 border-0 rounded-none text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-600"
                 />
-                {stepOneForm.formState.errors.firstName && (
+                {stepOneForm.formState.errors.first_name && (
                   <p className="text-red-500 text-xs mt-1">
-                    {stepOneForm.formState.errors.firstName.message}
+                    {t(
+                      stepOneForm.formState.errors.first_name.message ||
+                        "firstNameRequired"
+                    )}
                   </p>
                 )}
               </div>
               <div>
                 <input
-                  {...stepOneForm.register("lastName")}
+                  {...stepOneForm.register("last_name")}
                   type="text"
-                  placeholder="LAST NAME *"
+                  placeholder={t("lastNamePlaceholder")}
                   className="w-full px-4 py-3 bg-gray-100 border-0 rounded-none text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-600"
                 />
-                {stepOneForm.formState.errors.lastName && (
+                {stepOneForm.formState.errors.last_name && (
                   <p className="text-red-500 text-xs mt-1">
-                    {stepOneForm.formState.errors.lastName.message}
+                    {t(
+                      stepOneForm.formState.errors.last_name.message ||
+                        "lastNameRequired"
+                    )}
                   </p>
                 )}
               </div>
@@ -716,12 +709,15 @@ export const MultiStepPropertyForm = () => {
                 <input
                   {...stepOneForm.register("email")}
                   type="email"
-                  placeholder="EMAIL ADDRESS *"
+                  placeholder={t("emailAddressPlaceholder")}
                   className="w-full px-4 py-3 bg-gray-100 border-0 rounded-none text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-600"
                 />
                 {stepOneForm.formState.errors.email && (
                   <p className="text-red-500 text-xs mt-1">
-                    {stepOneForm.formState.errors.email.message}
+                    {t(
+                      stepOneForm.formState.errors.email.message ||
+                        "emailRequired"
+                    )}
                   </p>
                 )}
               </div>
@@ -729,12 +725,15 @@ export const MultiStepPropertyForm = () => {
                 <input
                   {...stepOneForm.register("phone")}
                   type="tel"
-                  placeholder="PHONE NUMBER *"
+                  placeholder={t("phoneNumberPlaceholder")}
                   className="w-full px-4 py-3 bg-gray-100 border-0 rounded-none text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-600"
                 />
                 {stepOneForm.formState.errors.phone && (
                   <p className="text-red-500 text-xs mt-1">
-                    {stepOneForm.formState.errors.phone.message}
+                    {t(
+                      stepOneForm.formState.errors.phone.message ||
+                        "phoneRequired"
+                    )}
                   </p>
                 )}
               </div>
@@ -746,14 +745,14 @@ export const MultiStepPropertyForm = () => {
                 className="text-yellow-600"
                 id="consent"
               />
-              <label htmlFor="consent">
-                By requesting information you are authorizing Exclusive Agence
-                Villa to use your data in order to contact you. *
-              </label>
+              <label htmlFor="consent">{t("consentLabel")}</label>
             </div>
             {stepOneForm.formState.errors.consent && (
               <p className="text-red-500 text-xs">
-                {stepOneForm.formState.errors.consent.message}
+                {t(
+                  stepOneForm.formState.errors.consent.message ||
+                    "consentRequired"
+                )}
               </p>
             )}
           </div>
@@ -763,26 +762,30 @@ export const MultiStepPropertyForm = () => {
         return (
           <div className="space-y-6">
             <h2 className="text-2xl font-medium text-center text-black mb-8">
-              Property Preferences
+              {t("propertyPreferencesHeading")}
             </h2>
 
             {/* Property Types */}
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-gray-700">
-                Property Types *
+                {t("propertyTypesHeading")}
               </h3>
               <PropertyTypes
                 typologies={mockPropertyTypes}
-                selectedItems={stepTwoForm.watch("propertyTypes")}
+                selectedItems={stepTwoForm.watch("property_types")}
                 onSelectionChange={(selected) =>
-                  stepTwoForm.setValue("propertyTypes", selected, {
+                  stepTwoForm.setValue("property_types", selected, {
                     shouldValidate: true,
                   })
                 }
+                t={t}
               />
-              {stepTwoForm.formState.errors.propertyTypes && (
+              {stepTwoForm.formState.errors.property_types && (
                 <p className="text-red-500 text-xs">
-                  {stepTwoForm.formState.errors.propertyTypes.message}
+                  {t(
+                    stepTwoForm.formState.errors.property_types.message ||
+                      "propertyTypesRequired"
+                  )}
                 </p>
               )}
             </div>
@@ -790,7 +793,7 @@ export const MultiStepPropertyForm = () => {
             {/* Budget Range */}
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-gray-700">
-                Budget Range *
+                {t("budgetRangeHeading")}
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
@@ -798,16 +801,19 @@ export const MultiStepPropertyForm = () => {
                     type="number"
                     min="0"
                     step="1000"
-                    placeholder="MIN BUDGET"
+                    placeholder={t("minBudgetPlaceholder")}
                     value={minBudget}
                     onChange={(e) =>
-                      handleBudgetChange("minBudget", e.target.value)
+                      handleBudgetChange("min_budget", e.target.value)
                     }
                     className="w-full px-4 py-3 bg-gray-100 border-0 rounded-none text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-600"
                   />
-                  {stepTwoForm.formState.errors.minBudget && (
+                  {stepTwoForm.formState.errors.min_budget && (
                     <p className="text-red-500 text-xs mt-1">
-                      {stepTwoForm.formState.errors.minBudget.message}
+                      {t(
+                        stepTwoForm.formState.errors.min_budget.message ||
+                          "minBudgetRequired"
+                      )}
                     </p>
                   )}
                 </div>
@@ -816,16 +822,19 @@ export const MultiStepPropertyForm = () => {
                     type="number"
                     min="0"
                     step="1000"
-                    placeholder="MAX BUDGET"
+                    placeholder={t("maxBudgetPlaceholder")}
                     value={maxBudget}
                     onChange={(e) =>
-                      handleBudgetChange("maxBudget", e.target.value)
+                      handleBudgetChange("max_budget", e.target.value)
                     }
                     className="w-full px-4 py-3 bg-gray-100 border-0 rounded-none text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-600"
                   />
-                  {stepTwoForm.formState.errors.maxBudget && (
+                  {stepTwoForm.formState.errors.max_budget && (
                     <p className="text-red-500 text-xs mt-1">
-                      {stepTwoForm.formState.errors.maxBudget.message}
+                      {t(
+                        stepTwoForm.formState.errors.max_budget.message ||
+                          "maxBudgetRequired"
+                      )}
                     </p>
                   )}
                 </div>
@@ -837,12 +846,15 @@ export const MultiStepPropertyForm = () => {
               <input
                 {...stepTwoForm.register("location")}
                 type="text"
-                placeholder="PREFERRED LOCATION *"
+                placeholder={t("preferredLocationPlaceholder")}
                 className="w-full px-4 py-3 bg-gray-100 border-0 rounded-none text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-600"
               />
               {stepTwoForm.formState.errors.location && (
                 <p className="text-red-500 text-xs mt-1">
-                  {stepTwoForm.formState.errors.location.message}
+                  {t(
+                    stepTwoForm.formState.errors.location.message ||
+                      "locationRequired"
+                  )}
                 </p>
               )}
             </div>
@@ -850,18 +862,18 @@ export const MultiStepPropertyForm = () => {
             {/* Bedrooms */}
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-gray-700">
-                Bedrooms *
+                {t("bedroomsHeading")}
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <select
                     value={minBedrooms}
                     onChange={(e) =>
-                      handleBedroomChange("minBedrooms", e.target.value)
+                      handleBedroomChange("min_bedrooms", e.target.value)
                     }
                     className="w-full px-4 py-3 bg-gray-100 border-0 rounded-none text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-yellow-600"
                   >
-                    <option value="">MIN BEDROOMS</option>
+                    <option value="">{t("minBedroomsLabel")}</option>
                     {generateSelectOptions(
                       0,
                       10,
@@ -870,9 +882,12 @@ export const MultiStepPropertyForm = () => {
                       maxBedrooms
                     )}
                   </select>
-                  {stepTwoForm.formState.errors.minBedrooms && (
+                  {stepTwoForm.formState.errors.min_bedrooms && (
                     <p className="text-red-500 text-xs mt-1">
-                      {stepTwoForm.formState.errors.minBedrooms.message}
+                      {t(
+                        stepTwoForm.formState.errors.min_bedrooms.message ||
+                          "minBedroomsRequired"
+                      )}
                     </p>
                   )}
                 </div>
@@ -880,16 +895,19 @@ export const MultiStepPropertyForm = () => {
                   <select
                     value={maxBedrooms}
                     onChange={(e) =>
-                      handleBedroomChange("maxBedrooms", e.target.value)
+                      handleBedroomChange("max_bedrooms", e.target.value)
                     }
                     className="w-full px-4 py-3 bg-gray-100 border-0 rounded-none text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-yellow-600"
                   >
-                    <option value="">MAX BEDROOMS</option>
+                    <option value="">{t("maxBedroomsLabel")}</option>
                     {generateSelectOptions(0, 10, true, minBedrooms, undefined)}
                   </select>
-                  {stepTwoForm.formState.errors.maxBedrooms && (
+                  {stepTwoForm.formState.errors.max_bedrooms && (
                     <p className="text-red-500 text-xs mt-1">
-                      {stepTwoForm.formState.errors.maxBedrooms.message}
+                      {t(
+                        stepTwoForm.formState.errors.max_bedrooms.message ||
+                          "maxBedroomsRequired"
+                      )}
                     </p>
                   )}
                 </div>
@@ -899,18 +917,18 @@ export const MultiStepPropertyForm = () => {
             {/* Bathrooms */}
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-gray-700">
-                Bathrooms *
+                {t("bathroomsHeading")}
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <select
                     value={minBathrooms}
                     onChange={(e) =>
-                      handleBathroomChange("minBathrooms", e.target.value)
+                      handleBathroomChange("min_bathrooms", e.target.value)
                     }
                     className="w-full px-4 py-3 bg-gray-100 border-0 rounded-none text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-yellow-600"
                   >
-                    <option value="">MIN BATHROOMS</option>
+                    <option value="">{t("minBathroomsLabel")}</option>
                     {generateSelectOptions(
                       0,
                       10,
@@ -919,9 +937,12 @@ export const MultiStepPropertyForm = () => {
                       maxBathrooms
                     )}
                   </select>
-                  {stepTwoForm.formState.errors.minBathrooms && (
+                  {stepTwoForm.formState.errors.min_bathrooms && (
                     <p className="text-red-500 text-xs mt-1">
-                      {stepTwoForm.formState.errors.minBathrooms.message}
+                      {t(
+                        stepTwoForm.formState.errors.min_bathrooms.message ||
+                          "minBathroomsRequired"
+                      )}
                     </p>
                   )}
                 </div>
@@ -929,11 +950,11 @@ export const MultiStepPropertyForm = () => {
                   <select
                     value={maxBathrooms}
                     onChange={(e) =>
-                      handleBathroomChange("maxBathrooms", e.target.value)
+                      handleBathroomChange("max_bathrooms", e.target.value)
                     }
                     className="w-full px-4 py-3 bg-gray-100 border-0 rounded-none text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-yellow-600"
                   >
-                    <option value="">MAX BATHROOMS</option>
+                    <option value="">{t("maxBathroomsLabel")}</option>
                     {generateSelectOptions(
                       0,
                       10,
@@ -942,44 +963,44 @@ export const MultiStepPropertyForm = () => {
                       undefined
                     )}
                   </select>
-                  {stepTwoForm.formState.errors.maxBathrooms && (
+                  {stepTwoForm.formState.errors.max_bathrooms && (
                     <p className="text-red-500 text-xs mt-1">
-                      {stepTwoForm.formState.errors.maxBathrooms.message}
+                      {t(
+                        stepTwoForm.formState.errors.max_bathrooms.message ||
+                          "maxBathroomsRequired"
+                      )}
                     </p>
                   )}
                 </div>
-                {stepTwoForm.formState.errors.maxBathrooms && (
-                  <p className="text-red-500 text-xs mt-1">
-                    {stepTwoForm.formState.errors.maxBathrooms.message}
-                  </p>
-                )}
               </div>
             </div>
 
             {/* Amenities */}
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-700">Amenities</h3>
+              <h3 className="text-lg font-semibold text-gray-700">
+                {t("amenitiesHeading")}
+              </h3>
               <div className="space-y-3">
                 <div className="flex items-center space-x-3">
                   <input
-                    {...stepTwoForm.register("hasPool")}
+                    {...stepTwoForm.register("has_pool")}
                     type="checkbox"
                     id="hasPool"
                     className="w-4 h-4 text-yellow-600 focus:ring-yellow-600 border-gray-300 rounded"
                   />
                   <label htmlFor="hasPool" className="text-sm text-gray-700">
-                    Property should have a pool
+                    {t("hasPoolLabel")}
                   </label>
                 </div>
                 <div className="flex items-center space-x-3">
                   <input
-                    {...stepTwoForm.register("hasGarage")}
+                    {...stepTwoForm.register("has_garage")}
                     type="checkbox"
                     id="hasGarage"
                     className="w-4 h-4 text-yellow-600 focus:ring-yellow-600 border-gray-300 rounded"
                   />
                   <label htmlFor="hasGarage" className="text-sm text-gray-700">
-                    Property should have a garage
+                    {t("hasGarageLabel")}
                   </label>
                 </div>
               </div>
@@ -991,20 +1012,20 @@ export const MultiStepPropertyForm = () => {
         return (
           <div className="space-y-6">
             <h2 className="text-2xl font-medium text-center text-black mb-8">
-              Additional Information
+              {t("additionalInfoHeading")}
             </h2>
             <div className="space-y-4">
               <div>
                 <textarea
-                  {...stepThreeForm.register("additionalInfo")}
-                  placeholder="ADDITIONAL REQUIREMENTS OR COMMENTS"
+                  {...stepThreeForm.register("additional_info")}
+                  placeholder={t("additionalInfoPlaceholder")}
                   rows={4}
                   className="w-full px-4 py-3 bg-gray-100 border-0 rounded-none text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-600 resize-none"
                 />
               </div>
 
               {/* Hidden source URL field */}
-              <input {...stepThreeForm.register("sourceUrl")} type="hidden" />
+              <input {...stepThreeForm.register("source_url")} type="hidden" />
             </div>
           </div>
         );
@@ -1019,7 +1040,7 @@ export const MultiStepPropertyForm = () => {
       <div className="w-full max-w-4xl">
         <div className="p-8">
           <h1 className="text-3xl font-semibold text-center text-black mb-10">
-            REQUEST FOR A PROPERTY
+            {t("mainHeading")}
           </h1>
 
           <StepIndicator />
@@ -1040,10 +1061,10 @@ export const MultiStepPropertyForm = () => {
                   type="button"
                   onClick={prevStep}
                   disabled={isPending}
-                  className="flex items-center px-6 py-3 bg-gray-300 text-gray-700 font-semibold hover:bg-gray-400 transition-colors duration-200 disabled:opacity-50"
+                  className="flex items-center px-6 py-3 bg-black text-white font-normal hover:bg-primary/80 transition-colors duration-200 disabled:opacity-50"
                 >
                   <ChevronLeft className="w-4 h-4 mr-2" />
-                  PREVIOUS
+                  {t("previousButtonText")}
                 </button>
               )}
 
@@ -1060,7 +1081,7 @@ export const MultiStepPropertyForm = () => {
                       : "bg-gray-300 text-gray-500 cursor-not-allowed"
                   }`}
                 >
-                  NEXT
+                  {t("nextButtonText")}
                   <ChevronRight className="w-4 h-4 ml-2" />
                 </button>
               ) : (
@@ -1074,7 +1095,9 @@ export const MultiStepPropertyForm = () => {
                       : "bg-gray-300 text-gray-500 cursor-not-allowed"
                   }`}
                 >
-                  {isPending ? "SUBMITTING..." : "SUBMIT REQUEST"}
+                  {isPending
+                    ? t("submittingButtonText")
+                    : t("submitButtonText")}
                 </button>
               )}
             </div>
@@ -1090,7 +1113,7 @@ export const MultiStepPropertyForm = () => {
               <CheckCircle className="h-12 w-12 text-green-500" />
             </div>
             <DialogTitle className="text-center text-xl font-semibold">
-              Successful Submission!
+              {t("successfulSubmissionTitle")}
             </DialogTitle>
             <DialogDescription className="text-center text-gray-600 mt-2">
               {successMessage}
@@ -1101,7 +1124,7 @@ export const MultiStepPropertyForm = () => {
               onClick={() => setShowSuccessDialog(false)}
               className="bg-primary hover:bg-primary/90 text-white px-8"
             >
-              Close
+              {t("closeButtonText")}
             </Button>
           </div>
         </DialogContent>

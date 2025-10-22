@@ -5,15 +5,16 @@ import Image from "next/image";
 import { formatDateString } from "@/utils";
 import { Suspense } from "react";
 import { LoadingBlogs } from "../blog/loading-blogs";
-import { getLocale } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 
 const LatestNews = async () => {
+  const t = await getTranslations("latestNews")
   return (
     <div className="lg:container mx-auto px-6 sm:px-8 md:px-10 lg:px-12">
       <div className="flex items-center justify-between gap-4 flex-wrap mb-10">
-        <h2 className="text-2xl sm:text-3xl">Our Latest News</h2>
+        <h2 className="text-2xl sm:text-3xl">{t("ourLatestNews")}</h2>
         <Button asChild className="rounded-none bg-black text-white">
-          <Link href="/blogs">Read More</Link>
+          <Link href="/blogs">{t("readMore")}</Link>
         </Button>
       </div>
       <Suspense fallback={<LoadingBlogs />}>
@@ -33,6 +34,7 @@ async function RecentBlogsGrid() {
     sort_by: "created_at:desc",
     language: locale
   });
+  const t = await getTranslations("latestNews")
   
   const recentBlogs = blogs.data.stories;
   return (
@@ -56,7 +58,7 @@ async function RecentBlogsGrid() {
               <div className="py-2">
                 <p className="text-neutral-900 flex items-center justify-between text-[11px]">
                   <span>
-                    <span>{blog.content.read_time_in_minutes}</span> min read
+                    <span>{blog.content.read_time_in_minutes}</span> {t("minRead")}
                   </span>
 
                   <span className="text-muted-foreground/85">

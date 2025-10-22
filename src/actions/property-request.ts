@@ -1,8 +1,9 @@
 "use server";
 
 import { ZodIssue } from "zod";
-import { propertyFormSchema } from "@/types/property-request";
+import { getPropertyFormSchema } from "@/types/property-request";
 import { submitPropertyFormWithDetailedErrors } from "@/data/property-request";
+import { getTranslations } from "next-intl/server";
 
 export interface PropertyFormActionResult {
   success: boolean;
@@ -14,6 +15,9 @@ export interface PropertyFormActionResult {
 export async function propertyFormAction(
   formData: FormData
 ): Promise<PropertyFormActionResult> {
+  const t = await getTranslations("propertyRequestAction");
+  const propertyFormSchemaTranslation = await getTranslations("propertyFormSchema");
+  const propertyFormSchema = getPropertyFormSchema(propertyFormSchemaTranslation)
   try {
     // Extract data from FormData
     const rawData = {
@@ -61,7 +65,7 @@ export async function propertyFormAction(
 
       return {
         success: false,
-        message: "Please check the form for errors",
+        message: t("pleaseCheckFormForErrors"),
         fieldErrors,
       };
     }
@@ -69,7 +73,7 @@ export async function propertyFormAction(
     if (!recaptchaToken) {
       return {
         success: false,
-        message: "ReCaptcha token is missing",
+        message: t("recaptchaTokenMissing"),
       };
     }
 
@@ -96,8 +100,7 @@ export async function propertyFormAction(
       });
       return {
         success: false,
-        message:
-          "ReCaptcha verification failed. Please refresh the page and try again.",
+        message: t("recaptchaVerificationFailed"),
       };
     }
 
@@ -109,7 +112,7 @@ export async function propertyFormAction(
     if (!result.success) {
       return {
         success: false,
-        message: result.error || "Failed to submit property request",
+        message: result.error || t("failedToSubmitRequest"),
         errors: result.validationErrors,
       };
     }
@@ -117,14 +120,14 @@ export async function propertyFormAction(
     return {
       success: true,
       message:
-        result.data?.message || "Property request submitted successfully!",
+        result.data?.message || t("propertyRequestSubmittedSuccessfully"),
     };
   } catch (error) {
     console.error("Property form action error:", error);
 
     return {
       success: false,
-      message: "An unexpected error occurred. Please try again.",
+      message: t("unexpectedErrorOccurred"),
     };
   }
 }

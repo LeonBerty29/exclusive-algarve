@@ -1,8 +1,13 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { Home, Search, Building2 } from "lucide-react";
 import { Link } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 
 export default function NotFound() {
+  const t = useTranslations("propertyDetailsNotFoundPage");
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center px-4">
       <div className="max-w-md w-full text-center">
@@ -22,14 +27,13 @@ export default function NotFound() {
         {/* Error Message */}
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Property Not Found
+            {t("propertyNotFound")}
           </h1>
           <p className="text-lg text-gray-600 mb-2">
-            Oops! The property you&apos;re looking for seems to have vanished
-            into thin air.
+            {t("vanishedIntoThinAir")}
           </p>
           <p className="text-sm text-gray-500">
-            It might have been sold, removed, or the link might be incorrect.
+            {t("soldRemovedOrIncorrectLink")}
           </p>
         </div>
 
@@ -42,7 +46,7 @@ export default function NotFound() {
             >
               <Link href="/">
                 <Home className="w-5 h-5" />
-                Home
+                {t("home")}
               </Link>
             </Button>
 
@@ -52,7 +56,7 @@ export default function NotFound() {
             >
               <Link href="/properties">
                 <Search className="w-5 h-5" />
-                Browse Properties
+                {t("browseProperties")}
               </Link>
             </Button>
           </div>
@@ -60,12 +64,12 @@ export default function NotFound() {
 
         <div className="mt-8 pt-6 border-t border-gray-200">
           <p className="text-sm text-gray-500">
-            If you believe this is an error, please{" "}
+            {t("believeError")}&nbsp;
             <Link
               href="/contact"
               className="text-blue-600 hover:text-blue-800 underline"
             >
-              contact us
+              {t("contactUs")}
             </Link>
           </p>
         </div>

@@ -10,14 +10,15 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { SignOutButton } from "./sign-out-button";
+import { useTranslations } from "next-intl";
 
 const NavbarUserAuth = () => {
+  const t = useTranslations("navbarUserAuth");
   const { data: session, status } = useSession();
 
   if (status === "loading") {
     return null;
   }
-
 
   return (
     <>
@@ -31,17 +32,17 @@ const NavbarUserAuth = () => {
           <DropdownMenuContent align="end" className="w-48">
             <DropdownMenuItem asChild>
               <Link href="/settings" className="cursor-pointer">
-                Settings
+                {t("settings")}
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
               <Link href="/favorites" className="cursor-pointer">
-                Favourites
+                {t("favourites")}
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
               <Link href="/annotations" className="cursor-pointer">
-                Annotations(Notes)
+                {t("annotationsNotes")}
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
@@ -54,7 +55,7 @@ const NavbarUserAuth = () => {
           className="rounded-none bg-black hover:bg-black/90 text-white px-6 text-sm font-light"
           asChild
         >
-          <Link href="/login">SIGN IN</Link>
+          <Link href="/login">{t("signIn")}</Link>
         </Button>
       )}
     </>

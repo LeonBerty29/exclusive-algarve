@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dialog";
 import { UserProfileForm } from "./user-profile-form";
 import { Edit, User, Phone } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface UserProfileDisplayProps {
   userProfile: {
@@ -28,6 +29,7 @@ export function UserProfileDisplay({
   userProfile,
   accessToken,
 }: UserProfileDisplayProps) {
+  const t = useTranslations("userProfileDisplay");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const handleCancel = () => {
@@ -45,25 +47,26 @@ export function UserProfileDisplay({
       <CardHeader className="flex flex-row items-center justify-between w-full">
         <div>
           <CardTitle className="text-3xl text-primary tracking-tight">
-            Profile Information
+            {t("profileInformation")}
           </CardTitle>
           <p className="text-sm text-muted-foreground">
-            Your personal information and contact details.
+            {t("yourPersonalInformationAndContactDetails")}
           </p>
         </div>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
             <Button variant="outline" size="sm" className="gap-2">
               <Edit className="h-4 w-4" />
-              Edit Profile
+              {t("editProfile")}
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[525px]">
             <DialogHeader>
-              <DialogTitle className="text-2xl">Edit Profile</DialogTitle>
+              <DialogTitle className="text-2xl">
+                {t("editProfileDialogTitle")}
+              </DialogTitle>
               <DialogDescription>
-                Make changes to your profile information here. Click save when
-                you&apos;re done.
+                {t("editProfileDialogDescription")}
               </DialogDescription>
             </DialogHeader>
             <UserProfileForm
@@ -81,20 +84,20 @@ export function UserProfileDisplay({
             <div className="space-y-2">
               <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
                 <User className="h-4 w-4" />
-                First Name
+                {t("firstName")}
               </div>
               <div className="text-lg font-medium">
-                {userProfile?.firstName || "---"}
+                {userProfile?.firstName || t("emptyValuePlaceholder")}
               </div>
             </div>
 
             <div className="space-y-2">
               <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
                 <User className="h-4 w-4" />
-                Last Name
+                {t("lastName")}
               </div>
               <div className="text-lg font-medium">
-                {userProfile?.lastName || "---"}
+                {userProfile?.lastName || t("emptyValuePlaceholder")}
               </div>
             </div>
           </div>
@@ -102,10 +105,10 @@ export function UserProfileDisplay({
           <div className="space-y-2">
             <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
               <Phone className="h-4 w-4" />
-              Phone Number
+              {t("phoneNumber")}
             </div>
             <div className="text-lg font-medium">
-              {userProfile?.phoneNumber || "---"}
+              {userProfile?.phoneNumber || t("emptyValuePlaceholder")}
             </div>
           </div>
         </div>

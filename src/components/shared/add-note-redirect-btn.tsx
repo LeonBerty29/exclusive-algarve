@@ -3,9 +3,11 @@ import React from "react";
 import { Button } from "../ui/button";
 import { Link, usePathname } from "@/i18n/navigation";
 import { useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 export const AddNoteRedirectBtn = ({ propertyId }: { propertyId: number }) => {
   const pathname = usePathname();
+  const t = useTranslations("addNoteRedirectBtn");
   const searchParams = useSearchParams();
   const paramsString = searchParams.toString();
   return (
@@ -16,7 +18,7 @@ export const AddNoteRedirectBtn = ({ propertyId }: { propertyId: number }) => {
           query: { callbackUrl: paramsString ? `/${pathname}/?${paramsString}&addNote=${propertyId}` : `/${pathname}/?addNote=${propertyId}` },
         }}
       >
-        Login
+        {t("login")}
       </Link>
     </Button>
   );

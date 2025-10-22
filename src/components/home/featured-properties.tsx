@@ -9,7 +9,7 @@ import Image from "next/image";
 import { Property } from "@/types/property";
 import { getProxiedImageUrl } from "@/lib/utils";
 import { Link } from "@/i18n/navigation";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 export default function FeaturedProperties({
   properties,
@@ -23,6 +23,7 @@ export default function FeaturedProperties({
   // });
 
   const language = useLocale() as keyof Property["seo"]["slugs"];
+  const t = useTranslations("featuredProperties")
 
   return (
     <div ref={containerRef} className="relative h-[300vh]">
@@ -82,7 +83,7 @@ export default function FeaturedProperties({
                       params: { slug: property.seo.slugs[language] },
                     }}
                   >
-                    HAVE A LOOK
+                    {t("cta")}
                   </Link>
                 </motion.button>
               </motion.div>

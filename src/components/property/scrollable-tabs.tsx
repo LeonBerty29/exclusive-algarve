@@ -1,21 +1,22 @@
-// CustomTabs.tsx
 "use client";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
-// import { PropertyInfo } from "./property-info";
 import { FloorPlanTab } from "./floor-plan";
 import { LocationTab } from "./location-tab";
-import { PropertyFeatures } from "../property-details/PropertyFeatures";
+import { PropertyFeatures } from "../property-details/property-features";
 import { Property } from "@/types/property";
 import { Button } from "../ui/button";
+import { useTranslations } from "next-intl";
 
 interface ScrollableTabsProps {
   property: Property;
 }
 
 const ScrollableTabs = ({ property }: ScrollableTabsProps) => {
+  const t = useTranslations("scrollableTabs");
+
   const [activeTab, setActiveTab] = useState<string>("desc");
   const [showLeftArrow, setShowLeftArrow] = useState<boolean>(false);
   const [showRightArrow, setShowRightArrow] = useState<boolean>(true);
@@ -82,7 +83,7 @@ const ScrollableTabs = ({ property }: ScrollableTabsProps) => {
               className={`flex-shrink-0 p-1 rounded-full shadow-md bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 z-10 mr-1 ${
                 showLeftArrow ? "opacity-100" : "opacity-0 pointer-events-none"
               } transition-opacity duration-200`}
-              aria-label="Scroll left"
+              aria-label={t("ariaLabelScrollLeft")}
             >
               <ChevronLeft className="h-5 w-5" />
             </button>
@@ -102,34 +103,34 @@ const ScrollableTabs = ({ property }: ScrollableTabsProps) => {
                   value={"desc"}
                   className="whitespace-nowrap mx-1 first:ml-0 last:mr-0"
                 >
-                  Description
+                  {t("description")}
                 </TabsTrigger>
                 <TabsTrigger
                   value={"features"}
                   className="whitespace-nowrap mx-1 first:ml-0 last:mr-0"
                 >
-                  Features
+                  {t("features")}
                 </TabsTrigger>
                 {property.assets.images.floor_plans.length > 0 ? (
                   <TabsTrigger
                     value={"fplan"}
                     className="whitespace-nowrap mx-1 first:ml-0 last:mr-0"
                   >
-                    Floor Plan
+                    {t("floorPlan")}
                   </TabsTrigger>
                 ) : (
                   <Button
                     onClick={handleDownload}
                     className="text-xs rounded-none bg-black text-white px-6"
                   >
-                    Download Brochure
+                    {t("downloadBrochure")}
                   </Button>
                 )}
                 <TabsTrigger
                   value={"location"}
                   className="whitespace-nowrap mx-1 first:ml-0 last:mr-0"
                 >
-                  Location
+                  {t("location")}
                 </TabsTrigger>
               </TabsList>
             </div>
@@ -140,7 +141,7 @@ const ScrollableTabs = ({ property }: ScrollableTabsProps) => {
               className={`flex-shrink-0 p-1 rounded-full shadow-md bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 z-10 ml-1 ${
                 showRightArrow ? "opacity-100" : "opacity-0 pointer-events-none"
               } transition-opacity duration-200`}
-              aria-label="Scroll right"
+              aria-label={t("ariaLabelScrollRight")}
             >
               <ChevronRight className="h-5 w-5" />
             </button>
@@ -152,7 +153,6 @@ const ScrollableTabs = ({ property }: ScrollableTabsProps) => {
             className="mt-4 p-4 border rounded-md px-2 md:px-4"
           >
             <div className="min-h-32 p-4 space-y-6">
-              {/* <PropertyInfo property={property} /> */}
               <DescriptionContent description={property.description} />
             </div>
           </TabsContent>
@@ -161,7 +161,6 @@ const ScrollableTabs = ({ property }: ScrollableTabsProps) => {
             className="mt-4 p-4 border rounded-md px-2 md:px-4"
           >
             <div className="min-h-32 p-4">
-              {/* <PropertyInfo property={property} /> */}
               <PropertyFeatures
                 additionalFeatures={property.additional_features}
               />
@@ -173,7 +172,6 @@ const ScrollableTabs = ({ property }: ScrollableTabsProps) => {
             className="mt-4 p-4 border rounded-md px-2 md:px-4"
           >
             <div className="p-4">
-              {/* <PropertyInfo property={property} /> */}
               <FloorPlanTab
                 floorPlans={property.assets.images.floor_plans}
                 pdfBrochure={property.assets.pdf_brochure}
@@ -186,7 +184,6 @@ const ScrollableTabs = ({ property }: ScrollableTabsProps) => {
             className="mt-4 p-4 border rounded-md px-2 md:px-4"
           >
             <div className="min-h-32 p-4">
-              {/* <PropertyInfo property={property} /> */}
               <LocationTab
                 latitude={property.location.latitude}
                 longitude={property.location.longitude}
@@ -204,6 +201,9 @@ export default ScrollableTabs;
 
 const DescriptionContent = ({ description }: { description: string }) => {
   return (
-    <div dangerouslySetInnerHTML={{ __html: description }} className="!text-sm prose prose-sm max-w-none" />
+    <div
+      dangerouslySetInnerHTML={{ __html: description }}
+      className="!text-sm prose prose-sm max-w-none"
+    />
   );
 };

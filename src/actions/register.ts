@@ -1,19 +1,18 @@
 "use server";
 
 import * as z from "zod";
-
+import { getTranslations } from "next-intl/server";
 import { RegisterSchema } from "@/schema";
-// import { registerUser } from "@/data/user";
 
-export const register = async (
-  values: z.infer<typeof RegisterSchema>,
-) => {
+export const register = async (values: z.infer<typeof RegisterSchema>) => {
+  const t = await getTranslations("registerAction");
+
   const validatedFields = RegisterSchema.safeParse(values);
 
   if (!validatedFields.success) {
     return {
       error: {
-        message: "Invalid fields!",
+        message: t("invalidFields"),
         password: "",
         email: "",
         first_name: "",
@@ -45,21 +44,14 @@ export const register = async (
     };
 
     const url = `${process.env.API_BASE_URL}${endpoint}`;
-
     const response: Response = await fetch(url, config);
-
-    // console.log({response})
 
     if (!response.ok) {
       const errorResponse = await response.json();
-      // console.log({ errorResponse });
-      // console.log(response);
 
       if (errorResponse || response.status === 422) {
-        // const resJson = await response.json()
-        // console.log({resJson  })
         const error = {
-          message: errorResponse.message || "There was an error while creating the user",
+          message: errorResponse.message || t("errorCreatingUser"),
           password: "",
           email: "",
           first_name: "",
@@ -69,29 +61,21 @@ export const register = async (
 
         const errorObject = errorResponse.errors;
 
-        // console.log({errorObject})
-
         if (errorObject.password) {
           error.password = errorObject.password[0];
         }
-
         if (errorObject.email) {
           error.email = errorObject.email[0];
         }
-
         if (errorObject.first_name) {
           error.first_name = errorObject.first_name[0];
         }
-
         if (errorObject.last_name) {
           error.last_name = errorObject.last_name[0];
         }
-
         if (errorObject.password_confirmation) {
           error.password_confirmation = errorObject.password_confirmation[0];
         }
-
-        // console.log({error})
 
         return {
           error,
@@ -111,7 +95,7 @@ export const register = async (
     if (!user) {
       return {
         error: {
-          message: "There was an error while creating the user",
+          message: t("errorCreatingUser"),
           password: "",
           email: "",
           first_name: "",
@@ -120,22 +104,11 @@ export const register = async (
         },
       };
     }
-    
   } catch (error) {
     console.log(error);
-    // console.log({error})
-    // console.log({errorCause: error.cause})
-    // console.log({errorStatus: error.cause.status})
-    // console.log({errorText: error.cause.statusText})
-    // console.log({errorBody: error.cause.body})
-
-    // const err = await error.cause.response.text();
-
-    // console.log({ err });
     return {
       error: {
-        message:
-          "An error occcured while creating the user. Please check your internet Connection and try again",
+        message: t("internetConnectionError"),
         password: "",
         email: "",
         first_name: "",
@@ -145,7 +118,5 @@ export const register = async (
     };
   }
 
-  /* TODO: send verification token email */
-
-  return { success: "User created!" };
+  return { success: t("userCreated") };
 };

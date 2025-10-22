@@ -3,6 +3,7 @@ import {
   BookMeetingResponse,
   BookMeetingError,
 } from "@/types/book-a-meeting";
+import { getTranslations } from "next-intl/server";
 
 export async function bookMeetingWithDetailedErrors(
   data: BookMeetingRequest
@@ -12,31 +13,48 @@ export async function bookMeetingWithDetailedErrors(
   error?: string;
   validationErrors?: { [key: string]: string[] };
 }> {
+  const t = await getTranslations("bookMeetingData");
   const endpoint = "/v1/forms/book-meeting";
   try {
+    const username = process.env.BASIC_AUTH_USER;
+    const password = process.env.BASIC_AUTH_PASSWORD;
+    const basicAuth =
+      "Basic " + Buffer.from(`${username}:${password}`).toString("base64");
+
+    console.log("api call");
     const response = await fetch(`${process.env.API_BASE_URL}${endpoint}`, {
       method: "POST",
       headers: {
+        "accept": "application/ld+json",
         "Content-Type": "application/json",
         "X-Internal-Token": process.env.BOOKING_INTERNAL_TOKEN || "",
+        Authorization: basicAuth,
       },
       body: JSON.stringify(data),
     });
 
-    if (!response.ok) {
-      const errorData: BookMeetingError = await response.json();
+    console.log({ response });
 
-      if (response.status === 401) {
+    if (!response.ok) {
+      console.log("This is a not ok response");
+
+      console.log(`response type is ${typeof response.status}`);
+
+      if (response.status == 401 || response.status == 404) {
+        console.log("This is a 401 error");
         return {
           success: false,
-          error: "Unauthorized: Invalid or missing internal token",
+          error: t("unauthorizedInvalidOrMissingInternalToken"),
         };
+      } else {
+        console.log("This is a different error");
       }
 
-      if (response.status === 422 && errorData.errors) {
+      const errorData: BookMeetingError = await response.json();
+      if (response.status == 422 && errorData.errors) {
         return {
           success: false,
-          error: errorData.message || "Validation failed",
+          error: errorData.message || t("validationFailed"),
           validationErrors: errorData.errors,
         };
       }
@@ -46,7 +64,7 @@ export async function bookMeetingWithDetailedErrors(
         error:
           errorData.error ||
           errorData.message ||
-          `HTTP ${response.status}: Request failed`,
+          t("httpRequestFailed", { status: response.status }),
       };
     }
 
@@ -56,9 +74,10 @@ export async function bookMeetingWithDetailedErrors(
       data: result,
     };
   } catch (error) {
+    console.log(`Error while booking`, error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : "Network error occurred",
+      error: t("unExpectedError"),
     };
   }
 }

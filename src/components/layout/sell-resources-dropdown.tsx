@@ -14,6 +14,7 @@ import { Skeleton } from "../ui/skeleton";
 import { cn } from "@/lib/utils";
 import { Link } from "@/i18n/navigation";
 import { useLocale } from "next-intl";
+import { useTranslations } from "next-intl";
 
 interface Resource {
   id: string;
@@ -32,6 +33,7 @@ export function SellResourcesDropdown({
   scrolled: boolean;
   colorChange?: boolean;
 }) {
+  const t = useTranslations("sellResourcesDropdown");
   const [resources, setResources] = useState<Resource[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -42,7 +44,9 @@ export function SellResourcesDropdown({
   useEffect(() => {
     async function fetchResources() {
       try {
-        const response = await fetch(`/api/resources/sell-resources?locale=${locale}`);
+        const response = await fetch(
+          `/api/resources/sell-resources?locale=${locale}`
+        );
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -52,7 +56,7 @@ export function SellResourcesDropdown({
         setResources(data);
       } catch (err) {
         setError(
-          err instanceof Error ? err.message : "Failed to fetch resources"
+          err instanceof Error ? err.message : t("failedToFetchResources")
         );
         console.error("Error fetching resources:", err);
       } finally {
@@ -61,7 +65,7 @@ export function SellResourcesDropdown({
     }
 
     fetchResources();
-  }, [locale]);
+  }, [locale, t]);
 
   if (loading) {
     return <Skeleton className="h-6 w-12" />;
@@ -92,13 +96,15 @@ export function SellResourcesDropdown({
                 : "text-gray-600"
             )}
           >
-            Sell
+            {t("sell")}
             <ChevronDown className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-80 p-3">
           {resources.length === 0 ? (
-            <DropdownMenuItem disabled>No resources available</DropdownMenuItem>
+            <DropdownMenuItem disabled>
+              {t("noResourcesAvailable")}
+            </DropdownMenuItem>
           ) : (
             resources.map((resource) => (
               <DropdownMenuItem

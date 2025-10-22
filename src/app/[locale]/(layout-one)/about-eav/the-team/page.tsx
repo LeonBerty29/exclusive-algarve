@@ -7,6 +7,7 @@ import DiscoverSection from "@/components/home/discover-section";
 import { ContactForm } from "@/components/shared/contact-form";
 import { Team } from "@/types/team";
 import { getLocale } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 
 interface BlogPageProps {
   searchParams: Promise<{ page?: string }>;
@@ -15,6 +16,7 @@ interface BlogPageProps {
 const BLOGS_PER_PAGE = 12;
 
 export default async function TeamPage(props: BlogPageProps) {
+  const t = await getTranslations("theTeamPage");
   const searchParams = await props.searchParams;
   const page = parseInt(searchParams.page || "1");
 
@@ -23,17 +25,14 @@ export default async function TeamPage(props: BlogPageProps) {
       <div className="2xl:container w-full mx-auto px-6 sm:px-8 md:px-10 lg:px-14 py-10">
         <div className="flex items-center gap-2 justify-between py-5 md:py-8 lg:py-16 flex-wrap">
           <div className="w-full md:w-[47%]">
-            <h1 className="text-2xl font-normal mb-5">
-              WE ARE HERE TO ASSIST YOU THROUGHOUT THE PROCESS OF BUYING AND
-              SELLING LUXURY PROPERTY IN THE ALGARVE
-            </h1>
+            <h1 className="text-2xl font-normal mb-5">{t("assistHeading")}</h1>
 
             <div className="w-full aspect-video relative">
               <Image
                 priority
                 src="/images/about/about-img-2.png"
                 fill
-                alt="about-us"
+                alt={t("aboutUsAlt")}
                 className="object-cover"
               />
             </div>
@@ -41,11 +40,7 @@ export default async function TeamPage(props: BlogPageProps) {
 
           <div className="w-full md:w-[47%] lg:min-w-[unset]">
             <p className="text-neutral-700 text-base ">
-              Directors Marcela Boturao & Bart van Linden would like to welcome
-              you to meet the team of Exclusive Algarve Villas. Both Marcela and
-              Bart have been active in selling luxury real estate in the Algarve
-              for over a decade. They have built up a multi award winning
-              company and continue to grow the business year after year.
+              {t("directorsParagraph")}
             </p>
           </div>
         </div>
@@ -97,11 +92,10 @@ async function GetAndDisplayTeam({
     language: locale,
   });
 
-  //   const totalPages = Math.ceil(response.total / perPage);
   const teams = response;
 
-  // Check if the requested page is greater than total pages
-  //   const isPageOutOfRange = page > totalPages && totalPages > 0;
+  // const totalPages = Math.ceil(response.total / perPage);
+  // const isPageOutOfRange = page > totalPages && totalPages > 0;
 
   return (
     <>

@@ -4,6 +4,7 @@ import React, { useTransition } from "react";
 import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export const ReloadBtn = ({
   className,
@@ -15,6 +16,7 @@ export const ReloadBtn = ({
   showHome?: boolean;
 }) => {
   const router = useRouter();
+  const t = useTranslations("reloadBtn");
   const [isPending, startTransition] = useTransition();
   const handleOnClick = () => {
     startTransition(() => {
@@ -45,7 +47,7 @@ export const ReloadBtn = ({
           asChild
         >
           <Link href={"/"} className="text-gray-800">
-            Home
+            {t("home")}
           </Link>
         </Button>
       )}

@@ -36,11 +36,16 @@ import {
 import { cn } from "@/lib/utils";
 import * as z from "zod";
 import { PartnershipRequestFormAction } from "@/actions/partnership-requests";
-import { clientPartnershipRequestFormSchema } from "@/types/partnership-request";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
+import { getPartnershipFormSchema } from "@/types/partnership-request";
 
 export function PartnershipRequestForm() {
+  const t = useTranslations("partnershipRequestForm");
+  const partnershipSchemaTranslation = useTranslations("partnershipFormSchema")
+  const PartnershipFormSchema = getPartnershipFormSchema(partnershipSchemaTranslation)
+
   const [isPending, startTransition] = useTransition();
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
@@ -70,34 +75,31 @@ export function PartnershipRequestForm() {
     "17:00",
   ];
 
-  const form = useForm<z.infer<typeof clientPartnershipRequestFormSchema>>({
-    resolver: zodResolver(clientPartnershipRequestFormSchema),
+  const form = useForm<z.infer<typeof PartnershipFormSchema>>({
+    resolver: zodResolver(PartnershipFormSchema),
     defaultValues: {
-      companyName: "",
-      companyEmail: "",
-      companyPhone: "",
-      contactPerson: "",
-      clientFirstName: "",
-      clientLastName: "",
-      partialClientEmail: "",
-      partialClientPhone: "",
-      interestedProperty: "",
+      company_name: "",
+      company_email: "",
+      company_phone: "",
+      contact_person: "",
+      client_first_name: "",
+      client_last_name: "",
+      partial_client_email: "",
+      partial_client_phone: "",
+      interested_property: "",
       remarks: "",
-      confirmedVisitDate: null,
-      confirmedVisitTime: "",
-      acceptTerms: false,
-      sourceUrl: sourceUrlRef.current,
+      confirmed_visit_date: undefined,
+      confirmed_visit_time: "",
+      accept_terms: false,
+      source_url: sourceUrlRef.current,
     },
     mode: "onChange",
   });
 
-  const onSubmit = async (
-    values: z.infer<typeof clientPartnershipRequestFormSchema>
-  ) => {
+  const onSubmit = async (values: z.infer<typeof PartnershipFormSchema>) => {
     if (!executeRecaptcha) {
-      toast("ReCaptcha Error", {
-        description:
-          "ReCaptcha is not available. Please Refresh the page and try again.",
+      toast(t("recaptchaError"), {
+        description: t("recaptchaErrorDescription"),
         duration: 1500,
       });
       return;
@@ -111,38 +113,45 @@ export function PartnershipRequestForm() {
 
     // Check if form is valid before proceeding
     if (!form.formState.isValid) {
-      setError("Please fill in all required fields correctly.");
+      setError(t("pleaseFillAllRequiredFieldsCorrectly"));
       return;
     }
 
     const formDataToSubmit = new FormData();
-    formDataToSubmit.append("company_name", values.companyName);
-    formDataToSubmit.append("company_email", values.companyEmail);
-    formDataToSubmit.append("company_phone", values.companyPhone);
-    formDataToSubmit.append("contact_person", values.contactPerson);
-    formDataToSubmit.append("client_first_name", values.clientFirstName);
-    formDataToSubmit.append("client_last_name", values.clientLastName);
-    formDataToSubmit.append("partial_client_email", values.partialClientEmail);
-    formDataToSubmit.append("partial_client_phone", values.partialClientPhone);
+    formDataToSubmit.append("company_name", values.company_name);
+    formDataToSubmit.append("company_email", values.company_email);
+    formDataToSubmit.append("company_phone", values.company_phone);
+    formDataToSubmit.append("contact_person", values.contact_person);
+    formDataToSubmit.append("client_first_name", values.client_first_name);
+    formDataToSubmit.append("client_last_name", values.client_last_name);
+    formDataToSubmit.append(
+      "partial_client_email",
+      values.partial_client_email
+    );
+    formDataToSubmit.append(
+      "partial_client_phone",
+      values.partial_client_phone
+    );
     formDataToSubmit.append(
       "interested_property",
-      values.interestedProperty || ""
+      values.interested_property || ""
     );
     formDataToSubmit.append("remarks", values.remarks || "");
 
     // Format date as YYYY-MM-DD if provided
-    if (values.confirmedVisitDate) {
+    if (values.confirmed_visit_date) {
       formDataToSubmit.append(
         "confirmed_visit_date",
-        values.confirmedVisitDate.toISOString().split("T")[0]
+        values.confirmed_visit_date.toISOString().split("T")[0]
       );
     }
 
     formDataToSubmit.append(
       "confirmed_visit_time",
-      values.confirmedVisitTime || ""
+      values.confirmed_visit_time || ""
     );
-    formDataToSubmit.append("source_url", values.sourceUrl || "");
+    formDataToSubmit.append("source_url", values.source_url || "");
+    formDataToSubmit.append("accept_terms", JSON.stringify(values.accept_terms) );
 
     startTransition(async () => {
       const token = await executeRecaptcha("partnershipRequest");
@@ -154,26 +163,26 @@ export function PartnershipRequestForm() {
         if (result.success) {
           // Show success dialog
           setSuccessMessage(
-            result.message || "Partnership request submitted successfully!"
+            result.message || t("partnershipRequestSubmittedSuccessfully")
           );
           setShowSuccessDialog(true);
 
           // Reset form but keep sourceUrl
           form.reset({
-            companyName: "",
-            companyEmail: "",
-            companyPhone: "",
-            contactPerson: "",
-            clientFirstName: "",
-            clientLastName: "",
-            partialClientEmail: "",
-            partialClientPhone: "",
-            interestedProperty: "",
+            company_name: "",
+            company_email: "",
+            company_phone: "",
+            contact_person: "",
+            client_first_name: "",
+            client_last_name: "",
+            partial_client_email: "",
+            partial_client_phone: "",
+            interested_property: "",
             remarks: "",
-            confirmedVisitDate: null,
-            confirmedVisitTime: "",
-            acceptTerms: false,
-            sourceUrl: sourceUrlRef.current,
+            confirmed_visit_date: undefined,
+            confirmed_visit_time: "",
+            accept_terms: false,
+            source_url: sourceUrlRef.current,
           });
 
           // Reset the attempted submit flag
@@ -181,33 +190,28 @@ export function PartnershipRequestForm() {
         } else {
           // Handle server validation errors
           if (result.fieldErrors) {
-            // Map server field names to client field names and set form errors
             Object.entries(result.fieldErrors).forEach(([key, message]) => {
               const fieldMapping: {
-                [key: string]: keyof z.infer<
-                  typeof clientPartnershipRequestFormSchema
-                >;
+                [key: string]: keyof z.infer<typeof PartnershipFormSchema>;
               } = {
-                company_name: "companyName",
-                company_email: "companyEmail",
-                company_phone: "companyPhone",
-                contact_person: "contactPerson",
-                client_first_name: "clientFirstName",
-                client_last_name: "clientLastName",
-                partial_client_email: "partialClientEmail",
-                partial_client_phone: "partialClientPhone",
-                interested_property: "interestedProperty",
+                company_name: "company_name",
+                company_email: "company_email",
+                company_phone: "company_phone",
+                contact_person: "contact_person",
+                client_first_name: "client_first_name",
+                client_last_name: "client_last_name",
+                partial_client_email: "partial_client_email",
+                partial_client_phone: "partial_client_phone",
+                interested_property: "interested_property",
                 remarks: "remarks",
-                confirmed_visit_date: "confirmedVisitDate",
-                confirmed_visit_time: "confirmedVisitTime",
-                source_url: "sourceUrl",
+                confirmed_visit_date: "confirmed_visit_date",
+                confirmed_visit_time: "confirmed_visit_time",
+                source_url: "source_url",
               };
 
               const clientFieldName =
                 fieldMapping[key] ||
-                (key as keyof z.infer<
-                  typeof clientPartnershipRequestFormSchema
-                >);
+                (key as keyof z.infer<typeof PartnershipFormSchema>);
               form.setError(clientFieldName, {
                 type: "server",
                 message: message,
@@ -216,21 +220,17 @@ export function PartnershipRequestForm() {
           }
 
           if (result.errors) {
-            // Handle detailed validation errors from API
             const errorMessages = Object.entries(result.errors)
               .map(([field, messages]) => `${field}: ${messages.join(", ")}`)
               .join("; ");
-            setError(`Validation errors: ${errorMessages}`);
+            setError(`${t("validationErrors")}: ${errorMessages}`);
           } else {
-            setError(
-              result.message ||
-                "Failed to submit partnership request. Please try again."
-            );
+            setError(result.message || t("failedToSubmitPartnershipRequest"));
           }
         }
       } catch (error) {
         console.error("Submit error:", error);
-        setError("An unexpected error occurred. Please try again.");
+        setError(t("unexpectedErrorOccurred"));
       }
     });
   };
@@ -243,12 +243,12 @@ export function PartnershipRequestForm() {
   };
 
   const handleDateSelect = (date: Date | undefined): void => {
-    form.setValue("confirmedVisitDate", date || null);
+    form.setValue("confirmed_visit_date", date || undefined);
     setIsDatePopoverOpen(false);
   };
 
   const handleTimeSelect = (value: string): void => {
-    form.setValue("confirmedVisitTime", value);
+    form.setValue("confirmed_visit_time", value);
   };
 
   const isDateDisabled = (date: Date): boolean => {
@@ -265,20 +265,20 @@ export function PartnershipRequestForm() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <FormField
               control={form.control}
-              name="companyName"
+              name="company_name"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
                     <Input
                       {...field}
                       type="text"
-                      placeholder="COMPANY NAME*"
+                      placeholder={t("companyName")}
                       className="indent-4 bg-gray-100 text-black placeholder:text-gray-600 border-none rounded-none py-5 focus:ring-2 focus:ring-gray-400 placeholder:text-sm"
                       disabled={isPending}
                     />
                   </FormControl>
                   {(hasAttemptedSubmit ||
-                    form.formState.touchedFields.companyName) && (
+                    form.formState.touchedFields.company_name) && (
                     <FormMessage />
                   )}
                 </FormItem>
@@ -287,20 +287,20 @@ export function PartnershipRequestForm() {
 
             <FormField
               control={form.control}
-              name="companyEmail"
+              name="company_email"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
                     <Input
                       {...field}
                       type="email"
-                      placeholder="COMPANY EMAIL*"
+                      placeholder={t("companyEmail")}
                       className="indent-4 bg-gray-100 text-black placeholder:text-gray-600 border-none rounded-none py-5 focus:ring-2 focus:ring-gray-400 placeholder:text-sm"
                       disabled={isPending}
                     />
                   </FormControl>
                   {(hasAttemptedSubmit ||
-                    form.formState.touchedFields.companyEmail) && (
+                    form.formState.touchedFields.company_email) && (
                     <FormMessage />
                   )}
                 </FormItem>
@@ -311,20 +311,20 @@ export function PartnershipRequestForm() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <FormField
               control={form.control}
-              name="companyPhone"
+              name="company_phone"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
                     <Input
                       {...field}
                       type="tel"
-                      placeholder="COMPANY PHONE*"
+                      placeholder={t("companyPhone")}
                       className="indent-4 bg-gray-100 text-black placeholder:text-gray-600 border-none rounded-none py-5 focus:ring-2 focus:ring-gray-400 placeholder:text-sm"
                       disabled={isPending}
                     />
                   </FormControl>
                   {(hasAttemptedSubmit ||
-                    form.formState.touchedFields.companyPhone) && (
+                    form.formState.touchedFields.company_phone) && (
                     <FormMessage />
                   )}
                 </FormItem>
@@ -333,20 +333,20 @@ export function PartnershipRequestForm() {
 
             <FormField
               control={form.control}
-              name="contactPerson"
+              name="contact_person"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
                     <Input
                       {...field}
                       type="text"
-                      placeholder="CONTACT PERSON*"
+                      placeholder={t("contactPerson")}
                       className="indent-4 bg-gray-100 text-black placeholder:text-gray-600 border-none rounded-none py-5 focus:ring-2 focus:ring-gray-400 placeholder:text-sm"
                       disabled={isPending}
                     />
                   </FormControl>
                   {(hasAttemptedSubmit ||
-                    form.formState.touchedFields.contactPerson) && (
+                    form.formState.touchedFields.contact_person) && (
                     <FormMessage />
                   )}
                 </FormItem>
@@ -356,26 +356,26 @@ export function PartnershipRequestForm() {
 
           {/* Client Details Section */}
           <h3 className="text-black text-lg font-semibold mb-4 mt-6">
-            CLIENT DETAILS
+            {t("clientDetails")}
           </h3>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <FormField
               control={form.control}
-              name="clientFirstName"
+              name="client_first_name"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
                     <Input
                       {...field}
                       type="text"
-                      placeholder="CLIENT FIRST NAME*"
+                      placeholder={t("clientFirstName")}
                       className="indent-4 bg-gray-100 text-black placeholder:text-gray-600 border-none rounded-none py-5 focus:ring-2 focus:ring-gray-400 placeholder:text-sm"
                       disabled={isPending}
                     />
                   </FormControl>
                   {(hasAttemptedSubmit ||
-                    form.formState.touchedFields.clientFirstName) && (
+                    form.formState.touchedFields.client_first_name) && (
                     <FormMessage />
                   )}
                 </FormItem>
@@ -384,20 +384,20 @@ export function PartnershipRequestForm() {
 
             <FormField
               control={form.control}
-              name="clientLastName"
+              name="client_last_name"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
                     <Input
                       {...field}
                       type="text"
-                      placeholder="CLIENT LAST NAME*"
+                      placeholder={t("clientLastName")}
                       className="indent-4 bg-gray-100 text-black placeholder:text-gray-600 border-none rounded-none py-5 focus:ring-2 focus:ring-gray-400 placeholder:text-sm"
                       disabled={isPending}
                     />
                   </FormControl>
                   {(hasAttemptedSubmit ||
-                    form.formState.touchedFields.clientLastName) && (
+                    form.formState.touchedFields.client_last_name) && (
                     <FormMessage />
                   )}
                 </FormItem>
@@ -408,20 +408,20 @@ export function PartnershipRequestForm() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <FormField
               control={form.control}
-              name="partialClientEmail"
+              name="partial_client_email"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
                     <Input
                       {...field}
                       type="text"
-                      placeholder="PARTIAL CLIENT EMAIL*"
+                      placeholder={t("partialClientEmail")}
                       className="indent-4 bg-gray-100 text-black placeholder:text-gray-600 border-none rounded-none py-5 focus:ring-2 focus:ring-gray-400 placeholder:text-sm"
                       disabled={isPending}
                     />
                   </FormControl>
                   {(hasAttemptedSubmit ||
-                    form.formState.touchedFields.partialClientEmail) && (
+                    form.formState.touchedFields.partial_client_email) && (
                     <FormMessage />
                   )}
                 </FormItem>
@@ -430,20 +430,20 @@ export function PartnershipRequestForm() {
 
             <FormField
               control={form.control}
-              name="partialClientPhone"
+              name="partial_client_phone"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
                     <Input
                       {...field}
                       type="tel"
-                      placeholder="PARTIAL CLIENT PHONE*"
+                      placeholder={t("partialClientPhone")}
                       className="indent-4 bg-gray-100 text-black placeholder:text-gray-600 border-none rounded-none py-5 focus:ring-2 focus:ring-gray-400 placeholder:text-sm"
                       disabled={isPending}
                     />
                   </FormControl>
                   {(hasAttemptedSubmit ||
-                    form.formState.touchedFields.partialClientPhone) && (
+                    form.formState.touchedFields.partial_client_phone) && (
                     <FormMessage />
                   )}
                 </FormItem>
@@ -454,19 +454,19 @@ export function PartnershipRequestForm() {
           {/* Property Interest Textarea */}
           <FormField
             control={form.control}
-            name="interestedProperty"
+            name="interested_property"
             render={({ field }) => (
               <FormItem>
                 <FormControl>
                   <Textarea
                     {...field}
-                    placeholder="PROPERTY THE CLIENT IS INTERESTED IN..."
+                    placeholder={t("interestedProperty")}
                     className="indent-4 bg-gray-100 text-black placeholder:text-gray-600 border-none rounded-none py-5 focus:ring-2 focus:ring-gray-400 min-h-[120px] w-full"
                     disabled={isPending}
                   />
                 </FormControl>
                 {(hasAttemptedSubmit ||
-                  form.formState.touchedFields.interestedProperty) && (
+                  form.formState.touchedFields.interested_property) && (
                   <FormMessage />
                 )}
               </FormItem>
@@ -482,7 +482,7 @@ export function PartnershipRequestForm() {
                 <FormControl>
                   <Textarea
                     {...field}
-                    placeholder="ADDITIONAL NOTES OR REMARKS..."
+                    placeholder={t("remarks")}
                     className="indent-4 bg-gray-100 text-black placeholder:text-gray-600 border-none rounded-none py-5 focus:ring-2 focus:ring-gray-400 min-h-[120px] w-full"
                     disabled={isPending}
                   />
@@ -495,13 +495,13 @@ export function PartnershipRequestForm() {
 
           {/* Visit Date and Time Section */}
           <h3 className="text-black text-lg font-semibold mb-4 mt-6">
-            CONFIRMED VISIT (Optional)
+            {t("confirmedVisitOptional")}
           </h3>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <FormField
               control={form.control}
-              name="confirmedVisitDate"
+              name="confirmed_visit_date"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
@@ -520,7 +520,7 @@ export function PartnershipRequestForm() {
                           <Calendar className="mr-2 h-4 w-4" />
                           {field.value
                             ? field.value.toLocaleDateString()
-                            : "CONFIRMED VISIT DATE"}
+                            : t("confirmedVisitDate")}
                         </Button>
                       </PopoverTrigger>
                       <PopoverContent className="w-auto p-0" align="start">
@@ -535,7 +535,7 @@ export function PartnershipRequestForm() {
                     </Popover>
                   </FormControl>
                   {(hasAttemptedSubmit ||
-                    form.formState.touchedFields.confirmedVisitDate) && (
+                    form.formState.touchedFields.confirmed_visit_date) && (
                     <FormMessage />
                   )}
                 </FormItem>
@@ -544,7 +544,7 @@ export function PartnershipRequestForm() {
 
             <FormField
               control={form.control}
-              name="confirmedVisitTime"
+              name="confirmed_visit_time"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
@@ -554,7 +554,7 @@ export function PartnershipRequestForm() {
                       disabled={isPending}
                     >
                       <SelectTrigger className="w-full indent-4 bg-gray-100 text-black placeholder:text-gray-600 border-none rounded-none py-5 focus:ring-2 focus:ring-gray-400">
-                        <SelectValue placeholder="CONFIRMED VISIT TIME" />
+                        <SelectValue placeholder={t("confirmedVisitTime")} />
                       </SelectTrigger>
                       <SelectContent>
                         {timeSlots.map((time: string) => (
@@ -566,7 +566,7 @@ export function PartnershipRequestForm() {
                     </Select>
                   </FormControl>
                   {(hasAttemptedSubmit ||
-                    form.formState.touchedFields.confirmedVisitTime) && (
+                    form.formState.touchedFields.confirmed_visit_time) && (
                     <FormMessage />
                   )}
                 </FormItem>
@@ -576,7 +576,7 @@ export function PartnershipRequestForm() {
 
           <FormField
             control={form.control}
-            name="acceptTerms"
+            name="accept_terms"
             render={({ field }) => (
               <FormItem className="flex items-center space-x-3 mt-8">
                 <FormControl>
@@ -589,11 +589,10 @@ export function PartnershipRequestForm() {
                   />
                 </FormControl>
                 <label className="text-black text-xs">
-                  By requesting information you are authorizing Exclusive
-                  Algarve Villas to use your data in order to contact you.
+                  {t("acceptTermsText")}
                 </label>
                 {(hasAttemptedSubmit ||
-                  form.formState.touchedFields.acceptTerms) && <FormMessage />}
+                  form.formState.touchedFields.accept_terms) && <FormMessage />}
               </FormItem>
             )}
           />
@@ -608,7 +607,7 @@ export function PartnershipRequestForm() {
           {/* Hidden sourceUrl field */}
           <FormField
             control={form.control}
-            name="sourceUrl"
+            name="source_url"
             render={({ field }) => (
               <FormItem className="hidden">
                 <FormControl>
@@ -626,7 +625,7 @@ export function PartnershipRequestForm() {
                 "bg-primary hover:bg-primary/90 text-white font-medium py-5 px-14 rounded-none transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               )}
             >
-              {isPending ? "Submitting..." : "Submit"}
+              {isPending ? t("submitting") : t("submit")}
             </Button>
           </div>
         </form>
@@ -640,7 +639,7 @@ export function PartnershipRequestForm() {
               <CheckCircle className="h-12 w-12 text-green-500" />
             </div>
             <DialogTitle className="text-center text-xl font-semibold">
-              Partnership Request Submitted!
+              {t("partnershipRequestSubmittedTitle")}
             </DialogTitle>
             <DialogDescription className="text-center text-gray-600 mt-2">
               {successMessage}
@@ -651,7 +650,7 @@ export function PartnershipRequestForm() {
               onClick={() => setShowSuccessDialog(false)}
               className="bg-primary hover:bg-primary/90 text-white px-8"
             >
-              Close
+              {t("close")}
             </Button>
           </div>
         </DialogContent>

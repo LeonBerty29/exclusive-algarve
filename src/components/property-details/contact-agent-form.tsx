@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useTransition, useEffect } from "react";
+import React, { useState, useTransition, useRef } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -11,87 +11,86 @@ import {
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import Image from "next/image";
-import { Send } from "lucide-react";
+import { Send, CheckCircle } from "lucide-react";
 import { Button } from "../ui/button";
 import { toast } from "sonner";
-import { ZodError, ZodIssue } from "zod";
+import { ZodIssue } from "zod";
 import { contactAgentAction } from "@/actions/contact-agent";
-import { clientContactAgentSchema } from "@/types/contact-agent";
+import {
+  ContactAgentFormData,
+  getClientContactAgentSchema,
+} from "@/types/contact-agent";
 import { Property } from "@/types/property";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
-
-// Client-side form data interface
-interface FormData {
-  firstName: string;
-  lastName: string;
-  phone: string;
-  email: string;
-  message: string;
-  primaryContactChannel: string;
-  acceptTerms: boolean;
-  sourceUrl: string;
-}
+import { useTranslations } from "next-intl";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 interface FormErrors {
-  firstName?: string;
-  lastName?: string;
+  first_name?: string;
+  last_name?: string;
   phone?: string;
   email?: string;
   message?: string;
-  primaryContactChannel?: string;
-  acceptTerms?: string;
-  sourceUrl?: string;
+  primary_contact_channel?: string;
+  accept_terms?: string;
+  source_url?: string;
 }
 
-type FormField = keyof FormData;
+type FormField = keyof ContactAgentFormData;
 
 type ContactAgentFormProps = {
   salesConsultant: Property["sales_consultant"];
-  onSuccess?: () => void; // new prop optional callback
+  onSuccess?: () => void;
 };
 
 const ContactAgentForm = ({
   salesConsultant,
   onSuccess,
 }: ContactAgentFormProps) => {
+  const t = useTranslations("contactAgentForm");
+  const translationSchema = useTranslations("contactAgentSchema");
+  const contactAgentSchema = getClientContactAgentSchema(translationSchema);
   const [isPending, startTransition] = useTransition();
-  const [formData, setFormData] = useState<FormData>({
-    firstName: "",
-    lastName: "",
+  const [isSuccessDialogOpen, setIsSuccessDialogOpen] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+
+  // Use useRef to capture the source URL once
+  const sourceUrlRef = useRef<string>(
+    typeof window !== "undefined" ? window.location.href : ""
+  );
+
+  const [formData, setFormData] = useState<ContactAgentFormData>({
+    first_name: "",
+    last_name: "",
     phone: "",
     email: "",
     message: "",
-    primaryContactChannel: "Email",
-    acceptTerms: false,
-    sourceUrl: "",
+    primary_contact_channel: "Email",
+    accept_terms: false,
+    source_url: sourceUrlRef.current,
   });
 
   const [errors, setErrors] = useState<FormErrors>({});
 
   const { executeRecaptcha } = useGoogleReCaptcha();
 
-  // Get current page URL on mount
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      setFormData((prev) => ({
-        ...prev,
-        sourceUrl: window.location.href,
-      }));
-    }
-  }, []);
-
   const contactChannels = ["Email", "Phone", "Whatsapp", "SMS"];
 
   const handleInputChange = <T extends FormField>(
     field: T,
-    value: FormData[T]
+    value: ContactAgentFormData[T]
   ): void => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
     }));
 
-    // Clear error when user starts typing
     if (errors[field]) {
       setErrors((prev) => ({
         ...prev,
@@ -101,56 +100,50 @@ const ContactAgentForm = ({
   };
 
   const validateClientForm = (): boolean => {
-    try {
-      clientContactAgentSchema.parse(formData);
-      setErrors({});
-      return true;
-    } catch (error) {
-      const newErrors: FormErrors = {};
+    const validationResult = contactAgentSchema.safeParse(formData);
+    setErrors({});
 
-      if (error instanceof ZodError) {
-        error.errors.forEach((err: ZodIssue) => {
-          const fieldName = err.path[0] as keyof FormErrors;
-          if (fieldName && typeof fieldName === "string") {
-            newErrors[fieldName] = err.message;
-          }
-        });
+    if (validationResult.success) return true;
+    const newErrors: FormErrors = {};
+
+    validationResult.error.errors.forEach((err: ZodIssue) => {
+      const fieldName = err.path[0] as keyof FormErrors;
+      if (fieldName && typeof fieldName === "string") {
+        newErrors[fieldName] = err.message;
       }
-
-      setErrors(newErrors);
-      return false;
-    }
+    });
+    setErrors(newErrors);
+    return false;
   };
 
   const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
 
     if (!executeRecaptcha) {
-      toast("ReCaptcha Error", {
-        description:
-          "ReCaptcha is not available. Please Refresh the page and try again.",
+      toast(t("recaptchaError"), {
+        description: t("recaptchaErrorDescription"),
         duration: 1500,
       });
       return;
     }
 
-    // Client-side validation first
     if (!validateClientForm()) {
-      toast.error("Please fix the form errors before submitting");
+      toast.error(t("fixFormErrors"));
       return;
     }
 
     const formDataToSubmit = new FormData();
-    formDataToSubmit.append("first_name", formData.firstName);
-    formDataToSubmit.append("last_name", formData.lastName);
+    formDataToSubmit.append("first_name", formData.first_name);
+    formDataToSubmit.append("last_name", formData.last_name);
     formDataToSubmit.append("phone", formData.phone);
     formDataToSubmit.append("email", formData.email);
-    formDataToSubmit.append("message", formData.message);
+    formDataToSubmit.append("message", formData.message as string);
     formDataToSubmit.append(
       "primary_contact_channel",
-      formData.primaryContactChannel
+      formData.primary_contact_channel as string
     );
-    formDataToSubmit.append("source_url", formData.sourceUrl);
+    formDataToSubmit.append("source_url", sourceUrlRef.current);
+    formDataToSubmit.append("accept_terms", formData.accept_terms.toString());
 
     startTransition(async () => {
       const token = await executeRecaptcha("contactAgentForm");
@@ -160,37 +153,34 @@ const ContactAgentForm = ({
         const result = await contactAgentAction(formDataToSubmit);
 
         if (result.success) {
-          toast.success(result.message || "Request submitted successfully!");
+          setSuccessMessage(result.message || t("submitSuccess"));
 
-          // Reset form
           setFormData({
-            firstName: "",
-            lastName: "",
+            first_name: "",
+            last_name: "",
             phone: "",
             email: "",
             message: "",
-            primaryContactChannel: "",
-            acceptTerms: false,
-            sourceUrl: formData.sourceUrl, // Keep the source URL
+            primary_contact_channel: "Email",
+            accept_terms: false,
+            source_url: sourceUrlRef.current,
           });
           setErrors({});
+          setIsSuccessDialogOpen(true);
           if (onSuccess) onSuccess();
         } else {
-          // Handle server validation errors
           if (result.fieldErrors) {
             const newErrors: FormErrors = {};
             Object.entries(result.fieldErrors).forEach(([key, message]) => {
-              // Map server field names to client field names
               const fieldMapping: { [key: string]: keyof FormErrors } = {
-                first_name: "firstName",
-                last_name: "lastName",
+                first_name: "first_name",
+                last_name: "last_name",
                 phone: "phone",
                 email: "email",
                 message: "message",
-                primary_contact_channel: "primaryContactChannel",
-                source_url: "sourceUrl",
+                primary_contact_channel: "primary_contact_channel",
+                source_url: "source_url",
               };
-
               const clientFieldName =
                 fieldMapping[key] || (key as keyof FormErrors);
               newErrors[clientFieldName] = message;
@@ -199,20 +189,17 @@ const ContactAgentForm = ({
           }
 
           if (result.errors) {
-            // Handle detailed validation errors from API
             const errorMessages = Object.entries(result.errors)
               .map(([field, messages]) => `${field}: ${messages.join(", ")}`)
               .join("; ");
-            toast.error(`Validation errors: ${errorMessages}`);
+            toast.error(`${t("validationErrorsPrefix")} ${errorMessages}`);
           } else {
-            toast.error(
-              result.message || "Failed to submit request. Please try again."
-            );
+            toast.error(result.message || t("submitFailed"));
           }
         }
       } catch (error) {
         console.error("Submit error:", error);
-        toast.error("An unexpected error occurred. Please try again.");
+        toast.error(t("unexpectedError"));
       }
     });
   };
@@ -220,20 +207,25 @@ const ContactAgentForm = ({
   const handleInputChangeEvent =
     (field: FormField) =>
     (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
-      handleInputChange(field, e.target.value as FormData[typeof field]);
+      handleInputChange(
+        field,
+        e.target.value as ContactAgentFormData[typeof field]
+      );
     };
 
   const handleCheckboxChange = (checked: boolean): void => {
-    handleInputChange("acceptTerms", checked);
+    handleInputChange("accept_terms", checked);
   };
 
   const handleContactChannelSelect = (value: string): void => {
-    handleInputChange("primaryContactChannel", value);
+    handleInputChange(
+      "primary_contact_channel",
+      value as ContactAgentFormData["primary_contact_channel"]
+    );
   };
 
   return (
     <>
-      {/* Agent Info */}
       <div className="flex items-center gap-4 mb-6">
         <div className="w-16 h-16 rounded-full overflow-hidden bg-gray-700 flex-shrink-0">
           {salesConsultant.profile_picture && (
@@ -250,41 +242,40 @@ const ContactAgentForm = ({
           <h3 className="text-lg font-bold text-white">
             {salesConsultant.name}
           </h3>
-          <p className="text-sm text-gray-300">Request more information</p>
+          <p className="text-sm text-gray-300">{t("requestMoreInformation")}</p>
         </div>
       </div>
 
-      {/* Contact Form */}
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="grid grid-cols-1 gap-4">
           <div>
             <Input
               type="text"
-              placeholder="First Name"
-              value={formData.firstName}
-              onChange={handleInputChangeEvent("firstName")}
+              placeholder={t("firstNamePlaceholder")}
+              value={formData.first_name}
+              onChange={handleInputChangeEvent("first_name")}
               className={`bg-transparent border-0 border-b rounded-none text-white placeholder:text-white/70 focus:border-primary focus-visible:ring-0 focus-visible:ring-offset-0 px-0 pb-2 ${
-                errors.firstName ? "border-red-500" : "border-primary"
+                errors.first_name ? "border-red-500" : "border-primary"
               }`}
               disabled={isPending}
             />
-            {errors.firstName && (
-              <p className="text-red-500 text-sm mt-1">{errors.firstName}</p>
+            {errors.first_name && (
+              <p className="text-red-500 text-sm mt-1">{errors.first_name}</p>
             )}
           </div>
           <div>
             <Input
               type="text"
-              placeholder="Last Name"
-              value={formData.lastName}
-              onChange={handleInputChangeEvent("lastName")}
+              placeholder={t("lastNamePlaceholder")}
+              value={formData.last_name}
+              onChange={handleInputChangeEvent("last_name")}
               className={`bg-transparent border-0 border-b rounded-none text-white placeholder:text-white/70 focus:border-primary focus-visible:ring-0 focus-visible:ring-offset-0 px-0 pb-2 ${
-                errors.lastName ? "border-red-500" : "border-primary"
+                errors.last_name ? "border-red-500" : "border-primary"
               }`}
               disabled={isPending}
             />
-            {errors.lastName && (
-              <p className="text-red-500 text-sm mt-1">{errors.lastName}</p>
+            {errors.last_name && (
+              <p className="text-red-500 text-sm mt-1">{errors.last_name}</p>
             )}
           </div>
         </div>
@@ -292,7 +283,7 @@ const ContactAgentForm = ({
         <div>
           <Input
             type="tel"
-            placeholder="Phone number"
+            placeholder={t("phoneNumberPlaceholder")}
             value={formData.phone}
             onChange={handleInputChangeEvent("phone")}
             className={`bg-transparent border-0 border-b rounded-none text-white placeholder:text-white/70 focus:border-primary focus-visible:ring-0 focus-visible:ring-offset-0 px-0 pb-2 ${
@@ -308,7 +299,7 @@ const ContactAgentForm = ({
         <div>
           <Input
             type="email"
-            placeholder="E-mail address"
+            placeholder={t("emailAddressPlaceholder")}
             value={formData.email}
             onChange={handleInputChangeEvent("email")}
             className={`bg-transparent border-0 border-b rounded-none text-white placeholder:text-white/70 focus:border-primary focus-visible:ring-0 focus-visible:ring-offset-0 px-0 pb-2 ${
@@ -323,7 +314,7 @@ const ContactAgentForm = ({
 
         <div>
           <Textarea
-            placeholder="Message"
+            placeholder={t("messagePlaceholder")}
             rows={4}
             value={formData.message}
             onChange={handleInputChangeEvent("message")}
@@ -339,19 +330,19 @@ const ContactAgentForm = ({
 
         <div>
           <Select
-            value={formData.primaryContactChannel}
+            value={formData.primary_contact_channel}
             onValueChange={handleContactChannelSelect}
             disabled={isPending}
           >
             <SelectTrigger
               className={`w-full bg-transparent border-0 border-b rounded-none text-white focus:border-primary focus:ring-0 focus:ring-offset-0 px-0 pb-2 [&>svg]:text-white ${
-                errors.primaryContactChannel
+                errors.primary_contact_channel
                   ? "border-red-500"
                   : "border-primary"
               }`}
             >
               <SelectValue
-                placeholder="Primary contact Channel"
+                placeholder={t("primaryContactChannelPlaceholder")}
                 className="text-white/70"
               />
             </SelectTrigger>
@@ -367,29 +358,31 @@ const ContactAgentForm = ({
               ))}
             </SelectContent>
           </Select>
-          {errors.primaryContactChannel && (
+          {errors.primary_contact_channel && (
             <p className="text-red-500 text-sm mt-1">
-              {errors.primaryContactChannel}
+              {errors.primary_contact_channel}
             </p>
           )}
         </div>
 
-        <div className="flex items-center space-x-2 pt-4">
-          <Checkbox
-            id="terms"
-            className="border-primary data-[state=checked]:bg-white data-[state=checked]:text-black"
-            checked={formData.acceptTerms}
-            onCheckedChange={handleCheckboxChange}
-            disabled={isPending}
-          />
-          <label
-            htmlFor="terms"
-            className="text-sm text-white/90 cursor-pointer"
-          >
-            I agree to the terms and conditions
-          </label>
-          {errors.acceptTerms && (
-            <p className="text-red-500 text-sm mt-1">{errors.acceptTerms}</p>
+        <div className="flex flex-col space-x-2 pt-4">
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="terms"
+              className="border-primary data-[state=checked]:bg-white data-[state=checked]:text-black"
+              checked={formData.accept_terms}
+              onCheckedChange={handleCheckboxChange}
+              disabled={isPending}
+            />
+            <label
+              htmlFor="terms"
+              className="text-sm text-white/90 cursor-pointer"
+            >
+              {t("termsAndConditions")}
+            </label>
+          </div>
+          {errors.accept_terms && (
+            <p className="text-red-500 text-sm mt-1">{errors.accept_terms}</p>
           )}
         </div>
 
@@ -399,11 +392,35 @@ const ContactAgentForm = ({
           disabled={isPending}
         >
           <span className="absolute left-1/2 transform -translate-x-1/2 font-semibold">
-            {isPending ? "SUBMITTING..." : "REQUEST INFORMATION"}
+            {isPending ? t("submitting") : t("requestInformation")}
           </span>
           <Send className="w-4 h-4 absolute right-4" />
         </Button>
       </form>
+
+      <Dialog open={isSuccessDialogOpen} onOpenChange={setIsSuccessDialogOpen}>
+        <DialogContent className="sm:max-w-md rounded-2xl">
+          <DialogHeader>
+            <div className="flex items-center justify-center mb-4">
+              <CheckCircle className="h-12 w-12 text-green-500" />
+            </div>
+            <DialogTitle className="text-center text-xl font-semibold">
+              {t("success")}
+            </DialogTitle>
+            <DialogDescription className="text-center text-gray-600 mt-2">
+              {successMessage}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-center mt-6">
+            <Button
+              onClick={() => setIsSuccessDialogOpen(false)}
+              className="bg-primary hover:bg-primary/90 text-white px-8"
+            >
+              {t("close")}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </>
   );
 };

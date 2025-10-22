@@ -1,28 +1,30 @@
-// actions/contact-agent.ts
 "use server";
 
 import { ZodIssue } from "zod";
 import { ResetPasswordFormSchema } from "@/schema/schema.reset-password";
 import { resetPassword } from "@/data/user";
+import { getTranslations } from "next-intl/server";
 
 export interface ForgotPasswordResult {
   success: boolean;
   message?: string;
   errors?: { [key: string]: string[] };
   fieldErrors?: { [key: string]: string };
-  responseStatus?: number
+  responseStatus?: number;
 }
 
 export async function ResetPasswordAction(
   formData: FormData
 ): Promise<ForgotPasswordResult> {
+  const t = await getTranslations("resetPasswordAction");
+
   try {
     // Extract data from FormData
     const rawData = {
       email: formData.get("email") as string,
       password: formData.get("password") as string,
       password_confirmation: formData.get("password_confirmation") as string,
-      token: formData.get("token") as string
+      token: formData.get("token") as string,
     };
 
     const recaptchaToken = formData.get("recaptcha_token") as string;
@@ -42,7 +44,7 @@ export async function ResetPasswordAction(
 
       return {
         success: false,
-        message: "Please check the form for errors",
+        message: t("pleaseCheckFormForErrors"),
         fieldErrors,
       };
     }
@@ -50,7 +52,7 @@ export async function ResetPasswordAction(
     if (!recaptchaToken) {
       return {
         success: false,
-        message: "ReCaptcha token is missing",
+        message: t("recaptchaTokenMissing"),
       };
     }
 
@@ -68,44 +70,37 @@ export async function ResetPasswordAction(
     const verification = await verificationResponse.json();
 
     if (verification.success && verification.score > 0.5) {
-    //   console.log({ success: true, score: verification.score });
+      // console.log({ success: true, score: verification.score });
     } else {
-    //   console.log({
-    //     success: false,
-    //     score: verification.score,
-    //     errorCodes: verification["error-codes"],
-    //   });
+      // console.log({ success: false, score: verification.score, errorCodes: verification["error-codes"] });
       return {
         success: false,
-        message:
-          "ReCaptcha verification failed. Please refresh the page and try again.",
+        message: t("recaptchaVerificationFailed"),
       };
     }
 
     // Call the API
     const result = await resetPassword(validationResult.data);
 
-    // console.log({result})
-
     if (!result.success) {
       return {
         success: false,
-        message: result.message || "Failed to submit request",
+        message: result.message || t("failedToSubmitRequest"),
         errors: result.errors,
-        responseStatus: result.responseStatus
+        responseStatus: result.responseStatus,
       };
     }
 
     return {
       success: true,
-      message: result.message || "Password Reset is sucessful. You can now login with your new password",
+      message: result.message || t("passwordResetSuccessful"),
     };
   } catch (error) {
     console.error("Error in reset password action:", error);
 
     return {
       success: false,
-      message: "An unexpected error occurred. Please try again.",
+      message: t("unexpectedErrorOccurred"),
     };
   }
 }

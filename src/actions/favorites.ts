@@ -3,6 +3,7 @@
 import { auth } from "@/auth";
 import { AddToFavorites } from "@/data/favourites";
 import { revalidatePath } from "next/cache";
+import { getTranslations } from "next-intl/server";
 
 type ActionState = {
   success?: string;
@@ -15,6 +16,8 @@ export async function addToFavorite(
   prevState: ActionState,
   formData: FormData
 ): Promise<ActionState> {
+  const t = await getTranslations("favoritesAction");
+
   const propertyId = formData.get("propertyId") as string;
   const reference = formData.get("reference") as string;
   const pathName = formData.get("pathName") as string;
@@ -25,14 +28,14 @@ export async function addToFavorite(
 
     if (!propertyId) {
       return {
-        error: "Property ID is required",
+        error: t("propertyIdRequired"),
         timestamp: Date.now(), // Force state change
       };
     }
 
     if (!token) {
       return {
-        authenticated: "You must be logged in to add a property to favorites",
+        authenticated: t("mustBeLoggedInToAdd"),
         timestamp: Date.now(), // Force state change
       };
     }
@@ -44,13 +47,13 @@ export async function addToFavorite(
     }
 
     return {
-      success: `${reference} successfully Added to favorites!`,
+      success: `${reference} ${t("successfullyAdded")}`,
       timestamp: Date.now(), // Force state change
     };
   } catch (error) {
-    console.error("Add to favorites error:", error);
+    console.error(t("addToFavoritesError"), error);
     return {
-      error: `Failed to add ${reference} to favorites`,
+      error: `${t("failedToAdd")} ${reference} ${t("toFavorites")}`,
       timestamp: Date.now(), // Force state change
     };
   }

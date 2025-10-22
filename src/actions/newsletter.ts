@@ -1,8 +1,9 @@
 "use server";
 
 import { ZodIssue } from "zod";
-import { newsletterFormSchema } from "@/types/newsletter";
+import { getTranslations } from "next-intl/server";
 import { submitNewsletterFormWithDetailedErrors } from "@/data/newsletter";
+import { getMessageFormSchema } from "@/types/message-us";
 
 export interface NewsletterFormActionResult {
   success: boolean;
@@ -14,6 +15,14 @@ export interface NewsletterFormActionResult {
 export async function newsletterFormAction(
   formData: FormData
 ): Promise<NewsletterFormActionResult> {
+  const t = await getTranslations("newsletterAction");
+  const newsletterFormSchemaTranslation = await getTranslations(
+    "newsletterFormSchema"
+  );
+  const newsletterFormSchema = getMessageFormSchema(
+    newsletterFormSchemaTranslation
+  );
+
   try {
     // Extract data from FormData
     const rawData = {
@@ -38,7 +47,7 @@ export async function newsletterFormAction(
 
       return {
         success: false,
-        message: "Please check the form for errors",
+        message: t("checkFormForErrors"),
         fieldErrors,
       };
     }
@@ -46,7 +55,7 @@ export async function newsletterFormAction(
     if (!recaptchaToken) {
       return {
         success: false,
-        message: "ReCaptcha token is missing",
+        message: t("recaptchaTokenMissing"),
       };
     }
 
@@ -73,8 +82,7 @@ export async function newsletterFormAction(
       });
       return {
         success: false,
-        message:
-          "ReCaptcha verification failed. Please refresh the page and try again.",
+        message: t("recaptchaVerificationFailed"),
       };
     }
 
@@ -86,21 +94,21 @@ export async function newsletterFormAction(
     if (!result.success) {
       return {
         success: false,
-        message: result.error || "Failed to subscribe to newsletter",
+        message: result.error || t("failedToSubscribe"),
         errors: result.validationErrors,
       };
     }
 
     return {
       success: true,
-      message: result.data?.message || "Successfully subscribed to newsletter!",
+      message: result.data?.message || t("successfullySubscribed"),
     };
   } catch (error) {
     console.error("Newsletter form action error:", error);
 
     return {
       success: false,
-      message: "An unexpected error occurred. Please try again.",
+      message: t("unexpectedError"),
     };
   }
 }

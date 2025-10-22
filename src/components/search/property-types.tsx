@@ -24,6 +24,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { PropertyMetadata } from "@/types/property";
+import { useTranslations } from "next-intl";
 
 export function PropertyTypes({
   typologies,
@@ -35,6 +36,7 @@ export function PropertyTypes({
   const router = useRouter();
   const searchParams = useSearchParams();
   const [open, setOpen] = useState(false);
+  const t = useTranslations("propertyTypes")
 
   // Get initial selected types from URL (comma-separated values)
   const getInitialTypes = (): string[] => {
@@ -114,7 +116,7 @@ export function PropertyTypes({
           <Command>
             <CommandInput placeholder="Search property types..." />
             <CommandList>
-              <CommandEmpty>No property types found.</CommandEmpty>
+              <CommandEmpty>{t("noProperties")}</CommandEmpty>
               <CommandGroup>
                 {typologies.map((typology) => (
                   <CommandItem

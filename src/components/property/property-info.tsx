@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import { BiArea } from "react-icons/bi";
 import {
@@ -8,16 +10,18 @@ import {
 import { BsTextarea } from "react-icons/bs";
 import { Separator } from "@/components/ui/separator";
 import { Property } from "@/types/property";
+import { useTranslations } from "next-intl";
 
 interface PropertyInfoProps {
   property: Property;
 }
 
 export const PropertyInfo = ({ property }: PropertyInfoProps) => {
+  const t = useTranslations("propertyInfo");
+
   const constructionYear = property.features.construction_year;
   const features = property.features;
 
-  // Find pool information from additional features
   const poolFeature = property.additional_features
     .find((category) => category.category_name.toLowerCase().includes("pool"))
     ?.features.find((feature) =>
@@ -35,7 +39,7 @@ export const PropertyInfo = ({ property }: PropertyInfoProps) => {
               <MdOutlineLocalHotel className="h-8 w-8" />
               <div>
                 <p className="text-sm font-semibold">{features.bedrooms}</p>
-                <p className="text-xs text-gray-600">Bedrooms</p>
+                <p className="text-xs text-gray-600">{t("bedrooms")}</p>
               </div>
             </div>
           )}
@@ -45,7 +49,7 @@ export const PropertyInfo = ({ property }: PropertyInfoProps) => {
               <MdOutlineShower className="h-8 w-8" />
               <div>
                 <p className="text-sm font-semibold">{features.bathrooms}</p>
-                <p className="text-xs text-gray-600">Bathrooms</p>
+                <p className="text-xs text-gray-600">{t("bathrooms")}</p>
               </div>
             </div>
           )}
@@ -57,7 +61,7 @@ export const PropertyInfo = ({ property }: PropertyInfoProps) => {
                 <p className="text-sm font-semibold">
                   {features.private_area} m<sup>2</sup>
                 </p>
-                <p className="text-xs text-gray-600">Private Area</p>
+                <p className="text-xs text-gray-600">{t("privateArea")}</p>
               </div>
             </div>
           )}
@@ -69,7 +73,7 @@ export const PropertyInfo = ({ property }: PropertyInfoProps) => {
                 <p className="text-sm font-semibold">
                   {features.construction_area} m<sup>2</sup>
                 </p>
-                <p className="text-xs text-gray-600">Construction Area</p>
+                <p className="text-xs text-gray-600">{t("constructionArea")}</p>
               </div>
             </div>
           )}
@@ -83,7 +87,7 @@ export const PropertyInfo = ({ property }: PropertyInfoProps) => {
                     ? `${poolLength} mtrs`
                     : poolLength}
                 </p>
-                <p className="text-xs text-gray-600">Pool</p>
+                <p className="text-xs text-gray-600">{t("pool")}</p>
               </div>
             </div>
           )}
@@ -91,7 +95,9 @@ export const PropertyInfo = ({ property }: PropertyInfoProps) => {
 
         <div>
           <h2 className="text-lg font-bold text-right">{constructionYear}</h2>
-          <p className="text-xs text-gray-500 text-right">Construction Year</p>
+          <p className="text-xs text-gray-500 text-right">
+            {t("constructionYear")}
+          </p>
         </div>
       </div>
 

@@ -15,8 +15,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { CheckCircle } from "lucide-react";
+import { useTranslations } from "next-intl";
 
-// Client-side form data interface
 interface FormData {
   email: string;
 }
@@ -29,6 +29,7 @@ interface FormErrors {
 type FormField = keyof FormData;
 
 export const ForgotPasswordForm = () => {
+  const t = useTranslations("forgotPasswordForm");
   const [isPending, startTransition] = useTransition();
   const [formData, setFormData] = useState<FormData>({
     email: "",
@@ -48,7 +49,6 @@ export const ForgotPasswordForm = () => {
       [field]: value,
     }));
 
-    // Clear error when user starts typing
     if (errors[field]) {
       setErrors((prev) => ({
         ...prev,
@@ -83,22 +83,19 @@ export const ForgotPasswordForm = () => {
     e.preventDefault();
 
     if (!executeRecaptcha) {
-      toast("ReCaptcha Error", {
-        description:
-          "ReCaptcha is not available. Please Refresh the page and try again.",
+      toast(`${t("recaptchaErrorTitle")}`, {
+        description: t("recaptchaErrorDescription"),
         duration: 1500,
       });
       return;
     }
 
-    // Client-side validation first
     if (!validateClientForm()) {
-      toast.error("Please fix the form errors before submitting");
+      toast.error(t("toastFixFormErrorsBeforeSubmit"));
       return;
     }
 
     const formDataToSubmit = new FormData();
-
     formDataToSubmit.append("email", formData.email);
 
     startTransition(async () => {
@@ -110,20 +107,17 @@ export const ForgotPasswordForm = () => {
 
         if (result.success) {
           setShowSuccessDialogMessage(
-            result.message || "Request submitted successfully!"
+            result.message || t("requestSubmittedSuccessfully")
           );
 
-          // Reset form
           setFormData({
             email: "",
           });
           setErrors({});
         } else {
-          // Handle server validation errors
           if (result.fieldErrors) {
             const newErrors: FormErrors = {};
             Object.entries(result.fieldErrors).forEach(([key, message]) => {
-              // Map server field names to client field names
               const fieldMapping: { [key: string]: keyof FormErrors } = {
                 email: "email",
                 message: "message",
@@ -137,23 +131,23 @@ export const ForgotPasswordForm = () => {
           }
 
           if (result.errors) {
-            // Handle detailed validation errors from API
             const errorMessages = Object.entries(result.errors)
               .map(([field, messages]) => `${field}: ${messages.join(", ")}`)
               .join("; ");
-            toast.error(`Validation errors: ${errorMessages}`, {
-                duration: 2000
-            });
-          } else {
             toast.error(
-              result.message || "Failed to submit request. Please try again."
+              `${t("toastValidationErrorsPrefix")} ${errorMessages}`,
+              {
+                duration: 2000,
+              }
             );
+          } else {
+            toast.error(result.message || t("toastFailedSubmitRetry"));
           }
         }
       } catch (error) {
         console.error("Submit error:", error);
-        toast.error("An unexpected error occurred. Please try again.", {
-            duration: 2000
+        toast.error(t("toastUnexpectedError"), {
+          duration: 2000,
         });
       }
     });
@@ -167,12 +161,11 @@ export const ForgotPasswordForm = () => {
 
   return (
     <>
-      {/* Contact Form */}
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="border-b border-gray-200 pb-10">
           <Input
             type="email"
-            placeholder="E-mail address"
+            placeholder={t("emailPlaceholder")}
             value={formData.email}
             onChange={handleInputChangeEvent("email")}
             className={`py-5 bg-transparent border rounded-none text-gray-600 placeholder:text-gray-400 focus:!border-transparent focus-visible:ring-amber-100  ${
@@ -192,26 +185,30 @@ export const ForgotPasswordForm = () => {
             disabled={isPending}
             asChild
           >
-            <Link href={"/login"}>Cancel</Link>
+            <Link href={"/login"}>{t("cancelButton")}</Link>
           </Button>
           <Button
             type="submit"
             className="w-fit bg-primary text-white hover:bg-primary/80 hover:text-white rounded-none transition colors"
             disabled={isPending}
           >
-            <span className="">{isPending ? "Submiting..." : "Submit"}</span>
+            <span>{isPending ? t("submittingButton") : t("submitButton")}</span>
           </Button>
         </div>
       </form>
 
-      {/* Success Dialog */}
       <Dialog open={!!showDialogSuccessMessage}>
-        <DialogContent showCloseButton={false} className="sm:max-w-md rounded-2xl">
+        <DialogContent
+          showCloseButton={false}
+          className="sm:max-w-md rounded-2xl"
+        >
           <DialogHeader className="text-center">
             <div className="flex justify-center mb-4">
               <CheckCircle className="h-16 w-16 text-green-500" />
             </div>
-            <DialogTitle className="text-xl text-center">Success!!</DialogTitle>
+            <DialogTitle className="text-xl text-center">
+              {t("dialogSuccessTitle")}
+            </DialogTitle>
           </DialogHeader>
 
           <div className="text-center space-y-4">
@@ -220,13 +217,13 @@ export const ForgotPasswordForm = () => {
 
           <div className="flex gap-4 justify-center pt-4 mb-2">
             <Button className="bg-primary text-white hover:bg-black transition-colors">
-              <Link href={"/"}>Home</Link>
+              <Link href={"/"}>{t("homeButton")}</Link>
             </Button>
             <Button
               className="bg-gray-200 text-black hover:bg-gray-300 transition-colors"
               asChild
             >
-              <Link href={"/login"}>Login</Link>
+              <Link href={"/login"}>{t("loginButton")}</Link>
             </Button>
           </div>
         </DialogContent>

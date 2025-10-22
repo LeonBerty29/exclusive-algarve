@@ -1,3 +1,5 @@
+"use client";
+
 import { PiCarLight } from "react-icons/pi";
 import { MdOutlineShower } from "react-icons/md";
 import { IoMdPricetag } from "react-icons/io";
@@ -9,11 +11,11 @@ import { Separator } from "../ui/separator";
 import { PriceFormat } from "../shared/price-format";
 import { Property } from "@/types/property";
 import { Link } from "@/i18n/navigation";
-import { getLocale } from "next-intl/server";
 import { NoteObject } from "@/types";
 import { AddPropertyNote } from "./add-property-notes";
 import { Button } from "../ui/button";
 import { Pencil } from "lucide-react";
+import { getLocale, getTranslations } from "next-intl/server";
 
 interface Props {
   property: Property;
@@ -21,11 +23,15 @@ interface Props {
   notes: NoteObject[];
 }
 
-export const AnnotationPropertyCard = async ({
+export const AnnotationPropertyCard = async({
   property,
   favorites,
   notes,
 }: Props) => {
+  const t = await getTranslations("annotationPropertyCard");
+  const locale = await getLocale();
+
+
   // Extract image URLs from assets.images.gallery
   const imagePaths =
     property.assets?.images?.gallery?.map((img) => img.url) || [];
@@ -44,16 +50,11 @@ export const AnnotationPropertyCard = async ({
     bathrooms: property.features.bathrooms,
     garage: property.features.garage || 0,
   };
-  // Determine if live video button should show (check if videos exist)
-  // const liveVideo = property.assets.virtual_tours && property.assets.virtual_tours.length > 0;
-
   // Use property.currency for price formatting
   const currency = property.currency || "EUR";
 
   // Show price only if show_price is true, else display "Contact for price"
   const showPrice = property.show_price;
-
-  const locale = await getLocale();
 
   return (
     <Card className="flex lg:!flex-row gap-0 rounded-none p-0">
@@ -66,16 +67,6 @@ export const AnnotationPropertyCard = async ({
                 <IoMdPricetag fill="none" strokeWidth={20} />
                 {reference}
               </div>
-              {/* {tag && (
-                <div
-                  className={cn(
-                    "min-w-fit rounded-none text-white text-sm px-2 py-1 h-fit flex items-center justify-center",
-                    tag.slug === "rsv" ? "bg-[#17BF62]" : "bg-red-700"
-                  )}
-                >
-                  {tag.name}
-                </div>
-              )} */}
             </div>
 
             <div className="flex gap-2 items-center">
@@ -90,7 +81,7 @@ export const AnnotationPropertyCard = async ({
 
         {exclusive && (
           <div className="bg-primary h-6 text-center text-xs font-bold text-white absolute bottom-0 w-full flex items-center justify-center z-10">
-            EXCLUSIVE LISTING BY EAV
+            {t("exclusiveListingByEav")}
           </div>
         )}
       </CardHeader>
@@ -105,7 +96,7 @@ export const AnnotationPropertyCard = async ({
               className="bg-black/85 text-white hover:bg-black transition colors shadow-2xl"
               type="button"
             >
-              Annotation (Note)
+              {t("annotationNote")}
               <Pencil className="size-4 text-primary shadow-2xl" />
             </Button>
           </AddPropertyNote>
@@ -132,7 +123,7 @@ export const AnnotationPropertyCard = async ({
               />
             ) : (
               <span className="text-xl font-semibold flex items-center gap-1 text-primary">
-                Contact for price
+                {t("contactForPrice")}
               </span>
             )}
           </div>
@@ -148,7 +139,7 @@ export const AnnotationPropertyCard = async ({
             <div className="max-w-[47%]">
               <div>
                 <p className="text-sm font-light text-gray-400 mb-3">
-                  Location
+                  {t("location")}
                 </p>
                 <p className="text-sm font-semibold text-black line-clamp-1">
                   {location}
@@ -159,7 +150,7 @@ export const AnnotationPropertyCard = async ({
             <div className="max-w-[52%] min-w-fit flex gap-2">
               <div className="flex-1 max-w-fit">
                 <p className="text-sm font-light text-gray-400 mb-3">
-                  Gross Area
+                  {t("grossArea")}
                 </p>
                 <p className="text-sm text-black font-semibold">
                   {grossArea} m<sup>2</sup>
@@ -167,7 +158,7 @@ export const AnnotationPropertyCard = async ({
               </div>
               <div className="flex-1 max-w-fit">
                 <p className="text-sm font-light text-gray-400 mb-3">
-                  Plot Size
+                  {t("plotSize")}
                 </p>
                 <p className="text-sm font-semibold text-black">
                   {plotSize} m<sup>2</sup>
@@ -196,17 +187,6 @@ export const AnnotationPropertyCard = async ({
                 </div>
               </div>
             </div>
-
-            {/* <div className='w-[52%] max-w-[140px] min-w[128px]'>
-            {
-              liveVideo && (
-                <Button type='button' className='text-[9px] font-semibold w-full rounded-none bg-black text-white hover:bg-black/90'>
-                  <Play className='h-2 w-2 text-white fill-white' />
-                  LIVE TOUR VIDEO
-                </Button>
-              )
-            }
-          </div> */}
           </div>
         </Link>
       </CardContent>

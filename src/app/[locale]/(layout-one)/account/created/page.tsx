@@ -3,7 +3,7 @@ import { Link, redirect } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 import { CreatedPageSearchParamsSchema } from "@/schema";
 import { CheckCircle } from "lucide-react";
-import { getLocale } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { headers } from "next/headers";
 import React from "react";
 
@@ -12,16 +12,11 @@ interface Props {
 }
 
 const page = async (props: Props) => {
+  const t = await getTranslations("accountCreatedPage");
   const headersList = await headers();
   const referer = headersList.get("referer") || "direct";
-  // console.log({ referer });
-
   const url = new URL(referer);
-
   const path = url.pathname;
-
-  // console.log({ path });
-
   const locale = await getLocale();
 
   if (
@@ -41,12 +36,9 @@ const page = async (props: Props) => {
   }
 
   const { email, callbackUrl } = await props.searchParams;
-  // console.log({ email, callbackUrl });
-
   const validatePageParams = CreatedPageSearchParamsSchema.safeParse({
     email,
   });
-
   if (!validatePageParams.success) {
     redirect({
       href: "/login",
@@ -59,14 +51,12 @@ const page = async (props: Props) => {
       <CheckCircle className="h-10 w-10 text-green-500 animate-bounce mx-auto" />
       <div className="spacey-2 mt-5">
         <p className="text-center text-gray-600 mb-2 font-semibold text-3xl">
-          Account Created
+          {t("accountCreatedHeading")}
         </p>
         <p className="text-gray-400 font-light text-base text-center max-w-xl mx-auto">
-          An activation link has been sent to your mail. Click on it to verify
-          your email and activate your account, then you can login
+          {t("accountCreatedDescription")}
         </p>
       </div>
-
       <div className="mt-5 flex justify-center w-full">
         <Button
           asChild
@@ -74,14 +64,14 @@ const page = async (props: Props) => {
         >
           <Link
             href={{
-              pathname:"/account/resend-activation",
+              pathname: "/account/resend-activation",
               query: {
                 email,
                 callbackUrl,
               },
             }}
           >
-            Resend Activation Link
+            {t("resendActivationLinkButton")}
           </Link>
         </Button>
       </div>

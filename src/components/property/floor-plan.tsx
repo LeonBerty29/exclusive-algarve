@@ -11,14 +11,17 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { getTranslations } from "next-intl/server";
 
-export const FloorPlanTab = ({
+export const FloorPlanTab = async({
   floorPlans,
   pdfBrochure,
 }: {
   floorPlans: PropertyImage[];
   pdfBrochure: string;
 }) => {
+  const t = await getTranslations("floorPlan");
+
   const handleDownload = () => {
     const link = document.createElement("a");
     link.href = pdfBrochure;
@@ -28,8 +31,6 @@ export const FloorPlanTab = ({
     link.click();
     document.body.removeChild(link);
   };
-
-  console.log({floorPlans})
 
   return (
     <div>
@@ -59,14 +60,14 @@ export const FloorPlanTab = ({
       {pdfBrochure && (
         <div className="flex items-center justify-between gap-3">
           <p className="text-sm md:text-lg text-primary font-semibold">
-            Property Floor Plan
+            {t("propertyFloorPlan")}
           </p>
 
           <Button
             onClick={handleDownload}
             className="text-xs rounded-none bg-black text-white px-6"
           >
-            Download Brochure
+            {t("downloadBrochure")}
             <ArrowDownToLine />
           </Button>
         </div>

@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import // Calendar,
 "lucide-react";
 import ScrollableTabs from "@/components/property/scrollable-tabs";
@@ -14,7 +15,7 @@ import {
 } from "@/components/ui/breadcrumb";
 import { Link } from "@/i18n/navigation";
 import ShareButton from "@/components/property/share-property";
-import PropertyImageGrid from "@/components/property-details/propert-image-grid";
+import { PropertyImageGrid } from "@/components/property-details/property-image-grid";
 import SimilarProperties from "@/components/property-details/similar-properties";
 import ContactAgentForm from "@/components/property-details/contact-agent-form";
 import { getCurrencySymbol } from "@/components/shared/price-format";
@@ -35,111 +36,13 @@ interface Props {
   params: Promise<{ propertyId: string; locale: string }>;
 }
 
-// export async function generateMetadata({ params }: Props): Promise<Metadata> {
-//   const { propertyId } = await params;
-
-//   try {
-//     const response = await getProperty(propertyId);
-//     const property = response.data;
-
-//     if (!property) {
-//       return {
-//         title: "Property Not Found",
-//         description: "The requested property could not be found.",
-//       };
-//     }
-
-//     const baseUrl =
-//       process.env.NEXT_PUBLIC_BASE_URL || "https://yourdomain.com";
-//     const propertyUrl = `${baseUrl}${property.seo.slugs.en}`;
-//     const price = `${getCurrencySymbol(
-//       property.currency
-//     )}${property.price.toLocaleString()}`;
-//     const location = `${property.location.zone}, ${property.location.municipality}, ${property.location.country}`;
-
-//     // Create a more detailed description
-//     const description =
-//       property.seo.description ||
-//       `${property.typology.name} for sale in ${location}. ${price}. ${property.features.private_area}m² private area, ${property.features.plot_size}m² plot size. Reference: ${property.reference}`;
-
-//     return {
-//       title: property.seo.title,
-//       description: description,
-//       keywords: property.seo.keywords?.join(", "),
-
-//       // Open Graph tags
-//       openGraph: {
-//         title: property.seo.title,
-//         description: description,
-//         url: propertyUrl,
-//         siteName: "Your Property Site",
-//         images: [
-//           {
-//             url:
-//               property.assets.images.gallery[0]?.url ||
-//               "/default-property-image.jpg",
-//             width: 1200,
-//             height: 630,
-//             alt: property.title,
-//           },
-//         ],
-//         locale: "en_US",
-//         type: "website",
-//       },
-
-//       // Twitter Card tags
-//       twitter: {
-//         card: "summary_large_image",
-//         title: property.seo.title,
-//         description: description,
-//         images: [
-//           property.assets.images.gallery[0]?.url ||
-//             "/default-property-image.jpg",
-//         ],
-//       },
-
-//       // Additional meta tags
-//       robots: {
-//         index: true,
-//         follow: true,
-//         googleBot: {
-//           index: true,
-//           follow: true,
-//           "max-video-preview": -1,
-//           "max-image-preview": "large",
-//           "max-snippet": -1,
-//         },
-//       },
-
-//       // Canonical URL
-//       alternates: {
-//         canonical: propertyUrl,
-//       },
-
-//       // Other meta tags
-//       other: {
-//         "property:price:amount": property.price.toString(),
-//         "property:price:currency": property.currency,
-//         "property:location": location,
-//         "property:type": property.typology.name,
-//         "property:reference": property.reference,
-//       },
-//     };
-//   } catch (error) {
-//     console.error("Error generating metadata:", error);
-//     return {
-//       title: "Property Details",
-//       description: "View property details and information.",
-//     };
-//   }
-// }
-
 export default async function page(props: Props) {
   const params = await props.params;
   const locale = params.locale;
 
   // Enable static rendering
   setRequestLocale(locale);
+
   return (
     <div className="py-14">
       <Suspense fallback={<PropertyDetailsPageLoading />}>
@@ -150,16 +53,20 @@ export default async function page(props: Props) {
 }
 
 const PageContent = async (props: Props) => {
+  const t = await getTranslations("propertyDetailsPage");
   const { propertyId } = await props.params;
   const session = await auth();
   const token = session?.accessToken;
-  
+
   // Use Promise.all to fetch all data concurrently
-  const [propertyResponse, favoritesResponse, notesResponse] = await Promise.all([
-    getProperty(propertyId),
-    token ? getFavorites(token) : Promise.resolve({ favorite_properties: [] }),
-    token ? getNote() : Promise.resolve({ data: [] }),
-  ]);
+  const [propertyResponse, favoritesResponse, notesResponse] =
+    await Promise.all([
+      getProperty(propertyId),
+      token
+        ? getFavorites(token)
+        : Promise.resolve({ favorite_properties: [] }),
+      token ? getNote() : Promise.resolve({ data: [] }),
+    ]);
 
   const property = propertyResponse.data;
   const favorites = favoritesResponse.favorite_properties;
@@ -173,11 +80,11 @@ const PageContent = async (props: Props) => {
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem>
-                <Link href="/">Home</Link>
+                <Link href="/">{t("home")}</Link>
               </BreadcrumbItem>
               <BreadcrumbSeparator className="text-primary" />
               <BreadcrumbItem>
-                <Link href="/properties">Properties</Link>
+                <Link href="/properties">{t("properties")}</Link>
               </BreadcrumbItem>
               <BreadcrumbSeparator className="text-primary" />
               <BreadcrumbItem>
@@ -189,14 +96,12 @@ const PageContent = async (props: Props) => {
           </Breadcrumb>
 
           <div className="flex gap-2 items-center">
-            {
-              <AddToFavoriteButton
-                className="size-8 bg-hray-200"
-                propertyId={property.id}
-                reference={property.reference}
-                isFavourite={isFavourite}
-              />
-            }
+            <AddToFavoriteButton
+              className="size-8 bg-hray-200"
+              propertyId={property.id}
+              reference={property.reference}
+              isFavourite={isFavourite}
+            />
             <AddPropertyNote
               propertyId={property.id}
               reference={property.reference}
@@ -219,7 +124,7 @@ const PageContent = async (props: Props) => {
             </p>
           </div>
 
-          <BookVisitDialog />
+          <BookVisitDialog propertyReference={property.reference} />
         </div>
       </div>
 

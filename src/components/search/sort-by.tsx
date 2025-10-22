@@ -1,4 +1,5 @@
 "use client";
+
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
@@ -8,39 +9,40 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import { useTranslations } from "next-intl";
 
 const sortOptions = [
   {
     value: "created_at_desc",
-    label: "Most Recent",
+    labelKey: "mostRecent",
     sortBy: "created_at",
     sortDirection: "desc",
   },
   {
     value: "created_at_asc",
-    label: "Oldest",
+    labelKey: "oldest",
     sortBy: "created_at",
     sortDirection: "asc",
   },
   {
     value: "price_desc",
-    label: "Price: High to Low",
+    labelKey: "priceHighToLow",
     sortBy: "price",
     sortDirection: "desc",
   },
   {
     value: "price_asc",
-    label: "Price: Low to High",
+    labelKey: "priceLowToHigh",
     sortBy: "price",
     sortDirection: "asc",
   },
 ];
 
 export const SortBy = () => {
+  const t = useTranslations("sortBy");
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // Get initial sort value from URL (default to "created_at_desc")
   const getInitialSort = (): string => {
     const sortBy = searchParams.get("sort_by") || "created_at";
     const sortDirection = searchParams.get("sort_direction") || "desc";
@@ -49,7 +51,6 @@ export const SortBy = () => {
 
   const [selectedSort, setSelectedSort] = useState<string>(getInitialSort);
 
-  // Update URL when sort selection changes
   const updateURL = (sortValue: string) => {
     const params = new URLSearchParams(searchParams.toString());
 
@@ -58,7 +59,6 @@ export const SortBy = () => {
     );
 
     if (selectedOption) {
-      // Only set params if not default values
       if (
         selectedOption.sortBy !== "created_at" ||
         selectedOption.sortDirection !== "desc"
@@ -66,13 +66,11 @@ export const SortBy = () => {
         params.set("sort_by", selectedOption.sortBy);
         params.set("sort_direction", selectedOption.sortDirection);
       } else {
-        // Remove params if default values
         params.delete("sort_by");
         params.delete("sort_direction");
       }
     }
 
-    // Reset to first page when sort changes
     params.delete("page");
 
     router.push(`?${params.toString()}`, { scroll: false });
@@ -83,7 +81,6 @@ export const SortBy = () => {
     updateURL(value);
   };
 
-  // Sync with URL params when they change externally
   useEffect(() => {
     const currentSortBy = searchParams.get("sort_by") || "created_at";
     const currentSortDirection = searchParams.get("sort_direction") || "desc";
@@ -97,12 +94,12 @@ export const SortBy = () => {
         className="w-[180px] data-[placeholder]:text-primary"
         iconColor="text-white"
       >
-        <SelectValue placeholder="Sort by" />
+        <SelectValue placeholder={t("sortByPlaceholder")} />
       </SelectTrigger>
       <SelectContent>
         {sortOptions.map((option) => (
           <SelectItem key={option.value} value={option.value}>
-            {option.label}
+            {t(option.labelKey)}
           </SelectItem>
         ))}
       </SelectContent>

@@ -28,6 +28,7 @@ import {
   Municipality,
   Zone,
 } from "@/types/property";
+import { useTranslations } from "next-intl";
 
 interface LocationOption {
   id: number;
@@ -48,6 +49,7 @@ export default function RegionSelect({ metadata, modal=true }: RegionSelectProps
   const router = useRouter();
   const searchParams = useSearchParams();
   const [open, setOpen] = useState(false);
+  const t = useTranslations("regionSelect");
 
   // Build flattened location options from metadata with parent relationships
   const buildLocationOptions = (): LocationOption[] => {
@@ -494,10 +496,10 @@ export default function RegionSelect({ metadata, modal=true }: RegionSelectProps
             <div className="flex flex-wrap gap-1 flex-1">
               {selectedItems.length === 0 ? (
                 <span className="text-muted-foreground text-sm md:text-base font-normal">
-                  Select locations...
+                  {t("selectLocations")}
                 </span>
               ) : (
-                <span className="text-sm md:text-base font-normal">Selected locations</span>
+                <span className="text-sm md:text-base font-normal">{t("selectedLocations")}</span>
               )}
             </div>
             <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -510,7 +512,7 @@ export default function RegionSelect({ metadata, modal=true }: RegionSelectProps
           <Command>
             <CommandInput placeholder="Search locations..." />
             <CommandList>
-              <CommandEmpty>No locations found.</CommandEmpty>
+              <CommandEmpty>{t("noLocations")}</CommandEmpty>
               <CommandGroup>
                 {locationOptions.map((option) => {
                   const optionKey = `${option.type}-${option.id}`;

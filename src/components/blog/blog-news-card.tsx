@@ -1,8 +1,11 @@
 import Image from "next/image";
 import { Blog } from "@/types";
 import { Link } from "@/i18n/navigation";
+import { getTranslations } from "next-intl/server";
 
-export function BlogNewsCard({ blog }: { blog: Blog }) {
+export async function BlogNewsCard({ blog }: { blog: Blog }) {
+  const t = await getTranslations("blogNewsCard");
+
   return (
     <>
       <Link
@@ -24,7 +27,7 @@ export function BlogNewsCard({ blog }: { blog: Blog }) {
         <div className="py-2">
           <p className="text-neutral-900 flex items-center justify-between text-[10px]">
             <span>
-              <span>{blog.readTime}</span> min read
+              <span>{blog.readTime}</span> {t("minRead")}
             </span>
 
             <span className="text-muted-foreground/85">{blog.date}</span>

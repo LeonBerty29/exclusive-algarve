@@ -10,91 +10,91 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
+import { getTranslations } from "next-intl/server";
 
 const teamMembers = [
   {
     id: "qwqwqwqwqwqw-235",
     imageUrl: "/images/team/bart-2.jpg",
     name: "Bart Van Linden",
-    position: "Director",
+    positionKey: "positionDirector",
   },
   {
     id: "qwqwqwqwqwqw-237",
     imageUrl: "/images/team/marcela-2.jpg",
     name: "Marcela Boturao",
-    position: "Director",
+    positionKey: "positionDirector",
   },
   {
     id: "qwqwqwqwqwqw-267",
     imageUrl: "/images/team/tania.jpg",
     name: "Tania",
-    position: "Office Manager",
+    positionKey: "positionOfficeManager",
   },
   {
     id: "qwqwqwqwqwqw-268",
     imageUrl: "/images/team/natalia.jpg",
     name: "Natalia",
-    position: "Sales Consultant",
+    positionKey: "positionSalesConsultant",
   },
   {
     id: "qwqwqwqwqwqw-269",
     imageUrl: "/images/team/melanie.jpg",
     name: "Melanie",
-    position: "Sales Consultant",
+    positionKey: "positionSalesConsultant",
   },
   {
     id: "qwqwqwqwqwqw-270",
     imageUrl: "/images/team/vania.jpg",
     name: "Vania",
-    position: "Sales Consultant",
+    positionKey: "positionSalesConsultant",
   },
   {
     id: "qwqwqwqwqwqw-271",
     imageUrl: "/images/team/ana.jpg",
     name: "Ana",
-    position: "Sales Consultant",
+    positionKey: "positionSalesConsultant",
   },
   {
     id: "qwqwqwqwqwqw-272",
     imageUrl: "/images/team/carolina.jpg",
     name: "Carolina",
-    position: "Sales Consultant",
+    positionKey: "positionSalesConsultant",
   },
   {
     id: "qwqwqwqwqwqw-273",
     imageUrl: "/images/team/melissa.jpg",
     name: "Melissa",
-    position: "Sales Consultant",
+    positionKey: "positionSalesConsultant",
   },
   {
     id: "qwqwqwqwqwqw-274",
     imageUrl: "/images/team/virginio.jpg",
     name: "Virginio",
-    position: "Sales Consultant",
+    positionKey: "positionSalesConsultant",
   },
 ];
 
-const MeetTheTeam = () => {
+const MeetTheTeam = async() => {
+  const t = await getTranslations("meetTheTeam");
+
   return (
     <div className="container mx-auto px-6 sm:px-8 md:px-10 lg:px-12 py-10 sm:py-14 md:py-16 lg:py-24 xl:py-28 grid grid-cols-1 lg:grid-cols-2 gap-x-14 gap-y-14 lg:pr-6 items-center">
       <div>
         <h2 className="text-2xl sm:text-3xl lg:text-4xl text-primary font-light max-w-sm leading-tight mb-5">
-          {" "}
-          Exclusive Algarve Villas{" "}
+          {t("heading")}
         </h2>
-        <Button asChild className="bg-gray-300 text-neutral-900 rounded-none text-sm py-5 font-light mb-3 hover:text-white">
-          <Link href="/about-eav/the-team">MEET THE TEAM</Link>
+        <Button
+          asChild
+          className="bg-gray-300 text-neutral-900 rounded-none text-sm py-5 font-light mb-3 hover:text-white"
+        >
+          <Link href="/about-eav/the-team">{t("buttonLabel")}</Link>
         </Button>
         <p className="max-w-lg text-sm text-neutral-800 mt-16">
-          Directors Marcela Boturao & Bart van Linden would like to welcome you
-          to meet the team of Exclusive Algarve Villas. With a wealth of
-          knowledge in real estate, legal and fiscal matters, we can assist you
-          throughout the process of buying and selling luxury property in the
-          Algarve.
-          <br /> <br />
-          We work with a small team of professionals who share our ideas and
-          mind-set. Being a service providing company, we still believe in the
-          client is king concept.
+          {t("description1")}
+          <br />
+          <br />
+          {t("description2")}
         </p>
       </div>
 
@@ -117,7 +117,9 @@ const MeetTheTeam = () => {
                       <div className="w-full relative h-[450px]">
                         <Image
                           src={teamMember.imageUrl}
-                          alt={`${teamMember.name} - ${teamMember.position}`}
+                          alt={`${teamMember.name} - ${t(
+                            teamMember.positionKey
+                          )}`}
                           fill
                           className="object-cover object-top"
                         />
@@ -127,7 +129,7 @@ const MeetTheTeam = () => {
                           {teamMember.name}
                         </h3>
                         <p className="text-sm text-neutral-600">
-                          {teamMember.position}
+                          {t(teamMember.positionKey)}
                         </p>
                       </div>
                     </CardContent>

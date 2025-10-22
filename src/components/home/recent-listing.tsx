@@ -10,7 +10,7 @@ import { getProperties } from "@/data/properties";
 import { getProxiedImageUrl } from "@/lib/utils";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
-import { getLocale } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 
 const RecentListing = async () => {
   const propertiresResponse = await getProperties({
@@ -20,6 +20,7 @@ const RecentListing = async () => {
   });
 
   const locale = await getLocale();
+  const t = await getTranslations("recentListing")
 
   const properties = propertiresResponse.data;
 
@@ -66,7 +67,7 @@ const RecentListing = async () => {
         </CarouselContent>
         <div className="absolute -top-16 lg:-top-20 left-0 right-0 flex items-center justify-between gap-4 flex-wrap">
           <h2 className="flex-1 text-white text-2xl sm:text-3xl font-medium">
-            Our Recent Listing
+            {t("ourRecentListing")}
           </h2>
           <div className="flex gap-3">
             <CarouselPrevious className="static translate-y-0 rounded-none bg-primary/85 border-primary/85 hover:!bg-primary hover:border-primary" />

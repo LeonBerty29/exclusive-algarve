@@ -2,10 +2,13 @@
 
 // import { signOut } from "@/auth";
 import { signOut } from "next-auth/react";
+import { useTranslations } from "next-intl";
 import React from "react";
 import { toast } from "sonner";
 
 export const SignOutButton = ({ className }: { className?: string }) => {
+
+  const t = useTranslations("signOutButton");
 
   async function handleSignOut() {
     const res = await fetch('/api/auth/logout', {
@@ -25,7 +28,7 @@ export const SignOutButton = ({ className }: { className?: string }) => {
 
   return (
       <button type="submit" className={className} onClick={handleSignOut}>
-        Sign Out
+        {t("signOut")}
       </button>
   );
 };

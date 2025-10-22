@@ -2,8 +2,9 @@
 "use server";
 
 import { ZodIssue } from "zod";
-import { contactAgentSchema } from "@/types/contact-agent";
+import { getClientContactAgentSchema } from "@/types/contact-agent";
 import { contactAgentWithDetailedErrors } from "@/data/contact-agent";
+import { getTranslations } from "next-intl/server";
 
 export interface ContactAgentActionResult {
   success: boolean;
@@ -15,6 +16,10 @@ export interface ContactAgentActionResult {
 export async function contactAgentAction(
   formData: FormData
 ): Promise<ContactAgentActionResult> {
+  const t = await getTranslations("contactAgentAction");
+  const translationSchema = await getTranslations("contactAgentSchema");
+    const contactAgentSchema = getClientContactAgentSchema(translationSchema);
+
   try {
     // Extract data from FormData
     const rawData = {
@@ -22,10 +27,11 @@ export async function contactAgentAction(
       last_name: formData.get("last_name") as string,
       phone: formData.get("phone") as string,
       email: formData.get("email") as string,
-      message: (formData.get("message") as string) || undefined,
+      message: (formData.get("message") as string),
       primary_contact_channel:
-        (formData.get("primary_contact_channel") as string) || undefined,
-      source_url: (formData.get("source_url") as string) || undefined,
+        (formData.get("primary_contact_channel") as string),
+      source_url: (formData.get("source_url") as string),
+      accept_terms: Boolean(formData.get("accept_terms")),
     };
 
     const recaptchaToken = formData.get("recaptcha_token") as string;
@@ -45,7 +51,7 @@ export async function contactAgentAction(
 
       return {
         success: false,
-        message: "Please check the form for errors",
+        message: t("pleaseCheckFormForErrors"),
         fieldErrors,
       };
     }
@@ -53,7 +59,7 @@ export async function contactAgentAction(
     if (!recaptchaToken) {
       return {
         success: false,
-        message: "ReCaptcha token is missing",
+        message: t("recaptchaTokenMissing"),
       };
     }
 
@@ -73,15 +79,9 @@ export async function contactAgentAction(
     if (verification.success && verification.score > 0.5) {
       // console.log({ success: true, score: verification.score });
     } else {
-      // console.log({
-      //   success: false,
-      //   score: verification.score,
-      //   errorCodes: verification["error-codes"],
-      // });
       return {
         success: false,
-        message:
-          "ReCaptcha verification failed. Please refresh the page and try again.",
+        message: t("recaptchaVerificationFailed"),
       };
     }
 
@@ -91,21 +91,21 @@ export async function contactAgentAction(
     if (!result.success) {
       return {
         success: false,
-        message: result.error || "Failed to submit request",
+        message: result.error || t("failedToSubmitRequest"),
         errors: result.validationErrors,
       };
     }
 
     return {
       success: true,
-      message: result.data?.message || "Request submitted successfully!",
+      message: result.data?.message || t("requestSubmittedSuccessfully"),
     };
   } catch (error) {
     console.error("Contact agent action error:", error);
 
     return {
       success: false,
-      message: "An unexpected error occurred. Please try again.",
+      message: t("unexpectedErrorOccurred"),
     };
   }
 }

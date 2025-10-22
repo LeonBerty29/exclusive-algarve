@@ -1,8 +1,9 @@
 "use server";
 
 import { ZodIssue } from "zod";
-import { messageFormSchema } from "@/types/message-us";
+import { getTranslations } from "next-intl/server";
 import { submitMessageFormWithDetailedErrors } from "@/data/message-us";
+import { getMessageFormSchema } from "@/types/message-us";
 
 export interface MessageFormActionResult {
   success: boolean;
@@ -14,6 +15,9 @@ export interface MessageFormActionResult {
 export async function messageFormAction(
   formData: FormData
 ): Promise<MessageFormActionResult> {
+  const t = await getTranslations("messageUsAction");
+  const messageFormSchemaTranslation = await getTranslations("messageFormSchema");
+    const messageFormSchema = getMessageFormSchema(messageFormSchemaTranslation);
   try {
     // Extract data from FormData
     const rawData = {
@@ -41,7 +45,7 @@ export async function messageFormAction(
 
       return {
         success: false,
-        message: "Please check the form for errors",
+        message: t("pleaseCheckFormForErrors"),
         fieldErrors,
       };
     }
@@ -49,7 +53,7 @@ export async function messageFormAction(
     if (!recaptchaToken) {
       return {
         success: false,
-        message: "ReCaptcha token is missing",
+        message: t("recaptchaTokenMissing"),
       };
     }
 
@@ -67,19 +71,13 @@ export async function messageFormAction(
     const verification = await verificationResponse.json();
 
     if (verification.success && verification.score > 0.5) {
-      // console.log({ success: true, score: verification.score });
+      // Passed verification
     } else {
-      // console.log({
-      //   success: false,
-      //   score: verification.score,
-      //   errorCodes: verification["error-codes"],
-      // });
       return {
         success: false,
-        message:
-          "ReCaptcha verification failed. Please refresh the page and try again.",
+        message: t("recaptchaVerificationFailed"),
       };
-    } 
+    }
 
     // Call the API
     const result = await submitMessageFormWithDetailedErrors(
@@ -89,21 +87,21 @@ export async function messageFormAction(
     if (!result.success) {
       return {
         success: false,
-        message: result.error || "Failed to submit message",
+        message: result.error || t("failedToSubmitMessage"),
         errors: result.validationErrors,
       };
     }
 
     return {
       success: true,
-      message: result.data?.message || "Message submitted successfully!",
+      message: result.data?.message || t("messageSubmittedSuccessfully"),
     };
   } catch (error) {
     console.error("Message form action error:", error);
 
     return {
       success: false,
-      message: "An unexpected error occurred. Please try again.",
+      message: t("unexpectedErrorOccurred"),
     };
   }
 }

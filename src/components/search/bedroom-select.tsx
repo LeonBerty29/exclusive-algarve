@@ -6,19 +6,20 @@ import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  //   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Ranges } from "@/types/property";
+import { useTranslations } from "next-intl";
 
 export function BedroomsDropdown({
   bedroomRange,
-  modal= true
+  modal = true,
 }: {
   bedroomRange: Ranges["bedrooms"];
   modal?: boolean;
 }) {
+  const t = useTranslations("bedroomSelect");
   const router = useRouter();
   const searchParams = useSearchParams();
   const previousValuesRef = useRef<[number, number] | undefined>(undefined);
@@ -35,25 +36,24 @@ export function BedroomsDropdown({
   });
 
   const handleMinChange = (value: number) => {
-    const newMax = Math.max(value, selectedValues[1]); // Ensure max is at least equal to min
+    const newMax = Math.max(value, selectedValues[1]);
     const newValues: [number, number] = [value, newMax];
     setSelectedValues(newValues);
     updateURL(newValues);
-    setOpen(false); // Close dropdown after selection
+    setOpen(false);
   };
 
   const handleMaxChange = (value: number) => {
-    const newMin = Math.min(selectedValues[0], value); // Ensure min is at most equal to max
+    const newMin = Math.min(selectedValues[0], value);
     const newValues: [number, number] = [newMin, value];
     setSelectedValues(newValues);
     updateURL(newValues);
-    setOpen(false); // Close dropdown after selection
+    setOpen(false);
   };
 
   const updateURL = (newValues: [number, number]) => {
     const params = new URLSearchParams(searchParams.toString());
 
-    // Only set params if they're different from defaults
     if (newValues[0] !== bedroomRange.min) {
       params.set("min_bedrooms", newValues[0].toString());
     } else {
@@ -66,7 +66,6 @@ export function BedroomsDropdown({
       params.delete("max_bedrooms");
     }
 
-    // Only reset to first page when bedroom VALUES actually change
     const previousValues = previousValuesRef.current;
     const valuesChanged =
       !previousValues ||
@@ -77,7 +76,6 @@ export function BedroomsDropdown({
       params.delete("page");
     }
 
-    // Update the ref with current values
     previousValuesRef.current = newValues;
 
     router.replace(`?${params.toString()}`, { scroll: false });
@@ -95,8 +93,6 @@ export function BedroomsDropdown({
     setSelectedValues(newValues);
   }, [searchParams, bedroomRange.min, bedroomRange.max]);
 
-  // Generate options for min and max selects
-
   const generateOptions = () => {
     const options = [];
     for (let i = bedroomRange.min; i <= bedroomRange.max; i++) {
@@ -105,21 +101,20 @@ export function BedroomsDropdown({
     return options;
   };
 
-  // Check if values are different from defaults
   const isFiltered =
     selectedValues[0] !== bedroomRange.min ||
     selectedValues[1] !== bedroomRange.max;
 
   const getDisplayText = () => {
     if (!isFiltered) {
-      return "Bedrooms";
+      return t("bedrooms");
     }
     if (selectedValues[0] === selectedValues[1]) {
-      return `${selectedValues[0]} bedroom${
-        selectedValues[0] === 1 ? "" : "s"
-      }`;
+      return `${selectedValues[0]} ${t("bedroom", {
+        count: selectedValues[0],
+      })}`; // count used only in UI, not in translations string
     }
-    return `${selectedValues[0]} - ${selectedValues[1]} bedrooms`;
+    return `${selectedValues[0]} - ${selectedValues[1]} ${t("bedrooms")}`;
   };
 
   return (
@@ -137,8 +132,8 @@ export function BedroomsDropdown({
         <DropdownMenuContent className="w-80 p-4" align="start">
           <Tabs defaultValue="min" className="w-full">
             <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="min">Min</TabsTrigger>
-              <TabsTrigger value="max">Max</TabsTrigger>
+              <TabsTrigger value="min">{t("min")}</TabsTrigger>
+              <TabsTrigger value="max">{t("max")}</TabsTrigger>
             </TabsList>
 
             <TabsContent value="min" className="space-y-2 mt-4">

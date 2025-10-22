@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Link, redirect } from "@/i18n/navigation";
 import { Suspense } from "react";
 import { ReloadBtn } from "@/components/shared/reload-btn";
-import { getLocale } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { ResendActivatePageSearchParamsSchema } from "@/schema";
 import { headers } from "next/headers";
 import { routing } from "@/i18n/routing";
@@ -24,14 +24,9 @@ const AccountActivationPage = async (props: Props) => {
   const headersList = await headers();
   const locale = await getLocale();
   const referer = headersList.get("referer") || "direct";
-//   console.log({ referer });
 
   const url = new URL(referer);
-
   const path = url.pathname;
-
-//   console.log({ path });
-//   console.log({ secondPath });
 
   if (
     !(
@@ -55,7 +50,6 @@ const AccountActivationPage = async (props: Props) => {
     });
   }
   const { email, callbackUrl } = await props.searchParams;
-//   console.log({ email, callbackUrl });
 
   const validatePageParams = ResendActivatePageSearchParamsSchema.safeParse({
     email,
@@ -85,8 +79,8 @@ async function ResendActivation({
   email: string;
   callbackUrl: string;
 }) {
+  const t = await getTranslations("accountResendActivationPage");
   const response = await resendActivationLink(email);
-//   console.log({ responseInResendActivationPage: response });
 
   if (response.success) {
     return (
@@ -101,11 +95,10 @@ async function ResendActivation({
                 <CheckCircle className="h-12 w-12 text-green-500" />
               </div>
               <DialogTitle className="text-center text-xl font-semibold">
-                Success!!
+                {t("successTitle")}
               </DialogTitle>
               <DialogDescription className="text-center text-gray-600 mt-2">
-                {response.message ||
-                  "Activation email has been sent. Please check your mailbox."}
+                {response.message || t("successMessage")}
               </DialogDescription>
             </DialogHeader>
             <div className="flex justify-center mt-6">
@@ -121,7 +114,7 @@ async function ResendActivation({
                     },
                   }}
                 >
-                  Login
+                  {t("loginButton")}
                 </Link>
               </Button>
             </div>
@@ -142,15 +135,14 @@ async function ResendActivation({
                 <CheckCircle className="h-12 w-12 text-red-500" />
               </div>
               <DialogTitle className="text-center text-xl font-semibold text-red-500">
-                Error!!
+                {t("errorTitle")}
               </DialogTitle>
               <DialogDescription className="text-center text-gray-600 mt-2">
-                {response.message ||
-                  "An error occured while activating your account"}
+                {response.message || t("errorMessage")}
               </DialogDescription>
             </DialogHeader>
             <div className="flex justify-center mt-6">
-              <ReloadBtn text="Try Again" showHome={true} />
+              <ReloadBtn text={t("tryAgainButton")} showHome={true} />
             </div>
           </DialogContent>
         </Dialog>
@@ -159,17 +151,18 @@ async function ResendActivation({
   }
 }
 
-function ActivateUserFallback() {
+async function ActivateUserFallback() {
+  const t = await getTranslations("accountResendActivationPage");
   return (
     <>
       <div className="h-full w-full flex flex-col align-center justify-center py-24 px-6 md:px-10 container mx-auto">
         <Loader2 className="h-12 w-12 text-primary animate-spin mx-auto" />
         <div className="spacey-2 mt-6">
           <p className="text-center text-gray-600 mt-2 font-semibold text-xl">
-            Sending Activation Email...
+            {t("sendingActivationEmail")}
           </p>
           <p className="text-gray-400 font-light text-sm text-center">
-            Please wait for task to complete
+            {t("pleaseWaitMessage")}
           </p>
         </div>
       </div>
