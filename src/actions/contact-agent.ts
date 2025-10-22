@@ -2,7 +2,7 @@
 "use server";
 
 import { ZodIssue } from "zod";
-import { contactAgentSchema } from "@/types/contact-agent";
+import { getClientContactAgentSchema } from "@/types/contact-agent";
 import { contactAgentWithDetailedErrors } from "@/data/contact-agent";
 import { getTranslations } from "next-intl/server";
 
@@ -17,6 +17,8 @@ export async function contactAgentAction(
   formData: FormData
 ): Promise<ContactAgentActionResult> {
   const t = await getTranslations("contactAgentAction");
+  const translationSchema = await getTranslations("contactAgentSchema");
+    const contactAgentSchema = getClientContactAgentSchema(translationSchema);
 
   try {
     // Extract data from FormData
@@ -25,10 +27,11 @@ export async function contactAgentAction(
       last_name: formData.get("last_name") as string,
       phone: formData.get("phone") as string,
       email: formData.get("email") as string,
-      message: (formData.get("message") as string) || undefined,
+      message: (formData.get("message") as string),
       primary_contact_channel:
-        (formData.get("primary_contact_channel") as string) || undefined,
-      source_url: (formData.get("source_url") as string) || undefined,
+        (formData.get("primary_contact_channel") as string),
+      source_url: (formData.get("source_url") as string),
+      accept_terms: Boolean(formData.get("accept_terms")),
     };
 
     const recaptchaToken = formData.get("recaptcha_token") as string;

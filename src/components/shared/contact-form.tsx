@@ -22,10 +22,11 @@ import {
 import { cn } from "@/lib/utils";
 import * as z from "zod";
 import { contactFormAction } from "@/actions/contact-form";
-import { clientContactFormSchema } from "@/types/contact-form";
+import { getClientContactFormSchema } from "@/types/contact-form";
 import { CheckCircle } from "lucide-react";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 
 interface ContactFormProps {
   theme?: "dark" | "light";
@@ -40,6 +41,10 @@ export function ContactForm({
   titleStyling = "",
   submitBtnStyling = "",
 }: ContactFormProps) {
+  const t = useTranslations("contactForm");
+  const translationSchema = useTranslations("contactFormSchema");
+  const contactFormSchema = getClientContactFormSchema(translationSchema);
+
   const [isPending, startTransition] = useTransition();
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
@@ -55,41 +60,39 @@ export function ContactForm({
     sourceUrlRef.current = window.location.href;
   }
 
-  const form = useForm<z.infer<typeof clientContactFormSchema>>({
-    resolver: zodResolver(clientContactFormSchema),
+  const form = useForm<z.infer<typeof contactFormSchema>>({
+    resolver: zodResolver(contactFormSchema),
     defaultValues: {
-      firstName: "",
-      lastName: "",
+      first_name: "",
+      last_name: "",
       phone: "",
       email: "",
       message: "",
-      acceptTerms: false,
-      sourceUrl: sourceUrlRef.current,
+      accept_terms: false,
+      source_url: sourceUrlRef.current,
     },
     reValidateMode: "onChange",
   });
 
-  const onSubmit = async (values: z.infer<typeof clientContactFormSchema>) => {
+  const onSubmit = async (values: z.infer<typeof contactFormSchema>) => {
     if (!executeRecaptcha) {
-      toast("ReCaptcha Error", {
-        description:
-          "ReCaptcha is not available. Please Refresh the page and try again.",
+      toast(`${t("recaptchaErrorTitle")}`, {
+        description: `${t("recaptchaErrorDescription")}`,
         duration: 1500,
       });
       return;
     }
 
-    // console.log("reCaptcha token: ", token);
-
     setError("");
 
     const formDataToSubmit = new FormData();
-    formDataToSubmit.append("first_name", values.firstName);
-    formDataToSubmit.append("last_name", values.lastName);
+    formDataToSubmit.append("first_name", values.first_name);
+    formDataToSubmit.append("last_name", values.last_name);
     formDataToSubmit.append("phone", values.phone);
     formDataToSubmit.append("email", values.email);
     formDataToSubmit.append("message", values.message || "");
-    formDataToSubmit.append("source_url", values.sourceUrl || "");
+    formDataToSubmit.append("source_url", values.source_url || "");
+    formDataToSubmit.append("accept_terms", values.accept_terms ? "true" : "false");
 
     startTransition(async () => {
       const token = await executeRecaptcha("contactForm");
@@ -101,19 +104,19 @@ export function ContactForm({
         if (result.success) {
           // Show success dialog
           setSuccessMessage(
-            result.message || "Contact form submitted successfully!"
+            result.message || t("contactFormSubmittedSuccessfully")
           );
           setShowSuccessDialog(true);
 
           // Reset form but keep sourceUrl
           form.reset({
-            firstName: "",
-            lastName: "",
+            first_name: "",
+            last_name: "",
             phone: "",
             email: "",
             message: "",
-            acceptTerms: true,
-            sourceUrl: sourceUrlRef.current,
+            accept_terms: true,
+            source_url: sourceUrlRef.current,
           });
         } else {
           // Handle server validation errors
@@ -121,19 +124,20 @@ export function ContactForm({
             // Map server field names to client field names and set form errors
             Object.entries(result.fieldErrors).forEach(([key, message]) => {
               const fieldMapping: {
-                [key: string]: keyof z.infer<typeof clientContactFormSchema>;
+                [key: string]: keyof z.infer<typeof contactFormSchema>;
               } = {
-                first_name: "firstName",
-                last_name: "lastName",
+                first_name: "first_name",
+                last_name: "last_name",
                 phone: "phone",
                 email: "email",
                 message: "message",
-                source_url: "sourceUrl",
+                source_url: "source_url",
+                accept_terms: "accept_terms",
               };
 
               const clientFieldName =
                 fieldMapping[key] ||
-                (key as keyof z.infer<typeof clientContactFormSchema>);
+                (key as keyof z.infer<typeof contactFormSchema>);
               form.setError(clientFieldName, {
                 type: "server",
                 message: message,
@@ -142,21 +146,17 @@ export function ContactForm({
           }
 
           if (result.errors) {
-            // Handle detailed validation errors from API
             const errorMessages = Object.entries(result.errors)
               .map(([field, messages]) => `${field}: ${messages.join(", ")}`)
               .join("; ");
-            setError(`Validation errors: ${errorMessages}`);
+            setError(`${t("validationErrors")} ${errorMessages}`);
           } else {
-            setError(
-              result.message ||
-                "Failed to submit contact form. Please try again."
-            );
+            setError(result.message || t("failedToSubmitContactForm"));
           }
         }
       } catch (error) {
         console.error("Submit error:", error);
-        setError("An unexpected error occurred. Please try again.");
+        setError(t("unexpectedError"));
       }
     });
   };
@@ -184,7 +184,7 @@ export function ContactForm({
             titleStyling
           )}
         >
-          CONTACT US
+          {t("contactUs")}
         </h2>
       )}
 
@@ -193,14 +193,14 @@ export function ContactForm({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <FormField
               control={form.control}
-              name="firstName"
+              name="first_name"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
                     <Input
                       {...field}
                       type="text"
-                      placeholder="FIRST NAME"
+                      placeholder={t("firstNamePlaceholder")}
                       className={inputClasses}
                       disabled={isPending}
                     />
@@ -212,14 +212,14 @@ export function ContactForm({
 
             <FormField
               control={form.control}
-              name="lastName"
+              name="last_name"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
                     <Input
                       {...field}
                       type="text"
-                      placeholder="LAST NAME"
+                      placeholder={t("lastNamePlaceholder")}
                       className={inputClasses}
                       disabled={isPending}
                     />
@@ -240,7 +240,7 @@ export function ContactForm({
                     <Input
                       {...field}
                       type="email"
-                      placeholder="EMAIL ADDRESS"
+                      placeholder={t("emailAddressPlaceholder")}
                       className={inputClasses}
                       disabled={isPending}
                     />
@@ -259,7 +259,7 @@ export function ContactForm({
                     <Input
                       {...field}
                       type="tel"
-                      placeholder="PHONE NUMBER"
+                      placeholder={t("phoneNumberPlaceholder")}
                       className={inputClasses}
                       disabled={isPending}
                     />
@@ -278,7 +278,7 @@ export function ContactForm({
                 <FormControl>
                   <Textarea
                     {...field}
-                    placeholder="MESSAGE..."
+                    placeholder={t("messagePlaceholder")}
                     className={cn(textareaClasses, "w-full")}
                     disabled={isPending}
                   />
@@ -290,7 +290,7 @@ export function ContactForm({
 
           <FormField
             control={form.control}
-            name="acceptTerms"
+            name="accept_terms"
             render={({ field }) => (
               <FormItem className="flex items-center space-x-3 mt-8">
                 <FormControl>
@@ -303,8 +303,7 @@ export function ContactForm({
                   />
                 </FormControl>
                 <label className={checkboxLabelClasses}>
-                  By requesting information you are authorizing Exclusive
-                  Algarve Villas to use your data in order to contact you.
+                  {t("acceptTermsText")}
                 </label>
                 <FormMessage />
               </FormItem>
@@ -321,7 +320,7 @@ export function ContactForm({
           {/* Hidden sourceUrl field */}
           <FormField
             control={form.control}
-            name="sourceUrl"
+            name="source_url"
             render={({ field }) => (
               <FormItem className="hidden">
                 <FormControl>
@@ -340,7 +339,7 @@ export function ContactForm({
                 submitBtnStyling
               )}
             >
-              {isPending ? "Submitting..." : "Submit"}
+              {isPending ? t("submitting") : t("submit")}
             </Button>
           </div>
         </form>
@@ -354,7 +353,7 @@ export function ContactForm({
               <CheckCircle className="h-12 w-12 text-green-500" />
             </div>
             <DialogTitle className="text-center text-xl font-semibold">
-              Message Sent Successfully!
+              {t("messageSentSuccessfully")}
             </DialogTitle>
             <DialogDescription className="text-center text-gray-600 mt-2">
               {successMessage}
@@ -365,7 +364,7 @@ export function ContactForm({
               onClick={() => setShowSuccessDialog(false)}
               className="bg-primary hover:bg-primary/90 text-white px-8"
             >
-              Close
+              {t("close")}
             </Button>
           </div>
         </DialogContent>

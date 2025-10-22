@@ -1,25 +1,23 @@
-"use client";
-
 import { LiaEdit } from "react-icons/lia";
 import Image from "next/image";
 import { Button } from "../ui/button";
-import ProperyVideosModal from "./property-videos-modal";
 import PropertyImagesModal from "./property-images-modal";
 import { Property } from "@/types/property";
 import { getProxiedImageUrl } from "@/lib/utils";
 import { RequestInformationDialog } from "./request-information";
-import { useTranslations } from "next-intl";
+import { PropertyVideosModal } from "./property-videos-modal";
+import { getTranslations } from "next-intl/server";
 
 interface PropertyImageGridProps {
   assets: Property["assets"];
   salesConsultant: Property["sales_consultant"];
 }
 
-const PropertyImageGrid: React.FC<PropertyImageGridProps> = ({
+export const PropertyImageGrid: React.FC<PropertyImageGridProps> = async({
   assets,
   salesConsultant,
 }) => {
-  const t = useTranslations("propertyImageGrid");
+  const t = await getTranslations("propertyImageGrid");
 
   const propertyImages = assets.images.gallery;
   const hasVideos = assets.videos && assets.videos.length > 0;
@@ -63,7 +61,7 @@ const PropertyImageGrid: React.FC<PropertyImageGridProps> = ({
             )}
             {hasVideos && (
               <div className="absolute inset-0 flex items-center justify-center">
-                <ProperyVideosModal videos={assets.videos || []} />
+                <PropertyVideosModal videos={assets.videos || []} />
               </div>
             )}
           </div>
@@ -100,7 +98,7 @@ const PropertyImageGrid: React.FC<PropertyImageGridProps> = ({
           )}
           {hasVideos && (
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-              <ProperyVideosModal videos={assets.videos || []} />
+              <PropertyVideosModal videos={assets.videos || []} />
             </div>
           )}
         </div>
@@ -125,5 +123,3 @@ const PropertyImageGrid: React.FC<PropertyImageGridProps> = ({
     </>
   );
 };
-
-export default PropertyImageGrid;

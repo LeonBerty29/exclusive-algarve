@@ -360,7 +360,6 @@
     "golden": "GOLDEN",
     "visaProgram": "VISA PROGRAM",
     "portugal": "PORTUGAL",
-
     "whatIsRequired": "What is required",
     "noteGoldenVisaCeized": "Please note that the Golden Visa program as formerly known has ceized to exist, it is however possible to still obtain a golden visa, however this is not anymore linked to purchasing real estate. (information updated on october 2023). Please check the latest information with your local lawyer.",
     "rulesResidencePermitDescription": "The rules governing the granting of Residence Permit for Investment (ARI / Golden Visa), in force from 8 October 2012, enable third country nationals to obtain a temporary residence permit to conduct business activities with visa waiver to enter national territory. The beneficiaries of ARI / Golden Visa are entitled to  :",
@@ -370,7 +369,6 @@
     "familyReunification": "Family reunification;",
     "applyingPermanentResidence": "Applying for permanent residence (pursuant to the Aliens Act – Act number 23/2007 of 4 July with the current wording). To the citizens holding a residence permit for investment purposes and their family members, complying with the requirements provided in article 80 of the Aliens Act and wish to be granted with a permanent residence permit, a permanent residence permit for investment purposes shall be issued, exempt of the provided in article 85, n.ºs 2, 3 and 4, subparagraph b) of the same diploma (cancellation of the right due to absences from the national territory, see article 65-k of the Regulatory Decree 84/07 of 5/11, as amended). The Permanent Residence Permit for investment purposes may be subject to specific fees of analysis and issuance, to be regulated by amendments to Ordinance 1334-E/2010, of December 31;",
     "applyingPortugueseCitizenship": "Applying for Portuguese citizenship, by naturalization, provided all other requirements set out by the Nationality Act are fulfilled (Act number 37/81 of 3 October, with the current wording);",
-
     "eligibilityWhoMayApply": "Eligibility – Who may apply?",
     "eligibilityDescription": "All third country citizens who conduct an investment activity, as an individual businessperson or through a company set up in Portugal or in another EU Member State and who, in addition, are stably settled in Portugal, provided these citizens fulfil the quantitative requirements and the time requirements set out by the relevant legislation, may apply for a Residence Permit for Investment, by one of the following routes:",
     "capitalTransfer1_5Million": "Capital transfer with a value equal to or above 1.5 million Euros;",
@@ -379,7 +377,6 @@
     "capitalTransfer250kArtsHeritage": "Capital transfer with a value equal to or above 250 thousand Euros for investing in artistic output or supporting the arts, for reconstruction or refurbishment of the national heritage, through the local and central authorities, public institutions, public corporate sector, public foundations, private foundations of public interest, networked local authorities, local corporate sector organizations, local associations and public cultural associations, pursuing activities of artistic output, and reconstruction or maintenance of the national heritage;",
     "capitalTransfer500kInvestmentFunds": "Capital transfer of the amount of 500 thousand Euros, or higher, for the acquisition of units of investment funds or venture capital fund of funds dedicated to the capitalisation of companies, capital injected under the Portuguese legislation, whose maturity, at the moment of the investment, is, at least, of five years and, at least, 60% of the investments is realized in commercial companies with head office in national territory; ",
     "capitalTransfer500kCommercialSociety": "Capital transfer of the amount of 500 thousand Euros, or higher, for constitution of a commercial society with head office in the national territory, combined with the creation of five permanent working jobs, or for the reinforcement of the share capital of a commercial society with head office in national territory, already existing, with the creation or keeping of working jobs, with a minimum of five permanent jobs, and for a minimum period of three years.",
-
     "mandatoryOnlinePreRegistration": "Mandatory Online pre-registration is available",
     "applyHere": "APPLY HERE"
   },
@@ -952,7 +949,9 @@
     "submitSuccess": "Request submitted successfully!",
     "submitFailed": "Failed to submit request. Please try again.",
     "unexpectedError": "An unexpected error occurred. Please try again.",
-    "validationErrorsPrefix": "Validation errors:"
+    "validationErrorsPrefix": "Validation errors:",
+    "success": "Success!!",
+    "close": "Close"
   },
   "propertyImageGrid": {
     "requestInformation": "REQUEST INFORMATION",
@@ -1100,5 +1099,362 @@
     "lastName": "Last Name",
     "phoneNumber": "Phone Number",
     "emptyValuePlaceholder": "---"
+  },
+  "userProfileForm": {
+    "firstName": "First Name",
+    "firstNamePlaceholder": "Enter your first name",
+    "firstNameDescription": "This is your public display first name.",
+    "lastName": "Last Name",
+    "lastNamePlaceholder": "Enter your last name",
+    "lastNameDescription": "This is your public display last name.",
+    "phoneNumber": "Phone Number",
+    "phoneNumberPlaceholder": "Enter your phone number",
+    "phoneNumberDescription": "Your phone number for account verification and notifications.",
+    "cancel": "Cancel",
+    "saveChanges": "Save Changes",
+    "saving": "Saving...",
+    "profileUpdated": "Profile updated",
+    "profileUpdatedDescription": "Your profile has been successfully updated."
+  },
+  "addNoteRedirectBtn": {
+    "login": "Login"
+  },
+  "bookMeeting": {
+    "bookAMeeting": "BOOK A MEETING",
+    "bookAMeetingTitle": "Book A Meeting",
+    "firstName": "First Name",
+    "firstNamePlaceholder": "First Name*",
+    "lastName": "Last Name",
+    "lastNamePlaceholder": "Last Name*",
+    "phone": "Phone",
+    "phonePlaceholder": "Phone*",
+    "email": "Email",
+    "emailPlaceholder": "Email*",
+    "date": "Date *",
+    "pickADate": "Pick a date*",
+    "time": "Time *",
+    "selectATime": "Select a time*",
+    "meetingType": "Meeting Type",
+    "onSiteMeeting": "On-site meeting",
+    "virtualMeeting": "Virtual meeting",
+    "officeLocation": "Office Location *",
+    "selectOfficeLocation": "Select office location*",
+    "virtualPlatform": "Virtual Platform *",
+    "selectVirtualPlatform": "Select virtual platform*",
+    "message": "Message",
+    "additionalInfoPlaceholder": "Enter any additional information & questions",
+    "dataUseAuthorization": "By requesting information you are authorizing Exclusive Algarve Villas to use your data in order to contact you.",
+    "cancel": "Cancel",
+    "submit": "Submit",
+    "submitting": "Submitting...",
+    "pleaseFixFormErrors": "Please fix the form errors before submitting",
+    "recaptchaNotAvailable": "ReCaptcha is not available. Please Refresh the page and try again.",
+    "pleaseSelectOfficeLocation": "Please select an office location",
+    "pleaseSelectVirtualPlatform": "Please select a virtual platform",
+    "meetingBookedSuccessfully": "Meeting booked successfully!",
+    "meetingBookedSuccessfullyTitle": "Meeting Booked Successfully!",
+    "weWillGetBack": "We'll get back to you immediately",
+    "close": "Close",
+    "validationErrors": "Validation errors",
+    "failedToBookMeeting": "Failed to book meeting. Please try again.",
+    "unexpectedErrorTryAgain": "An unexpected error occurred. Please try again.",
+    "onsiteMeeting": "On-site meeting"
+  },
+  "bookVisitDialog": {
+    "bookVisit": "Book Visit",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "phone": "Phone",
+    "email": "Email",
+    "dateRequired": "Date *",
+    "pickADateRequired": "Pick a date*",
+    "timeRequired": "Time *",
+    "selectATimeRequired": "Select a time*",
+    "message": "Message",
+    "enterAdditionalInformation": "Enter any additional information",
+    "authorizationText": "By requesting information you are authorizing Exclusive Algarve Villas to use your data in order to contact you.",
+    "cancel": "Cancel",
+    "submit": "Submit",
+    "submitting": "Submitting...",
+    "success": "Success!!",
+    "close": "Close",
+    "pleaseFixFormErrorsBeforeSubmitting": "Please fix the form errors before submitting",
+    "pleaseSelectVisitDate": "Please select a visit date",
+    "recaptchaErrorTitle": "ReCaptcha Error",
+    "recaptchaErrorDescription": "ReCaptcha is not available. Please Refresh the page and try again.",
+    "visitBookedSuccessfully": "Visit booked successfully!",
+    "validationErrors": "Validation errors",
+    "failedToBookVisitPleaseTryAgain": "Failed to book visit. Please try again.",
+    "unexpectedErrorPleaseTryAgain": "An unexpected error occurred. Please try again."
+  },
+  "contactForm": {
+    "contactUs": "CONTACT US",
+    "firstNamePlaceholder": "FIRST NAME",
+    "lastNamePlaceholder": "LAST NAME",
+    "emailAddressPlaceholder": "EMAIL ADDRESS",
+    "phoneNumberPlaceholder": "PHONE NUMBER",
+    "messagePlaceholder": "MESSAGE...",
+    "acceptTermsText": "By requesting information you are authorizing Exclusive Algarve Villas to use your data in order to contact you.",
+    "submitting": "Submitting...",
+    "submit": "Submit",
+    "messageSentSuccessfully": "Message Sent Successfully!",
+    "close": "Close",
+    "contactFormSubmittedSuccessfully": "Contact form submitted successfully!",
+    "recaptchaErrorTitle": "ReCaptcha Error",
+    "recaptchaErrorDescription": "ReCaptcha is not available. Please Refresh the page and try again.",
+    "validationErrors": "Validation errors:",
+    "failedToSubmitContactForm": "Failed to submit contact form. Please try again.",
+    "unexpectedError": "An unexpected error occurred. Please try again."
+  },
+  "contactSection": {
+    "defaultTitle": "ANY QUESTIONS ?",
+    "defaultDescription": "Exclusive Algarve Villas has won various awards over the years, from \"Best Real Estate Agency Website\" to \"Best Real Estate Agency Portugal\" by the International Property Awards in London. Furthermore has also won an award in 2019 by Best Luxury Real Estate Agency 2019 by Build Magazine.",
+    "defaultImageAlt": "photo of exclusive algarve team members",
+    "defaultHighlightText": "\"Best Real Estate Agency Portugal\""
+  },
+  "googleMaps": {
+    "title": "Location Marker"
+  },
+  "reloadBtn": {
+    "home": "Home"
+  },
+  "blog": {
+    "minRead": "min read"
+  },
+  "teamMembers": {
+    "noteamMambers": "No team members found.",
+    "addTeamMembers": "Please add team members to display them here.",
+    "meetTheTeam": "Meet the Team",
+    "clickOnATeamMember": "Click on a team member to view their details",
+    "seeDetails": "See Details"
+  },
+  "carouselSliderVertical": {
+    "awardBadgeExclusiveAlgarveVillas": "Award badge exclusive algarve villas",
+    "exclusiveAlgarveTeamMemberTakingPictureWithTheirAwardTrophy": "Exclusive algarve team member taking a picture with their award trophy"
+  },
+  "bookMeetingData": {
+    "unauthorizedInvalidOrMissingInternalToken": "Service unavailble at the moment, please try again later.",
+    "validationFailed": "Validation failed",
+    "httpRequestFailed": "HTTP {{status}}: Request failed",
+    "networkErrorOccurred": "Network error occurred",
+    "unExpectedError": "An unexpected error occurred. Please try again."
+  },
+  "bookVisitData": {
+    "unauthorizedError": "Service unavailble at the moment, please try again later.",
+    "validationFailedError": "Validation failed",
+    "validationErrorsPrefix": "Validation errors:",
+    "httpErrorPrefix": "HTTP",
+    "requestFailedSuffix": "Request failed",
+    "networkError": "Network error occurred"
+  },
+  "contactAgentData": {
+    "unauthorizedError": "Service unavailble at the moment, please try again later.",
+    "validationFailedError": "Validation failed",
+    "httpErrorPrefix": "HTTP",
+    "requestFailedSuffix": "Request failed",
+    "networkError": "Network error occurred"
+  },
+  "contactFormData": {
+    "validationFailedError": "Validation failed",
+    "unauthorizedError": "Unauthorized - please try again",
+    "serverErrorPrefix": "Server error:",
+    "networkError": "Network error occurred"
+  },
+  "messageUsData": {
+    "validationFailedError": "Validation failed",
+    "unauthorizedError": "Unauthorized - please try again",
+    "serverErrorPrefix": "Server error:",
+    "networkError": "Network error occurred"
+  },
+  "newsletterData": {
+    "validationFailed": "Validation failed",
+    "unauthorizedTryAgain": "Unauthorized - please try again",
+    "serverError": "Server error:",
+    "networkErrorOccurred": "Network error occurred"
+  },
+  "partnershipRequestData": {
+    "validationFailed": "Validation failed",
+    "unauthorizedTryAgain": "Unauthorized - please try again",
+    "serverError": "Server error:",
+    "networkErrorOccurred": "Network error occurred"
+  },
+  "propertyRequestData": {
+    "validationFailed": "Validation failed",
+    "unauthorizedTryAgain": "Unauthorized - please try again",
+    "serverError": "Server error:",
+    "networkErrorOccurred": "Network error occurred"
+  },
+  "propertyData": {
+    "apiError": "API Error:",
+    "failedToFetchFromApi": "Failed to fetch from API:"
+  },
+  "resourcesData": {
+    "failedToFetchBuyResources": "Failed to fetch buy resources:",
+    "failedToFetchBuyResourcePage": "Failed to fetch buy resource page:",
+    "failedToFetchSellResources": "Failed to fetch sell resources:",
+    "failedToFetchSellResourcePage": "Failed to fetch sell resource page:",
+    "failedToFetchOwnResourcePage": "Failed to fetch Own resource page:",
+    "failedToFetchAboutResources": "Failed to fetch About resources:"
+  },
+  "teamData": {
+    "teamInAlgarve": "Team in Algarve",
+    "teamInCarvoeiro": "Team in Carvoeiro",
+    "teamInLagos": "Team in Lagos",
+    "teamInVilamoura": "Team in Vilamoura",
+    "teamInBelgium": "Team in Belgium",
+    "failedToFetchTeam": "Failed to fetch team:"
+  },
+  "userData": {
+    "errorActivatingAccount": "An Error occured while activating your account",
+    "errorRequestingPasswordLink": "An Error occured while requesting new password link",
+    "errorResettingPassword": "An Error occured while resetting your password",
+    "registrationFailed": "Registration failed",
+    "loginFailed": "Login failed",
+    "logoutFailed": "Logout failed"
+  },
+  "meetTheTeam": {
+    "heading": "Exclusive Algarve Villas",
+    "buttonLabel": "MEET THE TEAM",
+    "description1": "Directors Marcela Boturao & Bart van Linden would like to welcome you to meet the team of Exclusive Algarve Villas. With a wealth of knowledge in real estate, legal and fiscal matters, we can assist you throughout the process of buying and selling luxury property in the Algarve.",
+    "description2": "We work with a small team of professionals who share our ideas and mind-set. Being a service providing company, we still believe in the client is king concept.",
+    "positionDirector": "Director",
+    "positionOfficeManager": "Office Manager",
+    "positionSalesConsultant": "Sales Consultant"
+  },
+  "bookMeetingSchema": {
+    "firstNameRequired": "First name is required",
+    "firstNameMinLength": "First name must be at least 2 characters",
+    "firstNameMaxLength": "First name must be less than 50 characters",
+    "lastNameRequired": "Last name is required",
+    "lastNameMinLength": "Last name must be at least 2 characters",
+    "lastNameMaxLength": "Last name must be less than 50 characters",
+    "phoneRequired": "Phone number is required",
+    "phoneInvalid": "Please enter a valid phone number",
+    "emailRequired": "Email is required",
+    "emailInvalid": "Please enter a valid email address",
+    "dateRequired": "Meeting date is required",
+    "dateFormat": "Date must be in YYYY-MM-DD format",
+    "timeRequired": "Meeting time is required",
+    "timeFormat": "Time must be in H:MM or HH:MM format",
+    "typeRequired": "Meeting type is required",
+    "locationRequired": "Meeting location is required"
+  },
+  "clientBookMeetingSchema": {
+    "firstNameRequired": "First name is required",
+    "lastNameRequired": "Last name is required",
+    "phoneRequired": "Phone number is required",
+    "emailRequired": "Email is required",
+    "emailInvalid": "Please enter a valid email address",
+    "dateRequired": "Date is required",
+    "timeRequired": "Time is required",
+    "meetingTypeRequired": "Meeting type is required",
+    "acceptTermsRequired": "You must accept the terms and conditions",
+    "locationPlatformRequired": "Please select a location or platform based on meeting type",
+    "chooseMeetingType": "You need to select the exact type of meeting you want"
+  },
+  "bookVisitSchema": {
+    "firstNameRequired": "First name is required",
+    "firstNameMinLength": "First name must be at least 2 characters",
+    "firstNameMaxLength": "First name must be less than 50 characters",
+    "lastNameRequired": "Last name is required",
+    "lastNameMinLength": "Last name must be at least 2 characters",
+    "lastNameMaxLength": "Last name must be less than 50 characters",
+    "phoneRequired": "Phone number is required",
+    "phoneInvalid": "Please enter a valid phone number",
+    "emailRequired": "Email is required",
+    "emailInvalid": "Please enter a valid email address",
+    "dateRequired": "Date is required",
+    "visitTimeRequired": "Visit time is required",
+    "timeFormatInvalid": "Time must be in HH:MM format",
+    "propertyReferenceRequired": "The reference for the property is required",
+    "acceptTermsRequired": "You must accept the terms and conditions"
+  },
+  "contactAgentSchema": {
+    "firstNameRequired": "First name is required",
+    "lastNameRequired": "Last name is required",
+    "phoneRequired": "Phone number is required",
+    "emailInvalid": "Please enter a valid email address",
+    "primaryContactChannelRequired": "Please select a primary contact channel",
+    "primaryContactChannelInvalid": "Please select a valid primary contact channel",
+    "acceptTermsRequired": "You must accept the terms and conditions"
+  },
+  "contactFormSchema": {
+    "firstNameRequired": "First name is required",
+    "firstNameMinLength": "First name must be at least 2 characters",
+    "firstNameMaxLength": "First name must be less than 50 characters",
+    "lastNameRequired": "Last name is required",
+    "lastNameMinLength": "Last name must be at least 2 characters",
+    "lastNameMaxLength": "Last name must be less than 50 characters",
+    "phoneRequired": "Phone number is required",
+    "phoneInvalid": "Please enter a valid phone number",
+    "emailRequired": "Email is required",
+    "emailInvalid": "Please enter a valid email address",
+    "messageRequired": "Message is required",
+    "messageMinLength": "Message must be at least 10 characters",
+    "messageMaxLength": "Message must be less than 500 characters",
+    "acceptTermsRequired": "You must accept the terms and conditions"
+  },
+  "messageFormSchema": {
+    "firstNameRequired": "First name is required",
+    "firstNameMinLength": "First name must be at least 2 characters",
+    "firstNameMaxLength": "First name must be less than 70 characters",
+    "lastNameRequired": "Last name is required",
+    "lastNameMinLength": "Last name must be at least 2 characters",
+    "lastNameMaxLength": "Last name must be less than 50 characters",
+    "emailRequired": "Email is required",
+    "emailInvalid": "Please enter a valid email address",
+    "messageRequired": "Message is required",
+    "messageMinLength": "Message must be at least 10 characters",
+    "messageMaxLength": "Message must be less than 500 characters"
+  },
+  "newsletterFormSchema": {
+    "emailRequired": "Email is required",
+    "emailInvalid": "Please enter a valid email address"
+  },
+  "partnershipFormSchema": {
+    "companyNameRequired": "Company name is required",
+    "companyNameMinLength": "Company name must be at least 2 characters",
+    "companyNameMaxLength": "Company name must be less than 100 characters",
+    "companyEmailRequired": "Company email is required",
+    "companyEmailInvalid": "Please enter a valid company email address",
+    "companyPhoneRequired": "Company phone is required",
+    "companyPhoneInvalid": "Please enter a valid phone number",
+    "contactPersonRequired": "Contact person is required",
+    "contactPersonMinLength": "Contact person must be at least 2 characters",
+    "contactPersonMaxLength": "Contact person must be less than 100 characters",
+    "clientFirstNameRequired": "Client first name is required",
+    "clientFirstNameMinLength": "Client first name must be at least 2 characters",
+    "clientFirstNameMaxLength": "Client first name must be less than 50 characters",
+    "clientLastNameRequired": "Client last name is required",
+    "clientLastNameMinLength": "Client last name must be at least 2 characters",
+    "clientLastNameMaxLength": "Client last name must be less than 50 characters",
+    "partialClientEmailRequired": "Partial client email is required",
+    "partialClientEmailMinLength": "Partial client email must be at least 3 characters",
+    "partialClientEmailMaxLength": "Partial client email must be less than 100 characters",
+    "partialClientPhoneRequired": "Partial client phone is required",
+    "partialClientPhoneInvalid": "Please enter a valid phone number",
+    "interestedPropertyRequired": "Interested property is required",
+    "interestedPropertyMaxLength": "Interested property must be less than 1000 characters",
+    "remarksRequired": "Remarks is required",
+    "remarksMaxLength": "Remarks must be less than 1000 characters",
+    "visitDateRequired": "Visit Date is required",
+    "acceptTermsRequired": "You must accept the terms and conditions"
+  },
+  "propertyFormSchema": {
+    "firstNameRequired": "First name is required",
+    "lastNameRequired": "Last name is required",
+    "phoneRequired": "Phone number is required",
+    "emailRequired": "Email is required",
+    "emailInvalid": "Please enter a valid email address",
+    "propertyTypesRequired": "At least one property type is required",
+    "budgetMinRequired": "Minimum budget is required",
+    "budgetMaxRequired": "Maximum budget is required",
+    "locationRequired": "Location is required",
+    "bedroomsMinRequired": "Minimum bedrooms is required",
+    "bedroomsMaxRequired": "Maximum bedrooms is required",
+    "bathroomsMinRequired": "Minimum bathrooms is required",
+    "bathroomsMaxRequired": "Maximum bathrooms is required",
+    "sourceUrlRequired": "Source URL is required",
+    "consentRequired": "You must authorize us to contact you"
   }
 }

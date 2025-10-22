@@ -1,18 +1,19 @@
-// data/contact-agent.ts
+import { getTranslations } from "next-intl/server";
 import {
-  ContactAgentRequest,
   ContactAgentResponse,
   ContactAgentError,
+  ContactAgentFormData,
 } from "@/types/contact-agent";
 
 export async function contactAgentWithDetailedErrors(
-  data: ContactAgentRequest
+  data: ContactAgentFormData
 ): Promise<{
   success: boolean;
   data?: ContactAgentResponse;
   error?: string;
   validationErrors?: { [key: string]: string[] };
 }> {
+  const t = await getTranslations("contactAgentData");
   const endpoint = "/v1/forms/request-information";
   try {
     const response = await fetch(`${process.env.API_BASE_URL}${endpoint}`, {
@@ -23,34 +24,31 @@ export async function contactAgentWithDetailedErrors(
       },
       body: JSON.stringify(data),
     });
-
     if (!response.ok) {
       const errorData: ContactAgentError = await response.json();
-
       if (response.status === 401) {
         return {
           success: false,
-          error: "Unauthorized: Invalid or missing internal token",
+          error: t("unauthorizedError"),
         };
       }
-
       if (response.status === 422 && errorData.errors) {
         return {
           success: false,
-          error: errorData.message || "Validation failed",
+          error: errorData.message || t("validationFailedError"),
           validationErrors: errorData.errors,
         };
       }
-
       return {
         success: false,
         error:
           errorData.error ||
           errorData.message ||
-          `HTTP ${response.status}: Request failed`,
+          `${t("httpErrorPrefix")} ${response.status}: ${t(
+            "requestFailedSuffix"
+          )}`,
       };
     }
-
     const result: ContactAgentResponse = await response.json();
     return {
       success: true,
@@ -59,7 +57,7 @@ export async function contactAgentWithDetailedErrors(
   } catch (error) {
     return {
       success: false,
-      error: error instanceof Error ? error.message : "Network error occurred",
+      error: error instanceof Error ? error.message : t("networkError"),
     };
   }
 }

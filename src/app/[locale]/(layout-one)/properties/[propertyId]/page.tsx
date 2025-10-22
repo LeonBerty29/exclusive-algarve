@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/breadcrumb";
 import { Link } from "@/i18n/navigation";
 import ShareButton from "@/components/property/share-property";
-import PropertyImageGrid from "@/components/property-details/property-image-grid";
+import { PropertyImageGrid } from "@/components/property-details/property-image-grid";
 import SimilarProperties from "@/components/property-details/similar-properties";
 import ContactAgentForm from "@/components/property-details/contact-agent-form";
 import { getCurrencySymbol } from "@/components/shared/price-format";
@@ -124,7 +124,7 @@ const PageContent = async (props: Props) => {
             </p>
           </div>
 
-          <BookVisitDialog />
+          <BookVisitDialog propertyReference={property.reference} />
         </div>
       </div>
 

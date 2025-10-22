@@ -1,90 +1,77 @@
 import { z } from "zod";
 
-// Server-side schema (matches API)
-export const contactFormSchema = z.object({
-  first_name: z
-    .string()
-    .min(1, "First name is required")
-    .min(2, "First name must be at least 2 characters")
-    .max(50, "First name must be less than 50 characters"),
+// Client-side validation schema with translations
+export function getClientContactFormSchema(t?: (key: string) => string) {
+  return z.object({
+    first_name: z
+      .string()
+      .min(1, t ? t("firstNameRequired") : "First name is required")
+      .min(
+        2,
+        t ? t("firstNameMinLength") : "First name must be at least 2 characters"
+      )
+      .max(
+        50,
+        t
+          ? t("firstNameMaxLength")
+          : "First name must be less than 50 characters"
+      ),
 
-  last_name: z
-    .string()
-    .min(1, "Last name is required")
-    .min(2, "Last name must be at least 2 characters")
-    .max(50, "Last name must be less than 50 characters"),
+    last_name: z
+      .string()
+      .min(1, t ? t("lastNameRequired") : "Last name is required")
+      .min(
+        2,
+        t ? t("lastNameMinLength") : "Last name must be at least 2 characters"
+      )
+      .max(
+        50,
+        t ? t("lastNameMaxLength") : "Last name must be less than 50 characters"
+      ),
 
-  phone: z
-    .string()
-    .min(1, "Phone number is required")
-    .regex(/^[\+]?[\d\s\-\(\)]+$/, "Please enter a valid phone number"),
+    phone: z
+      .string()
+      .min(1, t ? t("phoneRequired") : "Phone number is required")
+      .regex(
+        /^[\+]?[\d\s\-\(\)]+$/,
+        t ? t("phoneInvalid") : "Please enter a valid phone number"
+      ),
 
-  email: z
-    .string()
-    .min(1, "Email is required")
-    .email("Please enter a valid email address"),
+    email: z
+      .string()
+      .min(1, t ? t("emailRequired") : "Email is required")
+      .email(t ? t("emailInvalid") : "Please enter a valid email address"),
 
-  message: z
-    .string()
-    .min(1, "Message is required")
-    .min(10, "Message must be at least 10 characters")
-    .max(500, "Message must be less than 500 characters"),
+    message: z
+      .string()
+      .min(1, t ? t("messageRequired") : "Message is required")
+      .min(
+        10,
+        t ? t("messageMinLength") : "Message must be at least 10 characters"
+      )
+      .max(
+        500,
+        t ? t("messageMaxLength") : "Message must be less than 500 characters"
+      ),
 
-  source_url: z.string().url().optional(),
-});
+    accept_terms: z.boolean().refine((val) => val === true, {
+      message: t
+        ? t("acceptTermsRequired")
+        : "You must accept the terms and conditions",
+    }),
 
-export type ContactFormData = z.infer<typeof contactFormSchema>;
-
-// Client-side schema
-export const clientContactFormSchema = z.object({
-  firstName: z
-    .string()
-    .min(1, "First name is required")
-    .min(2, "First name must be at least 2 characters")
-    .max(50, "First name must be less than 50 characters"),
-
-  lastName: z
-    .string()
-    .min(1, "Last name is required")
-    .min(2, "Last name must be at least 2 characters")
-    .max(50, "Last name must be less than 50 characters"),
-
-  phone: z
-    .string()
-    .min(1, "Phone number is required")
-    .regex(/^[\+]?[\d\s\-\(\)]+$/, "Please enter a valid phone number"),
-
-  email: z
-    .string()
-    .min(1, "Email is required")
-    .email("Please enter a valid email address"),
-
-  message: z
-    .string().optional(),
-
-  acceptTerms: z.boolean().refine((val) => val === true, {
-    message: "You must accept the terms and conditions",
-  }),
-
-  sourceUrl: z.string().optional(),
-});
-
-export type ClientContactFormData = z.infer<typeof clientContactFormSchema>;
-
-// API request/response types
-export interface ContactFormRequest {
-  first_name: string;
-  last_name: string;
-  phone: string;
-  email: string;
-  message: string;
-  source_url?: string;
+    source_url: z.string().url().optional().or(z.literal("")),
+  });
 }
+
+export type ContactFormData = z.infer<
+  ReturnType<typeof getClientContactFormSchema>
+>;
 
 export interface ContactFormResponse {
   success: true;
   message: string;
-  data: ContactFormRequest;
+  data: ContactFormData;
 }
 
 export interface ContactFormError {

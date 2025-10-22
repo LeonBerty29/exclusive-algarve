@@ -22,14 +22,16 @@ import {
 import { cn } from "@/lib/utils";
 import * as z from "zod";
 import { messageFormAction } from "@/actions/message-us";
-import { clientMessageFormSchema } from "@/types/message-us";
 import { CheckCircle } from "lucide-react";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
+import { getMessageFormSchema } from "@/types/message-us";
 
 export function MessageForm() {
   const t = useTranslations("messageUsForm");
+  const messageFormSchemaTranslation = useTranslations("messageFormSchema");
+  const messageFormSchema = getMessageFormSchema(messageFormSchemaTranslation);
   const [isPending, startTransition] = useTransition();
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
@@ -44,19 +46,19 @@ export function MessageForm() {
     sourceUrlRef.current = window.location.href;
   }
 
-  const form = useForm<z.infer<typeof clientMessageFormSchema>>({
-    resolver: zodResolver(clientMessageFormSchema),
+  const form = useForm<z.infer<typeof messageFormSchema>>({
+    resolver: zodResolver(messageFormSchema),
     defaultValues: {
-      firstName: "",
-      lastName: "",
+      first_name: "",
+      last_name: "",
       email: "",
       message: "",
-      sourceUrl: sourceUrlRef.current,
+      source_url: sourceUrlRef.current,
     },
     reValidateMode: "onChange",
   });
 
-  const onSubmit = async (values: z.infer<typeof clientMessageFormSchema>) => {
+  const onSubmit = async (values: z.infer<typeof messageFormSchema>) => {
     if (!executeRecaptcha) {
       toast(`${t("toastReCaptchaErrorTitle")}`, {
         description: t("toastReCaptchaErrorDescription"),
@@ -68,11 +70,11 @@ export function MessageForm() {
     setError("");
 
     const formDataToSubmit = new FormData();
-    formDataToSubmit.append("first_name", values.firstName);
-    formDataToSubmit.append("last_name", values.lastName);
+    formDataToSubmit.append("first_name", values.first_name);
+    formDataToSubmit.append("last_name", values.last_name);
     formDataToSubmit.append("email", values.email);
     formDataToSubmit.append("message", values.message);
-    formDataToSubmit.append("source_url", values.sourceUrl || "");
+    formDataToSubmit.append("source_url", values.source_url || "");
 
     startTransition(async () => {
       const token = await executeRecaptcha("messageUsForm");
@@ -88,29 +90,29 @@ export function MessageForm() {
 
           // Reset form but keep sourceUrl
           form.reset({
-            firstName: "",
-            lastName: "",
+            first_name: "",
+            last_name: "",
             email: "",
             message: "",
-            sourceUrl: sourceUrlRef.current,
+            source_url: sourceUrlRef.current,
           });
         } else {
           // Handle server validation errors
           if (result.fieldErrors) {
             Object.entries(result.fieldErrors).forEach(([key, message]) => {
               const fieldMapping: {
-                [key: string]: keyof z.infer<typeof clientMessageFormSchema>;
+                [key: string]: keyof z.infer<typeof messageFormSchema>;
               } = {
-                first_name: "firstName",
-                last_name: "lastName",
+                first_name: "first_name",
+                last_name: "last_name",
                 email: "email",
                 message: "message",
-                source_url: "sourceUrl",
+                source_url: "source_url",
               };
 
               const clientFieldName =
                 fieldMapping[key] ||
-                (key as keyof z.infer<typeof clientMessageFormSchema>);
+                (key as keyof z.infer<typeof messageFormSchema>);
               form.setError(clientFieldName, {
                 type: "server",
                 message: message,
@@ -142,7 +144,7 @@ export function MessageForm() {
           <div className="grid grid-cols-2 gap-4">
             <FormField
               control={form.control}
-              name="firstName"
+              name="first_name"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
@@ -161,7 +163,7 @@ export function MessageForm() {
 
             <FormField
               control={form.control}
-              name="lastName"
+              name="last_name"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
@@ -221,7 +223,7 @@ export function MessageForm() {
           {/* Hidden sourceUrl field */}
           <FormField
             control={form.control}
-            name="sourceUrl"
+            name="source_url"
             render={({ field }) => (
               <FormItem className="hidden">
                 <FormControl>

@@ -1,8 +1,8 @@
 "use client";
-import React, { useState, useTransition, useEffect } from "react";
+import React, { useState, useTransition, useRef } from "react";
 import { Calendar, CheckCircle } from "lucide-react";
 import { toast } from "sonner";
-import { ZodError, ZodIssue } from "zod";
+import { ZodIssue } from "zod";
 import {
   Dialog,
   DialogContent,
@@ -29,21 +29,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { bookVisitAction } from "@/actions/book-visit";
-import { clientBookVisitSchema } from "@/types/book-a-visit";
+import { BookVisitFormData, getClientBookVisitSchema } from "@/types/book-a-visit";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
-
-// Client-side form data interface
-interface FormData {
-  first_name: string;
-  last_name: string;
-  phone: string;
-  email: string;
-  visit_date: Date | null;
-  visit_time: string;
-  additional_text: string;
-  acceptTerms: boolean;
-  source_url: string;
-}
+import { useTranslations } from "next-intl";
 
 interface FormErrors {
   first_name?: string;
@@ -53,43 +41,49 @@ interface FormErrors {
   visit_date?: string;
   visit_time?: string;
   additional_text?: string;
-  acceptTerms?: string;
+  accept_terms?: string;
   source_url?: string;
 }
 
-type FormField = keyof FormData;
+type FormField = keyof BookVisitFormData;
 
-const BookVisitDialog: React.FC = () => {
+const BookVisitDialog = ({
+  propertyReference,
+}: {
+  propertyReference: string;
+}) => {
+  const t = useTranslations("bookVisitDialog");
+  const schemaTranslation = useTranslations("bookVisitSchema");
+  const bookVisitSchema = getClientBookVisitSchema(schemaTranslation);
+
   const [isPending, startTransition] = useTransition();
   const [isOpen, setIsOpen] = useState(false);
   const [isSuccessDialogOpen, setIsSuccessDialogOpen] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
-  const [formData, setFormData] = useState<FormData>({
+  const today = new Date();
+
+  // Use useRef to capture the source URL once
+  const sourceUrlRef = useRef(
+    typeof window !== "undefined" ? window.location.href : ""
+  );
+
+  const [formData, setFormData] = useState<BookVisitFormData>({
     first_name: "",
     last_name: "",
     phone: "",
     email: "",
-    visit_date: null,
+    visit_date: today,
     visit_time: "",
     additional_text: "",
-    acceptTerms: false,
-    source_url: "",
+    accept_terms: false,
+    source_url: sourceUrlRef.current,
+    property_reference: propertyReference,
   });
 
   const [errors, setErrors] = useState<FormErrors>({});
   const [isDatePopoverOpen, setIsDatePopoverOpen] = useState(false);
 
   const { executeRecaptcha } = useGoogleReCaptcha();
-
-  // Get current page URL on mount
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      setFormData((prev) => ({
-        ...prev,
-        source_url: window.location.href,
-      }));
-    }
-  }, []);
 
   const timeSlots: string[] = [
     "09:00",
@@ -105,15 +99,14 @@ const BookVisitDialog: React.FC = () => {
 
   const handleInputChange = <T extends FormField>(
     field: T,
-    value: FormData[T]
+    value: BookVisitFormData[T]
   ): void => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
     }));
 
-    // Clear error when user starts typing
-    if (errors[field]) {
+    if (errors[field as keyof FormErrors]) {
       setErrors((prev) => ({
         ...prev,
         [field]: "",
@@ -122,51 +115,42 @@ const BookVisitDialog: React.FC = () => {
   };
 
   const validateClientForm = (): boolean => {
-    try {
-      clientBookVisitSchema.parse(formData);
-      setErrors({});
-      return true;
-    } catch (error) {
-      const newErrors: FormErrors = {};
+    const validationResult = bookVisitSchema.safeParse(formData);
+    setErrors({});
 
-      if (error instanceof ZodError) {
-        error.errors.forEach((err: ZodIssue) => {
-          const fieldName = err.path[0] as keyof FormErrors;
-          if (fieldName && typeof fieldName === "string") {
-            newErrors[fieldName] = err.message;
-          }
-        });
+    if (validationResult.success) return true;
+    const newErrors: FormErrors = {};
+
+    validationResult.error.errors.forEach((err: ZodIssue) => {
+      const fieldName = err.path[0] as keyof FormErrors;
+      if (fieldName && typeof fieldName === "string") {
+        newErrors[fieldName] = err.message;
       }
-
-      setErrors(newErrors);
-      return false;
-    }
+    });
+    setErrors(newErrors);
+    return false;
   };
 
   const handleSubmit = async (): Promise<void> => {
-    // Client-side validation first
     if (!validateClientForm()) {
-      toast.error("Please fix the form errors before submitting");
+      toast.error(t("pleaseFixFormErrorsBeforeSubmitting"));
       return;
     }
 
-    // Validate that date is not null before proceeding
     if (!formData.visit_date) {
-      toast.error("Please select a visit date");
+      toast.error(t("pleaseSelectVisitDate"));
       return;
     }
 
     if (!executeRecaptcha) {
-      toast("ReCaptcha Error", {
-        description:
-          "ReCaptcha is not available. Please Refresh the page and try again.",
+      toast(t("recaptchaErrorTitle"), {
+        description: t("recaptchaErrorDescription"),
         duration: 1500,
       });
       return;
     }
 
     const token = await executeRecaptcha("contactForm");
-    // console.log("reCaptcha token: ", token);
 
     const formDataToSubmit = new FormData();
     formDataToSubmit.append("first_name", formData.first_name);
@@ -178,39 +162,38 @@ const BookVisitDialog: React.FC = () => {
       formData.visit_date.toISOString().split("T")[0]
     );
     formDataToSubmit.append("visit_time", formData.visit_time);
-    formDataToSubmit.append("additional_text", formData.additional_text);
-    formDataToSubmit.append("source_url", formData.source_url);
+    formDataToSubmit.append(
+      "additional_text",
+      formData.additional_text as string
+    );
+    formDataToSubmit.append("source_url", sourceUrlRef.current);
     formDataToSubmit.append("recaptcha_token", token || "");
-
-    // Include acceptTerms if you need it on the server
-    // formDataToSubmit.append("acceptTerms", formData.acceptTerms.toString());
+    formDataToSubmit.append("property_reference", propertyReference);
+    formDataToSubmit.append("accept_terms", JSON.stringify(formData.accept_terms));
 
     startTransition(async () => {
       try {
         const result = await bookVisitAction(formDataToSubmit);
 
         if (result.success) {
-          setSuccessMessage(result.message || "Visit booked successfully!");
+          setSuccessMessage(result.message || t("visitBookedSuccessfully"));
 
-          // Reset form
           setFormData({
             first_name: "",
             last_name: "",
             phone: "",
             email: "",
-            visit_date: null,
+            visit_date: today,
             visit_time: "",
             additional_text: "",
-            acceptTerms: false,
-            source_url: formData.source_url, // Keep the source URL
+            accept_terms: false,
+            source_url: sourceUrlRef.current,
+            property_reference: propertyReference,
           });
           setErrors({});
           setIsOpen(false);
-
-          // Show success dialog
           setIsSuccessDialogOpen(true);
         } else {
-          // Handle server validation errors
           if (result.fieldErrors) {
             const newErrors: FormErrors = {};
             Object.entries(result.fieldErrors).forEach(([key, message]) => {
@@ -221,20 +204,17 @@ const BookVisitDialog: React.FC = () => {
           }
 
           if (result.errors) {
-            // Handle detailed validation errors from API
             const errorMessages = Object.entries(result.errors)
               .map(([field, messages]) => `${field}: ${messages.join(", ")}`)
               .join("; ");
-            toast.error(`Validation errors: ${errorMessages}`);
+            toast.error(`${t("validationErrors")}: ${errorMessages}`);
           } else {
-            toast.error(
-              result.message || "Failed to book visit. Please try again."
-            );
+            toast.error(result.message || t("failedToBookVisitPleaseTryAgain"));
           }
         }
       } catch (error) {
         console.error("Submit error:", error);
-        toast.error("An unexpected error occurred. Please try again.");
+        toast.error(t("unexpectedErrorPleaseTryAgain"));
       }
     });
   };
@@ -242,17 +222,20 @@ const BookVisitDialog: React.FC = () => {
   const handleInputChangeEvent =
     (field: FormField) =>
     (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
-      handleInputChange(field, e.target.value as FormData[typeof field]);
+      handleInputChange(
+        field,
+        e.target.value as BookVisitFormData[typeof field]
+      );
     };
 
   const handleCheckboxChange = (
     e: React.ChangeEvent<HTMLInputElement>
   ): void => {
-    handleInputChange("acceptTerms", e.target.checked);
+    handleInputChange("accept_terms", e.target.checked);
   };
 
   const handleDateSelect = (date: Date | undefined): void => {
-    handleInputChange("visit_date", date || null);
+    handleInputChange("visit_date", date || today);
     setIsDatePopoverOpen(false);
   };
 
@@ -267,16 +250,16 @@ const BookVisitDialog: React.FC = () => {
   };
 
   return (
-    <div className="">
+    <div>
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogTrigger asChild>
           <Button className="bg-primary text-lg px-8 py-5 text-white hover:bg-black/85 transition-all">
-            Book Visit
+            {t("bookVisit")}
           </Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-md max-h-[90vh] flex flex-col">
           <DialogHeader className="pb-5 flex-shrink-0">
-            <DialogTitle>Book Visit</DialogTitle>
+            <DialogTitle>{t("bookVisit")}</DialogTitle>
           </DialogHeader>
 
           <div className="flex-1 overflow-y-auto">
@@ -284,14 +267,14 @@ const BookVisitDialog: React.FC = () => {
               <div className="grid grid-cols-1 gap-4">
                 <div>
                   <Label className="sr-only" htmlFor="first_name">
-                    First Name
+                    {t("firstName")}
                   </Label>
                   <Input
                     id="first_name"
                     type="text"
                     value={formData.first_name}
                     onChange={handleInputChangeEvent("first_name")}
-                    placeholder="First Name*"
+                    placeholder={`${t("firstName")}*`}
                     className={errors.first_name ? "border-red-500" : ""}
                     disabled={isPending}
                   />
@@ -304,14 +287,14 @@ const BookVisitDialog: React.FC = () => {
 
                 <div>
                   <Label className="sr-only" htmlFor="last_name">
-                    Last Name
+                    {t("lastName")}
                   </Label>
                   <Input
                     id="last_name"
                     type="text"
                     value={formData.last_name}
                     onChange={handleInputChangeEvent("last_name")}
-                    placeholder="Last Name*"
+                    placeholder={`${t("lastName")}*`}
                     className={errors.last_name ? "border-red-500" : ""}
                     disabled={isPending}
                   />
@@ -325,14 +308,14 @@ const BookVisitDialog: React.FC = () => {
 
               <div>
                 <Label className="sr-only" htmlFor="phone">
-                  Phone
+                  {t("phone")}
                 </Label>
                 <Input
                   id="phone"
                   type="tel"
                   value={formData.phone}
                   onChange={handleInputChangeEvent("phone")}
-                  placeholder="Phone*"
+                  placeholder={`${t("phone")}*`}
                   className={errors.phone ? "border-red-500" : ""}
                   disabled={isPending}
                 />
@@ -343,14 +326,14 @@ const BookVisitDialog: React.FC = () => {
 
               <div>
                 <Label className="sr-only" htmlFor="email">
-                  Email
+                  {t("email")}
                 </Label>
                 <Input
                   id="email"
                   type="email"
                   value={formData.email}
                   onChange={handleInputChangeEvent("email")}
-                  placeholder="Email*"
+                  placeholder={`${t("email")}*`}
                   className={errors.email ? "border-red-500" : ""}
                   disabled={isPending}
                 />
@@ -360,7 +343,7 @@ const BookVisitDialog: React.FC = () => {
               </div>
 
               <div>
-                <Label className="sr-only">Date *</Label>
+                <Label className="sr-only">{t("dateRequired")}</Label>
                 <Popover
                   open={isDatePopoverOpen}
                   onOpenChange={setIsDatePopoverOpen}
@@ -376,7 +359,7 @@ const BookVisitDialog: React.FC = () => {
                       <Calendar className="mr-2 h-4 w-4" />
                       {formData.visit_date
                         ? formData.visit_date.toLocaleDateString()
-                        : "Pick a date*"}
+                        : t("pickADateRequired")}
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0" align="start">
@@ -398,7 +381,7 @@ const BookVisitDialog: React.FC = () => {
 
               <div>
                 <Label className="sr-only" htmlFor="visit_time">
-                  Time *
+                  {t("timeRequired")}
                 </Label>
                 <Select
                   value={formData.visit_time}
@@ -410,7 +393,7 @@ const BookVisitDialog: React.FC = () => {
                       errors.visit_time ? "border-red-500 w-full" : "w-full"
                     }
                   >
-                    <SelectValue placeholder="Select a time*" />
+                    <SelectValue placeholder={t("selectATimeRequired")} />
                   </SelectTrigger>
                   <SelectContent>
                     {timeSlots.map((time: string) => (
@@ -429,13 +412,13 @@ const BookVisitDialog: React.FC = () => {
 
               <div>
                 <Label className="sr-only" htmlFor="additional_text">
-                  Message
+                  {t("message")}
                 </Label>
                 <Textarea
                   id="additional_text"
                   value={formData.additional_text}
                   onChange={handleInputChangeEvent("additional_text")}
-                  placeholder="Enter any additional information"
+                  placeholder={t("enterAdditionalInformation")}
                   rows={3}
                   disabled={isPending}
                 />
@@ -444,22 +427,21 @@ const BookVisitDialog: React.FC = () => {
               <div className="flex space-x-2">
                 <input
                   type="checkbox"
-                  id="acceptTerms"
-                  checked={formData.acceptTerms}
+                  id="accept_terms"
+                  checked={formData.accept_terms}
                   onChange={handleCheckboxChange}
                   className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                   disabled={isPending}
                 />
                 <Label
-                  htmlFor="acceptTerms"
+                  htmlFor="accept_terms"
                   className="text-sm text-gray-500 font-light"
                 >
-                  By requesting information you are authorizing Exclusive
-                  Algarve Villas to use your data in order to contact you.
+                  {t("authorizationText")}
                 </Label>
               </div>
-              {errors.acceptTerms && (
-                <p className="text-red-500 text-sm">{errors.acceptTerms}</p>
+              {errors.accept_terms && (
+                <p className="text-red-500 text-sm">{errors.accept_terms}</p>
               )}
             </div>
           </div>
@@ -470,7 +452,7 @@ const BookVisitDialog: React.FC = () => {
               onClick={() => setIsOpen(false)}
               disabled={isPending}
             >
-              Cancel
+              {t("cancel")}
             </Button>
             <Button
               className="bg-primary text-white hover:bg-black/85 transition-all"
@@ -478,31 +460,11 @@ const BookVisitDialog: React.FC = () => {
               onClick={handleSubmit}
               disabled={isPending}
             >
-              {isPending ? "Submitting..." : "Submit"}
+              {isPending ? t("submitting") : t("submit")}
             </Button>
           </div>
         </DialogContent>
       </Dialog>
-
-      {/* Success Dialog */}
-      {/* <Dialog open={isSuccessDialogOpen} onOpenChange={setIsSuccessDialogOpen}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle className="text-green-600">Success!</DialogTitle>
-          </DialogHeader>
-          <div className="py-4">
-            <p className="text-gray-700">{successMessage}</p>
-          </div>
-          <div className="flex justify-end">
-            <Button
-              onClick={() => setIsSuccessDialogOpen(false)}
-              className="bg-primary text-white hover:bg-black/85 transition-all"
-            >
-              OK
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog> */}
 
       <Dialog open={isSuccessDialogOpen} onOpenChange={setIsSuccessDialogOpen}>
         <DialogContent className="sm:max-w-md rounded-2xl">
@@ -511,7 +473,7 @@ const BookVisitDialog: React.FC = () => {
               <CheckCircle className="h-12 w-12 text-green-500" />
             </div>
             <DialogTitle className="text-center text-xl font-semibold">
-              Success!!
+              {t("success")}
             </DialogTitle>
             <DialogDescription className="text-center text-gray-600 mt-2">
               {successMessage}
@@ -522,7 +484,7 @@ const BookVisitDialog: React.FC = () => {
               onClick={() => setIsSuccessDialogOpen(false)}
               className="bg-primary hover:bg-primary/90 text-white px-8"
             >
-              Close
+              {t("close")}
             </Button>
           </div>
         </DialogContent>

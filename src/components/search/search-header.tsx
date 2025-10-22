@@ -1,5 +1,3 @@
-"use client";
-
 import { Link } from "@/i18n/navigation";
 import {
   Breadcrumb,
@@ -29,12 +27,12 @@ import {
   ListPropertyTypes,
   ListRegionSelect,
 } from "./listing-filters";
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 
-const SearchHeader = ({ suspenseKey }: { suspenseKey: string }) => {
-  const t = useTranslations("searchHeader");
+const SearchHeader = async({ suspenseKey }: { suspenseKey: string }) => {
+  const t = await getTranslations("searchHeader");
 
-  const propertiesCount = 3550; // This number should come from props or state in real use.
+  const propertiesCount = 3550;
 
   return (
     <>

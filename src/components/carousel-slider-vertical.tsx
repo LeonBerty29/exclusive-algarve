@@ -1,6 +1,7 @@
-"use client"
+"use client";
 
 import { GridTileImage } from "@/components/tile";
+import { useTranslations } from "next-intl";
 
 export default function CarouselSliderVertical({
   pauseOnHover = false,
@@ -9,64 +10,58 @@ export default function CarouselSliderVertical({
   pauseOnHover?: boolean;
   direction?: "up" | "down";
 }) {
+  const t = useTranslations("carouselSliderVertical");
+
   const products = [
     {
-      title: "Award badge exclusive algarve villas",
+      title: t("awardBadgeExclusiveAlgarveVillas"),
       url: "/images/awards/awards-badge.jpg",
     },
     {
-      title:
-        "Exclusive algarve team member taking a picture with their award trophy",
+      title: t("exclusiveAlgarveTeamMemberTakingPictureWithTheirAwardTrophy"),
       url: "/images/awards/awards-1.jpg",
     },
     {
-      title:
-        "Exclusive algarve team member taking a picture with their award trophy",
+      title: t("exclusiveAlgarveTeamMemberTakingPictureWithTheirAwardTrophy"),
       url: "/images/awards/awards-2.jpg",
     },
 
     {
-      title: "Award badge exclusive algarve villas",
+      title: t("awardBadgeExclusiveAlgarveVillas"),
       url: "/images/awards/awards-badge.jpg",
     },
     {
-      title:
-        "Exclusive algarve team member taking a picture with their award trophy",
+      title: t("exclusiveAlgarveTeamMemberTakingPictureWithTheirAwardTrophy"),
       url: "/images/awards/awards-1.jpg",
     },
     {
-      title:
-        "Exclusive algarve team member taking a picture with their award trophy",
+      title: t("exclusiveAlgarveTeamMemberTakingPictureWithTheirAwardTrophy"),
       url: "/images/awards/awards-2.jpg",
     },
 
     {
-      title: "Award badge exclusive algarve villas",
+      title: t("awardBadgeExclusiveAlgarveVillas"),
       url: "/images/awards/awards-badge.jpg",
     },
     {
-      title:
-        "Exclusive algarve team member taking a picture with their award trophy",
+      title: t("exclusiveAlgarveTeamMemberTakingPictureWithTheirAwardTrophy"),
       url: "/images/awards/awards-1.jpg",
     },
     {
-      title:
-        "Exclusive algarve team member taking a picture with their award trophy",
+      title: t("exclusiveAlgarveTeamMemberTakingPictureWithTheirAwardTrophy"),
       url: "/images/awards/awards-2.jpg",
     },
 
     {
-      title: "Award badge exclusive algarve villas",
+      title: t("awardBadgeExclusiveAlgarveVillas"),
       url: "/images/awards/awards-badge.jpg",
     },
     {
-      title:
-        "Exclusive algarve team member taking a picture with their award trophy",
+      title: t("exclusiveAlgarveTeamMemberTakingPictureWithTheirAwardTrophy"),
       url: "/images/awards/awards-1.jpg",
     },
     {
-      title:
-        "Exclusive algarve team member taking a picture with their award trophy",
+      title: t("exclusiveAlgarveTeamMemberTakingPictureWithTheirAwardTrophy"),
       url: "/images/awards/awards-2.jpg",
     },
   ];
@@ -102,24 +97,13 @@ export default function CarouselSliderVertical({
           will-change: transform;
         }
 
-        ${pauseOnHover
-          ? ".sliding-carousel:hover { animation-play-state: paused; }"
-          : ""}
+        ${pauseOnHover ? ".sliding-carousel:hover { animation-play-state: paused; }" : ""}
       `}</style>
 
       <ul className="flex flex-col sliding-carousel gap-4 h-max">
         {carouselProducts.map((product, i) => (
-          <li
-            key={`Awards--Images--Slider--${i}`}
-            className="relative h-[424px] w-[270px] flex-none"
-          >
-            <GridTileImage
-              alt={product.title}
-              src={product.url}
-              fill
-              sizes="270px"
-              className="object-cover"
-            />
+          <li key={`Awards--Images--Slider--${i}`} className="relative h-[424px] w-[270px] flex-none">
+            <GridTileImage alt={product.title} src={product.url} fill sizes="270px" className="object-cover" />
           </li>
         ))}
       </ul>

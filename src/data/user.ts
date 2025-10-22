@@ -1,3 +1,5 @@
+import { getTranslations } from "next-intl/server";
+
 // Types for user-related API responses
 export interface User {
   id: number;
@@ -52,11 +54,12 @@ interface ActivateResponse {
   success: boolean;
   message: string;
 }
+
 interface ForgotPasswordResponse {
   success: boolean;
   message: string;
   errors?: { [key: string]: string[] };
-  responseStatus?: number
+  responseStatus?: number;
 }
 
 function createBasicAuthHeader(): string {
@@ -187,6 +190,7 @@ export const activateUser = async (
   activationToken: string,
   email: string
 ): Promise<ActivateResponse> => {
+  const t = await getTranslations("userData");
   const endpoint = `/v1/auth/client/activate`;
 
   // console.log({ endpoint });
@@ -203,7 +207,7 @@ export const activateUser = async (
 
     return {
       success: false,
-      message: "An Error occured while activating your account",
+      message: t("errorActivatingAccount"),
     };
   }
 };
@@ -211,6 +215,7 @@ export const activateUser = async (
 export const resendActivationLink = async (
   email: string
 ): Promise<ActivateResponse> => {
+  const t = await getTranslations("userData");
   const endpoint = `/v1/auth/client/resend-activation`;
 
   // console.log({ endpoint });
@@ -227,7 +232,7 @@ export const resendActivationLink = async (
 
     return {
       success: false,
-      message: "An Error occured while activating your account",
+      message: t("errorActivatingAccount"),
     };
   }
 };
@@ -237,6 +242,7 @@ export const forgotPassword = async ({
 }: {
   email: string;
 }): Promise<ForgotPasswordResponse> => {
+  const t = await getTranslations("userData");
   const endpoint = `/v1/auth/client/forgot-password`;
 
   try {
@@ -251,7 +257,7 @@ export const forgotPassword = async ({
 
     return {
       success: false,
-      message: "An Error occured while requesting new password link",
+      message: t("errorRequestingPasswordLink"),
     };
   }
 };
@@ -267,6 +273,7 @@ export const resetPassword = async ({
   password_confirmation: string;
   token: string;
 }): Promise<ForgotPasswordResponse> => {
+  const t = await getTranslations("userData");
   const endpoint = `/v1/auth/client/reset-password`;
 
   try {
@@ -281,7 +288,7 @@ export const resetPassword = async ({
 
     return {
       success: false,
-      message: "An Error occured while resetting your password",
+      message: t("errorResettingPassword"),
     };
   }
 };
@@ -300,7 +307,8 @@ export const logoutUser = async (token: string): Promise<LogoutResponse> => {
 };
 
 // Client-side API functions (for use in components)
-export const clientApi = {
+// Note: These functions should be called from client components that use useTranslations
+export const createClientApi = (t: (key: string) => string) => ({
   register: async (userData: RegisterRequest): Promise<RegisterResponse> => {
     const response = await fetch("/api/auth/register", {
       method: "POST",
@@ -312,7 +320,7 @@ export const clientApi = {
 
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || "Registration failed");
+      throw new Error(error.message || t("registrationFailed"));
     }
 
     return response.json();
@@ -329,7 +337,7 @@ export const clientApi = {
 
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || "Login failed");
+      throw new Error(error.message || t("loginFailed"));
     }
 
     return response.json();
@@ -341,7 +349,7 @@ export const clientApi = {
     });
 
     if (!response.ok) {
-      throw new Error("Logout failed");
+      throw new Error(t("logoutFailed"));
     }
   },
-};
+});

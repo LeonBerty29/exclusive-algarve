@@ -18,7 +18,7 @@ interface PropertyVideosModalProps {
   videos: PropertyVideo[];
 }
 
-const PropertyVideosModal: React.FC<PropertyVideosModalProps> = async({
+export const PropertyVideosModal: React.FC<PropertyVideosModalProps> = async({
   videos,
 }) => {
   const t = await getTranslations("propertyVideosModal");
@@ -60,5 +60,3 @@ const PropertyVideosModal: React.FC<PropertyVideosModalProps> = async({
     </>
   );
 };
-
-export default PropertyVideosModal;

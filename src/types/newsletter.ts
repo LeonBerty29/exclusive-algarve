@@ -1,40 +1,24 @@
 import { z } from "zod";
 
-// Server-side schema (matches API)
-export const newsletterFormSchema = z.object({
-  email: z
-    .string()
-    .min(1, "Email is required")
-    .email("Please enter a valid email address"),
+export function getNewsletterFormSchema(t?: (key: string) => string) {
+  return z.object({
+    email: z
+      .string()
+      .min(1, t ? t("emailRequired") : "Email is required")
+      .email(t ? t("emailInvalid") : "Please enter a valid email address"),
 
-  source_url: z.string().url().optional(),
-});
-
-export type NewsletterFormData = z.infer<typeof newsletterFormSchema>;
-
-// Client-side schema
-export const clientNewsletterFormSchema = z.object({
-  email: z
-    .string()
-    .min(1, "Email is required")
-    .email("Please enter a valid email address"),
-  source_url: z.string().optional(),
-});
-
-export type ClientNewsletterFormData = z.infer<
-  typeof clientNewsletterFormSchema
->;
-
-// API request/response types
-export interface NewsletterFormRequest {
-  email: string;
-  source_url?: string;
+    source_url: z.string().url().optional(),
+  });
 }
+
+export type NewsletterFormData = z.infer<
+  ReturnType<typeof getNewsletterFormSchema>
+>;
 
 export interface NewsletterFormResponse {
   success: true;
   message: string;
-  data: NewsletterFormRequest;
+  data: NewsletterFormData;
 }
 
 export interface NewsletterFormError {

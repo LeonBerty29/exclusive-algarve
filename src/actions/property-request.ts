@@ -1,7 +1,7 @@
 "use server";
 
 import { ZodIssue } from "zod";
-import { propertyFormSchema } from "@/types/property-request";
+import { getPropertyFormSchema } from "@/types/property-request";
 import { submitPropertyFormWithDetailedErrors } from "@/data/property-request";
 import { getTranslations } from "next-intl/server";
 
@@ -16,7 +16,8 @@ export async function propertyFormAction(
   formData: FormData
 ): Promise<PropertyFormActionResult> {
   const t = await getTranslations("propertyRequestAction");
-
+  const propertyFormSchemaTranslation = await getTranslations("propertyFormSchema");
+  const propertyFormSchema = getPropertyFormSchema(propertyFormSchemaTranslation)
   try {
     // Extract data from FormData
     const rawData = {

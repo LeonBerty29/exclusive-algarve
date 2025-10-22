@@ -1,7 +1,7 @@
 "use server";
 
 import { ZodIssue } from "zod";
-import { contactFormSchema } from "@/types/contact-form";
+import { getClientContactFormSchema } from "@/types/contact-form";
 import { submitContactFormWithDetailedErrors } from "@/data/contact-form";
 import { getTranslations } from "next-intl/server";
 
@@ -16,6 +16,8 @@ export async function contactFormAction(
   formData: FormData
 ): Promise<ContactFormActionResult> {
   const t = await getTranslations("contactFormAction");
+  const translationSchema = await getTranslations("contactFormSchema");
+    const contactFormSchema = getClientContactFormSchema(translationSchema);
 
   try {
     // Extract data from FormData
@@ -26,6 +28,7 @@ export async function contactFormAction(
       email: formData.get("email") as string,
       message: formData.get("message") as string,
       source_url: (formData.get("source_url") as string) || undefined,
+      accept_terms: Boolean(formData.get("accept_terms")),
     };
 
     const recaptchaToken = formData.get("recaptcha_token") as string;

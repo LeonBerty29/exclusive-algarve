@@ -2,8 +2,8 @@
 
 import { ZodIssue } from "zod";
 import { getTranslations } from "next-intl/server";
-import { messageFormSchema } from "@/types/message-us";
 import { submitMessageFormWithDetailedErrors } from "@/data/message-us";
+import { getMessageFormSchema } from "@/types/message-us";
 
 export interface MessageFormActionResult {
   success: boolean;
@@ -16,7 +16,8 @@ export async function messageFormAction(
   formData: FormData
 ): Promise<MessageFormActionResult> {
   const t = await getTranslations("messageUsAction");
-
+  const messageFormSchemaTranslation = await getTranslations("messageFormSchema");
+    const messageFormSchema = getMessageFormSchema(messageFormSchemaTranslation);
   try {
     // Extract data from FormData
     const rawData = {

@@ -2,7 +2,7 @@
 import React, { useState, useTransition, useEffect } from "react";
 import { Calendar, CheckCircle } from "lucide-react";
 import { toast } from "sonner";
-import { ZodError, ZodIssue } from "zod";
+import { ZodIssue } from "zod";
 import {
   Dialog,
   DialogContent,
@@ -28,74 +28,66 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { bookMeetingAction } from "@/actions/book-meeting";
-import { clientBookMeetingSchema } from "@/types/book-a-meeting";
+import { ClientBookMeetingFormData, getClientBookMeetingSchema } from "@/types/book-a-meeting";
 import { cn } from "@/lib/utils";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
-
-// Client-side form data interface
-interface FormData {
-  firstName: string;
-  lastName: string;
-  phone: string;
-  email: string;
-  date: Date | null;
-  time: string;
-  message: string;
-  meetingType: "onsite" | "virtual";
-  onsiteLocation: string;
-  virtualPlatform: string;
-  acceptTerms: boolean;
-  sourceUrl: string;
-}
+import { useTranslations } from "next-intl";
 
 interface FormErrors {
-  firstName?: string;
-  lastName?: string;
+  first_name?: string;
+  last_name?: string;
   phone?: string;
   email?: string;
-  date?: string;
-  time?: string;
-  message?: string;
-  onsiteLocation?: string;
-  virtualPlatform?: string;
-  acceptTerms?: string;
-  sourceUrl?: string;
-  meetingType?: string;
+  meeting_date?: string;
+  meeting_time?: string;
+  meeting_location?: string;
+  additional_text?: string;
+  meeting_type?: string;
+  accept_terms?: string;
+  source_url?: string;
 }
 
-type FormField = keyof FormData;
+type FormField = keyof ClientBookMeetingFormData;
 
 const BookMeetingDialog = ({ buttonStyle }: { buttonStyle?: string }) => {
+  const t = useTranslations("bookMeeting");
+  const clientBookingSchemaJson = useTranslations("clientBookMeetingSchema");
+  const clientBookMeetingSchema = getClientBookMeetingSchema(
+    clientBookingSchemaJson
+  );
   const [isPending, startTransition] = useTransition();
   const [isOpen, setIsOpen] = useState(false);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
-  const [formData, setFormData] = useState<FormData>({
-    firstName: "",
-    lastName: "",
+
+  // Separate state for meeting type selection (onsite/virtual)
+  const [meetingTypeSelection, setMeetingTypeSelection] = useState<
+    "onsite" | "virtual"
+  >("onsite");
+
+  const [formData, setFormData] = useState<ClientBookMeetingFormData>({
+    first_name: "",
+    last_name: "",
     phone: "",
     email: "",
-    date: null,
-    time: "",
-    message: "",
-    meetingType: "onsite",
-    onsiteLocation: "",
-    virtualPlatform: "",
-    acceptTerms: false,
-    sourceUrl: "",
+    meeting_date: undefined,
+    meeting_time: "",
+    additional_text: "",
+    meeting_type: "",
+    meeting_location: "",
+    accept_terms: false,
+    source_url: "",
   });
 
   const [errors, setErrors] = useState<FormErrors>({});
   const [isDatePopoverOpen, setIsDatePopoverOpen] = useState(false);
-
   const { executeRecaptcha } = useGoogleReCaptcha();
 
-  // Get current page URL on mount
   useEffect(() => {
     if (typeof window !== "undefined") {
       setFormData((prev) => ({
         ...prev,
-        sourceUrl: window.location.href,
+        source_url: window.location.href,
       }));
     }
   }, []);
@@ -122,14 +114,12 @@ const BookMeetingDialog = ({ buttonStyle }: { buttonStyle?: string }) => {
 
   const handleInputChange = <T extends FormField>(
     field: T,
-    value: FormData[T]
+    value: ClientBookMeetingFormData[T]
   ): void => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
     }));
-
-    // Clear error when user starts typing
     if (errors[field]) {
       setErrors((prev) => ({
         ...prev,
@@ -139,149 +129,102 @@ const BookMeetingDialog = ({ buttonStyle }: { buttonStyle?: string }) => {
   };
 
   const validateClientForm = (): boolean => {
-    try {
-      clientBookMeetingSchema.parse(formData);
-      setErrors({});
-      return true;
-    } catch (error) {
-      const newErrors: FormErrors = {};
-
-      if (error instanceof ZodError) {
-        error.errors.forEach((err: ZodIssue) => {
-          const fieldName = err.path[0] as keyof FormErrors;
-          if (fieldName && typeof fieldName === "string") {
-            // Handle specific validation for meeting type dependent fields
-            if (err.message.includes("location or platform")) {
-              if (formData.meetingType === "onsite") {
-                newErrors.onsiteLocation = "Please select an office location";
-              } else {
-                newErrors.virtualPlatform = "Please select a virtual platform";
-              }
-            } else {
-              newErrors[fieldName] = err.message;
-            }
-          }
-        });
+    const validationResult = clientBookMeetingSchema.safeParse(formData);
+    setErrors({});
+    if (validationResult.success) return true;
+    const newErrors: FormErrors = {};
+    validationResult.error.errors.forEach((err: ZodIssue) => {
+      const fieldName = err.path[0] as keyof FormErrors;
+      if (fieldName && typeof fieldName === "string") {
+        newErrors[fieldName] = err.message;
       }
-
-      setErrors(newErrors);
-      return false;
-    }
+    });
+    setErrors(newErrors);
+    return false;
   };
 
   const handleSubmit = async (): Promise<void> => {
-    // Client-side validation first
     if (!validateClientForm()) {
-      toast.error("Please fix the form errors before submitting");
+      toast.error(t("pleaseFixFormErrors"));
       return;
     }
-
     if (!executeRecaptcha) {
-      toast("ReCaptcha Error", {
-        description:
-          "ReCaptcha is not available. Please Refresh the page and try again.",
-        duration: 1500,
-      });
+      toast(t("recaptchaNotAvailable"), { duration: 1500 });
       return;
     }
 
     const token = await executeRecaptcha("contactForm");
-
     const formDataToSubmit = new FormData();
-    formDataToSubmit.append("first_name", formData.firstName);
-    formDataToSubmit.append("last_name", formData.lastName);
+    formDataToSubmit.append("first_name", formData.first_name);
+    formDataToSubmit.append("last_name", formData.last_name);
     formDataToSubmit.append("phone", formData.phone);
     formDataToSubmit.append("email", formData.email);
     formDataToSubmit.append(
       "meeting_date",
-      formData.date?.toISOString().split("T")[0] || ""
+      formData.meeting_date?.toISOString().split("T")[0] || ""
     );
-    formDataToSubmit.append("meeting_time", formData.time);
-    formDataToSubmit.append("additional_text", formData.message);
-    formDataToSubmit.append("source_url", formData.sourceUrl);
-
-    // Determine meeting type and location
-    const meetingType =
-      formData.meetingType === "onsite" ? "On-site meeting" : "Virtual meeting";
-    const meetingLocation =
-      formData.meetingType === "onsite"
-        ? formData.onsiteLocation
-        : formData.virtualPlatform;
-
-    formDataToSubmit.append("meeting_type", meetingType);
-    formDataToSubmit.append("meeting_location", meetingLocation);
+    formDataToSubmit.append("meeting_time", formData.meeting_time);
+    formDataToSubmit.append("additional_text", formData.additional_text as string);
+    formDataToSubmit.append("source_url", formData.source_url as string );
+    formDataToSubmit.append("meeting_type", formData.meeting_type);
     formDataToSubmit.append("recaptcha_token", token || "");
-
+    formDataToSubmit.append("accept_terms", formData.accept_terms.toString());
 
     startTransition(async () => {
       try {
         const result = await bookMeetingAction(formDataToSubmit);
-
         if (result.success) {
-          setSuccessMessage(result.message || "Meeting booked successfully!");
-
-          // Reset form
+          setSuccessMessage(result.message || t("meetingBookedSuccessfully"));
           setFormData({
-            firstName: "",
-            lastName: "",
+            first_name: "",
+            last_name: "",
             phone: "",
             email: "",
-            date: null,
-            time: "",
-            message: "",
-            meetingType: "onsite",
-            onsiteLocation: "",
-            virtualPlatform: "",
-            acceptTerms: false,
-            sourceUrl: formData.sourceUrl, // Keep the source URL
+            meeting_date: undefined,
+            meeting_time: "",
+            meeting_type: "",
+            meeting_location: "",
+            additional_text: "",
+            accept_terms: false,
+            source_url: formData.source_url,
           });
+          setMeetingTypeSelection("onsite");
           setErrors({});
           setIsOpen(false);
-          setShowSuccessDialog(true); // Show success dialog
+          setShowSuccessDialog(true);
         } else {
-          // Handle server validation errors
           if (result.fieldErrors) {
             const newErrors: FormErrors = {};
             Object.entries(result.fieldErrors).forEach(([key, message]) => {
-              // Map server field names to client field names
               const fieldMapping: { [key: string]: keyof FormErrors } = {
-                first_name: "firstName",
-                last_name: "lastName",
+                first_name: "first_name",
+                last_name: "last_name",
                 phone: "phone",
                 email: "email",
-                meeting_date: "date",
-                meeting_time: "time",
-                meeting_type: "meetingType",
-                meeting_location:
-                  formData.meetingType === "onsite"
-                    ? "onsiteLocation"
-                    : "virtualPlatform",
-                additional_text: "message",
-                source_url: "sourceUrl",
+                meeting_date: "meeting_date",
+                meeting_time: "meeting_time",
+                meeting_type: "meeting_type",
+                additional_text: "additional_text",
+                source_url: "source_url",
               };
-
               const clientFieldName =
                 fieldMapping[key] || (key as keyof FormErrors);
               newErrors[clientFieldName] = message;
             });
             setErrors(newErrors);
           }
-
           if (result.errors) {
-            // Handle detailed validation errors from API
             const errorMessages = Object.entries(result.errors)
               .map(([field, messages]) => `${field}: ${messages.join(", ")}`)
               .join("; ");
-            toast.error(`Validation errors: ${errorMessages}`);
+            toast.error(`${t("validationErrors")}: ${errorMessages}`);
           } else {
-            toast.error(
-              result.message || "Failed to book meeting. Please try again."
-            );
+            toast.error(result.message || t("failedToBookMeeting"));
           }
         }
       } catch (error) {
         console.error("Submit error:", error);
-        toast.error("An unexpected error occurred. Please try again.");
+        toast.error(t("unexpectedErrorTryAgain"));
       }
     });
   };
@@ -289,40 +232,32 @@ const BookMeetingDialog = ({ buttonStyle }: { buttonStyle?: string }) => {
   const handleInputChangeEvent =
     (field: FormField) =>
     (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
-      handleInputChange(field, e.target.value as FormData[typeof field]);
+      handleInputChange(field, e.target.value as ClientBookMeetingFormData[typeof field]);
     };
 
   const handleCheckboxChange = (
     e: React.ChangeEvent<HTMLInputElement>
   ): void => {
-    handleInputChange("acceptTerms", e.target.checked);
+    handleInputChange("accept_terms", e.target.checked);
   };
 
   const handleDateSelect = (date: Date | undefined): void => {
-    handleInputChange("date", date || null);
+    handleInputChange("meeting_date", date || undefined);
     setIsDatePopoverOpen(false);
   };
 
   const handleTimeSelect = (value: string): void => {
-    handleInputChange("time", value);
+    handleInputChange("meeting_time", value);
   };
 
   const handleMeetingTypeChange = (type: "onsite" | "virtual"): void => {
-    handleInputChange("meetingType", type);
-    // Clear the other location type when switching
-    if (type === "onsite") {
-      handleInputChange("virtualPlatform", "");
-    } else {
-      handleInputChange("onsiteLocation", "");
-    }
+    setMeetingTypeSelection(type);
+    // Reset meeting_type when switching
+    handleInputChange("meeting_type", "");
   };
 
-  const handleOnsiteLocationSelect = (value: string): void => {
-    handleInputChange("onsiteLocation", value);
-  };
-
-  const handleVirtualPlatformSelect = (value: string): void => {
-    handleInputChange("virtualPlatform", value);
+  const handleMeetingLocationSelect = (value: string): void => {
+    handleInputChange("meeting_type", value);
   };
 
   const isDateDisabled = (date: Date): boolean => {
@@ -332,8 +267,7 @@ const BookMeetingDialog = ({ buttonStyle }: { buttonStyle?: string }) => {
   };
 
   return (
-    <div className="">
-      {/* Success Dialog */}
+    <div>
       <Dialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
         <DialogContent className="sm:max-w-md rounded-2xl">
           <DialogHeader className="text-center">
@@ -341,15 +275,13 @@ const BookMeetingDialog = ({ buttonStyle }: { buttonStyle?: string }) => {
               <CheckCircle className="h-16 w-16 text-green-500" />
             </div>
             <DialogTitle className="text-xl text-center">
-              Meeting Booked Successfully!
+              {t("meetingBookedSuccessfullyTitle")}
             </DialogTitle>
           </DialogHeader>
 
           <div className="text-center space-y-4">
             <p className="text-gray-600">{successMessage}</p>
-            <p className="text-sm text-gray-500">
-              We&apos;ll get back to you immediately
-            </p>
+            <p className="text-sm text-gray-500">{t("weWillGetBack")}</p>
           </div>
 
           <div className="flex justify-center pt-4 mb-2">
@@ -357,13 +289,12 @@ const BookMeetingDialog = ({ buttonStyle }: { buttonStyle?: string }) => {
               onClick={() => setShowSuccessDialog(false)}
               className="bg-primary text-white hover:bg-black transition-colors"
             >
-              Close
+              {t("close")}
             </Button>
           </div>
         </DialogContent>
       </Dialog>
 
-      {/* Main Booking Dialog */}
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogTrigger asChild>
           <Button
@@ -373,53 +304,53 @@ const BookMeetingDialog = ({ buttonStyle }: { buttonStyle?: string }) => {
               buttonStyle
             )}
           >
-            BOOK A MEETING
+            {t("bookAMeeting")}
           </Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-md max-h-[90vh] flex flex-col">
           <DialogHeader className="pb-5 flex-shrink-0">
-            <DialogTitle>Book A Meeting</DialogTitle>
+            <DialogTitle>{t("bookAMeetingTitle")}</DialogTitle>
           </DialogHeader>
 
           <div className="flex-1 overflow-y-auto">
             <div className="space-y-4 pr-2">
               <div className="grid grid-cols-1 gap-4">
                 <div>
-                  <Label className="sr-only" htmlFor="firstName">
-                    First Name
+                  <Label className="sr-only" htmlFor="first_name">
+                    {t("firstName")}
                   </Label>
                   <Input
-                    id="firstName"
+                    id="first_name"
                     type="text"
-                    value={formData.firstName}
-                    onChange={handleInputChangeEvent("firstName")}
-                    placeholder="First Name*"
-                    className={errors.firstName ? "border-red-500" : ""}
+                    value={formData.first_name}
+                    onChange={handleInputChangeEvent("first_name")}
+                    placeholder={t("firstNamePlaceholder")}
+                    className={errors.first_name ? "border-red-500" : ""}
                     disabled={isPending}
                   />
-                  {errors.firstName && (
+                  {errors.first_name && (
                     <p className="text-red-500 text-sm mt-1">
-                      {errors.firstName}
+                      {errors.first_name}
                     </p>
                   )}
                 </div>
 
                 <div>
-                  <Label className="sr-only" htmlFor="lastName">
-                    Last Name
+                  <Label className="sr-only" htmlFor="last_name">
+                    {t("lastName")}
                   </Label>
                   <Input
-                    id="lastName"
+                    id="last_name"
                     type="text"
-                    value={formData.lastName}
-                    onChange={handleInputChangeEvent("lastName")}
-                    placeholder="Last Name*"
-                    className={errors.lastName ? "border-red-500" : ""}
+                    value={formData.last_name}
+                    onChange={handleInputChangeEvent("last_name")}
+                    placeholder={t("lastNamePlaceholder")}
+                    className={errors.last_name ? "border-red-500" : ""}
                     disabled={isPending}
                   />
-                  {errors.lastName && (
+                  {errors.last_name && (
                     <p className="text-red-500 text-sm mt-1">
-                      {errors.lastName}
+                      {errors.last_name}
                     </p>
                   )}
                 </div>
@@ -427,14 +358,14 @@ const BookMeetingDialog = ({ buttonStyle }: { buttonStyle?: string }) => {
 
               <div>
                 <Label className="sr-only" htmlFor="phone">
-                  Phone
+                  {t("phone")}
                 </Label>
                 <Input
                   id="phone"
                   type="tel"
                   value={formData.phone}
                   onChange={handleInputChangeEvent("phone")}
-                  placeholder="Phone*"
+                  placeholder={t("phonePlaceholder")}
                   className={errors.phone ? "border-red-500" : ""}
                   disabled={isPending}
                 />
@@ -445,14 +376,14 @@ const BookMeetingDialog = ({ buttonStyle }: { buttonStyle?: string }) => {
 
               <div>
                 <Label className="sr-only" htmlFor="email">
-                  Email
+                  {t("email")}
                 </Label>
                 <Input
                   id="email"
                   type="email"
                   value={formData.email}
                   onChange={handleInputChangeEvent("email")}
-                  placeholder="Email*"
+                  placeholder={t("emailPlaceholder")}
                   className={errors.email ? "border-red-500" : ""}
                   disabled={isPending}
                 />
@@ -462,7 +393,7 @@ const BookMeetingDialog = ({ buttonStyle }: { buttonStyle?: string }) => {
               </div>
 
               <div>
-                <Label className="sr-only">Date *</Label>
+                <Label className="sr-only">{t("date")}</Label>
                 <Popover
                   open={isDatePopoverOpen}
                   onOpenChange={setIsDatePopoverOpen}
@@ -471,44 +402,48 @@ const BookMeetingDialog = ({ buttonStyle }: { buttonStyle?: string }) => {
                     <Button
                       variant="outline"
                       className={`w-full justify-start text-left font-normal ${
-                        !formData.date ? "text-gray-500" : ""
-                      } ${errors.date ? "border-red-500" : ""}`}
+                        !formData.meeting_date ? "text-gray-500" : ""
+                      } ${errors.meeting_date ? "border-red-500" : ""}`}
                       disabled={isPending}
                     >
                       <Calendar className="mr-2 h-4 w-4" />
-                      {formData.date
-                        ? formData.date.toLocaleDateString()
-                        : "Pick a date*"}
+                      {formData.meeting_date
+                        ? formData.meeting_date.toLocaleDateString()
+                        : t("pickADate")}
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0" align="start">
                     <CalendarComponent
                       mode="single"
-                      selected={formData.date || undefined}
+                      selected={formData.meeting_date || undefined}
                       onSelect={handleDateSelect}
                       disabled={isDateDisabled}
                       initialFocus
                     />
                   </PopoverContent>
                 </Popover>
-                {errors.date && (
-                  <p className="text-red-500 text-sm mt-1">{errors.date}</p>
+                {errors.meeting_date && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.meeting_date}
+                  </p>
                 )}
               </div>
 
               <div>
                 <Label className="sr-only" htmlFor="time">
-                  Time *
+                  {t("time")}
                 </Label>
                 <Select
-                  value={formData.time}
+                  value={formData.meeting_time}
                   onValueChange={handleTimeSelect}
                   disabled={isPending}
                 >
                   <SelectTrigger
-                    className={errors.time ? "border-red-500 w-full" : "w-full"}
+                    className={
+                      errors.meeting_time ? "border-red-500 w-full" : "w-full"
+                    }
                   >
-                    <SelectValue placeholder="Select a time*" />
+                    <SelectValue placeholder={t("selectATime")} />
                   </SelectTrigger>
                   <SelectContent>
                     {timeSlots.map((time: string) => (
@@ -518,15 +453,16 @@ const BookMeetingDialog = ({ buttonStyle }: { buttonStyle?: string }) => {
                     ))}
                   </SelectContent>
                 </Select>
-                {errors.time && (
-                  <p className="text-red-500 text-sm mt-1">{errors.time}</p>
+                {errors.meeting_time && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.meeting_time}
+                  </p>
                 )}
               </div>
 
-              {/* Meeting Type Selection */}
               <div>
                 <Label className="text-sm font-medium mb-3 block">
-                  Meeting Type
+                  {t("meetingType")}
                 </Label>
                 <div className="flex space-x-4">
                   <label className="flex items-center space-x-2">
@@ -534,47 +470,44 @@ const BookMeetingDialog = ({ buttonStyle }: { buttonStyle?: string }) => {
                       type="radio"
                       name="meetingType"
                       value="onsite"
-                      checked={formData.meetingType === "onsite"}
+                      checked={meetingTypeSelection === "onsite"}
                       onChange={() => handleMeetingTypeChange("onsite")}
                       className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
                       disabled={isPending}
                     />
-                    <span className="text-sm">On-site meeting</span>
+                    <span className="text-sm">{t("onSiteMeeting")}</span>
                   </label>
                   <label className="flex items-center space-x-2">
                     <input
                       type="radio"
                       name="meetingType"
                       value="virtual"
-                      checked={formData.meetingType === "virtual"}
+                      checked={meetingTypeSelection === "virtual"}
                       onChange={() => handleMeetingTypeChange("virtual")}
                       className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
                       disabled={isPending}
                     />
-                    <span className="text-sm">Virtual meeting</span>
+                    <span className="text-sm">{t("virtualMeeting")}</span>
                   </label>
                 </div>
               </div>
 
-              {/* Conditional Location/Platform Selection */}
-              {formData.meetingType === "onsite" && (
+              {meetingTypeSelection === "onsite" && (
                 <div>
                   <Label className="sr-only" htmlFor="onsiteLocation">
-                    Office Location *
+                    {t("officeLocation")}
                   </Label>
                   <Select
-                    value={formData.onsiteLocation}
-                    onValueChange={handleOnsiteLocationSelect}
+                    value={formData.meeting_type}
+                    onValueChange={handleMeetingLocationSelect}
                     disabled={isPending}
                   >
                     <SelectTrigger
                       className={
-                        errors.onsiteLocation
-                          ? "border-red-500 w-full"
-                          : "w-full"
+                        errors.meeting_type ? "border-red-500 w-full" : "w-full"
                       }
                     >
-                      <SelectValue placeholder="Select office location*" />
+                      <SelectValue placeholder={t("selectOfficeLocation")} />
                     </SelectTrigger>
                     <SelectContent>
                       {onsiteLocations.map((location: string) => (
@@ -584,32 +517,30 @@ const BookMeetingDialog = ({ buttonStyle }: { buttonStyle?: string }) => {
                       ))}
                     </SelectContent>
                   </Select>
-                  {errors.onsiteLocation && (
+                  {errors.meeting_type && (
                     <p className="text-red-500 text-sm mt-1">
-                      {errors.onsiteLocation}
+                      {errors.meeting_type}
                     </p>
                   )}
                 </div>
               )}
 
-              {formData.meetingType === "virtual" && (
+              {meetingTypeSelection === "virtual" && (
                 <div>
                   <Label className="sr-only" htmlFor="virtualPlatform">
-                    Virtual Platform *
+                    {t("virtualPlatform")}
                   </Label>
                   <Select
-                    value={formData.virtualPlatform}
-                    onValueChange={handleVirtualPlatformSelect}
+                    value={formData.meeting_type}
+                    onValueChange={handleMeetingLocationSelect}
                     disabled={isPending}
                   >
                     <SelectTrigger
                       className={
-                        errors.virtualPlatform
-                          ? "border-red-500 w-full"
-                          : "w-full"
+                        errors.meeting_type ? "border-red-500 w-full" : "w-full"
                       }
                     >
-                      <SelectValue placeholder="Select virtual platform*" />
+                      <SelectValue placeholder={t("selectVirtualPlatform")} />
                     </SelectTrigger>
                     <SelectContent>
                       {virtualPlatforms.map((platform: string) => (
@@ -619,9 +550,9 @@ const BookMeetingDialog = ({ buttonStyle }: { buttonStyle?: string }) => {
                       ))}
                     </SelectContent>
                   </Select>
-                  {errors.virtualPlatform && (
+                  {errors.meeting_type && (
                     <p className="text-red-500 text-sm mt-1">
-                      {errors.virtualPlatform}
+                      {errors.meeting_type}
                     </p>
                   )}
                 </div>
@@ -629,13 +560,13 @@ const BookMeetingDialog = ({ buttonStyle }: { buttonStyle?: string }) => {
 
               <div>
                 <Label className="sr-only" htmlFor="message">
-                  Message
+                  {t("message")}
                 </Label>
                 <Textarea
                   id="message"
-                  value={formData.message}
-                  onChange={handleInputChangeEvent("message")}
-                  placeholder="Enter any additional information & questions"
+                  value={formData.additional_text}
+                  onChange={handleInputChangeEvent("additional_text")}
+                  placeholder={t("additionalInfoPlaceholder")}
                   rows={3}
                   disabled={isPending}
                 />
@@ -644,22 +575,21 @@ const BookMeetingDialog = ({ buttonStyle }: { buttonStyle?: string }) => {
               <div className="flex space-x-2">
                 <input
                   type="checkbox"
-                  id="acceptTerms"
-                  checked={formData.acceptTerms}
+                  id="accept_terms"
+                  checked={formData.accept_terms}
                   onChange={handleCheckboxChange}
                   className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                   disabled={isPending}
                 />
                 <Label
-                  htmlFor="acceptTerms"
+                  htmlFor="accept_terms"
                   className="text-sm text-gray-500 font-light"
                 >
-                  By requesting information you are authorizing Exclusive
-                  Algarve Villas to use your data in order to contact you.
+                  {t("dataUseAuthorization")}
                 </Label>
               </div>
-              {errors.acceptTerms && (
-                <p className="text-red-500 text-sm">{errors.acceptTerms}</p>
+              {errors.accept_terms && (
+                <p className="text-red-500 text-sm">{errors.accept_terms}</p>
               )}
             </div>
           </div>
@@ -670,7 +600,7 @@ const BookMeetingDialog = ({ buttonStyle }: { buttonStyle?: string }) => {
               onClick={() => setIsOpen(false)}
               disabled={isPending}
             >
-              Cancel
+              {t("cancel")}
             </Button>
             <Button
               className="bg-primary text-white hover:bg-black/85 transition-all"
@@ -678,7 +608,7 @@ const BookMeetingDialog = ({ buttonStyle }: { buttonStyle?: string }) => {
               onClick={handleSubmit}
               disabled={isPending}
             >
-              {isPending ? "Submitting..." : "Submit"}
+              {isPending ? t("submitting") : t("submit")}
             </Button>
           </div>
         </DialogContent>

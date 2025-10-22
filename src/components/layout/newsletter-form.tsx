@@ -21,11 +21,11 @@ import {
 import { cn } from "@/lib/utils";
 import * as z from "zod";
 import { newsletterFormAction } from "@/actions/newsletter";
-import { clientNewsletterFormSchema } from "@/types/newsletter";
 import { CheckCircle } from "lucide-react";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
+import { getNewsletterFormSchema } from "@/types/newsletter";
 
 interface NewsletterFormProps {
   className?: string;
@@ -33,6 +33,8 @@ interface NewsletterFormProps {
 
 export function NewsletterForm({ className = "" }: NewsletterFormProps) {
   const t = useTranslations("newsletterForm");
+  const newsletterFormSchemaTranslation = useTranslations("newsletterFormSchema");
+  const newsletterFormSchema = getNewsletterFormSchema(newsletterFormSchemaTranslation);
   const [isPending, startTransition] = useTransition();
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
@@ -46,8 +48,8 @@ export function NewsletterForm({ className = "" }: NewsletterFormProps) {
     source_urlRef.current = window.location.href;
   }
 
-  const form = useForm<z.infer<typeof clientNewsletterFormSchema>>({
-    resolver: zodResolver(clientNewsletterFormSchema),
+  const form = useForm<z.infer<typeof newsletterFormSchema>>({
+    resolver: zodResolver(newsletterFormSchema),
     defaultValues: {
       email: "",
       source_url: source_urlRef.current,
@@ -55,9 +57,7 @@ export function NewsletterForm({ className = "" }: NewsletterFormProps) {
     reValidateMode: "onChange",
   });
 
-  const onSubmit = async (
-    values: z.infer<typeof clientNewsletterFormSchema>
-  ) => {
+  const onSubmit = async (values: z.infer<typeof newsletterFormSchema>) => {
     if (!executeRecaptcha) {
       toast(t("toastReCaptchaError"), {
         description: t("toastReCaptchaDescription"),
@@ -90,7 +90,7 @@ export function NewsletterForm({ className = "" }: NewsletterFormProps) {
           if (result.fieldErrors) {
             Object.entries(result.fieldErrors).forEach(([key, message]) => {
               const fieldMapping: {
-                [key: string]: keyof z.infer<typeof clientNewsletterFormSchema>;
+                [key: string]: keyof z.infer<typeof newsletterFormSchema>;
               } = {
                 email: "email",
                 source_url: "source_url",
@@ -98,7 +98,7 @@ export function NewsletterForm({ className = "" }: NewsletterFormProps) {
 
               const clientFieldName =
                 fieldMapping[key] ||
-                (key as keyof z.infer<typeof clientNewsletterFormSchema>);
+                (key as keyof z.infer<typeof newsletterFormSchema>);
               form.setError(clientFieldName, {
                 type: "server",
                 message: message,
@@ -110,7 +110,7 @@ export function NewsletterForm({ className = "" }: NewsletterFormProps) {
             const errorMessages = Object.entries(result.errors)
               .map(([field, messages]) => `${field}: ${messages.join(", ")}`)
               .join("; ");
-            setError(`Validation errors: ${errorMessages}`);
+            setError(errorMessages);
           } else {
             setError(result.message || t("errorFailedSubscribe"));
           }
@@ -166,7 +166,7 @@ export function NewsletterForm({ className = "" }: NewsletterFormProps) {
               name="email"
               render={() => (
                 <FormItem>
-                  <div className="flex justify-center mt-2">
+                  <div className="flex mt-2">
                     <FormMessage />
                   </div>
                 </FormItem>
@@ -175,7 +175,7 @@ export function NewsletterForm({ className = "" }: NewsletterFormProps) {
           </div>
 
           {error && (
-            <div className="flex justify-center mt-2">
+            <div className="flex mt-2">
               <p className="text-red-500 text-sm">{error}</p>
             </div>
           )}

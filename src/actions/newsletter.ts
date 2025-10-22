@@ -2,8 +2,8 @@
 
 import { ZodIssue } from "zod";
 import { getTranslations } from "next-intl/server";
-import { newsletterFormSchema } from "@/types/newsletter";
 import { submitNewsletterFormWithDetailedErrors } from "@/data/newsletter";
+import { getMessageFormSchema } from "@/types/message-us";
 
 export interface NewsletterFormActionResult {
   success: boolean;
@@ -16,6 +16,12 @@ export async function newsletterFormAction(
   formData: FormData
 ): Promise<NewsletterFormActionResult> {
   const t = await getTranslations("newsletterAction");
+  const newsletterFormSchemaTranslation = await getTranslations(
+    "newsletterFormSchema"
+  );
+  const newsletterFormSchema = getMessageFormSchema(
+    newsletterFormSchemaTranslation
+  );
 
   try {
     // Extract data from FormData

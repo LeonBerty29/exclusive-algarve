@@ -1,8 +1,9 @@
 import {
-  NewsletterFormRequest,
+  NewsletterFormData,
   NewsletterFormResponse,
   NewsletterFormError,
 } from "@/types/newsletter";
+import { getTranslations } from "next-intl/server";
 
 interface DetailedResult {
   success: boolean;
@@ -12,8 +13,9 @@ interface DetailedResult {
 }
 
 export async function submitNewsletterFormWithDetailedErrors(
-  data: NewsletterFormRequest
+  data: NewsletterFormData,
 ): Promise<DetailedResult> {
+  const t = await getTranslations("newsletterData");
   try {
     const endpoint = "/v1/forms/newsletter/subscribe";
     const response = await fetch(
@@ -27,33 +29,27 @@ export async function submitNewsletterFormWithDetailedErrors(
         body: JSON.stringify(data),
       }
     );
-
     if (!response.ok) {
       if (response.status === 422) {
-        // Validation errors
         const errorData: NewsletterFormError = await response.json();
         return {
           success: false,
-          error: errorData.message || "Validation failed",
+          error: errorData.message || t("validationFailed"),
           validationErrors: errorData.errors,
         };
       }
-
       if (response.status === 401) {
         return {
           success: false,
-          error: "Unauthorized - please try again",
+          error: t("unauthorizedTryAgain"),
         };
       }
-
-      // Other HTTP errors
       const errorText = await response.text();
       return {
         success: false,
-        error: `Server error: ${response.status} ${errorText}`,
+        error: `${t("serverError")} ${response.status} ${errorText}`,
       };
     }
-
     const responseData: NewsletterFormResponse = await response.json();
     return {
       success: true,
@@ -63,7 +59,7 @@ export async function submitNewsletterFormWithDetailedErrors(
     console.error("Newsletter form API error:", error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : "Network error occurred",
+      error: error instanceof Error ? error.message : t("networkErrorOccurred"),
     };
   }
 }

@@ -2,7 +2,10 @@
 
 import { getTranslations } from "next-intl/server";
 import { ZodIssue } from "zod";
-import { PartnershipFormSchema } from "@/types/partnership-request";
+import {
+  getPartnershipFormSchema,
+  PartnershipFormData,
+} from "@/types/partnership-request";
 import { submitPartnershipRequestWithDetailedErrors } from "@/data/partnership-request";
 
 export interface PartnershipFormActionResult {
@@ -16,10 +19,13 @@ export async function PartnershipRequestFormAction(
   formData: FormData
 ): Promise<PartnershipFormActionResult> {
   const t = await getTranslations("partnershipRequestAction");
-
+  const partnershipSchemaTranslation = await getTranslations("partnershipFormSchema");
+  const PartnershipFormSchema = getPartnershipFormSchema(
+    partnershipSchemaTranslation
+  );
   try {
     // Extract data from FormData with the correct field names that match the API
-    const rawData = {
+    const rawData: PartnershipFormData = {
       company_name: formData.get("company_name") as string,
       company_email: formData.get("company_email") as string,
       company_phone: formData.get("company_phone") as string,
@@ -31,11 +37,13 @@ export async function PartnershipRequestFormAction(
       interested_property:
         (formData.get("interested_property") as string) || undefined,
       remarks: (formData.get("remarks") as string) || undefined,
-      confirmed_visit_date:
-        (formData.get("confirmed_visit_date") as string) || undefined,
+      confirmed_visit_date: new Date(
+        formData.get("confirmed_visit_date") as string
+      ),
       confirmed_visit_time:
         (formData.get("confirmed_visit_time") as string) || undefined,
       source_url: (formData.get("source_url") as string) || undefined,
+      accept_terms: Boolean(formData.get("accept_terms")),
     };
 
     const recaptchaToken = formData.get("recaptcha_token") as string;

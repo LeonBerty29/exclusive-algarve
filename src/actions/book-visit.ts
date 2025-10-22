@@ -3,7 +3,7 @@
 import { getTranslations } from "next-intl/server";
 import { ZodIssue } from "zod";
 import { bookVisitWithDetailedErrors } from "@/data/book-visit";
-import { bookVisitSchema } from "@/types/book-a-visit";
+import { getClientBookVisitSchema } from "@/types/book-a-visit";
 
 export interface BookVisitActionResult {
   success: boolean;
@@ -16,6 +16,8 @@ export async function bookVisitAction(
   formData: FormData
 ): Promise<BookVisitActionResult> {
   const t = await getTranslations("bookVisitAction");
+  const schemaTranslation = await getTranslations("bookVisitSchema");
+  const bookVisitSchema = getClientBookVisitSchema(schemaTranslation);
 
   try {
     // Extract data from FormData
@@ -24,10 +26,12 @@ export async function bookVisitAction(
       last_name: formData.get("last_name") as string,
       phone: formData.get("phone") as string,
       email: formData.get("email") as string,
-      visit_date: formData.get("visit_date") as string,
+      visit_date: new Date(formData.get("visit_date") as string),
       visit_time: formData.get("visit_time") as string,
       additional_text: (formData.get("additional_text") as string) || undefined,
       source_url: (formData.get("source_url") as string) || undefined,
+      property_reference: formData.get("property_reference") as string,
+      accept_terms: Boolean(formData.get("accept_terms") as string),
     };
 
     const recaptchaToken = formData.get("recaptcha_token") as string;

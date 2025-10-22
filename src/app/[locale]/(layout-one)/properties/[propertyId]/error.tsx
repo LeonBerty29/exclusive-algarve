@@ -60,7 +60,7 @@ export default function PropertyError({ error, reset }: ErrorProps) {
 
   return (
     <>
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center px-4">
+      <div className="min-h-screen pt-24 bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center px-4">
         <div className="max-w-md w-full text-center">
           {/* Icon with glow effect */}
           <div className="mb-8 relativ">

@@ -18,6 +18,7 @@ import {
   TeamMember,
   TeamMembersProps,
 } from "@/types/team";
+import { useTranslations } from "next-intl";
 
 // Dialog Component for Mobile
 const TeamMemberDialog: React.FC<TeamMemberDialogProps> = ({
@@ -104,6 +105,7 @@ const TeamMemberDialog: React.FC<TeamMemberDialogProps> = ({
 };
 
 const TeamMembers: React.FC<TeamMembersProps> = ({ teams }) => {
+  const t = useTranslations("teamMembers");
   const [selectedMember, setSelectedMember] = useState<TeamMember>(
     teams![0].data![0]
   );
@@ -130,11 +132,9 @@ const TeamMembers: React.FC<TeamMembersProps> = ({ teams }) => {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">
-            No Team Members Found
+            {t("noteamMambers")}
           </h2>
-          <p className="text-gray-600">
-            Please add team members to display them here.
-          </p>
+          <p className="text-gray-600">{t("addTeamMembers")}</p>
         </div>
       </div>
     );
@@ -145,12 +145,10 @@ const TeamMembers: React.FC<TeamMembersProps> = ({ teams }) => {
       <div className="py-8">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Meet the Team
+            {t("meetTheTeam")}
           </h1>
           <div className="w-24 h-1 bg-primary mx-auto"></div>
-          <p className="mb-6 text-gray-600 mt-6">
-            Click on a team member to view their details
-          </p>
+          <p className="mb-6 text-gray-600 mt-6">{t("clickOnATeamMember")}</p>
         </div>
 
         <div className="flex flex-col lg:flex-row gap-8">
@@ -279,7 +277,7 @@ const TeamMembers: React.FC<TeamMembersProps> = ({ teams }) => {
                                 size="sm"
                                 aria-label={`View details for ${member.name}`}
                               >
-                                See Details
+                                {t("seeDetails")}
                               </Button>
                             </div>
                           </div>
