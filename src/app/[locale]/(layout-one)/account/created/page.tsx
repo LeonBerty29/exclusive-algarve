@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Link, redirect } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
-import { CreatedPageSearchParamsSchema } from "@/schema";
+import { getCreatedPageSearchParamsSchema } from "@/schema";
 import { CheckCircle } from "lucide-react";
 import { getLocale, getTranslations } from "next-intl/server";
 import { headers } from "next/headers";
@@ -13,6 +13,8 @@ interface Props {
 
 const page = async (props: Props) => {
   const t = await getTranslations("accountCreatedPage");
+  const schemaTranslations = await getTranslations("schemaTranslations");
+  const CreatedPageSearchParamsSchema = getCreatedPageSearchParamsSchema(schemaTranslations);
   const headersList = await headers();
   const referer = headersList.get("referer") || "direct";
   const url = new URL(referer);

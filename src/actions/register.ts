@@ -1,11 +1,12 @@
 "use server";
 
-import * as z from "zod";
 import { getTranslations } from "next-intl/server";
-import { RegisterSchema } from "@/schema";
+import { getRegisterSchema, RegisterFormData } from "@/schema";
 
-export const register = async (values: z.infer<typeof RegisterSchema>) => {
+export const register = async (values: RegisterFormData) => {
   const t = await getTranslations("registerAction");
+  const schemaTranslations = await getTranslations("schemaTranslations");
+  const RegisterSchema = getRegisterSchema(schemaTranslations);
 
   const validatedFields = RegisterSchema.safeParse(values);
 

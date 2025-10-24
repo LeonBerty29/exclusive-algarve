@@ -12,7 +12,7 @@ import { Link, redirect } from "@/i18n/navigation";
 import { Suspense } from "react";
 import { ReloadBtn } from "@/components/shared/reload-btn";
 import { getLocale, getTranslations } from "next-intl/server";
-import { ActivatePageSearchParamsSchema } from "@/schema";
+import { getActivatePageSearchParamsSchema } from "@/schema";
 
 interface Props {
   searchParams: Promise<{ token: string; email: string; callbackUrl: string }>;
@@ -21,6 +21,8 @@ interface Props {
 const AccountActivationPage = async (props: Props) => {
   const { token, email, callbackUrl } = await props.searchParams;
   const locale = await getLocale();
+  const schemaTranslations = await getTranslations("schemaTranslations");
+  const ActivatePageSearchParamsSchema = getActivatePageSearchParamsSchema(schemaTranslations);
 
   const validatePageParams = ActivatePageSearchParamsSchema.safeParse({
     email,

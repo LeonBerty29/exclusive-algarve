@@ -17,7 +17,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
-import { UserProfileSchema } from "@/schema";
+import { getUserProfileSchema, UserProfileFormData } from "@/schema";
 import { updateProfile } from "@/actions/update-profile";
 import { useTranslations } from "next-intl"; // assuming next-intl or similar
 
@@ -26,8 +26,6 @@ type ErrorType = {
   first_name?: string;
   last_name?: string;
 };
-
-type UserProfileFormValues = z.infer<typeof UserProfileSchema>;
 
 interface UserProfileFormProps {
   initialData: {
@@ -47,8 +45,10 @@ export function UserProfileForm({
   onCancel,
 }: UserProfileFormProps) {
   const t = useTranslations("userProfileForm");
+  const schemaTranslations = useTranslations("schemaTranslations");
+  const UserProfileSchema = getUserProfileSchema(schemaTranslations);
 
-  const form = useForm<UserProfileFormValues>({
+  const form = useForm<UserProfileFormData>({
     resolver: zodResolver(UserProfileSchema),
     defaultValues: {
       first_name: initialData?.firstName || "",

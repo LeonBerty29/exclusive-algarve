@@ -1,16 +1,17 @@
 "use server";
 
-import * as z from "zod";
-import { UserProfileSchema } from "@/schema";
+import { getUserProfileSchema, UserProfileFormData } from "@/schema";
 import { auth } from "@/auth";
 import { revalidatePath } from "next/cache";
 import { getTranslations } from "next-intl/server";
 
 export const updateProfile = async (
-  values: z.infer<typeof UserProfileSchema>
+  values: UserProfileFormData
   // callbackUrl: string | undefined
 ) => {
   const t = await getTranslations("updateProfileAction");
+  const schemaTranslations = await getTranslations("schemaTranslations");
+    const UserProfileSchema = getUserProfileSchema(schemaTranslations);
 
   const validatedFields = UserProfileSchema.safeParse(values);
 
