@@ -18,7 +18,6 @@ function createBasicAuthHeader(): string {
  */
 async function apiRequest<T>(
   endpoint: string,
-  options: RequestInit = {}
 ): Promise<T> {
   const url = `${process.env.API_BASE_URL}${endpoint}`;
 
@@ -29,15 +28,14 @@ async function apiRequest<T>(
   };
 
   const config: RequestInit = {
-    ...options,
     headers: {
       ...defaultHeaders,
-      ...options.headers,
     },
   };
 
   const response = await fetch(url, config);
 
+  
   if (!response.ok) {
     const errorText = await response.text();
     throw new Error(
@@ -66,9 +64,8 @@ function buildQueryString(params: PropertySearchParams): string {
             });
           } else if (key === "price_ranges[]") {
             // value.forEach((item) => {
-              // searchParams.append("price_ranges[]", item.toString());
+            // searchParams.append("price_ranges[]", item.toString());
             // });
-
           }
           // For energy_class and other arrays, use bracket notation as well
           else if (key === "energy_class") {
@@ -89,7 +86,6 @@ function buildQueryString(params: PropertySearchParams): string {
       }
     }
   });
-
 
   const queryString = searchParams.toString();
 
@@ -278,7 +274,6 @@ export async function getPropertiesWithAllPaginated(
   params: PropertySearchParams = {},
   perPage: number = 15
 ): Promise<PropertyListResponse> {
-
   return getProperties({
     ...params,
     include: "media,features",

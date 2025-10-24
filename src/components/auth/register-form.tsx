@@ -14,8 +14,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
-import * as z from "zod";
-import { RegisterSchema } from "@/schema";
+import { getRegisterSchema, RegisterFormData } from "@/schema";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { FormError } from "./form-error";
@@ -43,6 +42,8 @@ export const RegisterForm = ({
   callbackUrl: string | undefined;
 }) => {
   const t = useTranslations("registerForm");
+  const schemaTranslations = useTranslations("schemaTranslations");
+  const RegisterSchema = getRegisterSchema(schemaTranslations);
   const [error, setError] = useState<ErrorType | undefined>({
     message: "",
     password: "",
@@ -57,7 +58,7 @@ export const RegisterForm = ({
 
   const router = useRouter();
 
-  const form = useForm<z.infer<typeof RegisterSchema>>({
+  const form = useForm<RegisterFormData>({
     resolver: zodResolver(RegisterSchema),
     defaultValues: {
       email: "",
@@ -68,7 +69,7 @@ export const RegisterForm = ({
     },
   });
 
-  const onSubmit = (values: z.infer<typeof RegisterSchema>) => {
+  const onSubmit = (values: RegisterFormData) => {
     setError({
       message: "",
       password: "",

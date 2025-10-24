@@ -15,10 +15,7 @@ function createBasicAuthHeader(): string {
 /**
  * Generic fetch wrapper with Basic Auth
  */
-async function apiRequest<T>(
-  endpoint: string,
-  options: RequestInit = {}
-): Promise<T> {
+async function apiRequest<T>(endpoint: string): Promise<T> {
   const url = `${process.env.API_BASE_URL}${endpoint}`;
 
   const defaultHeaders = {
@@ -28,10 +25,8 @@ async function apiRequest<T>(
   };
 
   const config: RequestInit = {
-    ...options,
     headers: {
       ...defaultHeaders,
-      ...options.headers,
     },
   };
 

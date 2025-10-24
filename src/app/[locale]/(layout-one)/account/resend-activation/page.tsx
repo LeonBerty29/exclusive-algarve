@@ -12,7 +12,7 @@ import { Link, redirect } from "@/i18n/navigation";
 import { Suspense } from "react";
 import { ReloadBtn } from "@/components/shared/reload-btn";
 import { getLocale, getTranslations } from "next-intl/server";
-import { ResendActivatePageSearchParamsSchema } from "@/schema";
+import { getResendActivatePageSearchParamsSchema } from "@/schema";
 import { headers } from "next/headers";
 import { routing } from "@/i18n/routing";
 
@@ -23,8 +23,10 @@ interface Props {
 const AccountActivationPage = async (props: Props) => {
   const headersList = await headers();
   const locale = await getLocale();
+  const schemaTranslations = await getTranslations("schemaTranslations");
+  const ResendActivatePageSearchParamsSchema = getResendActivatePageSearchParamsSchema(schemaTranslations);
   const referer = headersList.get("referer") || "direct";
-
+  
   const url = new URL(referer);
   const path = url.pathname;
 

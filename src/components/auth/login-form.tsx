@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 import { useState, useTransition } from "react";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogHeader,
   DialogTitle,
@@ -22,8 +23,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
-import * as z from "zod";
-import { LoginSchema } from "@/schema";
+import { getLoginSchema, LoginFormData } from "@/schema";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 // import { login } from "@/actions/login";
@@ -35,6 +35,7 @@ import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 import { Link, useRouter } from "@/i18n/navigation";
 import { useSession } from "next-auth/react";
 import { PiWarningCircle } from "react-icons/pi";
+import { X } from "lucide-react";
 // import { toast } from "sonner";
 
 export const LoginForm = ({
@@ -43,6 +44,8 @@ export const LoginForm = ({
   callbackUrl: string | undefined;
 }) => {
   const t = useTranslations("loginForm");
+  const schemaTranslations = useTranslations("schemaTranslations");
+  const LoginSchema = getLoginSchema(schemaTranslations);
 
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
@@ -61,7 +64,7 @@ export const LoginForm = ({
 
   const { update } = useSession();
 
-  const form = useForm<z.infer<typeof LoginSchema>>({
+  const form = useForm<LoginFormData>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
       email: "",
@@ -70,7 +73,7 @@ export const LoginForm = ({
     reValidateMode: "onChange",
   });
 
-  const onSubmit = (values: z.infer<typeof LoginSchema>) => {
+  const onSubmit = (values: LoginFormData) => {
     setError("");
     setSuccess("");
 
@@ -185,6 +188,21 @@ export const LoginForm = ({
           showCloseButton={false}
           className="sm:max-w-md rounded-2xl"
         >
+          <DialogClose asChild>
+            <Button
+              variant="ghost"
+              className="absolute right-4 top-4"
+              onClick={() => {
+                setResponseError({
+                  message: "",
+                  responseStatus: undefined,
+                  email: "",
+                });
+              }}
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </DialogClose>
           <DialogHeader className="text-center">
             <div className="flex justify-center mb-4">
               <PiWarningCircle className="h-16 w-16 text-orange-500" />

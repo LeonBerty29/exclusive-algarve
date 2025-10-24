@@ -1,7 +1,6 @@
 "use server";
 
-import * as z from "zod";
-import { LoginSchema } from "@/schema";
+import { getLoginSchema, LoginFormData } from "@/schema";
 import { signIn } from "@/auth";
 import { AuthError } from "next-auth";
 import { getTranslations } from "next-intl/server";
@@ -11,8 +10,10 @@ interface ErrResponse {
   responseStatus: number;
 }
 
-export const login = async (values: z.infer<typeof LoginSchema>) => {
+export const login = async (values: LoginFormData) => {
   const t = await getTranslations("loginAction");
+  const schemaTranslations = await getTranslations("schemaTranslations");
+  const LoginSchema = getLoginSchema(schemaTranslations);
   const validatedFields = LoginSchema.safeParse(values);
 
   if (!validatedFields.success) {

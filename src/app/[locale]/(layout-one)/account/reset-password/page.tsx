@@ -1,5 +1,5 @@
 import { getLocale, getTranslations } from "next-intl/server";
-import { ResetPasswordPageSearchParamsSchema } from "@/schema";
+import { getResetPasswordPageSearchParamsSchema } from "@/schema";
 import { redirect } from "@/i18n/navigation";
 import { ResetPasswordForm } from "@/components/reset-password/reset-password-form";
 
@@ -11,6 +11,8 @@ const ResetPasswordPage = async (props: Props) => {
   const { token, email, callbackUrl } = await props.searchParams;
   const locale = await getLocale();
   const t = await getTranslations("accountResetPasswordPage");
+  const schemaTranslations = await getTranslations("schemaTranslations");
+  const ResetPasswordPageSearchParamsSchema = getResetPasswordPageSearchParamsSchema(schemaTranslations);
 
   const validatePageParams = ResetPasswordPageSearchParamsSchema.safeParse({
     email,

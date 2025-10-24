@@ -1,5 +1,3 @@
-"use client";
-
 import { PiCarLight } from "react-icons/pi";
 import { MdOutlineShower } from "react-icons/md";
 import { IoMdPricetag } from "react-icons/io";
