@@ -28,7 +28,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { bookMeetingAction } from "@/actions/book-meeting";
-import { ClientBookMeetingFormData, getClientBookMeetingSchema } from "@/types/book-a-meeting";
+import {
+  ClientBookMeetingFormData,
+  getClientBookMeetingSchema,
+} from "@/types/book-a-meeting";
 import { cn } from "@/lib/utils";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { useTranslations } from "next-intl";
@@ -62,8 +65,8 @@ const BookMeetingDialog = ({ buttonStyle }: { buttonStyle?: string }) => {
 
   // Separate state for meeting type selection (onsite/virtual)
   const [meetingTypeSelection, setMeetingTypeSelection] = useState<
-    "onsite" | "virtual"
-  >("onsite");
+    "onsite" | "virtual" | ""
+  >("");
 
   const [formData, setFormData] = useState<ClientBookMeetingFormData>({
     first_name: "",
@@ -164,9 +167,13 @@ const BookMeetingDialog = ({ buttonStyle }: { buttonStyle?: string }) => {
       formData.meeting_date?.toISOString().split("T")[0] || ""
     );
     formDataToSubmit.append("meeting_time", formData.meeting_time);
-    formDataToSubmit.append("additional_text", formData.additional_text as string);
-    formDataToSubmit.append("source_url", formData.source_url as string );
+    formDataToSubmit.append(
+      "additional_text",
+      formData.additional_text as string
+    );
+    formDataToSubmit.append("source_url", formData.source_url as string);
     formDataToSubmit.append("meeting_type", formData.meeting_type);
+    formDataToSubmit.append("meeting_location", formData.meeting_location);
     formDataToSubmit.append("recaptcha_token", token || "");
     formDataToSubmit.append("accept_terms", formData.accept_terms.toString());
 
@@ -232,7 +239,10 @@ const BookMeetingDialog = ({ buttonStyle }: { buttonStyle?: string }) => {
   const handleInputChangeEvent =
     (field: FormField) =>
     (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
-      handleInputChange(field, e.target.value as ClientBookMeetingFormData[typeof field]);
+      handleInputChange(
+        field,
+        e.target.value as ClientBookMeetingFormData[typeof field]
+      );
     };
 
   const handleCheckboxChange = (
@@ -253,11 +263,11 @@ const BookMeetingDialog = ({ buttonStyle }: { buttonStyle?: string }) => {
   const handleMeetingTypeChange = (type: "onsite" | "virtual"): void => {
     setMeetingTypeSelection(type);
     // Reset meeting_type when switching
-    handleInputChange("meeting_type", "");
+    handleInputChange("meeting_type", type);
   };
 
   const handleMeetingLocationSelect = (value: string): void => {
-    handleInputChange("meeting_type", value);
+    handleInputChange("meeting_location", value);
   };
 
   const isDateDisabled = (date: Date): boolean => {
@@ -490,6 +500,11 @@ const BookMeetingDialog = ({ buttonStyle }: { buttonStyle?: string }) => {
                     <span className="text-sm">{t("virtualMeeting")}</span>
                   </label>
                 </div>
+                {errors.meeting_type && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.meeting_type}
+                  </p>
+                )}
               </div>
 
               {meetingTypeSelection === "onsite" && (
@@ -498,13 +513,13 @@ const BookMeetingDialog = ({ buttonStyle }: { buttonStyle?: string }) => {
                     {t("officeLocation")}
                   </Label>
                   <Select
-                    value={formData.meeting_type}
+                    value={onsiteLocations.includes(formData.meeting_location) ? formData.meeting_location : ""}
                     onValueChange={handleMeetingLocationSelect}
                     disabled={isPending}
                   >
                     <SelectTrigger
                       className={
-                        errors.meeting_type ? "border-red-500 w-full" : "w-full"
+                        errors.meeting_location ? "border-red-500 w-full" : "w-full"
                       }
                     >
                       <SelectValue placeholder={t("selectOfficeLocation")} />
@@ -519,7 +534,7 @@ const BookMeetingDialog = ({ buttonStyle }: { buttonStyle?: string }) => {
                   </Select>
                   {errors.meeting_type && (
                     <p className="text-red-500 text-sm mt-1">
-                      {errors.meeting_type}
+                      {errors.meeting_location}
                     </p>
                   )}
                 </div>
@@ -531,7 +546,7 @@ const BookMeetingDialog = ({ buttonStyle }: { buttonStyle?: string }) => {
                     {t("virtualPlatform")}
                   </Label>
                   <Select
-                    value={formData.meeting_type}
+                    value={virtualPlatforms.includes(formData.meeting_location) ? formData.meeting_location : ""}
                     onValueChange={handleMeetingLocationSelect}
                     disabled={isPending}
                   >

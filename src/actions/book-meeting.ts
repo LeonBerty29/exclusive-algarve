@@ -32,7 +32,7 @@ export async function bookMeetingAction(
       accept_terms: Boolean(formData.get("accept_terms")) || undefined,
     };
 
-    console.log({ rawData });
+    // console.log({ rawData });
 
     const recaptchaToken = formData.get("recaptcha_token") as string;
 
