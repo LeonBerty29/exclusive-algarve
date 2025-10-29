@@ -1468,5 +1468,25 @@
     "lastNameRequired": "Last name is required",
     "phoneMinLength": "Phone number must be at least 10 digits",
     "tokenRequired": "Token is required"
+  },
+  "generalNotFoundPage": {
+    "pageNotFound": "Page Not Found",
+    "pageDoesNotExist": "Oops! The page you are looking for does not exist or it has been deleted.",
+    "home": "Home",
+    "ifError": "If you believe this is an error, please",
+    "contactUs": "contact us"
+  },
+  "generalErrorPage": {
+    "title": "Something Went Wrong",
+    "description": "An unexpected error occurred.",
+    "suggestion": "Please try refreshing the page. Contact support if the problem persists.",
+    "tryAgainButton": "Try Again",
+    "homeButton": "Home",
+    "believeErrorText": "If you believe this is an error, please",
+    "contactUsLinkText": "contact us",
+    "errorDetailsDevelopment": "Error Details (Development)",
+    "messageLabel": "Message",
+    "digestLabel": "Digest",
+    "stackLabel": "Stack"
   }
 }

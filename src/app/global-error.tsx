@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useTransition } from "react";
-import { RefreshCw, AlertTriangle, Search, Building2 } from "lucide-react";
+import { RefreshCw, AlertTriangle, Building2, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
@@ -12,12 +12,12 @@ interface ErrorProps {
   reset: () => void;
 }
 
-export default function PropertyError({ error, reset }: ErrorProps) {
-  const t = useTranslations("propertyDetailsErrorPage");
+export default function GlobalError({ error, reset }: ErrorProps) {
+  const t = useTranslations("generalErrorPage");
 
   useEffect(() => {
     // Log the error to your error reporting service
-    console.error("Property page error:", error);
+    console.error("Error:", error);
   }, [error]);
 
   const [pending, startTransition] = useTransition();
@@ -28,44 +28,9 @@ export default function PropertyError({ error, reset }: ErrorProps) {
     });
   };
 
-  const isNetworkError =
-    error.message.includes("fetch") || error.message.includes("network");
-  const isAPIError = error.message.includes("API Error");
-  const is404Error = error.message.includes("404");
-
-  const getErrorMessage = () => {
-    if (is404Error) {
-      return {
-        title: t("propertyNotFoundTitle"),
-        description: t("propertyNotFoundDescription"),
-        suggestion: t("propertyNotFoundSuggestion"),
-      };
-    }
-
-    if (isNetworkError) {
-      return {
-        title: t("connectionProblemTitle"),
-        description: t("connectionProblemDescription"),
-        suggestion: t("connectionProblemSuggestion"),
-      };
-    }
-
-    if (isAPIError) {
-      return {
-        title: t("serviceUnavailableTitle"),
-        description: t("serviceUnavailableDescription"),
-        suggestion: t("serviceUnavailableSuggestion"),
-      };
-    }
-
-    return {
-      title: t("somethingWentWrongTitle"),
-      description: t("somethingWentWrongDescription"),
-      suggestion: t("somethingWentWrongSuggestion"),
-    };
-  };
-
-  const { title, description, suggestion } = getErrorMessage();
+  const title = t("title");
+  const description = t("description");
+  const suggestion = t("suggestion");
 
   return (
     <>
@@ -92,7 +57,9 @@ export default function PropertyError({ error, reset }: ErrorProps) {
           {/* Error Message */}
           <div className="mb-8">
             <h1 className="text-4xl font-bold text-gray-900 mb-4">{title}</h1>
-            <p className="text-base text-gray-600 mb-2">{description} {suggestion}</p>
+            <p className="text-base text-gray-600 mb-2">
+              {description} {suggestion}
+            </p>
           </div>
 
           {/* Action Buttons */}
@@ -116,9 +83,9 @@ export default function PropertyError({ error, reset }: ErrorProps) {
                 asChild
                 className="flex-1 bg-white hover:bg-gray-50 text-gray-700 font-semibold py-3 px-6 rounded-lg border transition-all duration-200 transform hover:scale-105 shadow-md flex items-center justify-center gap-2"
               >
-                <Link href="/properties">
-                  <Search className="w-5 h-5" />
-                  {t("browsePropertiesButton")}
+                <Link href="/">
+                  <Home className="w-5 h-5" />
+                  {t("homeButton")}
                 </Link>
               </Button>
             </div>
@@ -126,7 +93,7 @@ export default function PropertyError({ error, reset }: ErrorProps) {
 
           <div className="mt-8 pt-6 border-t border-gray-200">
             <p className="text-base text-gray-500">
-              {t("believeErrorTextPart1")}{" "}
+              {t("believeErrorText")}{" "}
               <Link
                 href="/contact"
                 className="text-blue-600 hover:text-blue-800 underline"

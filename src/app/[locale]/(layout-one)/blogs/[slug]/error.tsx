@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useTransition } from "react";
 import { useTranslations } from "next-intl";
 
 interface ErrorProps {
@@ -15,6 +15,14 @@ export default function Error({ error, reset }: ErrorProps) {
     // Log the error to an error reporting service
     console.error("Page error:", error);
   }, [error]);
+
+  const [pending, startTransition] = useTransition();
+  
+    const resetFn = () => {
+      startTransition(() => {
+        reset();
+      });
+    };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -46,8 +54,9 @@ export default function Error({ error, reset }: ErrorProps) {
 
         <div className="space-y-4">
           <button
-            onClick={reset}
+            onClick={resetFn}
             className="w-full bg-primary hover:bg-black/85 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200"
+            disabled={pending}
           >
             {t("tryAgain")}
           </button>
