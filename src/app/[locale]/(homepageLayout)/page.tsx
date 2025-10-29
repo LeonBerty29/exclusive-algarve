@@ -16,6 +16,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { HomepageSearchEngine } from "@/components/search/homepage-search-engine";
 import { HomepageSearchResult } from "@/components/search/homepage-search-result";
 import { PropertySearchParams } from "@/types/property";
+import { FooterPropertiesLink } from "@/components/layout/footer-properties-link";
 
 type Params = {
   [x: string]: string | string[];
@@ -70,6 +71,10 @@ export default async function Home(props: PageProps) {
 
       <div className="pt-10">
         <DiscoverSection />
+      </div>
+
+      <div className="py-10">
+        <FooterPropertiesLink />
       </div>
     </div>
   );

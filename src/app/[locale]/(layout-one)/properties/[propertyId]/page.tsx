@@ -73,9 +73,10 @@ const PageContent = async (props: Props) => {
   const notes = notesResponse.data;
   const isFavourite = favorites.includes(property.id);
 
+
   return (
     <>
-      <div className="mb-5 2xl:container px-6 sm:px-8 md:px-10 lg:px-14 mx-auto w-full mt-9">
+      <div className="mb-5 2xl:container px-6 sm:px-8 md:px-10 lg:px-14 mx-auto w-full mt-20">
         <div className="flex items-center gap-x-8 gap-y-3 justify-between flex-wrap mb-6">
           <Breadcrumb>
             <BreadcrumbList>

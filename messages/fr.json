@@ -1468,5 +1468,25 @@
     "lastNameRequired": "Le nom est requis",
     "phoneMinLength": "Le numéro de téléphone doit contenir au moins 10 chiffres",
     "tokenRequired": "Le jeton est requis"
+  },
+  "generalNotFoundPage": {
+    "pageNotFound": "Page non trouvée",
+    "pageDoesNotExist": "Oups ! La page que vous recherchez n'existe pas ou a été supprimée.",
+    "home": "Accueil",
+    "ifError": "Si vous pensez qu'il s'agit d'une erreur, veuillez",
+    "contactUs": "nous contacter"
+  },
+  "generalErrorPage": {
+    "title": "Une erreur s'est produite",
+    "description": "Une erreur inattendue s'est produite.",
+    "suggestion": "Veuillez essayer de rafraîchir la page. Contactez le support si le problème persiste.",
+    "tryAgainButton": "Réessayer",
+    "homeButton": "Accueil",
+    "believeErrorText": "Si vous pensez qu'il s'agit d'une erreur, veuillez",
+    "contactUsLinkText": "nous contacter",
+    "errorDetailsDevelopment": "Détails de l'erreur (Développement)",
+    "messageLabel": "Message",
+    "digestLabel": "Résumé",
+    "stackLabel": "Pile"
   }
 }

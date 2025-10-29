@@ -1,9 +1,10 @@
+"use client"
 import React from "react";
 import { DrivingDistance } from "@/types/property";
 import { GoogleMap } from "../shared/google-maps";
-import { getTranslations } from "next-intl/server";
+import { useTranslations } from "next-intl";
 
-export const LocationTab = async({
+export const LocationTab = ({
   latitude,
   longitude,
   drivingDistances,
@@ -50,7 +51,7 @@ export const LocationTab = async({
   //   },
   // ];
 
-  const t = await getTranslations("locationTab")
+  const t = useTranslations("locationTab")
 
   return (
     <div>
