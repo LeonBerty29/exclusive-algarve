@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState, useTransition, useRef } from "react";
 import {
   Dialog,
   DialogContent,
@@ -8,9 +8,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { LiaEdit } from "react-icons/lia";
 import { Button } from "../ui/button";
-import { useState, useTransition, useRef } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
@@ -24,24 +22,16 @@ import {
 } from "@/components/ui/form";
 import { cn } from "@/lib/utils";
 import * as z from "zod";
-import { messageFormAction } from "@/actions/message-us";
-import { CheckCircle } from "lucide-react";
+import { CheckCircle, NotebookPen } from "lucide-react";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
 import { getRequestFloorPlanSchema } from "@/types/schema.request-floor-plan";
-// import { CheckCircle } from "lucide-react";
-// import { useTranslations } from "next-intl";
+import { requestFloorPlanAction } from "@/actions/request-floor-plan-action";
 
 export const RequestFloorPlan = () => {
-  //   const t = useTranslations("requestInformation");
-  const [isOpen, setIsOpen] = React.useState(false);
-  //   const [showSuccessDialog, setShowSuccessDialog] = React.useState(false);
-
-  //   const handleSuccess = () => {
-  //     setIsOpen(false);
-  //     setShowSuccessDialog(true);
-  //   };
+  const t = useTranslations("RequestFloorPlanForm");
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <>
@@ -51,8 +41,8 @@ export const RequestFloorPlan = () => {
             type="button"
             className="text-sm font-semibold rounded-none bg-primary text-white !px-6 hover:text-white hover:bg-primary/80 transition-colors"
           >
-            <LiaEdit className="h-3 w-3" />
-            Request Floor Plan
+            <NotebookPen className="h-3 w-3" />
+            {t("buttonRequestFloorPlan")}
           </Button>
         </DialogTrigger>
         <DialogContent
@@ -63,7 +53,7 @@ export const RequestFloorPlan = () => {
           <div>
             <DialogHeader>
               <DialogTitle className="font-medium my-5 leading-relaxed">
-                How Can the Agent Send You the Floor plan
+                {t("headingSendFloorPlan")}
               </DialogTitle>
             </DialogHeader>
             <div className="px-2 py-4">
@@ -77,18 +67,21 @@ export const RequestFloorPlan = () => {
 };
 
 function RequestFloorPlanForm() {
-  const t = useTranslations("messageUsForm");
-  const FloorPlanSchema = getRequestFloorPlanSchema();
+  const t = useTranslations("RequestFloorPlanForm");
+  const requestFloorPlanSchemaTranslation = useTranslations(
+    "requestFloorPlanSchema"
+  );
+  const FloorPlanSchema = getRequestFloorPlanSchema(
+    requestFloorPlanSchemaTranslation
+  );
   const [isPending, startTransition] = useTransition();
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [error, setError] = useState<string | undefined>("");
   const { executeRecaptcha } = useGoogleReCaptcha();
 
-  // Capture the source URL once when component mounts
   const sourceUrlRef = useRef<string>("");
 
-  // Initialize source_url on first render
   if (!sourceUrlRef.current && typeof window !== "undefined") {
     sourceUrlRef.current = window.location.href;
   }
@@ -106,8 +99,8 @@ function RequestFloorPlanForm() {
 
   const onSubmit = async (values: z.infer<typeof FloorPlanSchema>) => {
     if (!executeRecaptcha) {
-      toast(`${t("toastReCaptchaErrorTitle")}`, {
-        description: t("toastReCaptchaErrorDescription"),
+      toast(t("toastReCaptchaError"), {
+        description: t("toastReCaptchaUnavailable"),
         duration: 1500,
       });
       return;
@@ -122,15 +115,14 @@ function RequestFloorPlanForm() {
     formDataToSubmit.append("additional_text", values.additional_text!);
 
     startTransition(async () => {
-      const token = await executeRecaptcha("messageUsForm");
+      const token = await executeRecaptcha("requestFloorPlan");
       formDataToSubmit.append("recaptcha_token", token || "");
 
       try {
-        const result = await messageFormAction(formDataToSubmit);
+        const result = await requestFloorPlanAction(formDataToSubmit);
 
         if (result.success) {
-          // Show success dialog
-          setSuccessMessage(result.message || t("successMessageDefault"));
+          setSuccessMessage(result.message || t("successTitle"));
           setShowSuccessDialog(true);
 
           form.reset({
@@ -140,7 +132,6 @@ function RequestFloorPlanForm() {
             additional_text: "",
           });
         } else {
-          // Handle server validation errors
           if (result.fieldErrors) {
             Object.entries(result.fieldErrors).forEach(([key, message]) => {
               const fieldMapping: {
@@ -166,16 +157,14 @@ function RequestFloorPlanForm() {
             const errorMessages = Object.entries(result.errors)
               .map(([field, messages]) => `${field}: ${messages.join(", ")}`)
               .join("; ");
-            setError(`Validation errors: ${errorMessages}`);
+            setError(`${t("errorValidationPrefix")} ${errorMessages}`);
           } else {
-            setError(
-              result.message || "Failed to send message. Please try again."
-            );
+            setError(result.message || t("errorFailedSend"));
           }
         }
-      } catch (error) {
-        console.error("Submit error:", error);
-        setError("An unexpected error occurred. Please try again.");
+      } catch (e) {
+        console.error("Submit error:", e);
+        setError(t("errorUnexpected"));
       }
     });
   };
@@ -193,7 +182,7 @@ function RequestFloorPlanForm() {
                   <Input
                     {...field}
                     type="text"
-                    placeholder="Name"
+                    placeholder={t("placeholderName")}
                     className="indent-4 bg-gray-200 placeholder:text-gray-600 border-none rounded-none py-5 focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-primary/80 placeholder:text-sm"
                     disabled={isPending}
                   />
@@ -212,7 +201,7 @@ function RequestFloorPlanForm() {
                   <Input
                     {...field}
                     type="email"
-                    placeholder="Email"
+                    placeholder={t("placeholderEmail")}
                     className="indent-4 bg-gray-200 placeholder:text-gray-600 border-none rounded-none py-5 focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-primary/80 placeholder:text-sm"
                     disabled={isPending}
                   />
@@ -222,7 +211,6 @@ function RequestFloorPlanForm() {
             )}
           />
 
-          {/* Email Field */}
           <FormField
             control={form.control}
             name="phone"
@@ -232,7 +220,7 @@ function RequestFloorPlanForm() {
                   <Input
                     {...field}
                     type="email"
-                    placeholder="Phone"
+                    placeholder={t("placeholderPhone")}
                     className="indent-4 bg-gray-200 placeholder:text-gray-600 border-none rounded-none py-5 focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-primary/80 placeholder:text-sm"
                     disabled={isPending}
                   />
@@ -242,7 +230,6 @@ function RequestFloorPlanForm() {
             )}
           />
 
-          {/* Message Textarea */}
           <FormField
             control={form.control}
             name="additional_text"
@@ -251,7 +238,7 @@ function RequestFloorPlanForm() {
                 <FormControl>
                   <Textarea
                     {...field}
-                    placeholder="Add a message (optional)"
+                    placeholder={t("placeholderAdditionalText")}
                     className="indent-4 bg-gray-200 placeholder:text-gray-600 border-none rounded-none py-5 focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-primary/80 min-h-[120px]"
                     disabled={isPending}
                   />
@@ -261,7 +248,6 @@ function RequestFloorPlanForm() {
             )}
           />
 
-          {/* Submit Button */}
           <Button
             type="submit"
             disabled={isPending}
@@ -269,10 +255,9 @@ function RequestFloorPlanForm() {
               "bg-primary hover:bg-primary/90 text-white font-medium py-5 px-8 rounded-none transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             )}
           >
-            Send
+            {t("buttonSend")}
           </Button>
 
-          {/* Show general error message */}
           {error && (
             <div className="flex justify-center mt-2">
               <p className="text-red-500 text-sm">{error}</p>
@@ -281,7 +266,6 @@ function RequestFloorPlanForm() {
         </form>
       </Form>
 
-      {/* Success Dialog */}
       <Dialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
         <DialogContent className="sm:max-w-md rounded-2xl">
           <DialogHeader>
@@ -289,7 +273,7 @@ function RequestFloorPlanForm() {
               <CheckCircle className="h-12 w-12 text-green-500" />
             </div>
             <DialogTitle className="text-center text-xl font-semibold">
-              {t("dialogTitleSuccess")}
+              {t("successTitle")}
             </DialogTitle>
             <DialogDescription className="text-center text-gray-600 mt-2">
               {successMessage}

@@ -930,7 +930,8 @@
     "copy": "Kopieren",
     "close": "Schließen",
     "linkCopiedToClipboard": "Link in Zwischenablage kopiert!",
-    "failedToCopyLink": "Link konnte nicht kopiert werden"
+    "failedToCopyLink": "Link konnte nicht kopiert werden",
+    "checkOutThisProperty": "Schauen Sie sich diese Immobilie an!"
   },
   "contactAgentForm": {
     "requestMoreInformation": "Weitere Informationen anfordern",
@@ -1488,5 +1489,37 @@
     "messageLabel": "Nachricht",
     "digestLabel": "Zusammenfassung",
     "stackLabel": "Stapel"
+  },
+  "requestFloorPlanAction": {
+    "pleaseCheckFormForErrors": "Bitte überprüfen Sie das Formular auf Fehler",
+    "recaptchaTokenIsMissing": "ReCaptcha-Token fehlt",
+    "recaptchaVerificationFailed": "ReCaptcha-Überprüfung fehlgeschlagen. Bitte aktualisieren Sie die Seite und versuchen Sie es erneut.",
+    "serviceNotAvailable": "Service derzeit nicht verfügbar, bitte versuchen Sie es später erneut",
+    "failedToSubmitRequest": "Anfrage konnte nicht gesendet werden",
+    "unexpectedErrorOccurred": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
+    "floorPlanRequestSubmittedSuccessfully": "Grundrissanfrage erfolgreich gesendet!"
+  },
+  "requestFloorPlanSchema": {
+    "nameRequired": "Name ist erforderlich",
+    "nameMinLength": "Name muss mindestens 2 Zeichen lang sein",
+    "nameMaxLength": "Name darf maximal 100 Zeichen lang sein",
+    "emailRequired": "E-Mail ist erforderlich",
+    "emailInvalid": "Bitte geben Sie eine gültige E-Mail-Adresse ein"
+  },
+  "RequestFloorPlanForm": {
+    "buttonRequestFloorPlan": "Grundriss anfordern",
+    "headingSendFloorPlan": "Wie kann Ihnen der Makler den Grundriss senden",
+    "placeholderName": "Name",
+    "placeholderEmail": "E-Mail",
+    "placeholderPhone": "Telefon",
+    "placeholderAdditionalText": "Nachricht hinzufügen (optional)",
+    "buttonSend": "Senden",
+    "toastReCaptchaError": "ReCaptcha-Fehler",
+    "toastReCaptchaUnavailable": "ReCaptcha ist nicht verfügbar. Bitte aktualisieren Sie die Seite und versuchen Sie es erneut.",
+    "successTitle": "Grundrissanfrage erfolgreich gesendet!",
+    "buttonClose": "Schließen",
+    "errorUnexpected": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
+    "errorFailedSend": "Nachricht konnte nicht gesendet werden. Bitte versuchen Sie es erneut.",
+    "errorValidationPrefix": "Validierungsfehler:"
   }
 }

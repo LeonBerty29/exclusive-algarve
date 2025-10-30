@@ -930,7 +930,8 @@
     "copy": "Копировать",
     "close": "Закрыть",
     "linkCopiedToClipboard": "Ссылка скопирована в буфер обмена!",
-    "failedToCopyLink": "Не удалось скопировать ссылку"
+    "failedToCopyLink": "Не удалось скопировать ссылку",
+    "checkOutThisProperty": "Посмотрите на эту недвижимость!"
   },
   "contactAgentForm": {
     "requestMoreInformation": "Запросить дополнительную информацию",
@@ -1232,7 +1233,7 @@
     "awardBadgeExclusiveAlgarveVillas": "Награда Exclusive Algarve Villas",
     "exclusiveAlgarveTeamMemberTakingPictureWithTheirAwardTrophy": "Член команды Exclusive Algarve фотографируется с наградным кубком"
   },
-      "bookMeetingData": {
+  "bookMeetingData": {
     "unauthorizedInvalidOrMissingInternalToken": "Сервис временно недоступен, попробуйте позже.",
     "validationFailed": "Проверка не удалась",
     "httpRequestFailed": "HTTP {{status}}: Запрос не выполнен",
@@ -1488,5 +1489,37 @@
     "messageLabel": "Сообщение",
     "digestLabel": "Дайджест",
     "stackLabel": "Стек"
+  },
+  "requestFloorPlanAction": {
+    "pleaseCheckFormForErrors": "Пожалуйста, проверьте форму на наличие ошибок",
+    "recaptchaTokenIsMissing": "Токен ReCaptcha отсутствует",
+    "recaptchaVerificationFailed": "Проверка ReCaptcha не удалась. Пожалуйста, обновите страницу и попробуйте снова.",
+    "serviceNotAvailable": "Сервис временно недоступен, пожалуйста, попробуйте позже",
+    "failedToSubmitRequest": "Не удалось отправить запрос",
+    "unexpectedErrorOccurred": "Произошла непредвиденная ошибка. Пожалуйста, попробуйте снова.",
+    "floorPlanRequestSubmittedSuccessfully": "Запрос плана этажа успешно отправлен!"
+  },
+  "requestFloorPlanSchema": {
+    "nameRequired": "Имя обязательно",
+    "nameMinLength": "Имя должно содержать не менее 2 символов",
+    "nameMaxLength": "Имя должно содержать не более 100 символов",
+    "emailRequired": "Email обязателен",
+    "emailInvalid": "Пожалуйста, введите действительный адрес электронной почты"
+  },
+  "RequestFloorPlanForm": {
+    "buttonRequestFloorPlan": "Запросить план этажа",
+    "headingSendFloorPlan": "Как агент может отправить вам план этажа",
+    "placeholderName": "Имя",
+    "placeholderEmail": "Email",
+    "placeholderPhone": "Телефон",
+    "placeholderAdditionalText": "Добавить сообщение (необязательно)",
+    "buttonSend": "Отправить",
+    "toastReCaptchaError": "Ошибка ReCaptcha",
+    "toastReCaptchaUnavailable": "ReCaptcha недоступна. Пожалуйста, обновите страницу и попробуйте снова.",
+    "successTitle": "Запрос плана этажа успешно отправлен!",
+    "buttonClose": "Закрыть",
+    "errorUnexpected": "Произошла непредвиденная ошибка. Пожалуйста, попробуйте снова.",
+    "errorFailedSend": "Не удалось отправить сообщение. Пожалуйста, попробуйте снова.",
+    "errorValidationPrefix": "Ошибки валидации:"
   }
 }

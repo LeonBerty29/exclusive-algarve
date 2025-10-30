@@ -5,18 +5,23 @@ import { getTranslations } from "next-intl/server";
 // import { submitMessageFormWithDetailedErrors } from "@/data/message-us";
 import { getRequestFloorPlanSchema } from "@/types/schema.request-floor-plan";
 
-export interface MessageFormActionResult {
+export interface requestFloorPlanActionResult {
   success: boolean;
   message?: string;
   errors?: { [key: string]: string[] };
   fieldErrors?: { [key: string]: string };
 }
 
-export async function messageFormAction(
+export async function requestFloorPlanAction(
   formData: FormData
-): Promise<MessageFormActionResult> {
-  const t = await getTranslations("messageUsAction");
-  const FloorPlanSchema = getRequestFloorPlanSchema();
+): Promise<requestFloorPlanActionResult> {
+  const t = await getTranslations("requestFloorPlanAction");
+  const requestFloorPlanSchemaTranslation = await getTranslations(
+    "requestFloorPlanSchema"
+  );
+  const FloorPlanSchema = getRequestFloorPlanSchema(
+    requestFloorPlanSchemaTranslation
+  );
 
   try {
     // Extract data from FormData
@@ -54,7 +59,7 @@ export async function messageFormAction(
     if (!recaptchaToken) {
       return {
         success: false,
-        message: t("recaptchaTokenMissing"),
+        message: t("recaptchaTokenIsMissing"),
       };
     }
 
@@ -87,7 +92,7 @@ export async function messageFormAction(
 
     const result = {
       success: false,
-      error: "Service Not Available at the moment, Please try again later",
+      error: t("serviceNotAvailable"),
       validationErrors: {},
       data: {
         message: "",
@@ -97,14 +102,15 @@ export async function messageFormAction(
     if (!result.success) {
       return {
         success: false,
-        message: result.error || t("failedToSubmitMessage"),
+        message: result.error || t("failedToSubmitRequest"),
         errors: result.validationErrors,
       };
     }
 
     return {
       success: true,
-      message: result.data?.message || t("messageSubmittedSuccessfully"),
+      message:
+        result.data?.message || t("floorPlanRequestSubmittedSuccessfully"),
     };
   } catch (error) {
     console.error("Message form action error:", error);

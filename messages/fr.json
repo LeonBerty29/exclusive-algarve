@@ -930,7 +930,8 @@
     "copy": "Copier",
     "close": "Fermer",
     "linkCopiedToClipboard": "Lien copié dans le presse-papiers !",
-    "failedToCopyLink": "Échec de la copie du lien"
+    "failedToCopyLink": "Échec de la copie du lien",
+    "checkOutThisProperty": "Découvrez cette propriété !"
   },
   "contactAgentForm": {
     "requestMoreInformation": "Demander plus d'informations",
@@ -1488,5 +1489,37 @@
     "messageLabel": "Message",
     "digestLabel": "Résumé",
     "stackLabel": "Pile"
-  }
+  },
+  "requestFloorPlanAction": {
+      "pleaseCheckFormForErrors": "Veuillez vérifier le formulaire pour les erreurs",
+      "recaptchaTokenIsMissing": "Le jeton ReCaptcha est manquant",
+      "recaptchaVerificationFailed": "La vérification ReCaptcha a échoué. Veuillez actualiser la page et réessayer.",
+      "serviceNotAvailable": "Service non disponible pour le moment, veuillez réessayer plus tard",
+      "failedToSubmitRequest": "Échec de l'envoi de la demande",
+      "unexpectedErrorOccurred": "Une erreur inattendue s'est produite. Veuillez réessayer.",
+      "floorPlanRequestSubmittedSuccessfully": "Demande de plan d'étage soumise avec succès !"
+    },
+    "requestFloorPlanSchema": {
+      "nameRequired": "Le nom est requis",
+      "nameMinLength": "Le nom doit contenir au moins 2 caractères",
+      "nameMaxLength": "Le nom doit contenir au maximum 100 caractères",
+      "emailRequired": "L'email est requis",
+      "emailInvalid": "Veuillez entrer une adresse email valide"
+    },
+    "RequestFloorPlanForm": {
+      "buttonRequestFloorPlan": "Demander le plan d'étage",
+      "headingSendFloorPlan": "Comment l'agent peut-il vous envoyer le plan d'étage",
+      "placeholderName": "Nom",
+      "placeholderEmail": "Email",
+      "placeholderPhone": "Téléphone",
+      "placeholderAdditionalText": "Ajouter un message (optionnel)",
+      "buttonSend": "Envoyer",
+      "toastReCaptchaError": "Erreur ReCaptcha",
+      "toastReCaptchaUnavailable": "ReCaptcha n'est pas disponible. Veuillez actualiser la page et réessayer.",
+      "successTitle": "Demande de plan d'étage envoyée avec succès !",
+      "buttonClose": "Fermer",
+      "errorUnexpected": "Une erreur inattendue s'est produite. Veuillez réessayer.",
+      "errorFailedSend": "Échec de l'envoi du message. Veuillez réessayer.",
+      "errorValidationPrefix": "Erreurs de validation :"
+    }
 }
