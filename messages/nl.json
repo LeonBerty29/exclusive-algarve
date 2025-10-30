@@ -930,7 +930,8 @@
     "copy": "Kopieer",
     "close": "Sluiten",
     "linkCopiedToClipboard": "Link gekopieerd naar klembord!",
-    "failedToCopyLink": "Link kopiëren mislukt"
+    "failedToCopyLink": "Link kopiëren mislukt",
+    "checkOutThisProperty": "Bekijk deze woning!"
   },
   "contactAgentForm": {
     "requestMoreInformation": "Vraag meer informatie aan",
@@ -1488,5 +1489,37 @@
     "messageLabel": "Bericht",
     "digestLabel": "Samenvatting",
     "stackLabel": "Stack"
+  },
+  "requestFloorPlanAction": {
+    "pleaseCheckFormForErrors": "Controleer het formulier op fouten",
+    "recaptchaTokenIsMissing": "ReCaptcha-token ontbreekt",
+    "recaptchaVerificationFailed": "ReCaptcha-verificatie mislukt. Ververs de pagina en probeer het opnieuw.",
+    "serviceNotAvailable": "Service momenteel niet beschikbaar, probeer het later opnieuw",
+    "failedToSubmitRequest": "Verzoek verzenden mislukt",
+    "unexpectedErrorOccurred": "Er is een onverwachte fout opgetreden. Probeer het opnieuw.",
+    "floorPlanRequestSubmittedSuccessfully": "Plattegrondverzoek succesvol verzonden!"
+  },
+  "requestFloorPlanSchema": {
+    "nameRequired": "Naam is verplicht",
+    "nameMinLength": "Naam moet minimaal 2 tekens bevatten",
+    "nameMaxLength": "Naam mag maximaal 100 tekens bevatten",
+    "emailRequired": "E-mail is verplicht",
+    "emailInvalid": "Voer een geldig e-mailadres in"
+  },
+  "RequestFloorPlanForm": {
+    "buttonRequestFloorPlan": "Plattegrond aanvragen",
+    "headingSendFloorPlan": "Hoe kan de makelaar u de plattegrond sturen",
+    "placeholderName": "Naam",
+    "placeholderEmail": "E-mail",
+    "placeholderPhone": "Telefoon",
+    "placeholderAdditionalText": "Voeg een bericht toe (optioneel)",
+    "buttonSend": "Verzenden",
+    "toastReCaptchaError": "ReCaptcha-fout",
+    "toastReCaptchaUnavailable": "ReCaptcha is niet beschikbaar. Ververs de pagina en probeer het opnieuw.",
+    "successTitle": "Plattegrondverzoek succesvol verzonden!",
+    "buttonClose": "Sluiten",
+    "errorUnexpected": "Er is een onverwachte fout opgetreden. Probeer het opnieuw.",
+    "errorFailedSend": "Bericht verzenden mislukt. Probeer het opnieuw.",
+    "errorValidationPrefix": "Validatiefouten:"
   }
 }

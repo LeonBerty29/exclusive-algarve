@@ -930,7 +930,8 @@
     "copy": "Copy",
     "close": "Close",
     "linkCopiedToClipboard": "Link copied to clipboard!",
-    "failedToCopyLink": "Failed to copy link"
+    "failedToCopyLink": "Failed to copy link",
+    "checkOutThisProperty": "Check out this property!"
   },
   "contactAgentForm": {
     "requestMoreInformation": "Request more information",
@@ -1488,5 +1489,37 @@
     "messageLabel": "Message",
     "digestLabel": "Digest",
     "stackLabel": "Stack"
+  },
+  "requestFloorPlanAction": {
+    "pleaseCheckFormForErrors": "Please check the form for errors",
+    "recaptchaTokenIsMissing": "ReCaptcha token is missing",
+    "recaptchaVerificationFailed": "ReCaptcha verification failed. Please refresh the page and try again.",
+    "serviceNotAvailable": "Service Not Available at the moment, Please try again later",
+    "failedToSubmitRequest": "Failed to submit Request",
+    "unexpectedErrorOccurred": "An unexpected error occurred. Please try again.",
+    "floorPlanRequestSubmittedSuccessfully": "Floor plan Request submitted successfully!"
+  },
+  "requestFloorPlanSchema": {
+    "nameRequired": "Name is required",
+    "nameMinLength": "Name must be at least 2 characters",
+    "nameMaxLength": "Name must be at most 100 characters",
+    "emailRequired": "Email is required",
+    "emailInvalid": "Please enter a valid email address"
+  },
+  "RequestFloorPlanForm": {
+    "buttonRequestFloorPlan": "Request Floor Plan",
+    "headingSendFloorPlan": "How Can the Agent Send You the Floor plan",
+    "placeholderName": "Name",
+    "placeholderEmail": "Email",
+    "placeholderPhone": "Phone",
+    "placeholderAdditionalText": "Add a message (optional)",
+    "buttonSend": "Send",
+    "toastReCaptchaError": "ReCaptcha Error",
+    "toastReCaptchaUnavailable": "ReCaptcha is not available. Please Refresh the page and try again.",
+    "successTitle": "Floor Plan Request Successfully Sent!",
+    "buttonClose": "Close",
+    "errorUnexpected": "An unexpected error occurred. Please try again.",
+    "errorFailedSend": "Failed to send message. Please try again.",
+    "errorValidationPrefix": "Validation errors:"
   }
 }

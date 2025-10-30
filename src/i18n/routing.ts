@@ -296,5 +296,23 @@ export const routing = defineRouting({
       nl: "/account/activering-opnieuw-verzenden",
       ru: "/аккаунт/повторно-отправить-активацию",
     },
+    "/exclusive-listing": {
+      en: "/exclusive-listing",
+      pt: "/listagem-exclusiva",
+      de: "/exklusives-angebot",
+      fr: "/annonce-exclusive",
+      se: "/exklusiv-listning",
+      nl: "/exclusieve-vermelding",
+      ru: "/eksklyuzivnoe-predlozhenie",
+    },
+    "/exclusive-listing/[hash]": {
+      en: "/exclusive-listing/[hash]",
+      pt: "/listagem-exclusiva/[hash]",
+      de: "/exklusives-angebot/[hash]",
+      fr: "/annonce-exclusive/[hash]",
+      se: "/exklusiv-listning/[hash]",
+      nl: "/exclusieve-vermelding/[hash]",
+      ru: "/eksklyuzivnoe-predlozhenie/[hash]",
+    }
   },
 });

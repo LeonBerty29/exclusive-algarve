@@ -930,7 +930,8 @@
     "copy": "Copiar",
     "close": "Fechar",
     "linkCopiedToClipboard": "Link copiado para a área de transferência!",
-    "failedToCopyLink": "Falha ao copiar link"
+    "failedToCopyLink": "Falha ao copiar link",
+    "checkOutThisProperty": "Confira esta propriedade!"
   },
   "contactAgentForm": {
     "requestMoreInformation": "Solicitar mais informação",
@@ -1488,5 +1489,37 @@
     "messageLabel": "Mensagem",
     "digestLabel": "Resumo",
     "stackLabel": "Pilha"
+  },
+  "requestFloorPlanAction": {
+    "pleaseCheckFormForErrors": "Por favor, verifique o formulário para erros",
+    "recaptchaTokenIsMissing": "O token ReCaptcha está ausente",
+    "recaptchaVerificationFailed": "A verificação do ReCaptcha falhou. Por favor, atualize a página e tente novamente.",
+    "serviceNotAvailable": "Serviço não disponível no momento, por favor tente novamente mais tarde",
+    "failedToSubmitRequest": "Falha ao enviar a solicitação",
+    "unexpectedErrorOccurred": "Ocorreu um erro inesperado. Por favor, tente novamente.",
+    "floorPlanRequestSubmittedSuccessfully": "Solicitação de planta baixa enviada com sucesso!"
+  },
+  "requestFloorPlanSchema": {
+    "nameRequired": "O nome é obrigatório",
+    "nameMinLength": "O nome deve ter pelo menos 2 caracteres",
+    "nameMaxLength": "O nome deve ter no máximo 100 caracteres",
+    "emailRequired": "O e-mail é obrigatório",
+    "emailInvalid": "Por favor, insira um endereço de e-mail válido"
+  },
+  "RequestFloorPlanForm": {
+    "buttonRequestFloorPlan": "Solicitar Planta Baixa",
+    "headingSendFloorPlan": "Como o corretor pode lhe enviar a planta baixa",
+    "placeholderName": "Nome",
+    "placeholderEmail": "E-mail",
+    "placeholderPhone": "Telefone",
+    "placeholderAdditionalText": "Adicionar uma mensagem (opcional)",
+    "buttonSend": "Enviar",
+    "toastReCaptchaError": "Erro no ReCaptcha",
+    "toastReCaptchaUnavailable": "ReCaptcha não está disponível. Por favor, atualize a página e tente novamente.",
+    "successTitle": "Solicitação de planta baixa enviada com sucesso!",
+    "buttonClose": "Fechar",
+    "errorUnexpected": "Ocorreu um erro inesperado. Por favor, tente novamente.",
+    "errorFailedSend": "Falha ao enviar a mensagem. Por favor, tente novamente.",
+    "errorValidationPrefix": "Erros de validação:"
   }
 }
