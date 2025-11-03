@@ -1512,7 +1512,7 @@
     "headingSendFloorPlan": "Как агент может отправить вам план этажа",
     "placeholderName": "Имя",
     "placeholderFirstName": "Имя",
-"placeholderLastName": "Фамилия",
+    "placeholderLastName": "Фамилия",
     "placeholderEmail": "Email",
     "placeholderPhone": "Телефон",
     "placeholderAdditionalText": "Добавить сообщение (необязательно)",
@@ -1524,5 +1524,18 @@
     "errorUnexpected": "Произошла непредвиденная ошибка. Пожалуйста, попробуйте снова.",
     "errorFailedSend": "Не удалось отправить сообщение. Пожалуйста, попробуйте снова.",
     "errorValidationPrefix": "Ошибки валидации:"
+  },
+  "notFoundExlclusivePropertiesPage": {
+    "couldNotFindTitle": "Извините! Не удалось найти объекты недвижимости",
+    "propertiesListNotFound": "Список объектов недвижимости, который вы ищете, не существует или больше не доступен.",
+    "browseCatalogueButton": "Просмотреть наш каталог недвижимости"
+  },
+  "notFoundExlclusivePropertiesdetails": {
+    "propertyNotFoundHeading": "Извините! Не удалось найти объект недвижимости",
+    "propertyNotFoundDescription": "Объект недвижимости, который вы ищете, не существует или больше не доступен здесь.",
+    "browseCatalogueButton": "Просмотреть наш каталог недвижимости"
+  },
+  "footerPropertyLinks": {
+    "realEstateInText": "Объекты недвижимости в"
   }
 }

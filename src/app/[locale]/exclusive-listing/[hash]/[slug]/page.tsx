@@ -5,7 +5,7 @@ import ScrollableTabs from "@/components/property/scrollable-tabs";
 import PropertyDetailsIcons from "@/components/property/property-details-icons";
 
 import { ContactSection } from "@/components/shared/contact-section";
-import DiscoverSection from "@/components/home/discover-section";
+// import DiscoverSection from "@/components/home/discover-section";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -32,6 +32,8 @@ import { setRequestLocale } from "next-intl/server";
 // import { Metadata } from "next";
 // import { BASE_URL, EAV_TWITTER_CREATOR_HANDLE, WEBSITE_NAME } from "@/config/constants";
 // import { routing } from "@/i18n/routing";
+import Image from "next/image";
+
 
 interface Props {
   params: Promise<{ slug: string; locale: string }>;
@@ -147,6 +149,7 @@ interface Props {
 // }
 
 export default async function page(props: Props) {
+  const t = await getTranslations("propertyDetailsPage");
   const params = await props.params;
   const locale = params.locale;
 
@@ -154,9 +157,23 @@ export default async function page(props: Props) {
   setRequestLocale(locale);
 
   return (
-    <div className="py-14">
+    <div className="pt-6">
       <Suspense fallback={<PropertyDetailsPageLoading />}>
         <PageContent {...props} />
+        <div className="py-8 w-full bg-black">
+          <div className="2xl:container px-6 sm:px-8 md:px-10 lg:px-14 mx-auto flex items-center justify-center gap-4">
+            <p className="text-white text-sm">{t("poweredBy")}</p>
+            <Link href="/">
+              <Image
+                src={"/images/eav-logo.png"}
+                alt="Exclusive Algarve Villas Logo"
+                width={70}
+                height={50}
+                className="object-contain h-10 w-20"
+              />
+            </Link>
+          </div>
+        </div>
       </Suspense>
     </div>
   );
@@ -165,23 +182,22 @@ export default async function page(props: Props) {
 const PageContent = async (props: Props) => {
   const t = await getTranslations("propertyDetailsPage");
   const { slug } = await props.params;
-//   const session = await auth();
-//   const token = session?.accessToken;
+  //   const session = await auth();
+  //   const token = session?.accessToken;
 
   // Use Promise.all to fetch all data concurrently
-  const [propertyResponse] =
-    await Promise.all([
-      getProperty(slug),
+  const [propertyResponse] = await Promise.all([
+    getProperty(slug),
     //   token
     //     ? getFavorites(token)
     //     : Promise.resolve({ favorite_properties: [] }),
     //   token ? getNote() : Promise.resolve({ data: [] }),
-    ]);
+  ]);
 
   const property = propertyResponse.data;
-//   const favorites = favoritesResponse.favorite_properties;
-//   const notes = notesResponse.data;
-//   const isFavourite = favorites.includes(property.id);
+  //   const favorites = favoritesResponse.favorite_properties;
+  //   const notes = notesResponse.data;
+  //   const isFavourite = favorites.includes(property.id);
 
   const structuredData = {
     "@context": "https://schema.org",
@@ -207,7 +223,7 @@ const PageContent = async (props: Props) => {
 
   return (
     <>
-      <div className="mb-5 2xl:container px-6 sm:px-8 md:px-10 lg:px-14 mx-auto w-full mt-20">
+      <div className="mb-5 2xl:container px-6 sm:px-8 md:px-10 lg:px-14 mx-auto w-full">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
@@ -301,7 +317,7 @@ const PageContent = async (props: Props) => {
           </div>
         </Suspense>
       )} */}
-      <DiscoverSection />
+      {/* <DiscoverSection /> */}
     </>
   );
 };

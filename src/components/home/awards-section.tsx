@@ -1,8 +1,8 @@
 import React from "react"
 import { Button } from "../ui/button"
 import CarouselSliderVertical from "../carousel-slider-vertical"
-import Link from "next/link"
 import { getTranslations } from "next-intl/server"
+import { Link } from "@/i18n/navigation"
 
 const AwardsSection = async() => {
   const t = await getTranslations("awardsSection")

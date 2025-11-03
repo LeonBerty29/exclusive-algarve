@@ -1,13 +1,16 @@
 "use client";
 
 import { PropertyMetadata } from "@/types/property";
-import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { Skeleton } from "../ui/skeleton";
+import { Link } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 
 // Fetch areas from /api/search/regions and console.log the response we need to fetch it once when the component mounts
 
 export const FooterPropertiesLink = () => {
+  const t = useTranslations("footerPropertyLinks");
+
   const [regions, setRegions] = useState<PropertyMetadata["areas"]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -51,13 +54,14 @@ export const FooterPropertiesLink = () => {
     );
   }
 
-  console.log({ regions });
-
   return (
     <div className="2xl:container mx-auto px-6 sm:px-8 md:px-10 lg:px-14">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {regions.map((region, index) => (
-          <div key={index} className="p-6 hover:border hover:border-primary hover:scale-105 transition-transform">
+          <div
+            key={index}
+            className="p-6 hover:border hover:border-primary hover:scale-105 transition-transform"
+          >
             <h3 className="font-semibold text-xl text-primary mb-8">
               {region.name}
             </h3>
@@ -70,8 +74,14 @@ export const FooterPropertiesLink = () => {
                         key={`Municipality--zones--${index}`}
                         className="text-gray-600"
                       >
-                        <Link href={`/properties?zone=${zone.id}`} className="hover:underline">
-                          Real Estate Properties in {zone.name}
+                        <Link
+                          href={{
+                            pathname: "/properties",
+                            query: { zone: zone.id },
+                          }}
+                          className="hover:underline"
+                        >
+                          {t("realEstateInText")} {zone.name}
                         </Link>
                       </li>
                     ))}

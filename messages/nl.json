@@ -1524,5 +1524,18 @@
     "errorUnexpected": "Er is een onverwachte fout opgetreden. Probeer het opnieuw.",
     "errorFailedSend": "Bericht verzenden mislukt. Probeer het opnieuw.",
     "errorValidationPrefix": "Validatiefouten:"
+  },
+  "notFoundExlclusivePropertiesPage": {
+    "couldNotFindTitle": "Sorry! De woningen zijn niet gevonden",
+    "propertiesListNotFound": "De lijst met woningen waarnaar u zoekt, bestaat niet of is niet meer beschikbaar.",
+    "browseCatalogueButton": "Blader door onze woningencatalogus"
+  },
+  "notFoundExlclusivePropertiesdetails": {
+    "propertyNotFoundHeading": "Sorry! De woning is niet gevonden",
+    "propertyNotFoundDescription": "De woning waarnaar u zoekt, bestaat niet of is hier niet meer beschikbaar.",
+    "browseCatalogueButton": "Blader door onze woningencatalogus"
+  },
+  "footerPropertyLinks": {
+    "realEstateInText": "Onroerend goed in"
   }
 }
