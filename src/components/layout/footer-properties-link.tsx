@@ -21,7 +21,6 @@ export const FooterPropertiesLink = () => {
         }
 
         const data = await response.json();
-        console.log("Regions data:", data);
 
         // Check if there's an error in the response
         if (data.error) {

@@ -1504,12 +1504,15 @@
     "nameMinLength": "O nome deve ter pelo menos 2 caracteres",
     "nameMaxLength": "O nome deve ter no máximo 100 caracteres",
     "emailRequired": "O e-mail é obrigatório",
-    "emailInvalid": "Por favor, insira um endereço de e-mail válido"
+    "emailInvalid": "Por favor, insira um endereço de e-mail válido",
+    "phoneRequired": "Número de telefone é obrigatório"
   },
   "RequestFloorPlanForm": {
     "buttonRequestFloorPlan": "Solicitar Planta Baixa",
     "headingSendFloorPlan": "Como o corretor pode lhe enviar a planta baixa",
     "placeholderName": "Nome",
+    "placeholderFirstName": "Nome",
+    "placeholderLastName": "Sobrenome",
     "placeholderEmail": "E-mail",
     "placeholderPhone": "Telefone",
     "placeholderAdditionalText": "Adicionar uma mensagem (opcional)",

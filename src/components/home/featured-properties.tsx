@@ -7,7 +7,6 @@ import {
 } from "framer-motion";
 import Image from "next/image";
 import { Property } from "@/types/property";
-import { getProxiedImageUrl } from "@/lib/utils";
 import { Link } from "@/i18n/navigation";
 import { useLocale, useTranslations } from "next-intl";
 
@@ -23,7 +22,7 @@ export default function FeaturedProperties({
   // });
 
   const language = useLocale() as keyof Property["seo"]["slugs"];
-  const t = useTranslations("featuredProperties")
+  const t = useTranslations("featuredProperties");
 
   return (
     <div ref={containerRef} className="relative h-[300vh]">
@@ -42,7 +41,7 @@ export default function FeaturedProperties({
           >
             <div className="relative h-full w-full before:absolute before:inset-0 before:bg-black/60 before:bg-opacity-50 before:content-[''] before:z-10">
               <Image
-                src={getProxiedImageUrl(property.assets.images.gallery[0].url)}
+                src={property.assets.images.gallery[0].url}
                 alt={property.title}
                 width={1920}
                 height={1080}

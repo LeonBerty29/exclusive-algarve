@@ -19,10 +19,9 @@ import {
 } from "../ui/carousel";
 import Image from "next/image";
 import { PropertyImage } from "@/types/property";
-import { getProxiedImageUrl } from "@/lib/utils";
 import { getTranslations } from "next-intl/server";
 
-const PropertyImagesModal = async({ images }: { images: PropertyImage[] }) => {
+const PropertyImagesModal = async ({ images }: { images: PropertyImage[] }) => {
   const t = await getTranslations("propertyImagesModal");
   const totalImages = images.length;
   const remainingPhotos = totalImages - 3;
@@ -54,7 +53,7 @@ const PropertyImagesModal = async({ images }: { images: PropertyImage[] }) => {
                   <CarouselItem key={index}>
                     <div className="relative w-full h-[500px] md:h-[600px]">
                       <Image
-                        src={getProxiedImageUrl(image.url)}
+                        src={image.url}
                         alt={`${t("propertyImageAltPrefix")} ${index + 1}`}
                         fill
                         className="object-contain w-auto h-auto"

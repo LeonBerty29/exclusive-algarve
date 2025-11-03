@@ -16,9 +16,34 @@ const { auth } = NextAuth(authConfig);
 // Create the internationalization middleware
 const intlMiddleware = createIntlMiddleware(routing);
 
+// List of known search engine user agents
+const searchEngineBots = [
+  "googlebot",
+  "bingbot",
+  "slurp", // Yahoo
+  "duckduckbot",
+  "baiduspider",
+  "yandexbot",
+  "ia_archiver",
+  "facebot", // Facebook
+  "twitterbot",
+];
+
 export default auth((req) => {
   const { nextUrl } = req;
   const isLoggedIn = !!req.auth;
+
+  // CRITICAL: Skip ALL middleware for sitemap and robots files
+  // This allows search engines to access them without authentication
+  if (
+    nextUrl.pathname.includes("/sitemap") ||
+    // nextUrl.pathname.includes("/robots") ||
+    nextUrl.pathname.endsWith(".xml") 
+    // ||
+    // nextUrl.pathname === "/robots.txt"
+  ) {
+    return NextResponse.next();
+  }
 
   // Check if this is an API route (excluding auth API routes)
   const isApiRoute =
@@ -26,33 +51,39 @@ export default auth((req) => {
     !nextUrl.pathname.startsWith(apiAuthPrefix);
   const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
 
-  // Basic Auth Check First
-  const basicAuth = req.headers.get("authorization");
+  // Check if request is from a search engine bot
+  const userAgent = req.headers.get("user-agent")?.toLowerCase() || "";
+  const isSearchBot = searchEngineBots.some((bot) => userAgent.includes(bot));
 
-  if (!basicAuth) {
-    return new NextResponse("Authentication required", {
-      status: 401,
-      headers: {
-        "WWW-Authenticate": 'Basic realm="Secure Area"',
-      },
-    });
-  }
+  // Basic Auth Check - Skip for search engine bots
+  if (!isSearchBot) {
+    const basicAuth = req.headers.get("authorization");
 
-  // Parse the Basic Auth header
-  const authValue = basicAuth.split(" ")[1];
-  const [user, pwd] = atob(authValue).split(":");
+    if (!basicAuth) {
+      return new NextResponse("Authentication required", {
+        status: 401,
+        headers: {
+          "WWW-Authenticate": 'Basic realm="Secure Area"',
+        },
+      });
+    }
 
-  // Check credentials
-  const validUser = process.env.BASIC_AUTH_USER || "admin";
-  const validPassword = process.env.BASIC_AUTH_PASSWORD || "password123";
+    // Parse the Basic Auth header
+    const authValue = basicAuth.split(" ")[1];
+    const [user, pwd] = atob(authValue).split(":");
 
-  if (user !== validUser || pwd !== validPassword) {
-    return new NextResponse("Authentication required", {
-      status: 401,
-      headers: {
-        "WWW-Authenticate": 'Basic realm="Secure Area"',
-      },
-    });
+    // Check credentials
+    const validUser = process.env.BASIC_AUTH_USER || "admin";
+    const validPassword = process.env.BASIC_AUTH_PASSWORD || "password123";
+
+    if (user !== validUser || pwd !== validPassword) {
+      return new NextResponse("Authentication required", {
+        status: 401,
+        headers: {
+          "WWW-Authenticate": 'Basic realm="Secure Area"',
+        },
+      });
+    }
   }
 
   // For regular API routes (not auth), skip all other middleware processing
@@ -64,21 +95,6 @@ export default auth((req) => {
   if (isApiAuthRoute) {
     return;
   }
-
-  // // Check for invalid locale and redirect to default
-  // const segments = nextUrl.pathname.split("/");
-  // const potentialLocale = segments[1];
-
-  // if (
-  //   potentialLocale &&
-  //   !routing.locales.includes(potentialLocale as typeof routing.defaultLocale)
-  // ) {
-  //   // Invalid locale detected, replace with default locale
-  //   // Remove the invalid locale and rebuild path with default locale
-  //   const pathWithoutInvalidLocale = "/" + segments.slice(2).join("/");
-  //   const newPath = `/${routing.defaultLocale}${pathWithoutInvalidLocale}`;
-  //   return NextResponse.redirect(new URL(newPath, nextUrl));
-  // }
 
   // Extract locale from pathname for route checking
   const pathnameIsMissingLocale = routing.locales.every(
@@ -155,8 +171,8 @@ export default auth((req) => {
 export const config = {
   matcher: [
     // Skip Next.js internals and all static files, unless found in search params
-    // Added video extensions: mp4, webm, avi, mov, mkv, flv, wmv, m4v
-    "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest|mp4|webm|avi|mov|mkv|flv|wmv|m4v)).*)",
+    // Added video extensions and XML files (for sitemaps)
+    "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest|mp4|webm|avi|mov|mkv|flv|wmv|m4v|xml|txt)).*)",
     // Always run for API routes
     "/(api|trpc)(.*)",
   ],

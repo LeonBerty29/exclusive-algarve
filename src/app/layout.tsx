@@ -2,7 +2,6 @@ import { NextIntlClientProvider } from "next-intl";
 import type { Metadata } from "next";
 import "./globals.css";
 import { poppins } from "@/fonts";
-import Footer from "@/components/layout/footer";
 import StoryblokProvider from "@/components/story-provider";
 import { SessionProvider } from "next-auth/react";
 import { Toaster } from "@/components/ui/sonner";
@@ -46,7 +45,6 @@ export default async function RootLayout({
             <NextIntlClientProvider messages={messages}>
               <RecaptchaProvider>
                 <main className="w-full">{children}</main>
-                <Footer />
                 <Toaster />
               </RecaptchaProvider>
             </NextIntlClientProvider>

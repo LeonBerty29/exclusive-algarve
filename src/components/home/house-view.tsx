@@ -3,7 +3,6 @@ import React from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { Property } from "@/types/property";
-import { getProxiedImageUrl } from "@/lib/utils";
 import { Link } from "@/i18n/navigation";
 import { useLocale, useTranslations } from "next-intl";
 
@@ -21,7 +20,7 @@ const HouseView = ({ property }: { property: Property }) => {
         {property.assets.images.gallery[0].url ? (
           <div className="h-full w-full relative">
             <Image
-              src={getProxiedImageUrl(property.assets.images.gallery[0].url)}
+              src={property.assets.images.gallery[0].url}
               alt={property.title}
               className="h-full w-full object-cover"
               fill

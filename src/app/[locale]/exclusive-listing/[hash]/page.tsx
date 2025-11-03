@@ -1,6 +1,4 @@
-import { ProductCard } from "@/components/product/product-card";
 import { PropertiesPagination } from "@/components/property/properties-pagination";
-import { getPropertiesWithAllPaginated } from "@/data/properties";
 import { PropertySearchParams } from "@/types/property";
 import { Suspense } from "react";
 import { PROPERTIES_PER_PAGE } from "@/config/constants";
@@ -8,15 +6,20 @@ import {
   PaginationSkeleton,
   PropertiesGridSkeleton,
 } from "@/components/property/loading-states";
-import { auth } from "@/auth";
-import { getFavorites } from "@/data/favourites";
+// import { auth } from "@/auth";
+// import { getFavorites } from "@/data/favourites";
 import { Building2, Search, FilterX, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
-import { SortBy } from "@/components/search/sort-by";
 import { generateApiParams, hasActiveFilters } from "@/lib/utils";
-import { getNote } from "@/data/notes";
-import { getTranslations } from "next-intl/server";
+// import { getNote } from "@/data/notes";
+import {
+  // getLocale,
+  getTranslations,
+} from "next-intl/server";
+import Image from "next/image";
+import { ExclusiveListingCard } from "./exclusive-listing-card";
+import { getExclusivePropertiesWithAllPaginated } from "@/data/exclusive-properties";
 
 type Params = {
   [x: string]: string | string[];
@@ -27,48 +30,40 @@ interface PageProps {
   searchParams: Promise<PropertySearchParams>;
 }
 
-export default async function PropertiesPage(props: PageProps) {
-  // Convert searchParams to the format expected by your API
-  const searchParams = await props.searchParams;
+export default async function ExclusiveListing(props: PageProps) {
 
-  // Handle price_ranges parameter - it comes from URL as price_ranges[]
-  let priceRanges: string[] | undefined;
-  if (searchParams["price_ranges[]"]) {
-    if (Array.isArray(searchParams["price_ranges[]"])) {
-      priceRanges = searchParams["price_ranges[]"] as string[];
-    } else {
-      priceRanges = [searchParams["price_ranges[]"] as string];
-    }
-    console.log({ priceRanges });
-  }
+  // Convert searchParams to the format expected by your API
+  const awaitedParams = await props.params;
+  const hash = awaitedParams!.hash;
+  const searchParams = await props.searchParams;
 
   const apiParams: PropertySearchParams = generateApiParams(searchParams);
 
   // Create a key based on the search parameters that affect the data
   const suspenseKey = JSON.stringify({
-    search: apiParams.search,
-    location: apiParams.location_area,
-    municipality: apiParams.municipality,
-    zone: apiParams.zone,
-    district: apiParams.district,
-    min_price: apiParams.min_price,
-    max_price: apiParams.max_price,
-    price_ranges: apiParams.price_ranges,
-    currency: apiParams.currency,
-    typology: apiParams.typology,
-    min_bedrooms: apiParams.min_bedrooms,
-    max_bedrooms: apiParams.max_bedrooms,
-    min_bathrooms: apiParams.min_bathrooms,
-    max_bathrooms: apiParams.max_bathrooms,
-    min_area: apiParams.min_area,
-    max_area: apiParams.max_area,
-    min_plot_size: apiParams.min_plot_size,
-    max_plot_size: apiParams.max_plot_size,
-    construction_year_from: apiParams.construction_year_from,
-    construction_year_to: apiParams.construction_year_to,
-    energy_class: apiParams.energy_class,
-    agency_id: apiParams.agency_id,
-    featured: apiParams.featured,
+    // search: apiParams.search,
+    // location: apiParams.location_area,
+    // municipality: apiParams.municipality,
+    // zone: apiParams.zone,
+    // district: apiParams.district,
+    // min_price: apiParams.min_price,
+    // max_price: apiParams.max_price,
+    // price_ranges: apiParams.price_ranges,
+    // currency: apiParams.currency,
+    // typology: apiParams.typology,
+    // min_bedrooms: apiParams.min_bedrooms,
+    // max_bedrooms: apiParams.max_bedrooms,
+    // min_bathrooms: apiParams.min_bathrooms,
+    // max_bathrooms: apiParams.max_bathrooms,
+    // min_area: apiParams.min_area,
+    // max_area: apiParams.max_area,
+    // min_plot_size: apiParams.min_plot_size,
+    // max_plot_size: apiParams.max_plot_size,
+    // construction_year_from: apiParams.construction_year_from,
+    // construction_year_to: apiParams.construction_year_to,
+    // energy_class: apiParams.energy_class,
+    // agency_id: apiParams.agency_id,
+    // featured: apiParams.featured,
     show_price: apiParams.show_price,
     sort_by: apiParams.sort_by,
     sort_direction: apiParams.sort_direction,
@@ -78,18 +73,15 @@ export default async function PropertiesPage(props: PageProps) {
 
   return (
     <>
-      <div className="pt-24 w-full">
+      <div className="w-full">
         <div className="2xl:container px-6 sm:px-8 md:px-10 lg:px-14 mx-auto">
-          <div className="flex items-center gap-1 md:gap-4 justify-end">
-            <SortBy />
-          </div>
           <div className="mx-auto sm:max-w-full sm:mx-0 flex items-start flex-wrap pb-8">
             <div className="flex-1 md:min-w-[400px] mt-6">
               <Suspense
                 key={`${suspenseKey} --properties`}
                 fallback={<PropertiesGridSkeleton />}
               >
-                <PropertieList apiParams={apiParams} />
+                <PropertieList hash={hash as string} apiParams={apiParams} />
               </Suspense>
               <Suspense
                 key={`${suspenseKey} --pagination`}
@@ -101,32 +93,54 @@ export default async function PropertiesPage(props: PageProps) {
           </div>
         </div>
       </div>
+      <div className="py-8 w-full bg-black">
+        <div className="2xl:container px-6 sm:px-8 md:px-10 lg:px-14 mx-auto flex items-center justify-center gap-4">
+          <p className="text-white">POWERED BY</p>
+          <Link href="/">
+            <Image
+              src={"/images/eav-logo.png"}
+              alt="Exclusive Algarve Villas Logo"
+              width={70}
+              height={50}
+              className="object-contain h-10 w-20"
+            />
+          </Link>
+        </div>
+      </div>
     </>
   );
 }
 
 async function PropertieList({
   apiParams,
+  hash,
 }: {
   apiParams: PropertySearchParams;
+  hash: string;
 }) {
+
   const t = await getTranslations("propertiesPage");
-  const session = await auth();
-  const token = session?.accessToken;
+  // const session = await auth();
+  // const locale = await getLocale();
+  // const token = session?.accessToken;
 
   // Fetch all data concurrently using Promise.all
-  const [propertiesResponse, favoritesResponse, notesResponse] =
-    await Promise.all([
-      getPropertiesWithAllPaginated(apiParams, PROPERTIES_PER_PAGE),
-      token
-        ? getFavorites(token)
-        : Promise.resolve({ favorite_properties: [] }),
-      token ? getNote() : Promise.resolve({ data: [] }),
-    ]);
+  const [
+    propertiesResponse,
+    // favoritesResponse,
+    // notesResponse
+  ] = await Promise.all([
+    getExclusivePropertiesWithAllPaginated(apiParams, PROPERTIES_PER_PAGE, hash),
+    // token
+    //   ? getFavorites(token)
+    //   : Promise.resolve({ favorite_properties: [] }),
+    // token ? getNote() : Promise.resolve({ data: [] }),
+  ]);
 
   const properties = propertiesResponse.data;
-  const favorites = favoritesResponse.favorite_properties;
-  const notes = notesResponse.data;
+  console.log({ propertiesResponse });
+  // const favorites = favoritesResponse.favorite_properties;
+  // const notes = notesResponse.data;
   const hasFilters = hasActiveFilters(apiParams);
 
   return (
@@ -134,10 +148,11 @@ async function PropertieList({
       {properties.length > 0 ? (
         properties.map((property) => (
           <div key={property.id} className="">
-            <ProductCard
+            <ExclusiveListingCard
               property={property}
-              favorites={favorites}
-              notes={notes}
+              // favorites={favorites}
+              // notes={notes}
+              hash={hash}
             />
           </div>
         ))

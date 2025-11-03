@@ -1,3 +1,4 @@
+import Footer from "@/components/layout/footer";
 import NavBar from "@/components/layout/navbar";
 
 export default function LayoutOne({
@@ -9,6 +10,7 @@ export default function LayoutOne({
     <>
       <NavBar colorChange={true} />
       {children}
+      <Footer />
     </>
   );
 }

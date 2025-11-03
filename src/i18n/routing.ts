@@ -313,6 +313,15 @@ export const routing = defineRouting({
       se: "/exklusiv-listning/[hash]",
       nl: "/exclusieve-vermelding/[hash]",
       ru: "/eksklyuzivnoe-predlozhenie/[hash]",
-    }
+    },
+    "/exclusive-listing/[hash]/[slug]": {
+      en: "/exclusive-listing/[hash]/[slug]",
+      pt: "/listagem-exclusiva/[hash]/[slug]",
+      de: "/exklusives-angebot/[hash]/[slug]",
+      fr: "/annonce-exclusive/[hash]/[slug]",
+      se: "/exklusiv-listning/[hash]/[slug]",
+      nl: "/exclusieve-vermelding/[hash]/[slug]",
+      ru: "/eksklyuzivnoe-predlozhenie/[hash]/[slug]",
+    },
   },
 });

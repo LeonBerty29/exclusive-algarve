@@ -17,11 +17,13 @@ import { useLocale } from "next-intl";
 interface ProductImageCarouselProps {
   imagePaths: string[];
   property?: Property;
+  hash: string
 }
 
-export const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
+export const ExclusiveCardProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
   imagePaths,
   property,
+  hash
 }) => {
   // ref for the carousel container
   const carouselContainerRef = useRef<HTMLDivElement>(null);
@@ -66,11 +68,12 @@ export const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
                 {property ? (
                   <Link
                     href={{
-                      pathname: "/properties/[slug]",
+                      pathname: "/exclusive-listing/[hash]/[slug]",
                       params: {
                         slug: property.seo.slugs[
                           locale as keyof typeof property.seo.slugs
                         ],
+                        hash: hash,
                       },
                     }}
                     className="relative w-full aspect-4/3 overflow-hidden block"

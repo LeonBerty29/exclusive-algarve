@@ -3,7 +3,7 @@ import { MdOutlineShower } from "react-icons/md";
 import { IoMdPricetag } from "react-icons/io";
 import { MdOutlineLocalHotel } from "react-icons/md";
 import { Card, CardContent, CardHeader } from "../ui/card";
-import ProductImageCarousel from "./product-image-carousel";
+import { ProductImageCarousel } from "./product-image-carousel";
 import { AddToFavoriteButton } from "../search/submit-buttons";
 import { Separator } from "../ui/separator";
 import { PriceFormat } from "../shared/price-format";
@@ -21,14 +21,13 @@ interface Props {
   notes: NoteObject[];
 }
 
-export const AnnotationPropertyCard = async({
+export const AnnotationPropertyCard = async ({
   property,
   favorites,
   notes,
 }: Props) => {
   const t = await getTranslations("annotationPropertyCard");
   const locale = await getLocale();
-
 
   // Extract image URLs from assets.images.gallery
   const imagePaths =

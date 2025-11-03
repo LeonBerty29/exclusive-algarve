@@ -1,3 +1,4 @@
+import Footer from "@/components/layout/footer";
 import NavBar from "@/components/layout/navbar";
 import { routing } from "@/i18n/routing";
 import type { Metadata } from "next";
@@ -30,6 +31,7 @@ export default async function RootLayout({
     <>
       <NavBar>{locales}</NavBar>
       {children}
+      <Footer />
     </>
   );
 }

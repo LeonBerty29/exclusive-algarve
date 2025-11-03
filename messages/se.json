@@ -1504,12 +1504,15 @@
     "nameMinLength": "Namnet måste vara minst 2 tecken",
     "nameMaxLength": "Namnet får vara högst 100 tecken",
     "emailRequired": "E-post krävs",
-    "emailInvalid": "Vänligen ange en giltig e-postadress"
+    "emailInvalid": "Vänligen ange en giltig e-postadress",
+    "phoneRequired": "Telefonnummer krävs"
   },
   "RequestFloorPlanForm": {
     "buttonRequestFloorPlan": "Begär planlösning",
     "headingSendFloorPlan": "Hur kan mäklaren skicka dig planlösningen",
     "placeholderName": "Namn",
+    "placeholderFirstName": "Förnamn",
+    "placeholderLastName": "Efternamn",
     "placeholderEmail": "E-post",
     "placeholderPhone": "Telefon",
     "placeholderAdditionalText": "Lägg till ett meddelande (valfritt)",
