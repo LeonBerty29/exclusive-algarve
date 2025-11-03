@@ -392,7 +392,8 @@
   },
   "propertyDetailsPage": {
     "home": "Home",
-    "properties": "Properties"
+    "properties": "Properties",
+    "poweredBy": "POWERED BY"
   },
   "propertyDetailsErrorPage": {
     "propertyNotFoundTitle": "Property Not Found",
@@ -1524,5 +1525,18 @@
     "errorUnexpected": "An unexpected error occurred. Please try again.",
     "errorFailedSend": "Failed to send message. Please try again.",
     "errorValidationPrefix": "Validation errors:"
+  },
+  "notFoundExlclusivePropertiesPage": {
+    "couldNotFindTitle": "Sorry! Could Not Find The Properties",
+    "propertiesListNotFound": "The list of properties you are looking for does not exist or are no longer available.",
+    "browseCatalogueButton": "Browse our catalogue of Properties"
+  },
+  "notFoundExlclusivePropertiesdetails": {
+    "propertyNotFoundHeading": "Sorry! Could Not Find The Property",
+    "propertyNotFoundDescription": "The property you are looking for does not exist or is no longer available here.",
+    "browseCatalogueButton": "Browse our catalogue of Properties"
+  },
+  "footerPropertyLinks": {
+    "realEstateInText": "Real Estate Properties in"
   }
 }

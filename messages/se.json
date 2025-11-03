@@ -1524,5 +1524,18 @@
     "errorUnexpected": "Ett oväntat fel inträffade. Vänligen försök igen.",
     "errorFailedSend": "Misslyckades med att skicka meddelandet. Vänligen försök igen.",
     "errorValidationPrefix": "Valideringsfel:"
+  },
+  "notFoundExlclusivePropertiesPage": {
+    "couldNotFindTitle": "Tyvärr! Kunde inte hitta fastigheterna",
+    "propertiesListNotFound": "Listan över fastigheter du letar efter finns inte eller är inte längre tillgänglig.",
+    "browseCatalogueButton": "Bläddra i vår fastighetskatalog"
+  },
+  "notFoundExlclusivePropertiesdetails": {
+    "propertyNotFoundHeading": "Tyvärr! Kunde inte hitta fastigheten",
+    "propertyNotFoundDescription": "Fastigheten du letar efter finns inte eller är inte längre tillgänglig här.",
+    "browseCatalogueButton": "Bläddra i vår fastighetskatalog"
+  },
+  "footerPropertyLinks": {
+    "realEstateInText": "Fastigheter i"
   }
 }

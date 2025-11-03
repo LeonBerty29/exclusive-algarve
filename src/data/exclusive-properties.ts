@@ -1,9 +1,7 @@
-import {
-  PropertyListResponse,
-  PropertySearchParams,
-} from "@/types/property";
+import { PropertyListResponse, PropertySearchParams } from "@/types/property";
 import { cache } from "react";
 import { getLocale } from "next-intl/server";
+import { notFound } from "next/navigation";
 
 function createBasicAuthHeader(): string {
   const credentials = btoa(
@@ -15,9 +13,7 @@ function createBasicAuthHeader(): string {
 /**
  * Generic fetch wrapper with Basic Auth
  */
-async function apiRequest<T>(
-  endpoint: string,
-): Promise<T> {
+async function apiRequest<T>(endpoint: string): Promise<T> {
   const url = `${process.env.API_BASE_URL}${endpoint}`;
 
   const defaultHeaders = {
@@ -34,8 +30,11 @@ async function apiRequest<T>(
 
   const response = await fetch(url, config);
 
-  
   if (!response.ok) {
+    if (response.status === 404) {
+      return notFound();
+    }
+
     const errorText = await response.text();
     throw new Error(
       `API Error: ${response.status} ${response.statusText} - ${errorText}`
@@ -95,7 +94,10 @@ function buildQueryString(params: PropertySearchParams): string {
  * Fetches a paginated list of properties with optional filtering and sorting
  */
 export const getExclusiveProperties = cache(
-  async (params: PropertySearchParams = {}, hash: string): Promise<PropertyListResponse> => {
+  async (
+    params: PropertySearchParams = {},
+    hash: string
+  ): Promise<PropertyListResponse> => {
     const queryString = buildQueryString(params);
     const locale = await getLocale();
     const endpoint = `/v1/property-secret-listings/${hash}${queryString}&language=${locale}`;
@@ -109,9 +111,12 @@ export async function getExclusivePropertiesWithAllPaginated(
   perPage: number = 15,
   hash: string
 ): Promise<PropertyListResponse> {
-  return getExclusiveProperties({
-    ...params,
-    include: "media,features",
-    per_page: perPage,
-  }, hash);
+  return getExclusiveProperties(
+    {
+      ...params,
+      include: "media,features",
+      per_page: perPage,
+    },
+    hash
+  );
 }

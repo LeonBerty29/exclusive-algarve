@@ -1,4 +1,3 @@
-import { PropertiesPagination } from "@/components/property/properties-pagination";
 import { PropertySearchParams } from "@/types/property";
 import { Suspense } from "react";
 import { PROPERTIES_PER_PAGE } from "@/config/constants";
@@ -20,6 +19,7 @@ import {
 import Image from "next/image";
 import { ExclusiveListingCard } from "./exclusive-listing-card";
 import { getExclusivePropertiesWithAllPaginated } from "@/data/exclusive-properties";
+import { ExclusivePropertiesPagination } from "./exlcusive-properties-pagination";
 
 type Params = {
   [x: string]: string | string[];
@@ -31,6 +31,7 @@ interface PageProps {
 }
 
 export default async function ExclusiveListing(props: PageProps) {
+  const t = await getTranslations("propertyDetailsPage");
 
   // Convert searchParams to the format expected by your API
   const awaitedParams = await props.params;
@@ -87,7 +88,10 @@ export default async function ExclusiveListing(props: PageProps) {
                 key={`${suspenseKey} --pagination`}
                 fallback={<PaginationSkeleton />}
               >
-                <PropertiesPagination apiParams={apiParams} />
+                <ExclusivePropertiesPagination
+                  apiParams={apiParams}
+                  hash={hash as string}
+                />
               </Suspense>
             </div>
           </div>
@@ -95,7 +99,7 @@ export default async function ExclusiveListing(props: PageProps) {
       </div>
       <div className="py-8 w-full bg-black">
         <div className="2xl:container px-6 sm:px-8 md:px-10 lg:px-14 mx-auto flex items-center justify-center gap-4">
-          <p className="text-white">POWERED BY</p>
+          <p className="text-white text-sm">{t("poweredBy")}</p>
           <Link href="/">
             <Image
               src={"/images/eav-logo.png"}
@@ -118,7 +122,6 @@ async function PropertieList({
   apiParams: PropertySearchParams;
   hash: string;
 }) {
-
   const t = await getTranslations("propertiesPage");
   // const session = await auth();
   // const locale = await getLocale();
@@ -130,7 +133,11 @@ async function PropertieList({
     // favoritesResponse,
     // notesResponse
   ] = await Promise.all([
-    getExclusivePropertiesWithAllPaginated(apiParams, PROPERTIES_PER_PAGE, hash),
+    getExclusivePropertiesWithAllPaginated(
+      apiParams,
+      PROPERTIES_PER_PAGE,
+      hash
+    ),
     // token
     //   ? getFavorites(token)
     //   : Promise.resolve({ favorite_properties: [] }),
@@ -138,7 +145,6 @@ async function PropertieList({
   ]);
 
   const properties = propertiesResponse.data;
-  console.log({ propertiesResponse });
   // const favorites = favoritesResponse.favorite_properties;
   // const notes = notesResponse.data;
   const hasFilters = hasActiveFilters(apiParams);

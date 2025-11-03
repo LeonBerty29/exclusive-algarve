@@ -1,11 +1,10 @@
 import Image from "next/image";
 import { ReactNode } from "react";
 
-
-const layout = ({children}: {children: ReactNode}) => {
+const layout = ({ children }: { children: ReactNode }) => {
   return (
     <div className="">
-      <div className="2xl:container px-6 sm:px-8 md:px-10 lg:px-14 mx-auto">
+      <div className="2xl:container px-6 sm:px-8 md:px-10 lg:px-14 mx-auto bg-inherit z-20">
         <div className="flex items-center justify-between gap-6 flex-wrap py-6">
           <Image
             src={"/images/eav-logo-dark.svg"}
@@ -22,7 +21,7 @@ const layout = ({children}: {children: ReactNode}) => {
             className="object-contain h-15 w-20 lg:hidden"
           />
 
-          <div className="">Agent Details Goes Here</div>
+          {/* <div className="">Agent Details Goes Here</div> */}
         </div>
       </div>
 

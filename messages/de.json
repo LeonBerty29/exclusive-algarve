@@ -1524,5 +1524,18 @@
     "errorUnexpected": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
     "errorFailedSend": "Nachricht konnte nicht gesendet werden. Bitte versuchen Sie es erneut.",
     "errorValidationPrefix": "Validierungsfehler:"
+  },
+  "notFoundExlclusivePropertiesPage": {
+    "couldNotFindTitle": "Entschuldigung! Die Immobilien konnten nicht gefunden werden",
+    "propertiesListNotFound": "Die Liste der Immobilien, nach der Sie suchen, existiert nicht oder ist nicht mehr verfügbar.",
+    "browseCatalogueButton": "Durchsuchen Sie unseren Immobilienkatalog"
+  },
+  "notFoundExlclusivePropertiesdetails": {
+    "propertyNotFoundHeading": "Entschuldigung! Die Immobilie konnte nicht gefunden werden",
+    "propertyNotFoundDescription": "Die Immobilie, nach der Sie suchen, existiert nicht oder ist hier nicht mehr verfügbar.",
+    "browseCatalogueButton": "Durchsuchen Sie unseren Immobilienkatalog"
+  },
+  "footerPropertyLinks": {
+    "realEstateInText": "Immobilien in"
   }
 }

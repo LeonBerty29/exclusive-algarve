@@ -1,4 +1,4 @@
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import // Calendar,
 "lucide-react";
 import ScrollableTabs from "@/components/property/scrollable-tabs";
@@ -32,7 +32,11 @@ import { setRequestLocale } from "next-intl/server";
 import { AddPropertyNote } from "@/components/product/add-property-notes";
 import { getNote } from "@/data/notes";
 import { Metadata } from "next";
-import { BASE_URL, EAV_TWITTER_CREATOR_HANDLE, WEBSITE_NAME } from "@/config/constants";
+import {
+  BASE_URL,
+  EAV_TWITTER_CREATOR_HANDLE,
+  WEBSITE_NAME,
+} from "@/config/constants";
 import { routing } from "@/i18n/routing";
 
 interface Props {
@@ -167,6 +171,7 @@ export default async function page(props: Props) {
 const PageContent = async (props: Props) => {
   const t = await getTranslations("propertyDetailsPage");
   const { propertyId } = await props.params;
+  const locale = await getLocale();
   const session = await auth();
   const token = session?.accessToken;
 
@@ -185,26 +190,164 @@ const PageContent = async (props: Props) => {
   const notes = notesResponse.data;
   const isFavourite = favorites.includes(property.id);
 
+  const propertiesPath = routing.pathnames["/properties/[slug]"];
+  const localizedPropertiesPath =
+    typeof propertiesPath === "string"
+      ? propertiesPath
+      : propertiesPath[locale as keyof typeof propertiesPath];
+  const currentSlug =
+    property.seo.slugs[locale as keyof typeof property.seo.slugs];
+  const localizedPath = localizedPropertiesPath.replace("[slug]", currentSlug);
+  const propertyUrl = `${BASE_URL}/${locale}${localizedPath}`;
+
+  // Enhanced Structured Data for Real Estate
   const structuredData = {
     "@context": "https://schema.org",
-    "@type": "Product",
+    "@type": "SingleFamilyResidence", // More specific than Product for real estate
+    "@id": propertyUrl,
     name: property.title,
     description: property.description,
-    image: property.assets.images.gallery[0].url,
-    brand: {
-      "@type": "Brand",
-      name: "Exclusive Algarve Villas",
+    url: propertyUrl,
+
+    // Images - all gallery images
+    image: property.assets.images.gallery.map((img) => img.url),
+
+    // Address Information
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: property.location.zone,
+      addressLocality: property.location.municipality,
+      addressRegion: property.location.district,
+      postalCode: property.location.zip_code,
+      addressCountry: property.location.country,
     },
+
+    // Geo Coordinates (critical for local SEO and maps)
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude: property.location.latitude,
+      longitude: property.location.longitude,
+    },
+
+    // Property Features
+    numberOfRooms: property.features.bedrooms,
+    numberOfBedrooms: property.features.bedrooms,
+    numberOfBathroomsTotal: property.features.bathrooms,
+
+    // Floor Size
+    floorSize: {
+      "@type": "QuantitativeValue",
+      value: property.features.private_area,
+      unitCode: "MTK", // Square meters
+      unitText: "m²",
+    },
+
+    // Offer/Price Information
     offers: {
       "@type": "Offer",
-      priceCurrency: property.currency,
       price: property.price,
-      availability: "InStock",
+      priceCurrency: property.currency,
+      availability: "https://schema.org/InStock",
+      url: propertyUrl,
+      priceSpecification: {
+        "@type": "UnitPriceSpecification",
+        price: property.price,
+        priceCurrency: property.currency,
+      },
+      seller: {
+        "@type": "RealEstateAgent",
+        name: property.sales_consultant.name,
+        image: property.sales_consultant.profile_picture,
+      },
     },
-    seller: {
-      "@type": "Organization",
-      name: "Exclusive Algarve Villas",
+
+    // Additional Property Details
+    additionalProperty: [
+      {
+        "@type": "PropertyValue",
+        name: "Property Type",
+        value: property.typology.name,
+      },
+      {
+        "@type": "PropertyValue",
+        name: "Plot Size",
+        value: `${property.features.plot_size} m²`,
+      },
+      {
+        "@type": "PropertyValue",
+        name: "Construction Area",
+        value: `${property.features.construction_area} m²`,
+      },
+      {
+        "@type": "PropertyValue",
+        name: "Construction Year",
+        value: property.features.construction_year,
+      },
+      {
+        "@type": "PropertyValue",
+        name: "Energy Class",
+        value: property.features.energy_class,
+      },
+      {
+        "@type": "PropertyValue",
+        name: "Garage Spaces",
+        value: property.features.garage.toString(),
+      },
+      {
+        "@type": "PropertyValue",
+        name: "Reference",
+        value: property.reference,
+      },
+      // Add additional features if available
+      // ...property.additional_features.map((feature) => ({
+      //   "@type": "PropertyValue",
+      //   name: feature.name,
+      //   value: feature.value || "Yes",
+      // })),
+    ],
+
+    // Organization (your company)
+    provider: {
+      "@type": "RealEstateAgent",
+      name: WEBSITE_NAME,
+      url: BASE_URL,
     },
+
+    // Date information
+    // datePosted: property.created_at,
+    // dateModified: property.updated_at,
+  };
+
+  // Breadcrumb Structured Data (separate script tag)
+  const breadcrumbStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: `${BASE_URL}/${locale}`,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Properties",
+        item: `${BASE_URL}/${locale}${
+          typeof routing.pathnames["/properties"] === "string"
+            ? routing.pathnames["/properties"]
+            : routing.pathnames["/properties"][
+                locale as keyof (typeof routing.pathnames)["/properties"]
+              ]
+        }`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: property.title,
+        item: propertyUrl,
+      },
+    ],
   };
 
   return (
@@ -213,6 +356,14 @@ const PageContent = async (props: Props) => {
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        />
+
+        {/* Breadcrumb Structured Data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(breadcrumbStructuredData),
+          }}
         />
 
         <div className="flex items-center gap-x-8 gap-y-3 justify-between flex-wrap mb-6">

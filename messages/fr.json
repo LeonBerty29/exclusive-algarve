@@ -1524,5 +1524,18 @@
     "errorUnexpected": "Une erreur inattendue s'est produite. Veuillez réessayer.",
     "errorFailedSend": "Échec de l'envoi du message. Veuillez réessayer.",
     "errorValidationPrefix": "Erreurs de validation :"
+  },
+  "notFoundExlclusivePropertiesPage": {
+    "couldNotFindTitle": "Désolé ! Impossible de trouver les propriétés",
+    "propertiesListNotFound": "La liste des propriétés que vous recherchez n'existe pas ou n'est plus disponible.",
+    "browseCatalogueButton": "Parcourir notre catalogue de propriétés"
+  },
+  "notFoundExlclusivePropertiesdetails": {
+    "propertyNotFoundHeading": "Désolé ! Impossible de trouver la propriété",
+    "propertyNotFoundDescription": "La propriété que vous recherchez n'existe pas ou n'est plus disponible ici.",
+    "browseCatalogueButton": "Parcourir notre catalogue de propriétés"
+  },
+  "footerPropertyLinks": {
+    "realEstateInText": "Propriétés immobilières à"
   }
 }
