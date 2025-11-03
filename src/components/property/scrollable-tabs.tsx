@@ -173,7 +173,7 @@ const ScrollableTabs = ({ property }: ScrollableTabsProps) => {
           >
             <div className="p-4">
               <FloorPlanTab
-                floorPlans={property.assets.images.floor_plans}
+                propertyReference={property.reference}
                 pdfBrochure={property.assets.pdf_brochure}
               />
             </div>

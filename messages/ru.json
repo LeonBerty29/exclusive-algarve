@@ -1504,12 +1504,15 @@
     "nameMinLength": "Имя должно содержать не менее 2 символов",
     "nameMaxLength": "Имя должно содержать не более 100 символов",
     "emailRequired": "Email обязателен",
-    "emailInvalid": "Пожалуйста, введите действительный адрес электронной почты"
+    "emailInvalid": "Пожалуйста, введите действительный адрес электронной почты",
+    "phoneRequired": "Номер телефона обязателен"
   },
   "RequestFloorPlanForm": {
     "buttonRequestFloorPlan": "Запросить план этажа",
     "headingSendFloorPlan": "Как агент может отправить вам план этажа",
     "placeholderName": "Имя",
+    "placeholderFirstName": "Имя",
+"placeholderLastName": "Фамилия",
     "placeholderEmail": "Email",
     "placeholderPhone": "Телефон",
     "placeholderAdditionalText": "Добавить сообщение (необязательно)",

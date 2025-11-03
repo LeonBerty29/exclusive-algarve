@@ -3,14 +3,14 @@
 import React from "react";
 import { ArrowDownToLine } from "lucide-react";
 import { Button } from "../ui/button";
-import { PropertyImage } from "@/types/property";
 import { useTranslations } from "next-intl";
 import { RequestFloorPlan } from "./request-floor-plan";
 
 export const FloorPlanTab = ({
   pdfBrochure,
+  propertyReference
 }: {
-  floorPlans: PropertyImage[];
+  propertyReference: string;
   pdfBrochure: string;
 }) => {
   const t = useTranslations("floorPlan");
@@ -56,7 +56,7 @@ export const FloorPlanTab = ({
             {t("propertyFloorPlan")}
           </p> */}
 
-          <RequestFloorPlan />
+          <RequestFloorPlan propertyReference={propertyReference} />
 
 
 

@@ -1504,12 +1504,15 @@
     "nameMinLength": "Name muss mindestens 2 Zeichen lang sein",
     "nameMaxLength": "Name darf maximal 100 Zeichen lang sein",
     "emailRequired": "E-Mail ist erforderlich",
-    "emailInvalid": "Bitte geben Sie eine gültige E-Mail-Adresse ein"
+    "emailInvalid": "Bitte geben Sie eine gültige E-Mail-Adresse ein",
+    "phoneRequired": "Telefonnummer ist erforderlich"
   },
   "RequestFloorPlanForm": {
     "buttonRequestFloorPlan": "Grundriss anfordern",
     "headingSendFloorPlan": "Wie kann Ihnen der Makler den Grundriss senden",
     "placeholderName": "Name",
+    "placeholderFirstName": "Vorname",
+    "placeholderLastName": "Nachname",
     "placeholderEmail": "E-Mail",
     "placeholderPhone": "Telefon",
     "placeholderAdditionalText": "Nachricht hinzufügen (optional)",

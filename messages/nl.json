@@ -1504,12 +1504,15 @@
     "nameMinLength": "Naam moet minimaal 2 tekens bevatten",
     "nameMaxLength": "Naam mag maximaal 100 tekens bevatten",
     "emailRequired": "E-mail is verplicht",
-    "emailInvalid": "Voer een geldig e-mailadres in"
+    "emailInvalid": "Voer een geldig e-mailadres in",
+    "phoneRequired": "Le numéro de téléphone est requis"
   },
   "RequestFloorPlanForm": {
     "buttonRequestFloorPlan": "Plattegrond aanvragen",
     "headingSendFloorPlan": "Hoe kan de makelaar u de plattegrond sturen",
     "placeholderName": "Naam",
+    "placeholderFirstName": "Voornaam",
+    "placeholderLastName": "Achternaam",
     "placeholderEmail": "E-mail",
     "placeholderPhone": "Telefoon",
     "placeholderAdditionalText": "Voeg een bericht toe (optioneel)",

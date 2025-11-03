@@ -1504,12 +1504,15 @@
     "nameMinLength": "Name must be at least 2 characters",
     "nameMaxLength": "Name must be at most 100 characters",
     "emailRequired": "Email is required",
-    "emailInvalid": "Please enter a valid email address"
+    "emailInvalid": "Please enter a valid email address",
+    "phoneRequired": "Phone number is required"
   },
   "RequestFloorPlanForm": {
     "buttonRequestFloorPlan": "Request Floor Plan",
     "headingSendFloorPlan": "How Can the Agent Send You the Floor plan",
     "placeholderName": "Name",
+    "placeholderFirstName": "First Name",
+    "placeholderLastName": "Last Name",
     "placeholderEmail": "Email",
     "placeholderPhone": "Phone",
     "placeholderAdditionalText": "Add a message (optional)",

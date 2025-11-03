@@ -7,7 +7,6 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { getProperties } from "@/data/properties";
-import { getProxiedImageUrl } from "@/lib/utils";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
@@ -20,7 +19,7 @@ const RecentListing = async () => {
   });
 
   const locale = await getLocale();
-  const t = await getTranslations("recentListing")
+  const t = await getTranslations("recentListing");
 
   const properties = propertiresResponse.data;
 
@@ -42,14 +41,18 @@ const RecentListing = async () => {
                 <Card className="p-0 bg-transparent border-none rounded-none">
                   <CardContent className="flex items-center justify-center w-full p-0">
                     <div className="w-full relative h-60 sm:h-54 xl:h-70 overflow-hidden">
-                      <Link href={{
-                        pathname: "/properties/[slug]",
-                        params: { slug: property.seo.slugs[locale as keyof typeof property.seo.slugs] },
-                      }}>
+                      <Link
+                        href={{
+                          pathname: "/properties/[slug]",
+                          params: {
+                            slug: property.seo.slugs[
+                              locale as keyof typeof property.seo.slugs
+                            ],
+                          },
+                        }}
+                      >
                         <Image
-                          src={getProxiedImageUrl(
-                            property.assets.images.gallery[0].url
-                          )}
+                          src={property.assets.images.gallery[0].url}
                           alt={
                             property.assets.images.gallery[0].title ||
                             "Recent Listing"

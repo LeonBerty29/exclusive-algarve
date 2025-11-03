@@ -2,29 +2,32 @@ import { PiCarLight } from "react-icons/pi";
 import { MdOutlineShower } from "react-icons/md";
 import { IoMdPricetag } from "react-icons/io";
 import { MdOutlineLocalHotel } from "react-icons/md";
-import { Card, CardContent, CardHeader } from "../ui/card";
-import { ProductImageCarousel } from "./product-image-carousel";
-import { AddToFavoriteButton } from "../search/submit-buttons";
-import { Separator } from "../ui/separator";
-import { PriceFormat } from "../shared/price-format";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Property } from "@/types/property";
 import { Link } from "@/i18n/navigation";
 import { getLocale } from "next-intl/server";
-import { AddPropertyNote } from "./add-property-notes";
 import { getTranslations } from "next-intl/server";
-import { NoteObject } from "@/types";
+// import { NoteObject } from "@/types";
+// import { AddToFavoriteButton } from "@/components/search/submit-buttons";
+// import { AddPropertyNote } from "@/components/product/add-property-notes";
+import { PriceFormat } from "@/components/shared/price-format";
+import { Separator } from "@radix-ui/react-dropdown-menu";
+import { ExclusiveCardProductImageCarousel } from "./exclusive-listing-card-image-carousel";
 
 interface Props {
   property: Property;
-  favorites: number[];
-  notes: NoteObject[];
+  //   favorites: number[];
+  //   notes: NoteObject[];
+  hash: string;
 }
 
-export const ProductCard = async ({
+export const ExclusiveListingCard = async ({
   property,
-  favorites = [],
-  notes,
-}: Props) => {
+  hash
+}: //   favorites = [],
+//   notes,
+
+Props) => {
   const t = await getTranslations("productCard");
 
   // Extract image URLs from assets.images.gallery
@@ -35,7 +38,7 @@ export const ProductCard = async ({
   const location = `${property.location.district}, ${property.location.municipality}, ${property.location.zone}`;
 
   // Hardcoded placeholders for missing fields (adjust as needed)
-  const favorite = favorites.includes(property.id);
+  //   const favorite = favorites.includes(property.id);
   const reference = property.reference;
   const exclusive = property.agency.name === "EAV";
 
@@ -58,7 +61,7 @@ export const ProductCard = async ({
   return (
     <Card className="flex flex-col gap-0 rounded-none p-0 h-full">
       <CardHeader className="p-0 relative w-full flex flex-col">
-        <ProductImageCarousel imagePaths={imagePaths} property={property} />
+        <ExclusiveCardProductImageCarousel imagePaths={imagePaths} property={property} hash={hash} />
         <div className="z-10 absolute top-2 left-2 right-2 flex items-center justify-between gap-3">
           <>
             <div className="flex items-center gap-[6px]">
@@ -67,7 +70,7 @@ export const ProductCard = async ({
                 {reference}
               </div>
             </div>
-            <div className="flex gap-2 items-center">
+            {/* <div className="flex gap-2 items-center">
               <AddToFavoriteButton
                 propertyId={property.id}
                 reference={property.reference}
@@ -79,7 +82,7 @@ export const ProductCard = async ({
                 reference={property.reference}
                 notes={notes || []}
               />
-            </div>
+            </div> */}
           </>
         </div>
 
@@ -92,8 +95,9 @@ export const ProductCard = async ({
       <CardContent className="p-4 flex-1">
         <Link
           href={{
-            pathname: "/properties/[slug]",
+            pathname: "/exclusive-listing/[hash]/[slug]",
             params: {
+              hash: hash,
               slug: property.seo.slugs[
                 locale as keyof typeof property.seo.slugs
               ],

@@ -3,7 +3,6 @@ import Image from "next/image";
 import { Button } from "../ui/button";
 import PropertyImagesModal from "./property-images-modal";
 import { Property } from "@/types/property";
-import { getProxiedImageUrl } from "@/lib/utils";
 import { RequestInformationDialog } from "./request-information";
 import { PropertyVideosModal } from "./property-videos-modal";
 import { getTranslations } from "next-intl/server";
@@ -13,7 +12,7 @@ interface PropertyImageGridProps {
   salesConsultant: Property["sales_consultant"];
 }
 
-export const PropertyImageGrid: React.FC<PropertyImageGridProps> = async({
+export const PropertyImageGrid: React.FC<PropertyImageGridProps> = async ({
   assets,
   salesConsultant,
 }) => {
@@ -30,7 +29,7 @@ export const PropertyImageGrid: React.FC<PropertyImageGridProps> = async({
           <div className="w-full h-[450px] xl:h-[550px] relative">
             {propertyImages[0] && (
               <Image
-                src={getProxiedImageUrl(propertyImages[0]?.url)}
+                src={propertyImages[0]?.url}
                 alt={propertyImages[0]?.title || t("propertyImage")}
                 fill
                 className="object-cover"
@@ -53,7 +52,7 @@ export const PropertyImageGrid: React.FC<PropertyImageGridProps> = async({
           <div className="relative w-full flex-1">
             {propertyImages[1] && (
               <Image
-                src={getProxiedImageUrl(propertyImages[1]?.url)}
+                src={propertyImages[1]?.url}
                 alt={propertyImages[1].title || t("propertyImage")}
                 fill
                 className="object-cover"
@@ -69,7 +68,7 @@ export const PropertyImageGrid: React.FC<PropertyImageGridProps> = async({
           <div className="relative w-full flex-1">
             {propertyImages[2] && (
               <Image
-                src={getProxiedImageUrl(propertyImages[2].url)}
+                src={propertyImages[2].url}
                 alt={propertyImages[2].title || t("propertyImage")}
                 fill
                 className="object-cover"
@@ -90,7 +89,7 @@ export const PropertyImageGrid: React.FC<PropertyImageGridProps> = async({
         <div className="relative w-full flex-1 min-w-full sm:min-w-[300px] sm:h-[400px]">
           {propertyImages[1] && (
             <Image
-              src={getProxiedImageUrl(propertyImages[1]?.url)}
+              src={propertyImages[1]?.url}
               alt={propertyImages[1].title || t("propertyImage")}
               fill
               className="object-cover"
@@ -106,7 +105,7 @@ export const PropertyImageGrid: React.FC<PropertyImageGridProps> = async({
         <div className="relative w-full flex-1 min-w-full sm:min-w-[300px] sm:h-[400px]">
           {propertyImages[2] && (
             <Image
-              src={getProxiedImageUrl(propertyImages[2]?.url)}
+              src={propertyImages[2]?.url}
               alt={propertyImages[2].title || t("propertyImage")}
               fill
               className="object-cover"

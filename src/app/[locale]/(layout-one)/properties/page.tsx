@@ -1,12 +1,15 @@
 import { ProductCard } from "@/components/product/product-card";
 import { PropertiesPagination } from "@/components/property/properties-pagination";
 import SearchHeader from "@/components/search/search-header";
-import {
-  getPropertiesWithAllPaginated,
-} from "@/data/properties";
+import { getPropertiesWithAllPaginated } from "@/data/properties";
 import { PropertySearchParams } from "@/types/property";
 import { Suspense } from "react";
-import { PROPERTIES_PER_PAGE } from "@/config/constants";
+import {
+  BASE_URL,
+  EAV_TWITTER_CREATOR_HANDLE,
+  PROPERTIES_PER_PAGE,
+  WEBSITE_NAME,
+} from "@/config/constants";
 import {
   PaginationSkeleton,
   PropertiesGridSkeleton,
@@ -22,6 +25,8 @@ import { SortBy } from "@/components/search/sort-by";
 import { generateApiParams, hasActiveFilters } from "@/lib/utils";
 import { getNote } from "@/data/notes";
 import { getTranslations } from "next-intl/server";
+import { Metadata } from "next";
+import { routing } from "@/i18n/routing";
 
 type Params = {
   [x: string]: string | string[];
@@ -30,6 +35,102 @@ type Params = {
 interface PageProps {
   params?: Promise<Params>;
   searchParams: Promise<PropertySearchParams>;
+}
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
+  const awaitedParams = await params;
+  const locale = awaitedParams?.locale as string;
+
+  // Get the localized pathname for properties page
+  const propertiesPath = routing.pathnames["/properties"];
+  const localizedPath =
+    typeof propertiesPath === "string"
+      ? propertiesPath
+      : propertiesPath[locale as keyof typeof propertiesPath];
+
+  // Build canonical URL - ALL locales are prefixed (including default)
+  const canonicalUrl = `${BASE_URL}/${locale}${localizedPath}`;
+
+  // Build alternate language URLs - ALL locales are prefixed
+  const languages: Record<string, string> = {};
+  routing.locales.forEach((loc) => {
+    const path =
+      typeof propertiesPath === "string"
+        ? propertiesPath
+        : propertiesPath[loc as keyof typeof propertiesPath];
+
+    // All locales get prefixed, including default
+    languages[loc] = `${BASE_URL}/${loc}${path}`;
+  });
+
+  // Add x-default for international targeting (use default locale)
+  const defaultPath =
+    typeof propertiesPath === "string"
+      ? propertiesPath
+      : propertiesPath[routing.defaultLocale as keyof typeof propertiesPath];
+  languages["x-default"] = `${BASE_URL}/${routing.defaultLocale}${defaultPath}`;
+
+  return {
+    title:
+      "Luxury properties for sale in algarve portugal - Exclusive Algarve Villas",
+    description:
+      "Browse premium Algarve properties for sale including luxury villas in Vale do Lobo, Quinta do Lago, Lagos, and Carvoeiro.",
+    keywords: [
+      "algarve luxury property for sale",
+      "algarve villa for sale",
+      "luxury villa algarve for sale",
+      "algarve home for sale",
+      "algarve properties for sale",
+      "golden triangle properties",
+      "vale do lobo property",
+      "frontline algarve property",
+      "quinta do lago properties",
+      "lagos villa",
+      "carvoeiro villa for sale",
+    ],
+    openGraph: {
+      title: "Live the Algarve dream. Browse luxury properties for sale",
+      description:
+        "Explore premium Algarve properties for sale - luxury villas, modern apartments, elegant townhouse and plots.",
+      url: canonicalUrl,
+      siteName: WEBSITE_NAME,
+      images: [
+        {
+          url: `${BASE_URL}/images/eav-logo-dark.svg`,
+          width: 1200,
+          height: 800,
+          alt: "Exclusive Algarve Villas Logo",
+        },
+      ],
+      locale: locale,
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: "Live the Algarve dream. Browse luxury properties for sale",
+      description:
+        "Explore premium Algarve properties for sale - luxury villas, modern apartments, elegant townhouse and plots.",
+      creator: EAV_TWITTER_CREATOR_HANDLE,
+      images: [`${BASE_URL}/images/eav-logo-dark.svg`],
+    },
+    robots: {
+      index: true,
+      follow: true,
+      nocache: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-snippet": -1,
+        "max-image-preview": "large",
+        "max-video-preview": -1,
+      },
+    },
+    alternates: {
+      canonical: canonicalUrl,
+      languages: languages,
+    },
+  };
 }
 
 export default async function PropertiesPage(props: PageProps) {
@@ -139,7 +240,9 @@ async function PropertieList({
   const [propertiesResponse, favoritesResponse, notesResponse] =
     await Promise.all([
       getPropertiesWithAllPaginated(apiParams, PROPERTIES_PER_PAGE),
-      token ? getFavorites(token) : Promise.resolve({ favorite_properties: [] }),
+      token
+        ? getFavorites(token)
+        : Promise.resolve({ favorite_properties: [] }),
       token ? getNote() : Promise.resolve({ data: [] }),
     ]);
 
@@ -153,7 +256,11 @@ async function PropertieList({
       {properties.length > 0 ? (
         properties.map((property) => (
           <div key={property.id} className="">
-            <ProductCard property={property} favorites={favorites} notes={notes} />
+            <ProductCard
+              property={property}
+              favorites={favorites}
+              notes={notes}
+            />
           </div>
         ))
       ) : (

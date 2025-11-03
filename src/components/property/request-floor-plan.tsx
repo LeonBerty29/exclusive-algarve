@@ -12,7 +12,6 @@ import { Button } from "../ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Form,
   FormControl,
@@ -29,7 +28,11 @@ import { useTranslations } from "next-intl";
 import { getRequestFloorPlanSchema } from "@/types/schema.request-floor-plan";
 import { requestFloorPlanAction } from "@/actions/request-floor-plan-action";
 
-export const RequestFloorPlan = () => {
+export const RequestFloorPlan = ({
+  propertyReference,
+}: {
+  propertyReference: string;
+}) => {
   const t = useTranslations("RequestFloorPlanForm");
   const [isOpen, setIsOpen] = useState(false);
 
@@ -57,7 +60,7 @@ export const RequestFloorPlan = () => {
               </DialogTitle>
             </DialogHeader>
             <div className="px-2 py-4">
-              <RequestFloorPlanForm />
+              <RequestFloorPlanForm propertyReference={propertyReference} />
             </div>
           </div>
         </DialogContent>
@@ -66,7 +69,11 @@ export const RequestFloorPlan = () => {
   );
 };
 
-function RequestFloorPlanForm() {
+function RequestFloorPlanForm({
+  propertyReference,
+}: {
+  propertyReference: string;
+}) {
   const t = useTranslations("RequestFloorPlanForm");
   const requestFloorPlanSchemaTranslation = useTranslations(
     "requestFloorPlanSchema"
@@ -89,10 +96,10 @@ function RequestFloorPlanForm() {
   const form = useForm<z.infer<typeof FloorPlanSchema>>({
     resolver: zodResolver(FloorPlanSchema),
     defaultValues: {
-      name: "",
+      first_name: "",
+      last_name: "",
       email: "",
       phone: "",
-      additional_text: "",
     },
     reValidateMode: "onChange",
   });
@@ -109,10 +116,12 @@ function RequestFloorPlanForm() {
     setError("");
 
     const formDataToSubmit = new FormData();
-    formDataToSubmit.append("name", values.name);
+    formDataToSubmit.append("first_name", values.first_name);
+    formDataToSubmit.append("last_name", values.last_name);
     formDataToSubmit.append("email", values.email);
     formDataToSubmit.append("phone", values.phone!);
-    formDataToSubmit.append("additional_text", values.additional_text!);
+    formDataToSubmit.append("property_reference", propertyReference);
+    formDataToSubmit.append("source_url", sourceUrlRef.current);
 
     startTransition(async () => {
       const token = await executeRecaptcha("requestFloorPlan");
@@ -126,10 +135,10 @@ function RequestFloorPlanForm() {
           setShowSuccessDialog(true);
 
           form.reset({
-            name: "",
+            first_name: "",
+            last_name: "",
             email: "",
             phone: "",
-            additional_text: "",
           });
         } else {
           if (result.fieldErrors) {
@@ -137,10 +146,10 @@ function RequestFloorPlanForm() {
               const fieldMapping: {
                 [key: string]: keyof z.infer<typeof FloorPlanSchema>;
               } = {
-                name: "name",
+                first_name: "first_name",
+                last_name: "last_name",
                 email: "email",
                 phone: "phone",
-                additional_text: "additional_text",
               };
 
               const clientFieldName =
@@ -175,14 +184,33 @@ function RequestFloorPlanForm() {
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <FormField
             control={form.control}
-            name="name"
+            name="first_name"
             render={({ field }) => (
               <FormItem>
                 <FormControl>
                   <Input
                     {...field}
                     type="text"
-                    placeholder={t("placeholderName")}
+                    placeholder={t("placeholderFirstName")}
+                    className="indent-4 bg-gray-200 placeholder:text-gray-600 border-none rounded-none py-5 focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-primary/80 placeholder:text-sm"
+                    disabled={isPending}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="last_name"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <Input
+                    {...field}
+                    type="text"
+                    placeholder={t("placeholderLastName")}
                     className="indent-4 bg-gray-200 placeholder:text-gray-600 border-none rounded-none py-5 focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-primary/80 placeholder:text-sm"
                     disabled={isPending}
                   />
@@ -219,7 +247,7 @@ function RequestFloorPlanForm() {
                 <FormControl>
                   <Input
                     {...field}
-                    type="email"
+                    type="text"
                     placeholder={t("placeholderPhone")}
                     className="indent-4 bg-gray-200 placeholder:text-gray-600 border-none rounded-none py-5 focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-primary/80 placeholder:text-sm"
                     disabled={isPending}
@@ -230,7 +258,7 @@ function RequestFloorPlanForm() {
             )}
           />
 
-          <FormField
+          {/* <FormField
             control={form.control}
             name="additional_text"
             render={({ field }) => (
@@ -246,7 +274,7 @@ function RequestFloorPlanForm() {
                 <FormMessage />
               </FormItem>
             )}
-          />
+          /> */}
 
           <Button
             type="submit"

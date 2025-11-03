@@ -4,6 +4,7 @@ import { ZodIssue } from "zod";
 import { getTranslations } from "next-intl/server";
 // import { submitMessageFormWithDetailedErrors } from "@/data/message-us";
 import { getRequestFloorPlanSchema } from "@/types/schema.request-floor-plan";
+import { submitFloorPlanRequestWithDetailedErrors } from "@/data/request-floor-plan";
 
 export interface requestFloorPlanActionResult {
   success: boolean;
@@ -26,18 +27,20 @@ export async function requestFloorPlanAction(
   try {
     // Extract data from FormData
     const rawData = {
-      name: formData.get("name") as string,
+      first_name: formData.get("first_name") as string,
+      last_name: formData.get("last_name") as string,
       email: formData.get("email") as string,
       phone: formData.get("phone") as string,
-      additional_text: formData.get("additional_text") as string,
+      property_reference: formData.get("property_reference") as string,
+      source_url: formData.get("source_url") as string,
     };
+
+    console.log({rawData})
 
     const recaptchaToken = formData.get("recaptcha_token") as string;
 
     // Validate the data using Zod schema
     const validationResult = FloorPlanSchema.safeParse(rawData);
-
-    console.log({ validationResult });
 
     if (!validationResult.success) {
       // Convert Zod errors to field errors with proper typing
@@ -86,18 +89,9 @@ export async function requestFloorPlanAction(
     }
 
     // Call the API
-    // const result = await submitMessageFormWithDetailedErrors(
-    //   validationResult.data
-    // );
-
-    const result = {
-      success: false,
-      error: t("serviceNotAvailable"),
-      validationErrors: {},
-      data: {
-        message: "",
-      },
-    };
+    const result = await submitFloorPlanRequestWithDetailedErrors(
+      validationResult.data
+    );
 
     if (!result.success) {
       return {
@@ -110,10 +104,10 @@ export async function requestFloorPlanAction(
     return {
       success: true,
       message:
-        result.data?.message || t("floorPlanRequestSubmittedSuccessfully"),
+        result.message || t("floorPlanRequestSubmittedSuccessfully"),
     };
   } catch (error) {
-    console.error("Message form action error:", error);
+    console.error("Request Floor Plan action error:", error);
 
     return {
       success: false,
