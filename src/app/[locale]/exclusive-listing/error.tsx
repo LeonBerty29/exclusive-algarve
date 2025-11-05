@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
+import { HashErrorPageLanguageSwitcherDropdown } from "./hash-error-page-language-switcher-dropdown";
 
 interface ErrorProps {
   error: Error & { digest?: string };
@@ -14,8 +16,6 @@ interface ErrorProps {
 
 export default function PropertyError({ error, reset }: ErrorProps) {
   const t = useTranslations("generalErrorPage");
-
-  
 
   useEffect(() => {
     // Log the error to your error reporting service
@@ -36,7 +36,20 @@ export default function PropertyError({ error, reset }: ErrorProps) {
 
   return (
     <>
-      <div className="min-h-screen pt-36  bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center px-4">
+      <div className="min-h-screen py-10 bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex flex-col items-center justify-center px-4">
+        <div className="mb-20 flex items-center justify-between flex-wrap gap-4">
+          <Image
+            src={"/images/eav-logo-dark.svg"}
+            alt="Exclusive Algarve Villas Logo"
+            width={70}
+            height={50}
+            className="object-contain h-10 w-20 lg:h-15 lg:w-30"
+          />
+
+          <div className="">
+            <HashErrorPageLanguageSwitcherDropdown />
+          </div>
+        </div>
         <div className="max-w-lg w-full text-center">
           {/* Icon with glow effect */}
           <div className="mb-8 relativ">
