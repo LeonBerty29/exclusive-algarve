@@ -10,7 +10,6 @@ import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbList,
-  BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Link } from "@/i18n/navigation";
@@ -33,10 +32,10 @@ import { setRequestLocale } from "next-intl/server";
 // import { BASE_URL, EAV_TWITTER_CREATOR_HANDLE, WEBSITE_NAME } from "@/config/constants";
 // import { routing } from "@/i18n/routing";
 import Image from "next/image";
-
+import { HashSlugLocales } from "../hash-slug-language-switcher";
 
 interface Props {
-  params: Promise<{ slug: string; locale: string }>;
+  params: Promise<{ slug: string; locale: string; hash: string }>;
 }
 
 // export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -150,6 +149,7 @@ interface Props {
 
 export default async function page(props: Props) {
   const t = await getTranslations("propertyDetailsPage");
+  const { slug, hash } = await props.params;
   const params = await props.params;
   const locale = params.locale;
 
@@ -157,31 +157,59 @@ export default async function page(props: Props) {
   setRequestLocale(locale);
 
   return (
-    <div className="pt-6">
-      <Suspense fallback={<PropertyDetailsPageLoading />}>
-        <PageContent {...props} />
-        <div className="py-8 w-full bg-black">
-          <div className="2xl:container px-6 sm:px-8 md:px-10 lg:px-14 mx-auto flex items-center justify-center gap-4">
-            <p className="text-white text-sm">{t("poweredBy")}</p>
-            <Link href="/">
-              <Image
-                src={"/images/eav-logo.png"}
-                alt="Exclusive Algarve Villas Logo"
-                width={70}
-                height={50}
-                className="object-contain h-10 w-20"
-              />
-            </Link>
+    <>
+      <div className="2xl:container px-6 sm:px-8 md:px-10 lg:px-14 mx-auto bg-inherit z-20">
+        <div className="flex items-center justify-between gap-6 flex-wrap py-6">
+          <Link href="/">
+            <Image
+              src={"/images/eav-logo-dark.svg"}
+              alt="Exclusive Algarve Villas Logo"
+              width={70}
+              height={50}
+              className="object-contain h-20 w-35 hidden lg:block"
+            />
+            <Image
+              src={"/images/eav-logo-dark.svg"}
+              alt="Exclusive Algarve Villas Logo"
+              width={70}
+              height={50}
+              className="object-contain h-15 w-20 lg:hidden"
+            />
+          </Link>
+
+          {/* <div className="">Agent Details Goes Here</div> */}
+
+          <div className="">
+            <HashSlugLocales slug={slug} hash={hash} locale={locale} />
           </div>
         </div>
-      </Suspense>
-    </div>
+      </div>
+      <div className="pt-6">
+        <Suspense fallback={<PropertyDetailsPageLoading />}>
+          <PageContent {...props} />
+          <div className="py-8 w-full bg-black">
+            <div className="2xl:container px-6 sm:px-8 md:px-10 lg:px-14 mx-auto flex items-center justify-center gap-4">
+              <p className="text-white text-sm">{t("poweredBy")}</p>
+              <Link href="/">
+                <Image
+                  src={"/images/eav-logo.png"}
+                  alt="Exclusive Algarve Villas Logo"
+                  width={70}
+                  height={50}
+                  className="object-contain h-10 w-20"
+                />
+              </Link>
+            </div>
+          </div>
+        </Suspense>
+      </div>
+    </>
   );
 }
 
 const PageContent = async (props: Props) => {
   const t = await getTranslations("propertyDetailsPage");
-  const { slug } = await props.params;
+  const { hash, slug } = await props.params;
   //   const session = await auth();
   //   const token = session?.accessToken;
 
@@ -232,18 +260,18 @@ const PageContent = async (props: Props) => {
         <div className="flex items-center gap-x-8 gap-y-3 justify-between flex-wrap mb-6">
           <Breadcrumb>
             <BreadcrumbList>
-              <BreadcrumbItem>
-                <Link href="/">{t("home")}</Link>
-              </BreadcrumbItem>
               <BreadcrumbSeparator className="text-primary" />
               <BreadcrumbItem>
-                <Link href="/properties">{t("properties")}</Link>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator className="text-primary" />
-              <BreadcrumbItem>
-                <BreadcrumbPage className="font-semibold">
-                  {property.reference}
-                </BreadcrumbPage>
+                <Link
+                  href={{
+                    pathname: "/exclusive-listing/[hash]",
+                    params: {
+                      hash: hash,
+                    },
+                  }}
+                >
+                  {t("properties")}
+                </Link>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>

@@ -20,6 +20,7 @@ import Image from "next/image";
 import { ExclusiveListingCard } from "./exclusive-listing-card";
 import { getExclusivePropertiesWithAllPaginated } from "@/data/exclusive-properties";
 import { ExclusivePropertiesPagination } from "./exlcusive-properties-pagination";
+import { HashLanguageSwitcherDropdown } from "@/components/shared/hash-language-switcher-dropdown";
 
 type Params = {
   [x: string]: string | string[];
@@ -74,6 +75,32 @@ export default async function ExclusiveListing(props: PageProps) {
 
   return (
     <>
+      <div className="2xl:container px-6 sm:px-8 md:px-10 lg:px-14 mx-auto bg-inherit z-20">
+        <div className="flex items-center justify-between gap-6 flex-wrap py-6">
+          <Link href="/">
+            <Image
+              src={"/images/eav-logo-dark.svg"}
+              alt="Exclusive Algarve Villas Logo"
+              width={70}
+              height={50}
+              className="object-contain h-20 w-35 hidden lg:block"
+            />
+            <Image
+              src={"/images/eav-logo-dark.svg"}
+              alt="Exclusive Algarve Villas Logo"
+              width={70}
+              height={50}
+              className="object-contain h-15 w-20 lg:hidden"
+            />
+          </Link>
+
+          {/* <div className="">Agent Details Goes Here</div> */}
+
+          <div className="">
+            <HashLanguageSwitcherDropdown />
+          </div>
+        </div>
+      </div>
       <div className="w-full">
         <div className="2xl:container px-6 sm:px-8 md:px-10 lg:px-14 mx-auto">
           <div className="mx-auto sm:max-w-full sm:mx-0 flex items-start flex-wrap pb-8">

@@ -392,7 +392,8 @@
   },
   "propertyDetailsPage": {
     "home": "Accueil",
-    "properties": "Propriétés"
+    "properties": "Propriétés",
+    "poweredBy": "PROPULSÉ PAR"
   },
   "propertyDetailsErrorPage": {
     "propertyNotFoundTitle": "Propriété non trouvée",
