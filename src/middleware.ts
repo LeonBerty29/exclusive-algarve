@@ -17,17 +17,17 @@ const { auth } = NextAuth(authConfig);
 const intlMiddleware = createIntlMiddleware(routing);
 
 // List of known search engine user agents
-// const searchEngineBots = [
-//   "googlebot",
-//   "bingbot",
-//   "slurp", // Yahoo
-//   "duckduckbot",
-//   "baiduspider",
-//   "yandexbot",
-//   "ia_archiver",
-//   "facebot", // Facebook
-//   "twitterbot",
-// ];
+const searchEngineBots = [
+  "googlebot",
+  "bingbot",
+  "slurp", // Yahoo
+  "duckduckbot",
+  "baiduspider",
+  "yandexbot",
+  "ia_archiver",
+  "facebot", // Facebook
+  "twitterbot",
+];
 
 export default auth((req) => {
   const { nextUrl } = req;
@@ -52,39 +52,39 @@ export default auth((req) => {
   const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
 
   // Check if request is from a search engine bot
-  // const userAgent = req.headers.get("user-agent")?.toLowerCase() || "";
-  // const isSearchBot = searchEngineBots.some((bot) => userAgent.includes(bot));
+  const userAgent = req.headers.get("user-agent")?.toLowerCase() || "";
+  const isSearchBot = searchEngineBots.some((bot) => userAgent.includes(bot));
 
   // Basic Auth Check - Skip for search engine bots
-  // if (!isSearchBot || true) {
-  //   const basicAuth = req.headers.get("authorization");
+  if (!isSearchBot || true) {
+    const basicAuth = req.headers.get("authorization");
 
-  //   if (!basicAuth) {
-  //     return new NextResponse("Authentication required", {
-  //       status: 401,
-  //       headers: {
-  //         "WWW-Authenticate": 'Basic realm="Secure Area"',
-  //       },
-  //     });
-  //   }
+    if (!basicAuth) {
+      return new NextResponse("Authentication required", {
+        status: 401,
+        headers: {
+          "WWW-Authenticate": 'Basic realm="Secure Area"',
+        },
+      });
+    }
 
-  //   // Parse the Basic Auth header
-  //   const authValue = basicAuth.split(" ")[1];
-  //   const [user, pwd] = atob(authValue).split(":");
+    // Parse the Basic Auth header
+    const authValue = basicAuth.split(" ")[1];
+    const [user, pwd] = atob(authValue).split(":");
 
-  //   // Check credentials
-  //   const validUser = process.env.BASIC_AUTH_USER || "admin";
-  //   const validPassword = process.env.BASIC_AUTH_PASSWORD || "password123";
+    // Check credentials
+    const validUser = process.env.BASIC_AUTH_USER || "admin";
+    const validPassword = process.env.BASIC_AUTH_PASSWORD || "password123";
 
-  //   if (user !== validUser || pwd !== validPassword) {
-  //     return new NextResponse("Authentication required", {
-  //       status: 401,
-  //       headers: {
-  //         "WWW-Authenticate": 'Basic realm="Secure Area"',
-  //       },
-  //     });
-  //   }
-  // }
+    if (user !== validUser || pwd !== validPassword) {
+      return new NextResponse("Authentication required", {
+        status: 401,
+        headers: {
+          "WWW-Authenticate": 'Basic realm="Secure Area"',
+        },
+      });
+    }
+  }
 
   // For regular API routes (not auth), skip all other middleware processing
   if (isApiRoute) {
