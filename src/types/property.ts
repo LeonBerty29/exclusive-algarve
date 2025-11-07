@@ -16,14 +16,14 @@ export interface Property {
   };
   is_featured_property: boolean;
   features: {
-    bedrooms: number;
-    bathrooms: number;
-    construction_year: string;
-    private_area: number;
-    plot_size: number;
-    construction_area: number;
-    energy_class: string;
-    garage: number;
+    bedrooms?: number;
+    bathrooms?: number;
+    construction_year?: string;
+    private_area?: number;
+    plot_size?: number;
+    construction_area?: number;
+    energy_class?: string;
+    garage?: number;
   };
   additional_features: AdditionalFeature[];
   seo: {

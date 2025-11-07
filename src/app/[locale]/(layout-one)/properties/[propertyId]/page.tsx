@@ -246,13 +246,13 @@ const PageContent = async (props: Props) => {
     offers: {
       "@type": "Offer",
       price: property.price,
-      priceCurrency: property.currency,
+      priceCurrency: property.currency || "EUR",
       availability: "https://schema.org/InStock",
       url: propertyUrl,
       priceSpecification: {
         "@type": "UnitPriceSpecification",
         price: property.price,
-        priceCurrency: property.currency,
+        priceCurrency: property.currency || "EUR",
       },
       seller: {
         "@type": "RealEstateAgent",
@@ -291,7 +291,7 @@ const PageContent = async (props: Props) => {
       {
         "@type": "PropertyValue",
         name: "Garage Spaces",
-        value: property.features.garage.toString(),
+        value: property.features.garage?.toString() ?? "0",
       },
       {
         "@type": "PropertyValue",

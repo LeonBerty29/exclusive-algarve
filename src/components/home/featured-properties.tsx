@@ -25,8 +25,8 @@ export default function FeaturedProperties({
   const t = useTranslations("featuredProperties");
 
   return (
-    <div ref={containerRef} className="relative h-[300vh]">
-      {properties.map((property) => {
+    <div ref={containerRef} className="relative h-[100vh]">
+      {properties.slice(0, 1).map((property) => {
         // const opacity = useTransform(
         //     scrollYProgress,
         //     [index / 3, (index + 1) / 3],

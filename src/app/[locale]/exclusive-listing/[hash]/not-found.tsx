@@ -14,13 +14,22 @@ export default function NotFound() {
     <>
       <div className="fixed top-0 left-0 right-0 bottom-0 z-10 min-h-screen bg-gradient-to-br from-blue-50 via-green-50 to-indigo-50 flex flex-col items-center justify-center px-4">
         <div className="mb-6 flex items-center justify-between flex-wrap gap-4">
-          <Image
-            src={"/images/eav-logo-dark.svg"}
-            alt="Exclusive Algarve Villas Logo"
-            width={70}
-            height={50}
-            className="object-contain h-10 w-20 lg:h-15 lg:w-30"
-          />
+          <Link href="/">
+            <Image
+              src={"/images/eav-logo-dark.svg"}
+              alt="Exclusive Algarve Villas Logo"
+              width={70}
+              height={50}
+              className="object-contain h-20 w-35 hidden lg:block"
+            />
+            <Image
+              src={"/images/eav-logo-dark.svg"}
+              alt="Exclusive Algarve Villas Logo"
+              width={70}
+              height={50}
+              className="object-contain h-15 w-20 lg:hidden"
+            />
+          </Link>
 
           <div className="">
             <HashLanguageSwitcherDropdown />

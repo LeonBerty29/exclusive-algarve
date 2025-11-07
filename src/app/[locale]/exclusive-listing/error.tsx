@@ -38,13 +38,15 @@ export default function PropertyError({ error, reset }: ErrorProps) {
     <>
       <div className="min-h-screen py-10 bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex flex-col items-center justify-center px-4">
         <div className="mb-20 flex items-center justify-between flex-wrap gap-4">
-          <Image
-            src={"/images/eav-logo-dark.svg"}
-            alt="Exclusive Algarve Villas Logo"
-            width={70}
-            height={50}
-            className="object-contain h-10 w-20 lg:h-15 lg:w-30"
-          />
+          <Link href="/">
+            <Image
+              src={"/images/eav-logo-dark.svg"}
+              alt="Exclusive Algarve Villas Logo"
+              width={70}
+              height={50}
+              className="object-contain h-10 w-20 lg:h-15 lg:w-30"
+            />
+          </Link>
 
           <div className="">
             <HashErrorPageLanguageSwitcherDropdown />
