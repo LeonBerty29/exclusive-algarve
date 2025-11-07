@@ -55,8 +55,8 @@ export default auth((req) => {
   // const userAgent = req.headers.get("user-agent")?.toLowerCase() || "";
   // const isSearchBot = searchEngineBots.some((bot) => userAgent.includes(bot));
 
-  // // Basic Auth Check - Skip for search engine bots
-  // if (!isSearchBot) {
+  // Basic Auth Check - Skip for search engine bots
+  // if (!isSearchBot || true) {
   //   const basicAuth = req.headers.get("authorization");
 
   //   if (!basicAuth) {
