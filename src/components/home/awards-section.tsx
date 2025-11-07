@@ -18,7 +18,7 @@ const AwardsSection = async() => {
           <Link href="/contact">{t("contactUsNow")}</Link>
         </Button>
       </div>
-      <div className="flex gap-4">
+      <div className="hidden lg:flex gap-4">
         <CarouselSliderVertical direction="down" />
         <CarouselSliderVertical />
       </div>

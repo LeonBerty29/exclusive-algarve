@@ -103,6 +103,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     routing.defaultLocale
   }${defaultPath.replace("[slug]", defaultSlug)}`;
 
+  const primaryImage = property.assets.images.gallery[0];
+
   return {
     title: `${property.title} | ${WEBSITE_NAME}`,
     description: property.seo.description,
@@ -117,12 +119,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: property.seo.description,
       url: canonicalUrl,
       siteName: WEBSITE_NAME,
-      images: property.assets.images.gallery.map((image) => ({
-        url: image.url,
-        width: 1200,
-        height: 800,
-        alt: image.title || `${property.title} image`,
-      })),
+      images: [
+        {
+          url: primaryImage.url,
+          secureUrl: primaryImage.url,
+          type: "image/jpeg",
+          width: 1200,
+          height: 630,
+          alt: primaryImage.title || `${property.title}`,
+        },
+      ],
       locale: locale,
       type: "website",
     },
