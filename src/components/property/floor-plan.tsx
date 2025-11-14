@@ -1,9 +1,9 @@
 "use client"
 
 import React from "react";
-import { ArrowDownToLine } from "lucide-react";
-import { Button } from "../ui/button";
-import { useTranslations } from "next-intl";
+// import { ArrowDownToLine } from "lucide-react";
+// import { Button } from "../ui/button";
+// import { useTranslations } from "next-intl";
 import { RequestFloorPlan } from "./request-floor-plan";
 
 export const FloorPlanTab = ({
@@ -13,17 +13,17 @@ export const FloorPlanTab = ({
   propertyReference: string;
   pdfBrochure: string;
 }) => {
-  const t = useTranslations("floorPlan");
+  // const t = useTranslations("floorPlan");
 
-  const handleDownload = () => {
-    const link = document.createElement("a");
-    link.href = pdfBrochure;
-    link.download = "property-floor-plan.pdf";
-    link.style.display = "none";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
+  // const handleDownload = () => {
+  //   const link = document.createElement("a");
+  //   link.href = pdfBrochure;
+  //   link.download = "property-floor-plan.pdf";
+  //   link.style.display = "none";
+  //   document.body.appendChild(link);
+  //   link.click();
+  //   document.body.removeChild(link);
+  // };
 
   return (
     <div>
@@ -60,13 +60,13 @@ export const FloorPlanTab = ({
 
 
 
-          <Button
+          {/* <Button
             onClick={handleDownload}
             className="text-xs rounded-none bg-black text-white px-6"
           >
             {t("downloadBrochure")}
             <ArrowDownToLine />
-          </Button>
+          </Button> */}
         </div>
       )}
     </div>

@@ -7,12 +7,139 @@ import { Suspense } from "react";
 import { ChevronLeft, ChevronRight, AlertCircle } from "lucide-react";
 import { getLocale } from "next-intl/server";
 import { getTranslations } from "next-intl/server";
+import { Metadata } from "next";
+import { routing } from "@/i18n/routing";
+import { EAV_TWITTER_CREATOR_HANDLE, GEO_POSITION, WEBSITE_NAME } from "@/config/constants";
 
 interface BlogPageProps {
   searchParams: Promise<{ page?: string }>;
 }
 
+interface Props {
+  params: Promise<{ locale: string }>;
+}
+
 const BLOGS_PER_PAGE = 12;
+const BASE_URL =
+  process.env.BASE_URL || "https://www.exclusivealgarvevillas.com";
+
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+
+  // Get the localized path for the blogs page
+  const blogsPath = routing.pathnames["/blogs"];
+  const localizedBlogsPath =
+    typeof blogsPath === "string"
+      ? blogsPath
+      : blogsPath[locale as keyof typeof blogsPath];
+
+  // Build canonical URL for current locale
+  const canonicalUrl = `${BASE_URL}/${locale}${localizedBlogsPath}`;
+
+  // Build alternate language URLs
+  const languages: Record<string, string> = {};
+  routing.locales.forEach((loc) => {
+    const path =
+      typeof blogsPath === "string"
+        ? blogsPath
+        : blogsPath[loc as keyof typeof blogsPath];
+
+    languages[loc] = `${BASE_URL}/${loc}${path}`;
+  });
+
+  // Add x-default using default locale
+  const defaultPath =
+    typeof blogsPath === "string"
+      ? blogsPath
+      : blogsPath[routing.defaultLocale as keyof typeof blogsPath];
+  languages["x-default"] = `${BASE_URL}/${routing.defaultLocale}${defaultPath}`;
+
+  // ICBM coordinates
+  const ICBM = `${GEO_POSITION.lat}, ${GEO_POSITION.lng}`;
+
+  const description =
+    "Explore our collection of articles about luxury real estate in the Algarve, property investment tips, lifestyle guides, market insights, and expert advice on buying and selling premium properties in Portugal's Golden Triangle.";
+
+  const keywords = [
+    "algarve real estate blog",
+    "luxury property algarve",
+    "algarve property news",
+    "portugal real estate insights",
+    "algarve lifestyle blog",
+    "property investment algarve",
+    "golden triangle real estate",
+    "algarve property market",
+    "luxury villa tips algarve",
+    "buying property portugal",
+    "algarve real estate advice",
+    "carvoeiro property blog",
+    "western algarve news",
+    "portugal property investment",
+    "algarve property guides",
+    "luxury real estate portugal",
+    "algarve housing market",
+    "property trends algarve",
+  ];
+
+  return {
+    title: `Blog - Luxury Real Estate Insights & Algarve Property News | ${WEBSITE_NAME}`,
+    description: description,
+    keywords: keywords,
+    openGraph: {
+      title:
+        "Luxury Real Estate Blog - Algarve Property Insights & Expert Advice",
+      description: description,
+      url: canonicalUrl,
+      siteName: WEBSITE_NAME,
+      locale: locale,
+      type: "website",
+      images: [
+        {
+          url: `${BASE_URL}/images/tomorrow-magazine.jpg`,
+          secureUrl: `${BASE_URL}/images/tomorrow-magazine.jpg`,
+          width: 1200,
+          height: 630,
+          alt: "Exclusive Algarve Villas Blog - Real Estate Insights",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title:
+        "Luxury Real Estate Blog - Algarve Property Insights & Expert Advice",
+      description: description,
+      creator: EAV_TWITTER_CREATOR_HANDLE,
+    },
+    robots: {
+      index: true,
+      follow: true,
+      nocache: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-snippet": -1,
+        "max-image-preview": "large",
+        "max-video-preview": -1,
+      },
+    },
+    alternates: {
+      canonical: canonicalUrl,
+      languages: languages,
+    },
+    other: {
+      "geo.region": "PT",
+      "geo.position": `${GEO_POSITION.lat};${GEO_POSITION.lng}`,
+      ICBM: ICBM,
+      classification:
+        "Real estate blog, Algarve property news, Luxury property insights, Property investment guides",
+      category:
+        "Blog, Real estate articles, Property news, Lifestyle guides, Investment advice",
+      "DC.title":
+        "Algarve luxury property blog, Real estate insights Portugal, Golden triangle property news, Western Algarve lifestyle",
+    },
+  };
+}
 
 export default async function BlogPage(props: BlogPageProps) {
   const searchParams = await props.searchParams;

@@ -1,20 +1,102 @@
 import { Button } from "@/components/ui/button";
 import { Link, redirect } from "@/i18n/navigation";
-import { routing } from "@/i18n/routing";
 import { getCreatedPageSearchParamsSchema } from "@/schema";
 import { CheckCircle } from "lucide-react";
 import { getLocale, getTranslations } from "next-intl/server";
 import { headers } from "next/headers";
 import React from "react";
+import { Metadata } from "next";
+import { BASE_URL, GEO_POSITION, WEBSITE_NAME } from "@/config/constants";
+import { routing } from "@/i18n/routing";
+import { accountCreatedMetadata } from "@/seo-metadata/account-created";
 
 interface Props {
+  params: Promise<{ locale: string }>;
   searchParams: Promise<{ email: string; callbackUrl?: string }>;
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+
+  // Get localized metadata
+  const metadata =
+    accountCreatedMetadata[
+      locale as keyof typeof accountCreatedMetadata
+    ] || accountCreatedMetadata.en;
+
+  // Get the localized path for the account created page
+  const createdPath = routing.pathnames["/account/created"];
+  const localizedCreatedPath =
+    typeof createdPath === "string"
+      ? createdPath
+      : createdPath[locale as keyof typeof createdPath];
+
+  // Build canonical URL for current locale
+  const canonicalUrl = `${BASE_URL}/${locale}${localizedCreatedPath}`;
+
+  // Build alternate language URLs
+  const languages: Record<string, string> = {};
+  routing.locales.forEach((loc) => {
+    const path =
+      typeof createdPath === "string"
+        ? createdPath
+        : createdPath[loc as keyof typeof createdPath];
+
+    languages[loc] = `${BASE_URL}/${loc}${path}`;
+  });
+
+  // Add x-default using default locale
+  const defaultPath =
+    typeof createdPath === "string"
+      ? createdPath
+      : createdPath[routing.defaultLocale as keyof typeof createdPath];
+  languages["x-default"] = `${BASE_URL}/${routing.defaultLocale}${defaultPath}`;
+
+  // ICBM coordinates
+  const ICBM = `${GEO_POSITION.lat}, ${GEO_POSITION.lng}`;
+
+  return {
+    title: `${metadata.title} | ${WEBSITE_NAME}`,
+    description: metadata.description,
+    keywords: [...metadata.keywords],
+    openGraph: {
+      title: metadata.ogTitle,
+      description: metadata.ogDescription,
+      url: canonicalUrl,
+      siteName: WEBSITE_NAME,
+      locale: locale,
+      type: "website",
+    },
+    robots: {
+      index: false,
+      follow: false,
+      noarchive: true,
+      nosnippet: true,
+      googleBot: {
+        index: false,
+        follow: false,
+      },
+    },
+    alternates: {
+      canonical: canonicalUrl,
+      languages: languages,
+    },
+    other: {
+      "geo.region": "PT",
+      "geo.position": `${GEO_POSITION.lat};${GEO_POSITION.lng}`,
+      ICBM: ICBM,
+      classification: metadata.classification,
+      category: metadata.category,
+      "DC.title": metadata.dcTitle,
+    },
+  };
 }
 
 const page = async (props: Props) => {
   const t = await getTranslations("accountCreatedPage");
   const schemaTranslations = await getTranslations("schemaTranslations");
-  const CreatedPageSearchParamsSchema = getCreatedPageSearchParamsSchema(schemaTranslations);
+  const CreatedPageSearchParamsSchema =
+    getCreatedPageSearchParamsSchema(schemaTranslations);
   const headersList = await headers();
   const referer = headersList.get("referer") || "direct";
   const url = new URL(referer);

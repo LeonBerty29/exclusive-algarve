@@ -6,8 +6,133 @@ import { Link } from "@/i18n/navigation";
 import AnimatedImagesSection from "@/components/shared/animated-image-section";
 import { ContactForm } from "@/components/shared/contact-form";
 import { getTranslations } from "next-intl/server";
+import { Metadata } from "next";
+import { routing } from "@/i18n/routing";
+import { EAV_TWITTER_CREATOR_HANDLE, WEBSITE_NAME } from "@/config/constants";
 
-const BecomeAVendor = async() => {
+interface Props {
+  params: Promise<{ locale: string }>;
+}
+
+const BASE_URL =
+  process.env.BASE_URL || "https://www.exclusivealgarvevillas.com";
+
+// Geographic coordinates for Algarve
+const GEO_POSITION = { lat: 37.245425, lng: -8.150925 };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+
+  // Get the localized path for the become a vendor page
+  const vendorPath = routing.pathnames["/become-a-vendor"];
+  const localizedVendorPath =
+    typeof vendorPath === "string"
+      ? vendorPath
+      : vendorPath[locale as keyof typeof vendorPath];
+
+  // Build canonical URL for current locale
+  const canonicalUrl = `${BASE_URL}/${locale}${localizedVendorPath}`;
+
+  // Build alternate language URLs
+  const languages: Record<string, string> = {};
+  routing.locales.forEach((loc) => {
+    const path =
+      typeof vendorPath === "string"
+        ? vendorPath
+        : vendorPath[loc as keyof typeof vendorPath];
+
+    languages[loc] = `${BASE_URL}/${loc}${path}`;
+  });
+
+  // Add x-default using default locale
+  const defaultPath =
+    typeof vendorPath === "string"
+      ? vendorPath
+      : vendorPath[routing.defaultLocale as keyof typeof vendorPath];
+  languages["x-default"] = `${BASE_URL}/${routing.defaultLocale}${defaultPath}`;
+
+  // ICBM coordinates
+  const ICBM = `${GEO_POSITION.lat}, ${GEO_POSITION.lng}`;
+
+  const description =
+    "Sell your luxury property in the Algarve with Exclusive Algarve Villas. Expert guidance through documentation, staging, marketing, and the complete sales process for high-end real estate in Portugal.";
+
+  const keywords = [
+    "sell property algarve",
+    "sell luxury villa algarve",
+    "algarve property vendors",
+    "sell real estate portugal",
+    "property sales algarve",
+    "luxury property marketing algarve",
+    "sell house algarve",
+    "real estate agent algarve sellers",
+    "property documentation portugal",
+    "sell villa carvoeiro",
+    "sell property golden triangle",
+    "algarve property valuation",
+    "exclusive property listings algarve",
+    "high-end property sales algarve",
+    "western algarve property sales",
+  ];
+
+  return {
+    title: `Sell Your Property in the Algarve | ${WEBSITE_NAME}`,
+    description: description,
+    keywords: keywords,
+    openGraph: {
+      title: "Sell Your Luxury Property in the Algarve with Expert Guidance",
+      description: description,
+      url: canonicalUrl,
+      siteName: WEBSITE_NAME,
+      locale: locale,
+      type: "website",
+      images: [
+        {
+          url: `${BASE_URL}/images/become-a-vendor/documentation-order.png`,
+          secureUrl: `${BASE_URL}/images/become-a-vendor/documentation-order.png`,
+          width: 1200,
+          height: 630,
+          alt: "Sell Your Property in the Algarve - Exclusive Algarve Villas",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: "Sell Your Luxury Property in the Algarve with Expert Guidance",
+      description: description,
+      creator: EAV_TWITTER_CREATOR_HANDLE,
+    },
+    robots: {
+      index: true,
+      follow: true,
+      nocache: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-snippet": -1,
+        "max-image-preview": "large",
+        "max-video-preview": -1,
+      },
+    },
+    alternates: {
+      canonical: canonicalUrl,
+      languages: languages,
+    },
+    other: {
+      "geo.region": "PT",
+      "geo.position": `${GEO_POSITION.lat};${GEO_POSITION.lng}`,
+      ICBM: ICBM,
+      classification:
+        "Sell property Algarve, Luxury villa sales, Property vendors Algarve, Real estate sales Portugal",
+      category:
+        "Property sales, Luxury real estate, Algarve vendors, Property marketing",
+      "DC.title":
+        "Sell luxury property Algarve, Villa sales Carvoeiro, Golden triangle property sales, Western Algarve real estate",
+    },
+  };
+}
+
+const BecomeAVendor = async () => {
   const t = await getTranslations("becomeAVendorPage");
 
   return (
@@ -171,7 +296,6 @@ const BecomeAVendor = async() => {
                 {t("licensedRealEstateAgency")}
               </p>
               <p className="text-neutral-700 text-sm xl:text-base">
-                {/* Note: bold text remains static or part of translation as needed */}
                 <>{t("signedContractRequiredForListing")}</>
               </p>
               <p className="text-neutral-700 text-sm xl:text-base">
@@ -236,10 +360,7 @@ const BecomeAVendor = async() => {
                   +351 282 353 019
                 </Link>{" "}
                 {t("or")}{" "}
-                <Link
-                  href="/email"
-                  className="text-primary hover:underline"
-                >
+                <Link href="/email" className="text-primary hover:underline">
                   info@eavillas.com
                 </Link>{" "}
                 {t("happyToAssistYou")}
@@ -313,7 +434,9 @@ function RealEstateChecklist({ t }: { t: (key: string) => string }) {
           {checklistItems.map((item, index) => (
             <div key={index} className="flex items-start gap-3">
               <div className="size-5 border border-gray-500"></div>
-              <span className="flex-1 text-neutral-700 text-sm xl:text-base leading-relaxed">{item}</span>
+              <span className="flex-1 text-neutral-700 text-sm xl:text-base leading-relaxed">
+                {item}
+              </span>
             </div>
           ))}
         </div>

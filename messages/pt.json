@@ -768,7 +768,7 @@
     "errorUnexpected": "Ocorreu um erro inesperado. Por favor tente novamente."
   },
   "ownResourcesDropdown": {
-    "own": "Possuir",
+    "own": "Proprietário",
     "noResourcesAvailable": "Nenhum recurso disponível",
     "failedFetchResources": "Falha ao carregar recursos"
   },

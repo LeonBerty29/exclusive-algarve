@@ -15,18 +15,102 @@ import { getLocale, getTranslations } from "next-intl/server";
 import { getResendActivatePageSearchParamsSchema } from "@/schema";
 import { headers } from "next/headers";
 import { routing } from "@/i18n/routing";
+import { Metadata } from "next";
+import { BASE_URL, GEO_POSITION, WEBSITE_NAME } from "@/config/constants";
+import { accountResendActivationMetadata } from "@/seo-metadata/account-resend-activation";
 
 interface Props {
+  params: Promise<{ locale: string }>;
   searchParams: Promise<{ token: string; email: string; callbackUrl: string }>;
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+
+  // Get localized metadata
+  const metadata =
+    accountResendActivationMetadata[
+      locale as keyof typeof accountResendActivationMetadata
+    ] || accountResendActivationMetadata.en;
+
+  // Get the localized path for the resend activation page
+  const resendActivationPath = routing.pathnames["/account/resend-activation"];
+  const localizedResendActivationPath =
+    typeof resendActivationPath === "string"
+      ? resendActivationPath
+      : resendActivationPath[locale as keyof typeof resendActivationPath];
+
+  // Build canonical URL for current locale
+  const canonicalUrl = `${BASE_URL}/${locale}${localizedResendActivationPath}`;
+
+  // Build alternate language URLs
+  const languages: Record<string, string> = {};
+  routing.locales.forEach((loc) => {
+    const path =
+      typeof resendActivationPath === "string"
+        ? resendActivationPath
+        : resendActivationPath[loc as keyof typeof resendActivationPath];
+
+    languages[loc] = `${BASE_URL}/${loc}${path}`;
+  });
+
+  // Add x-default using default locale
+  const defaultPath =
+    typeof resendActivationPath === "string"
+      ? resendActivationPath
+      : resendActivationPath[
+          routing.defaultLocale as keyof typeof resendActivationPath
+        ];
+  languages["x-default"] = `${BASE_URL}/${routing.defaultLocale}${defaultPath}`;
+
+  // ICBM coordinates
+  const ICBM = `${GEO_POSITION.lat}, ${GEO_POSITION.lng}`;
+
+  return {
+    title: `${metadata.title} | ${WEBSITE_NAME}`,
+    description: metadata.description,
+    keywords: [...metadata.keywords],
+    openGraph: {
+      title: metadata.ogTitle,
+      description: metadata.ogDescription,
+      url: canonicalUrl,
+      siteName: WEBSITE_NAME,
+      locale: locale,
+      type: "website",
+    },
+    robots: {
+      index: false,
+      follow: false,
+      noarchive: true,
+      nosnippet: true,
+      googleBot: {
+        index: false,
+        follow: false,
+      },
+    },
+    alternates: {
+      canonical: canonicalUrl,
+      languages: languages,
+    },
+    other: {
+      "geo.region": "PT",
+      "geo.position": `${GEO_POSITION.lat};${GEO_POSITION.lng}`,
+      ICBM: ICBM,
+      classification: metadata.classification,
+      category: metadata.category,
+      "DC.title": metadata.dcTitle,
+    },
+  };
 }
 
 const AccountActivationPage = async (props: Props) => {
   const headersList = await headers();
   const locale = await getLocale();
   const schemaTranslations = await getTranslations("schemaTranslations");
-  const ResendActivatePageSearchParamsSchema = getResendActivatePageSearchParamsSchema(schemaTranslations);
+  const ResendActivatePageSearchParamsSchema =
+    getResendActivatePageSearchParamsSchema(schemaTranslations);
   const referer = headersList.get("referer") || "direct";
-  
+
   const url = new URL(referer);
   const path = url.pathname;
 

@@ -10,10 +10,129 @@ import React, { Suspense } from "react";
 import { Heart, Search, ChevronLeft, ChevronRight } from "lucide-react";
 import { getNote } from "@/data/notes";
 import { getLocale, getTranslations } from "next-intl/server";
+import { Metadata } from "next";
+import { routing } from "@/i18n/routing";
+import {
+  EAV_TWITTER_CREATOR_HANDLE,
+  GEO_POSITION,
+  WEBSITE_NAME,
+} from "@/config/constants";
 
 type PageProps = {
+  params: Promise<{ locale: string }>;
   searchParams?: Promise<{ [x: string]: string | string[] | undefined }>;
 };
+
+const BASE_URL =
+  process.env.BASE_URL || "https://www.exclusivealgarvevillas.com";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+
+  // Get the localized path for the favorites page
+  const favoritesPath = routing.pathnames["/favorites"];
+  const localizedFavoritesPath =
+    typeof favoritesPath === "string"
+      ? favoritesPath
+      : favoritesPath[locale as keyof typeof favoritesPath];
+
+  // Build canonical URL for current locale
+  const canonicalUrl = `${BASE_URL}/${locale}${localizedFavoritesPath}`;
+
+  // Build alternate language URLs
+  const languages: Record<string, string> = {};
+  routing.locales.forEach((loc) => {
+    const path =
+      typeof favoritesPath === "string"
+        ? favoritesPath
+        : favoritesPath[loc as keyof typeof favoritesPath];
+
+    languages[loc] = `${BASE_URL}/${loc}${path}`;
+  });
+
+  // Add x-default using default locale
+  const defaultPath =
+    typeof favoritesPath === "string"
+      ? favoritesPath
+      : favoritesPath[routing.defaultLocale as keyof typeof favoritesPath];
+  languages["x-default"] = `${BASE_URL}/${routing.defaultLocale}${defaultPath}`;
+
+  // ICBM coordinates
+  const ICBM = `${GEO_POSITION.lat}, ${GEO_POSITION.lng}`;
+
+  const description =
+    "View and manage your saved favorite luxury properties in the Algarve, Portugal. Access your personalized collection of villas and estates in Carvoeiro, Vale do Lobo, Quinta do Lago, and the Golden Triangle.";
+
+  const keywords = [
+    "saved properties algarve",
+    "favorite villas portugal",
+    "saved luxury properties",
+    "algarve property favorites",
+    "my saved properties",
+    "favorite algarve villas",
+    "saved luxury estates portugal",
+    "property watchlist algarve",
+    "saved properties golden triangle",
+    "favorite properties carvoeiro",
+    "vale do lobo saved properties",
+    "quinta do lago favorites",
+    "my property collection algarve",
+    "saved villa listings portugal",
+  ];
+
+  return {
+    title: `My Favorite Properties - Saved Luxury Villas in the Algarve | ${WEBSITE_NAME}`,
+    description: description,
+    keywords: keywords,
+    openGraph: {
+      title: "My Favorite Properties - Saved Luxury Algarve Villas Collection",
+      description: description,
+      url: canonicalUrl,
+      siteName: WEBSITE_NAME,
+      locale: locale,
+      type: "website",
+    },
+    twitter: {
+      card: "summary",
+      title: "My Favorite Properties - Saved Luxury Algarve Villas Collection",
+      description: description,
+      creator: EAV_TWITTER_CREATOR_HANDLE,
+    },
+    robots: {
+      index: false, // Private page - don't index
+      follow: true,
+      noarchive: true, // Don't cache this page
+      nocache: true,
+      googleBot: {
+        index: false,
+        follow: true,
+        noarchive: true,
+        "max-snippet": -1,
+        "max-image-preview": "large",
+        "max-video-preview": -1,
+      },
+    },
+    alternates: {
+      canonical: canonicalUrl,
+      languages: languages,
+    },
+    other: {
+      "geo.region": "PT",
+      "geo.position": `${GEO_POSITION.lat};${GEO_POSITION.lng}`,
+      ICBM: ICBM,
+      classification:
+        "User favorites, Saved properties, Property collection, Personal property list",
+      category:
+        "User account, Saved items, Favorites list, Property management, User collection",
+      "DC.title":
+        "Saved favorite properties Algarve, User property collection Portugal, Personal villa watchlist Golden Triangle",
+    },
+  };
+}
 
 const page = async (props: PageProps) => {
   const searchParams = await props.searchParams;
@@ -30,8 +149,14 @@ async function PageContent({ currentPage }: { currentPage: number }) {
 
   return (
     <>
-      <h1 className="text-3xl font-bold mb-6">{t("yourFavouriteProperties")}</h1>
-      <Suspense fallback={<Skeleton className="w-full h-full aspect-video rounded-none" />}>
+      <h1 className="text-3xl font-bold mb-6">
+        {t("yourFavouriteProperties")}
+      </h1>
+      <Suspense
+        fallback={
+          <Skeleton className="w-full h-full aspect-video rounded-none" />
+        }
+      >
         <ListFavourites currentPage={currentPage} />
       </Suspense>
     </>
@@ -177,14 +302,11 @@ async function InvalidPageState({ totalPages }: { totalPages: number }) {
       </h2>
 
       <p className="text-gray-600 text-center max-w-md mb-8 leading-relaxed">
-        {t("pageNotExistStart")}
-        {" "}
-        {totalPages === 1 ? t("thereIs") : t("thereAre")}
-        {" "}
+        {t("pageNotExistStart")}{" "}
+        {totalPages === 1 ? t("thereIs") : t("thereAre")}{" "}
         <span className="font-semibold">
           {totalPages} {totalPages !== 1 ? t("pages") : t("page")}
-        </span>
-        {" "}
+        </span>{" "}
         {t("ofFavoritePropertiesAvailableEnd")}
       </p>
 
@@ -270,7 +392,11 @@ async function ListFavourites({ currentPage }: { currentPage: number }) {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-3 lg:gap-6">
         {properties.map((property) => (
           <div key={property.id} className="">
-            <FavoriteProductCard property={property} favorites={favorites} notes={notes} />
+            <FavoriteProductCard
+              property={property}
+              favorites={favorites}
+              notes={notes}
+            />
           </div>
         ))}
       </div>

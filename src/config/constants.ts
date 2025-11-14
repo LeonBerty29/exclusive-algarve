@@ -5,3 +5,4 @@ export const HOME_SEARCH_RESULT_ID = 'home-search-result';
 export const WEBSITE_NAME = "Exclusive Algarve Villas - Luxury real estate agency for Western Algarve & Golden triangle";
 export const EAV_TWITTER_CREATOR_HANDLE = "@algarveproperty";
 export const BASE_URL = "https://exclusive-algarve.vercel.app";
+export const GEO_POSITION = { lat: 37.245425, lng: -8.150925 };

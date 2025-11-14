@@ -296,6 +296,15 @@ export const routing = defineRouting({
       nl: "/account/activering-opnieuw-verzenden",
       ru: "/аккаунт/повторно-отправить-активацию",
     },
+    "/account/reset-password": {
+      en: "/account/reset-password",
+      pt: "/conta/redefinir-senha",
+      de: "/konto/neues-passwort",
+      fr: "/compte/reinitialiser-mot-de-passe",
+      se: "/konto/nollställ-lösenord",
+      nl: "/account/wachtwoord-herstellen",
+      ru: "/аккаунт/сбросить-пароль",
+    },
     "/exclusive-listing": {
       en: "/exclusive-listing",
       pt: "/listagem-exclusiva",
