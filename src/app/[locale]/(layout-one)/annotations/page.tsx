@@ -11,21 +11,100 @@ import { Search, ChevronLeft, ChevronRight } from "lucide-react";
 import { getNote } from "@/data/notes";
 import { getLocale } from "next-intl/server";
 import { getTranslations } from "next-intl/server";
+import { Metadata } from "next";
+import { BASE_URL, GEO_POSITION, WEBSITE_NAME } from "@/config/constants";
+import { routing } from "@/i18n/routing";
 
-type PageProps = {
+interface Props {
+  params: Promise<{ locale: string }>;
   searchParams?: Promise<{ [x: string]: string | string[] | undefined }>;
-};
+}
 
-const page = async (props: PageProps) => {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+
+  // Get the localized path for the annotations page
+  const annotationsPath = routing.pathnames["/annotations"];
+  const localizedAnnotationsPath =
+    typeof annotationsPath === "string"
+      ? annotationsPath
+      : annotationsPath[locale as keyof typeof annotationsPath];
+
+  // Build canonical URL for current locale
+  const canonicalUrl = `${BASE_URL}/${locale}${localizedAnnotationsPath}`;
+
+  // Build alternate language URLs
+  const languages: Record<string, string> = {};
+  routing.locales.forEach((loc) => {
+    const path =
+      typeof annotationsPath === "string"
+        ? annotationsPath
+        : annotationsPath[loc as keyof typeof annotationsPath];
+
+    languages[loc] = `${BASE_URL}/${loc}${path}`;
+  });
+
+  // Add x-default using default locale
+  const defaultPath =
+    typeof annotationsPath === "string"
+      ? annotationsPath
+      : annotationsPath[routing.defaultLocale as keyof typeof annotationsPath];
+  languages["x-default"] = `${BASE_URL}/${routing.defaultLocale}${defaultPath}`;
+
+  const description =
+    "View and manage your property annotations. Keep track of your notes, comments, and observations on luxury properties in the Algarve.";
+
+  const keywords = [
+    "property annotations",
+    "property notes",
+    "saved property notes",
+    "algarve property annotations",
+    "luxury property notes",
+    "property comments",
+    "real estate notes",
+    "property observations",
+    "saved property information",
+  ];
+
+  return {
+    title: `Your Property Annotations | ${WEBSITE_NAME}`,
+    description: description,
+    keywords: keywords,
+    robots: {
+      index: false,
+      follow: false,
+      noarchive: true,
+      nosnippet: true,
+      googleBot: {
+        index: false,
+        follow: false,
+      },
+    },
+    alternates: {
+      canonical: canonicalUrl,
+      languages: languages,
+    },
+    other: {
+      "geo.region": "PT",
+      "geo.position": `${GEO_POSITION.lat};${GEO_POSITION.lng}`,
+    },
+  };
+}
+
+const page = async (props: Props) => {
   const t = await getTranslations("annotationsPage");
   const searchParams = await props.searchParams;
   const currentPage = parseInt((searchParams?.page as string) || "1", 10);
 
   return (
     <div className="xl:container mx-auto px-6 md:px-12 lg:px-14 pt-24 pb-12">
-      <h1 className="text-3xl font-bold mb-6">{t("yourPropertyAnnotations")}</h1>
+      <h1 className="text-3xl font-bold mb-6">
+        {t("yourPropertyAnnotations")}
+      </h1>
       <Suspense
-        fallback={<Skeleton className="w-full h-full aspect-video rounded-none" />}
+        fallback={
+          <Skeleton className="w-full h-full aspect-video rounded-none" />
+        }
       >
         <ListAnnotations currentPage={currentPage} />
       </Suspense>
@@ -147,7 +226,9 @@ async function EmptyAnnotationsState() {
           <Search className="w-4 h-4" />
           {t("proTip")}
         </h3>
-        <p className="text-gray-600 text-sm">{t("addDetailedAnnotationsTip")}</p>
+        <p className="text-gray-600 text-sm">
+          {t("addDetailedAnnotationsTip")}
+        </p>
       </div>
     </div>
   );

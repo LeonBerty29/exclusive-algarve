@@ -1,26 +1,26 @@
 import { PropertySearchParams } from "@/types/property";
 import { Suspense } from "react";
-import { PROPERTIES_PER_PAGE } from "@/config/constants";
+import {
+  PROPERTIES_PER_PAGE,
+  WEBSITE_NAME,
+  EAV_TWITTER_CREATOR_HANDLE,
+} from "@/config/constants";
 import {
   PaginationSkeleton,
   PropertiesGridSkeleton,
 } from "@/components/property/loading-states";
-// import { auth } from "@/auth";
-// import { getFavorites } from "@/data/favourites";
 import { Building2, Search, FilterX, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
 import { generateApiParams, hasActiveFilters } from "@/lib/utils";
-// import { getNote } from "@/data/notes";
-import {
-  // getLocale,
-  getTranslations,
-} from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import Image from "next/image";
 import { ExclusiveListingCard } from "./exclusive-listing-card";
 import { getExclusivePropertiesWithAllPaginated } from "@/data/exclusive-properties";
 import { ExclusivePropertiesPagination } from "./exlcusive-properties-pagination";
 import { HashLanguageSwitcherDropdown } from "@/components/shared/hash-language-switcher-dropdown";
+import { Metadata } from "next";
+import { routing } from "@/i18n/routing";
 
 type Params = {
   [x: string]: string | string[];
@@ -29,6 +29,111 @@ type Params = {
 interface PageProps {
   params?: Promise<Params>;
   searchParams: Promise<PropertySearchParams>;
+}
+
+const BASE_URL =
+  process.env.BASE_URL || "https://www.exclusivealgarvevillas.com";
+
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
+  const awaitedParams = await params;
+  const { hash, locale } = awaitedParams as { hash: string; locale: string };
+
+  // Get the localized path for exclusive listing page from routing config
+  const exclusiveListingPath = routing.pathnames["/exclusive-listing/[hash]"];
+  const localizedExclusiveListingPath =
+    typeof exclusiveListingPath === "string"
+      ? exclusiveListingPath
+      : exclusiveListingPath[locale as keyof typeof exclusiveListingPath];
+
+  // Build the localized path by replacing [hash] with actual hash
+  const localizedPath = localizedExclusiveListingPath.replace("[hash]", hash);
+
+  // Build canonical URL for current locale (all locales are prefixed)
+  const canonicalUrl = `${BASE_URL}/${locale}${localizedPath}`;
+
+  // Build alternate language URLs
+  const languages: Record<string, string> = {};
+  routing.locales.forEach((loc) => {
+    const path =
+      typeof exclusiveListingPath === "string"
+        ? exclusiveListingPath
+        : exclusiveListingPath[loc as keyof typeof exclusiveListingPath];
+
+    // Replace [hash] with actual hash
+    const fullPath = path.replace("[hash]", hash);
+
+    // All locales are prefixed
+    languages[loc] = `${BASE_URL}/${loc}${fullPath}`;
+  });
+
+  // Add x-default using default locale
+  const defaultPath =
+    typeof exclusiveListingPath === "string"
+      ? exclusiveListingPath
+      : exclusiveListingPath[
+          routing.defaultLocale as keyof typeof exclusiveListingPath
+        ];
+  languages["x-default"] = `${BASE_URL}/${
+    routing.defaultLocale
+  }${defaultPath.replace("[hash]", hash)}`;
+
+  const description =
+    "View your exclusive selection of luxury Algarve properties. This private collection features handpicked villas and estates in Vale do Lobo, Quinta do Lago, and Carvoeiro, curated specifically for you.";
+
+  return {
+    title: `Exclusive Property Selection - Private Luxury Listings | ${WEBSITE_NAME}`,
+    description: description,
+    openGraph: {
+      title: "Your Exclusive Property Selection - Private Luxury Listings",
+      description: description,
+      url: canonicalUrl,
+      siteName: WEBSITE_NAME,
+      locale: locale,
+      type: "website",
+      images: [
+        {
+          url: `${BASE_URL}/images/eav-logo-dark.svg`,
+          width: 1200,
+          height: 630,
+          alt: "Exclusive Algarve Villas - Private Selection",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: "Your Exclusive Property Selection - Private Luxury Listings",
+      description: description,
+      creator: EAV_TWITTER_CREATOR_HANDLE,
+      images: [`${BASE_URL}/images/eav-logo-dark.svg`],
+    },
+    robots: {
+      index: false, // Don't index exclusive/private listings
+      follow: false, // Don't follow links (private content)
+      noarchive: true, // Don't cache this page
+      nocache: true, // Don't cache
+      noimageindex: true, // Don't index images
+      googleBot: {
+        index: false,
+        follow: false,
+        noarchive: true,
+        nocache: true,
+        noimageindex: true,
+        "max-snippet": 0, // No snippets
+        "max-image-preview": "none", // No image previews
+        "max-video-preview": 0,
+      },
+    },
+    alternates: {
+      canonical: canonicalUrl,
+      languages: languages,
+    },
+    other: {
+      "X-Robots-Tag": "noindex, nofollow, noarchive, nocache",
+      referrer: "no-referrer", // Don't leak referrer information
+    },
+  };
 }
 
 export default async function ExclusiveListing(props: PageProps) {
@@ -43,29 +148,6 @@ export default async function ExclusiveListing(props: PageProps) {
 
   // Create a key based on the search parameters that affect the data
   const suspenseKey = JSON.stringify({
-    // search: apiParams.search,
-    // location: apiParams.location_area,
-    // municipality: apiParams.municipality,
-    // zone: apiParams.zone,
-    // district: apiParams.district,
-    // min_price: apiParams.min_price,
-    // max_price: apiParams.max_price,
-    // price_ranges: apiParams.price_ranges,
-    // currency: apiParams.currency,
-    // typology: apiParams.typology,
-    // min_bedrooms: apiParams.min_bedrooms,
-    // max_bedrooms: apiParams.max_bedrooms,
-    // min_bathrooms: apiParams.min_bathrooms,
-    // max_bathrooms: apiParams.max_bathrooms,
-    // min_area: apiParams.min_area,
-    // max_area: apiParams.max_area,
-    // min_plot_size: apiParams.min_plot_size,
-    // max_plot_size: apiParams.max_plot_size,
-    // construction_year_from: apiParams.construction_year_from,
-    // construction_year_to: apiParams.construction_year_to,
-    // energy_class: apiParams.energy_class,
-    // agency_id: apiParams.agency_id,
-    // featured: apiParams.featured,
     show_price: apiParams.show_price,
     sort_by: apiParams.sort_by,
     sort_direction: apiParams.sort_direction,
@@ -93,8 +175,6 @@ export default async function ExclusiveListing(props: PageProps) {
               className="object-contain h-15 w-20 lg:hidden"
             />
           </Link>
-
-          {/* <div className="">Agent Details Goes Here</div> */}
 
           <div className="">
             <HashLanguageSwitcherDropdown />
@@ -150,30 +230,17 @@ async function PropertieList({
   hash: string;
 }) {
   const t = await getTranslations("propertiesPage");
-  // const session = await auth();
-  // const locale = await getLocale();
-  // const token = session?.accessToken;
 
   // Fetch all data concurrently using Promise.all
-  const [
-    propertiesResponse,
-    // favoritesResponse,
-    // notesResponse
-  ] = await Promise.all([
+  const [propertiesResponse] = await Promise.all([
     getExclusivePropertiesWithAllPaginated(
       apiParams,
       PROPERTIES_PER_PAGE,
       hash
     ),
-    // token
-    //   ? getFavorites(token)
-    //   : Promise.resolve({ favorite_properties: [] }),
-    // token ? getNote() : Promise.resolve({ data: [] }),
   ]);
 
   const properties = propertiesResponse.data;
-  // const favorites = favoritesResponse.favorite_properties;
-  // const notes = notesResponse.data;
   const hasFilters = hasActiveFilters(apiParams);
 
   return (
@@ -181,12 +248,7 @@ async function PropertieList({
       {properties.length > 0 ? (
         properties.map((property) => (
           <div key={property.id} className="">
-            <ExclusiveListingCard
-              property={property}
-              // favorites={favorites}
-              // notes={notes}
-              hash={hash}
-            />
+            <ExclusiveListingCard property={property} hash={hash} />
           </div>
         ))
       ) : (

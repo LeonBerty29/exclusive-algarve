@@ -2,8 +2,144 @@ import { ContactForm } from "@/components/shared/contact-form";
 import { getTranslations } from "next-intl/server";
 import Image from "next/image";
 import React from "react";
+import { Metadata } from "next";
+import { routing } from "@/i18n/routing";
+import {
+  EAV_TWITTER_CREATOR_HANDLE,
+  GEO_POSITION,
+  WEBSITE_NAME,
+} from "@/config/constants";
 
-const YearlyPropertyTaxes = async() => {
+interface Props {
+  params: Promise<{ locale: string }>;
+}
+
+const BASE_URL =
+  process.env.BASE_URL || "https://www.exclusivealgarvevillas.com";
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+
+  // Get the localized path for the yearly property taxes page
+  const taxesPath = routing.pathnames["/yearly-property-taxes"];
+  const localizedTaxesPath =
+    typeof taxesPath === "string"
+      ? taxesPath
+      : taxesPath[locale as keyof typeof taxesPath];
+
+  // Build canonical URL for current locale
+  const canonicalUrl = `${BASE_URL}/${locale}${localizedTaxesPath}`;
+
+  // Build alternate language URLs
+  const languages: Record<string, string> = {};
+  routing.locales.forEach((loc) => {
+    const path =
+      typeof taxesPath === "string"
+        ? taxesPath
+        : taxesPath[loc as keyof typeof taxesPath];
+
+    languages[loc] = `${BASE_URL}/${loc}${path}`;
+  });
+
+  // Add x-default using default locale
+  const defaultPath =
+    typeof taxesPath === "string"
+      ? taxesPath
+      : taxesPath[routing.defaultLocale as keyof typeof taxesPath];
+  languages["x-default"] = `${BASE_URL}/${routing.defaultLocale}${defaultPath}`;
+
+  // ICBM coordinates
+  const ICBM = `${GEO_POSITION.lat}, ${GEO_POSITION.lng}`;
+
+  const description =
+    "Complete guide to yearly property taxes in Portugal. Learn about IMI (Municipal Property Tax) and AIMI (Additional Property Tax) rates, calculation methods, payment schedules, and tax obligations for property owners in the Algarve.";
+
+  const keywords = [
+    "portugal property taxes",
+    "algarve property tax",
+    "IMI tax portugal",
+    "AIMI tax portugal",
+    "municipal property tax algarve",
+    "portugal real estate taxes",
+    "annual property tax portugal",
+    "property tax rates algarve",
+    "IMI calculation portugal",
+    "property ownership costs portugal",
+    "algarve villa taxes",
+    "portugal property tax guide",
+    "yearly property costs algarve",
+    "real estate tax obligations portugal",
+    "property tax payment portugal",
+    "carvoeiro property taxes",
+    "vale do lobo property tax",
+    "quinta do lago taxes",
+    "golden triangle property taxes",
+  ];
+
+  return {
+    title: `Yearly Property Taxes in Portugal - Complete IMI & AIMI Guide | ${WEBSITE_NAME}`,
+    description: description,
+    keywords: keywords,
+    openGraph: {
+      title:
+        "Yearly Property Taxes in Portugal - IMI & AIMI Guide for Algarve Property Owners",
+      description: description,
+      url: canonicalUrl,
+      siteName: WEBSITE_NAME,
+      locale: locale,
+      type: "article",
+      images: [
+        {
+          url: `${BASE_URL}/images/property-taxes-banner.png`,
+          secureUrl: `${BASE_URL}/images/property-taxes-banner.png`,
+          width: 1200,
+          height: 630,
+          alt: "Portugal Property Taxes Guide - IMI and AIMI Information",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title:
+        "Yearly Property Taxes in Portugal - IMI & AIMI Guide for Algarve Property Owners",
+      description: description,
+      creator: EAV_TWITTER_CREATOR_HANDLE,
+    },
+    robots: {
+      index: true,
+      follow: true,
+      nocache: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-snippet": -1,
+        "max-image-preview": "large",
+        "max-video-preview": -1,
+      },
+    },
+    alternates: {
+      canonical: canonicalUrl,
+      languages: languages,
+    },
+    other: {
+      "geo.region": "PT",
+      "geo.position": `${GEO_POSITION.lat};${GEO_POSITION.lng}`,
+      ICBM: ICBM,
+      classification:
+        "Property tax information, IMI tax guide, AIMI tax guide, Portugal tax obligations",
+      category:
+        "Tax guide, Property ownership costs, Real estate taxes, Financial information, Property maintenance costs",
+      "DC.title":
+        "Portugal property taxes guide, Algarve IMI tax information, AIMI tax rates Portugal, Property ownership costs Golden Triangle",
+      "DC.type": "Text.Financial",
+      "article:section": "Property Finance & Taxes",
+      audience:
+        "Property owners, Property buyers, International investors, Real estate investors",
+    },
+  };
+}
+
+const YearlyPropertyTaxes = async () => {
   const t = await getTranslations("yearlyPropertyTaxesPage");
 
   return (

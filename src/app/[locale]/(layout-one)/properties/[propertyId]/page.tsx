@@ -429,6 +429,7 @@ const PageContent = async (props: Props) => {
           <PropertyImageGrid
             assets={property.assets}
             salesConsultant={property.sales_consultant}
+            propertyReference={property.reference}
           />
 
           <div className="gap-x-6 flex flex-col lg:flex-row mb-8">

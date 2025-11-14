@@ -1,53 +1,153 @@
-"use client";
 import React from "react";
-import { motion } from "framer-motion";
 import { ContactForm } from "@/components/shared/contact-form";
 import DiscoverSection from "@/components/home/discover-section";
 import { Button } from "@/components/ui/button";
-import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
+import { GoldenVisaProgramHeroSection } from "./hero-section";
+import { Metadata } from "next";
+import { routing } from "@/i18n/routing";
+import {
+  EAV_TWITTER_CREATOR_HANDLE,
+  GEO_POSITION,
+  WEBSITE_NAME,
+} from "@/config/constants";
 
-const GoldenVisaProgram = () => {
-  const t = useTranslations("goldenVisaProgramPage");
+interface Props {
+  params: Promise<{ locale: string }>;
+}
+
+const BASE_URL =
+  process.env.BASE_URL || "https://www.exclusivealgarvevillas.com";
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+
+  // Get the localized path for the golden visa program page
+  const goldenVisaPath = routing.pathnames["/golden-visa-program"];
+  const localizedGoldenVisaPath =
+    typeof goldenVisaPath === "string"
+      ? goldenVisaPath
+      : goldenVisaPath[locale as keyof typeof goldenVisaPath];
+
+  // Build canonical URL for current locale
+  const canonicalUrl = `${BASE_URL}/${locale}${localizedGoldenVisaPath}`;
+
+  // Build alternate language URLs
+  const languages: Record<string, string> = {};
+  routing.locales.forEach((loc) => {
+    const path =
+      typeof goldenVisaPath === "string"
+        ? goldenVisaPath
+        : goldenVisaPath[loc as keyof typeof goldenVisaPath];
+
+    languages[loc] = `${BASE_URL}/${loc}${path}`;
+  });
+
+  // Add x-default using default locale
+  const defaultPath =
+    typeof goldenVisaPath === "string"
+      ? goldenVisaPath
+      : goldenVisaPath[routing.defaultLocale as keyof typeof goldenVisaPath];
+  languages["x-default"] = `${BASE_URL}/${routing.defaultLocale}${defaultPath}`;
+
+  // ICBM coordinates
+  const ICBM = `${GEO_POSITION.lat}, ${GEO_POSITION.lng}`;
+
+  const description =
+    "Complete guide to Portugal's Golden Visa Program. Learn about investment requirements, eligibility criteria, residence permits, and pathways to citizenship through property investment in the Algarve. Expert guidance for obtaining Portuguese residency.";
+
+  const keywords = [
+    "portugal golden visa",
+    "golden visa program portugal",
+    "portugal residence permit investment",
+    "algarve golden visa",
+    "portugal investment visa",
+    "golden visa requirements portugal",
+    "portugal citizenship by investment",
+    "portuguese golden visa eligibility",
+    "portugal residence visa",
+    "golden visa property investment",
+    "portugal permanent residence",
+    "algarve investment residency",
+    "portugal investor visa",
+    "golden visa application portugal",
+    "portugal residency by investment",
+    "schengen visa portugal",
+    "portugal golden visa 2024",
+    "invest portugal residency",
+    "portuguese citizenship investment",
+    "algarve property golden visa",
+  ];
+
+  return {
+    title: `Portugal Golden Visa Program - Complete Investment & Residency Guide | ${WEBSITE_NAME}`,
+    description: description,
+    keywords: keywords,
+    openGraph: {
+      title:
+        "Portugal Golden Visa Program - Residency Through Investment in the Algarve",
+      description: description,
+      url: canonicalUrl,
+      siteName: WEBSITE_NAME,
+      locale: locale,
+      type: "website",
+      images: [
+        {
+          url: `${BASE_URL}/images/become-a-vendor/marketing.png`,
+          secureUrl: `${BASE_URL}/images/become-a-vendor/marketing.png`,
+          width: 1200,
+          height: 630,
+          alt: "Portugal Golden Visa Program - Investment Residency Guide",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title:
+        "Portugal Golden Visa Program - Residency Through Investment in the Algarve",
+      description: description,
+      creator: EAV_TWITTER_CREATOR_HANDLE,
+    },
+    robots: {
+      index: true,
+      follow: true,
+      nocache: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-snippet": -1,
+        "max-image-preview": "large",
+        "max-video-preview": -1,
+      },
+    },
+    alternates: {
+      canonical: canonicalUrl,
+      languages: languages,
+    },
+    other: {
+      "geo.region": "PT",
+      "geo.position": `${GEO_POSITION.lat};${GEO_POSITION.lng}`,
+      ICBM: ICBM,
+      classification:
+        "Golden visa information, Portugal investment visa, Residence permit guide, Citizenship by investment",
+      category:
+        "Immigration guide, Investment visa, Residency program, Citizenship pathway, Legal requirements, Property investment visa",
+      "DC.title":
+        "Portugal golden visa program guide, Algarve investment residency, Portuguese citizenship by investment, Golden triangle residence permit",
+      audience:
+        "International investors, Property buyers, Residency seekers, Non-EU citizens",
+      "article:section": "Immigration & Investment",
+    },
+  };
+}
+
+const GoldenVisaProgram = async () => {
+  const t = await getTranslations("goldenVisaProgramPage");
 
   return (
     <>
       <div className="min-h-[500px] h-[50vh] relative mt-20">
-        <div className="absolute top-0 left-0 h-full w-full before:absolute before:inset-0 before:bg-black/60 before:bg-opacity-50 before:content-[''] before:z-10">
-          <Image
-            src="/images/house-view.png"
-            alt={t("algarveHomeAlt")}
-            width={1513}
-            height={622}
-            className=" h-full w-full object-cover"
-            priority
-          />
-
-          <div className="absolute left-0 right-0 bottom-0 top-0 z-20 flex justify-center">
-            <motion.div
-              className="container px-6 sm:px-8 md:px-10 lg:px-12 py-12 md:py-14 xl:py-20  text-white z-22 flex items-end w-full gap-9"
-              initial={{
-                y: 100,
-                opacity: 0,
-              }}
-              whileInView={{
-                y: 0,
-                opacity: 1,
-              }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2, duration: 0.8 }}
-            >
-              <div>
-                <h1 className="text-2xl lg:text-3xl leading-none font-medium">
-                  <span className="text-primary">{t("golden")}</span>{" "}
-                  {t("visaProgram")}
-                  <br />
-                  {t("portugal")}
-                </h1>
-              </div>
-            </motion.div>
-          </div>
-        </div>
+        <GoldenVisaProgramHeroSection />
       </div>
 
       <div className="lg:container mx-auto px-6 md:px-12 lg:px-14 py-14 xl:pb-20">

@@ -1,11 +1,7 @@
 import { getTranslations } from "next-intl/server";
-import // Calendar,
-"lucide-react";
 import ScrollableTabs from "@/components/property/scrollable-tabs";
 import PropertyDetailsIcons from "@/components/property/property-details-icons";
-
 import { ContactSection } from "@/components/shared/contact-section";
-// import DiscoverSection from "@/components/home/discover-section";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -13,139 +9,149 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Link } from "@/i18n/navigation";
-// import ShareButton from "@/components/property/share-property";
 import { PropertyImageGrid } from "@/components/property-details/property-image-grid";
 import ContactAgentForm from "@/components/property-details/contact-agent-form";
 import { getCurrencySymbol } from "@/components/shared/price-format";
-// import { Metadata } from "next";
 import BookVisitDialog from "@/components/shared/booking-dialog";
 import { getProperty } from "@/data/property";
 import { Suspense } from "react";
 import PropertyDetailsPageLoading from "@/components/property/property-details-page-loading";
-// import { getFavorites } from "@/data/favourites";
-// import { auth } from "@/auth";
-// import { AddToFavoriteButton } from "@/components/search/submit-buttons";
 import { setRequestLocale } from "next-intl/server";
-// import { AddPropertyNote } from "@/components/product/add-property-notes";
-// import { getNote } from "@/data/notes";
-// import { Metadata } from "next";
-// import { BASE_URL, EAV_TWITTER_CREATOR_HANDLE, WEBSITE_NAME } from "@/config/constants";
-// import { routing } from "@/i18n/routing";
 import Image from "next/image";
 import { HashSlugLocales } from "../hash-slug-language-switcher";
+import { Metadata } from "next";
+import { 
+  BASE_URL, 
+  EAV_TWITTER_CREATOR_HANDLE, 
+  WEBSITE_NAME 
+} from "@/config/constants";
+import { routing } from "@/i18n/routing";
 
 interface Props {
   params: Promise<{ slug: string; locale: string; hash: string }>;
 }
 
-// export async function generateMetadata({ params }: Props): Promise<Metadata> {
-//   const { propertyId, locale } = await params;
-//   const propertyResponse = await getProperty(propertyId);
-//   const property = propertyResponse.data;
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug, locale, hash } = await params;
+  const propertyResponse = await getProperty(slug);
+  const property = propertyResponse.data;
 
-//   if (!property) {
-//     return {
-//       title: "Property Not Found",
-//       description: "The requested property could not be found",
-//     };
-//   }
+  if (!property) {
+    return {
+      title: "Property Not Found",
+      description: "The requested property could not be found",
+    };
+  }
 
-//   // Get the localized path for properties from routing config
-//   const propertiesPath = routing.pathnames["/properties/[slug]"];
-//   const localizedPropertiesPath =
-//     typeof propertiesPath === "string"
-//       ? propertiesPath
-//       : propertiesPath[locale as keyof typeof propertiesPath];
+  // Get the localized path for exclusive property details from routing config
+  const exclusivePropertyPath = routing.pathnames["/exclusive-listing/[hash]/[slug]"];
+  const localizedExclusivePropertyPath =
+    typeof exclusivePropertyPath === "string"
+      ? exclusivePropertyPath
+      : exclusivePropertyPath[locale as keyof typeof exclusivePropertyPath];
 
-//   // Get the slug for current locale from property.seo.slugs
-//   const currentSlug =
-//     property.seo.slugs[locale as keyof typeof property.seo.slugs];
+  // Get the slug for current locale from property.seo.slugs
+  const currentSlug =
+    property.seo.slugs[locale as keyof typeof property.seo.slugs];
 
-//   // Build the localized property path by replacing [slug] with actual slug
-//   const localizedPath = localizedPropertiesPath.replace("[slug]", currentSlug);
+  // Build the localized property path by replacing [hash] and [slug]
+  const localizedPath = localizedExclusivePropertyPath
+    .replace("[hash]", hash)
+    .replace("[slug]", currentSlug);
 
-//   // Build canonical URL for current locale (all locales are prefixed)
-//   const canonicalUrl = `${BASE_URL}/${locale}${localizedPath}`;
+  // Build canonical URL for current locale (all locales are prefixed)
+  const canonicalUrl = `${BASE_URL}/${locale}${localizedPath}`;
 
-//   // Build alternate language URLs using slugs from property.seo.slugs
-//   const languages: Record<string, string> = {};
-//   routing.locales.forEach((loc) => {
-//     const path =
-//       typeof propertiesPath === "string"
-//         ? propertiesPath
-//         : propertiesPath[loc as keyof typeof propertiesPath];
+  // Build alternate language URLs using slugs from property.seo.slugs
+  const languages: Record<string, string> = {};
+  routing.locales.forEach((loc) => {
+    const path =
+      typeof exclusivePropertyPath === "string"
+        ? exclusivePropertyPath
+        : exclusivePropertyPath[loc as keyof typeof exclusivePropertyPath];
 
-//     // Get the slug for this locale
-//     const slug = property.seo.slugs[loc as keyof typeof property.seo.slugs];
+    // Get the slug for this locale
+    const localeSlug = property.seo.slugs[loc as keyof typeof property.seo.slugs];
 
-//     // Replace [slug] with actual localized slug
-//     const fullPath = path.replace("[slug]", slug);
+    // Replace [hash] and [slug] with actual values
+    const fullPath = path
+      .replace("[hash]", hash)
+      .replace("[slug]", localeSlug);
 
-//     // All locales are prefixed
-//     languages[loc] = `${BASE_URL}/${loc}${fullPath}`;
-//   });
+    // All locales are prefixed
+    languages[loc] = `${BASE_URL}/${loc}${fullPath}`;
+  });
 
-//   // Add x-default using default locale
-//   const defaultPath =
-//     typeof propertiesPath === "string"
-//       ? propertiesPath
-//       : propertiesPath[routing.defaultLocale as keyof typeof propertiesPath];
-//   const defaultSlug =
-//     property.seo.slugs[
-//       routing.defaultLocale as keyof typeof property.seo.slugs
-//     ];
-//   languages["x-default"] = `${BASE_URL}/${
-//     routing.defaultLocale
-//   }${defaultPath.replace("[slug]", defaultSlug)}`;
+  // Add x-default using default locale
+  const defaultPath =
+    typeof exclusivePropertyPath === "string"
+      ? exclusivePropertyPath
+      : exclusivePropertyPath[routing.defaultLocale as keyof typeof exclusivePropertyPath];
+  const defaultSlug =
+    property.seo.slugs[
+      routing.defaultLocale as keyof typeof property.seo.slugs
+    ];
+  languages["x-default"] = `${BASE_URL}/${routing.defaultLocale}${defaultPath
+    .replace("[hash]", hash)
+    .replace("[slug]", defaultSlug)}`;
 
-//   return {
-//     title: `${property.title} | ${WEBSITE_NAME}`,
-//     description: property.seo.description,
-//     keywords: [
-//       ...property.seo.keywords,
-//       property.typology.name,
-//       property.location.municipality,
-//       property.location.zone,
-//     ],
-//     openGraph: {
-//       title: `${property.title} | ${WEBSITE_NAME}`,
-//       description: property.seo.description,
-//       url: canonicalUrl,
-//       siteName: WEBSITE_NAME,
-//       images: property.assets.images.gallery.map((image) => ({
-//         url: image.url,
-//         width: 1200,
-//         height: 800,
-//         alt: image.title || `${property.title} image`,
-//       })),
-//       locale: locale,
-//       type: "website",
-//     },
-//     twitter: {
-//       card: "summary_large_image",
-//       title: `${property.title} | ${WEBSITE_NAME}`,
-//       description: property.seo.description,
-//       creator: EAV_TWITTER_CREATOR_HANDLE,
-//       images: property.assets.images.gallery.map((image) => image.url),
-//     },
-//     robots: {
-//       index: true,
-//       follow: true,
-//       nocache: true,
-//       googleBot: {
-//         index: true,
-//         follow: true,
-//         "max-snippet": -1,
-//         "max-image-preview": "large",
-//         "max-video-preview": -1,
-//       },
-//     },
-//     alternates: {
-//       canonical: canonicalUrl,
-//       languages: languages,
-//     },
-//   };
-// }
+  const primaryImage = property.assets.images.gallery[0];
+
+  return {
+    title: `${property.title} - Exclusive Selection | ${WEBSITE_NAME}`,
+    description: property.seo.description,
+    openGraph: {
+      title: `${property.title} - Exclusive Property`,
+      description: property.seo.description,
+      url: canonicalUrl,
+      siteName: WEBSITE_NAME,
+      images: [
+        {
+          url: primaryImage.url,
+          secureUrl: primaryImage.url,
+          type: "image/jpeg",
+          width: 1200,
+          height: 630,
+          alt: primaryImage.title || `${property.title}`,
+        },
+      ],
+      locale: locale,
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${property.title} - Exclusive Property`,
+      description: property.seo.description,
+      creator: EAV_TWITTER_CREATOR_HANDLE,
+      images: property.assets.images.gallery.map((image) => image.url),
+    },
+    robots: {
+      index: false,          // Don't index exclusive/private listings
+      follow: false,         // Don't follow links (private content)
+      noarchive: true,       // Don't cache this page
+      nocache: true,         // Don't cache
+      noimageindex: true,    // Don't index images
+      googleBot: {
+        index: false,
+        follow: false,
+        noarchive: true,
+        nocache: true,
+        noimageindex: true,
+        "max-snippet": 0,    // No snippets
+        "max-image-preview": "none",  // No image previews
+        "max-video-preview": 0,
+      },
+    },
+    alternates: {
+      canonical: canonicalUrl,
+      languages: languages,
+    },
+    other: {
+      "X-Robots-Tag": "noindex, nofollow, noarchive, nocache",
+      referrer: "no-referrer",  // Don't leak referrer information
+    },
+  };
+}
 
 export default async function page(props: Props) {
   const t = await getTranslations("propertyDetailsPage");
@@ -314,6 +320,7 @@ const PageContent = async (props: Props) => {
           <PropertyImageGrid
             assets={property.assets}
             salesConsultant={property.sales_consultant}
+            propertyReference={property.reference}
           />
 
           <div className="gap-x-6 flex flex-col lg:flex-row mb-8">

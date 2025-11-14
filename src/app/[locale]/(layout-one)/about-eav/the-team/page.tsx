@@ -8,12 +8,120 @@ import { ContactForm } from "@/components/shared/contact-form";
 import { Team } from "@/types/team";
 import { getLocale } from "next-intl/server";
 import { getTranslations } from "next-intl/server";
+import { Metadata } from "next";
+import { routing } from "@/i18n/routing";
+import {
+  BASE_URL,
+  EAV_TWITTER_CREATOR_HANDLE,
+  GEO_POSITION,
+  WEBSITE_NAME,
+} from "@/config/constants";
+import { theTeamMetadata } from "@/seo-metadata/the-team";
 
 interface BlogPageProps {
   searchParams: Promise<{ page?: string }>;
 }
 
+interface Props {
+  params: Promise<{ locale: string }>;
+}
+
 const BLOGS_PER_PAGE = 12;
+
+// Geographic coordinates for Algarve
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+
+  // Get localized metadata
+  const metadata =
+    theTeamMetadata[locale as keyof typeof theTeamMetadata] ||
+    theTeamMetadata.en;
+
+  // Get the localized path for the team page
+  const teamPath = routing.pathnames["/about-eav/the-team"];
+  const localizedTeamPath =
+    typeof teamPath === "string"
+      ? teamPath
+      : teamPath[locale as keyof typeof teamPath];
+
+  // Build canonical URL for current locale
+  const canonicalUrl = `${BASE_URL}/${locale}${localizedTeamPath}`;
+
+  // Build alternate language URLs
+  const languages: Record<string, string> = {};
+  routing.locales.forEach((loc) => {
+    const path =
+      typeof teamPath === "string"
+        ? teamPath
+        : teamPath[loc as keyof typeof teamPath];
+
+    languages[loc] = `${BASE_URL}/${loc}${path}`;
+  });
+
+  // Add x-default using default locale
+  const defaultPath =
+    typeof teamPath === "string"
+      ? teamPath
+      : teamPath[routing.defaultLocale as keyof typeof teamPath];
+  languages["x-default"] = `${BASE_URL}/${routing.defaultLocale}${defaultPath}`;
+
+  // ICBM coordinates
+  const ICBM = `${GEO_POSITION.lat}, ${GEO_POSITION.lng}`;
+
+  return {
+    title: `${metadata.title} | ${WEBSITE_NAME}`,
+    description: metadata.description,
+    keywords: [...metadata.keywords],
+    openGraph: {
+      title: metadata.ogTitle,
+      description: metadata.ogDescription,
+      url: canonicalUrl,
+      siteName: WEBSITE_NAME,
+      locale: locale,
+      type: "website",
+      images: [
+        {
+          url: `${BASE_URL}/images/about/about-img-2.png`,
+          secureUrl: `${BASE_URL}/images/about/about-img-2.png`,
+          width: 1200,
+          height: 630,
+          alt: `${metadata.title} - ${WEBSITE_NAME}`,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: metadata.ogTitle,
+      description: metadata.ogDescription,
+      creator: EAV_TWITTER_CREATOR_HANDLE,
+    },
+    robots: {
+      index: true,
+      follow: true,
+      nocache: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-snippet": -1,
+        "max-image-preview": "large",
+        "max-video-preview": -1,
+      },
+    },
+    alternates: {
+      canonical: canonicalUrl,
+      languages: languages,
+    },
+    other: {
+      "geo.region": "PT",
+      "geo.position": `${GEO_POSITION.lat};${GEO_POSITION.lng}`,
+      ICBM: ICBM,
+      classification: metadata.classification,
+      category: metadata.category,
+      "DC.title": metadata.dcTitle,
+    },
+  };
+}
 
 export default async function TeamPage(props: BlogPageProps) {
   const t = await getTranslations("theTeamPage");
@@ -22,7 +130,7 @@ export default async function TeamPage(props: BlogPageProps) {
 
   return (
     <div>
-      <div className="2xl:container w-full mx-auto px-6 sm:px-8 md:px-10 lg:px-14 py-10">
+      <div className="2xl:container w-full mx-auto px-6 sm:px-8 md:px-10 lg:px-14 pt-24 py-10">
         <div className="flex items-center gap-2 justify-between py-5 md:py-8 lg:py-16 flex-wrap">
           <div className="w-full md:w-[47%]">
             <h1 className="text-2xl font-normal mb-5">{t("assistHeading")}</h1>
@@ -93,9 +201,6 @@ async function GetAndDisplayTeam({
   });
 
   const teams = response;
-
-  // const totalPages = Math.ceil(response.total / perPage);
-  // const isPageOutOfRange = page > totalPages && totalPages > 0;
 
   return (
     <>

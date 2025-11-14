@@ -10,11 +10,13 @@ import { getTranslations } from "next-intl/server";
 interface PropertyImageGridProps {
   assets: Property["assets"];
   salesConsultant: Property["sales_consultant"];
+  propertyReference: string;
 }
 
 export const PropertyImageGrid: React.FC<PropertyImageGridProps> = async ({
   assets,
   salesConsultant,
+  propertyReference,
 }) => {
   const t = await getTranslations("propertyImageGrid");
 
@@ -77,6 +79,7 @@ export const PropertyImageGrid: React.FC<PropertyImageGridProps> = async ({
             {totalImages > 3 && (
               <PropertyImagesModal
                 images={propertyImages}
+                propertyReference={propertyReference}
                 // floorPlans={assets.images.floor_plans}
               />
             )}
@@ -114,6 +117,7 @@ export const PropertyImageGrid: React.FC<PropertyImageGridProps> = async ({
           {totalImages > 3 && (
             <PropertyImagesModal
               images={propertyImages}
+              propertyReference={propertyReference}
               // floorPlans={assets.images.floor_plans}
             />
           )}

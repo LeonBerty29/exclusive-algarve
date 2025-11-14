@@ -111,21 +111,21 @@ const ScrollableTabs = ({ property }: ScrollableTabsProps) => {
                 >
                   {t("features")}
                 </TabsTrigger>
-                {property.assets.images.floor_plans.length > 0 ? (
+                {property.assets.images.floor_plans.length > 0 && (
                   <TabsTrigger
                     value={"fplan"}
                     className="whitespace-nowrap mx-1 first:ml-0 last:mr-0"
                   >
                     {t("floorPlan")}
                   </TabsTrigger>
-                ) : (
-                  <Button
-                    onClick={handleDownload}
-                    className="text-xs rounded-none bg-black text-white px-6"
-                  >
-                    {t("downloadBrochure")}
-                  </Button>
                 )}
+                <Button
+                  onClick={handleDownload}
+                  className="text-xs rounded-none bg-black text-white px-6"
+                >
+                  {t("downloadBrochure")}
+                </Button>
+
                 <TabsTrigger
                   value={"location"}
                   className="whitespace-nowrap mx-1 first:ml-0 last:mr-0"
