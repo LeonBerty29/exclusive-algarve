@@ -60,7 +60,7 @@ export default function HeroSection({
   // Show loading state until we know if it's mobile
   if (!isClient || isMobile === null) {
     return (
-      <section className="relative h-screen w-full overflow-hidden bg-gray-900">
+      <section className="relative w-full h-screen overflow-hidden bg-gray-900 pt-20">
         <div className="absolute inset-0 bg-black/40" />
         <div className="absolute left-1/2 top-1/2 -translate-y-1/2 w-full max-w-7xl -translate-x-1/2 px-4">
           <div className="glassmorphism rounded-xl p-6">{children}</div>
@@ -165,8 +165,8 @@ export default function HeroSection({
         </div>
       )}
 
-      <div className="absolute left-1/2 top-1/2 -translate-y-1/2 w-full max-w-7xl -translate-x-1/2 px-4">
-        <div className="glassmorphism rounded-xl p-6">{children}</div>
+      <div className="absolute left-1/2 top-1/2 -translate-y-1/2 w-full max-w-7xl -translate-x-1/2 px-6">
+        <div className="glassmorphism rounded-xl pt-16 pb-6">{children}</div>
 
         <Button className="bg-white text-black hover:bg-black hover:text-white transition-all !mx-auto block">
           <Link href="/properties">{t("allProperties")}</Link>

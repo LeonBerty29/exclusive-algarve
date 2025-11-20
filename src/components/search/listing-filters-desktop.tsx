@@ -13,10 +13,13 @@ export async function ListPropertyTypesDesktop() {
 }
 
 export async function ListBedroomsRangeSelectDesktop() {
-  const ranges = await getRanges();
-  const bedroomRange = ranges.bedrooms; // Fixed: was using ranges.price
+  // const ranges = await getRanges();
+  // const bedroomRange = ranges.bedrooms; // Fixed: was using ranges.price
   // return <BedroomsRangeSelect bedroomRange={bedroomRange} />;
-  return <BedroomsDropdown modal={false} bedroomRange={bedroomRange} />;
+  return <BedroomsDropdown 
+  // modal={false} 
+  // bedroomRange={bedroomRange} 
+  />;
 }
 
 export async function ListPricesDesktop() {
@@ -31,8 +34,13 @@ export async function ListRegionSelectDesktop() {
 }
 
 export async function ListBathroomsRangeSelectDesktop() {
-  const ranges = await getRanges();
-  const bathroomRange = ranges.bathrooms;
+  // const ranges = await getRanges();
+  // const bathroomRange = ranges.bathrooms;
   // return <BathroomsRangeSelect bathroomRange={bathroomRange} />;
-  return <BathroomsDropdown modal={false} bathroomRange={bathroomRange} />;
+  return (
+    <BathroomsDropdown
+    // modal={false}
+    // bathroomRange={bathroomRange}
+    />
+  );
 }

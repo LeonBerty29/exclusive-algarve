@@ -9,6 +9,7 @@ import { getTranslations } from "next-intl/server";
 import { Metadata } from "next";
 import { routing } from "@/i18n/routing";
 import { EAV_TWITTER_CREATOR_HANDLE, WEBSITE_NAME } from "@/config/constants";
+import { becomeAVendorMetadata } from "@/seo-metadata/become-avendor";
 
 interface Props {
   params: Promise<{ locale: string }>;
@@ -22,6 +23,11 @@ const GEO_POSITION = { lat: 37.245425, lng: -8.150925 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
+
+  // Get localized metadata
+  const metadata =
+    becomeAVendorMetadata[locale as keyof typeof becomeAVendorMetadata] ||
+    becomeAVendorMetadata.en;
 
   // Get the localized path for the become a vendor page
   const vendorPath = routing.pathnames["/become-a-vendor"];
@@ -54,34 +60,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   // ICBM coordinates
   const ICBM = `${GEO_POSITION.lat}, ${GEO_POSITION.lng}`;
 
-  const description =
-    "Sell your luxury property in the Algarve with Exclusive Algarve Villas. Expert guidance through documentation, staging, marketing, and the complete sales process for high-end real estate in Portugal.";
-
-  const keywords = [
-    "sell property algarve",
-    "sell luxury villa algarve",
-    "algarve property vendors",
-    "sell real estate portugal",
-    "property sales algarve",
-    "luxury property marketing algarve",
-    "sell house algarve",
-    "real estate agent algarve sellers",
-    "property documentation portugal",
-    "sell villa carvoeiro",
-    "sell property golden triangle",
-    "algarve property valuation",
-    "exclusive property listings algarve",
-    "high-end property sales algarve",
-    "western algarve property sales",
-  ];
-
   return {
-    title: `Sell Your Property in the Algarve | ${WEBSITE_NAME}`,
-    description: description,
-    keywords: keywords,
+    title: `${metadata.title} | ${WEBSITE_NAME}`,
+    description: metadata.description,
+    keywords: [...metadata.keywords],
     openGraph: {
-      title: "Sell Your Luxury Property in the Algarve with Expert Guidance",
-      description: description,
+      title: metadata.ogTitle,
+      description: metadata.ogDescription,
       url: canonicalUrl,
       siteName: WEBSITE_NAME,
       locale: locale,
@@ -92,14 +77,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
           secureUrl: `${BASE_URL}/images/become-a-vendor/documentation-order.png`,
           width: 1200,
           height: 630,
-          alt: "Sell Your Property in the Algarve - Exclusive Algarve Villas",
+          alt: `${metadata.title} - ${WEBSITE_NAME}`,
         },
       ],
     },
     twitter: {
       card: "summary_large_image",
-      title: "Sell Your Luxury Property in the Algarve with Expert Guidance",
-      description: description,
+      title: metadata.ogTitle,
+      description: metadata.ogDescription,
       creator: EAV_TWITTER_CREATOR_HANDLE,
     },
     robots: {
@@ -122,12 +107,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       "geo.region": "PT",
       "geo.position": `${GEO_POSITION.lat};${GEO_POSITION.lng}`,
       ICBM: ICBM,
-      classification:
-        "Sell property Algarve, Luxury villa sales, Property vendors Algarve, Real estate sales Portugal",
-      category:
-        "Property sales, Luxury real estate, Algarve vendors, Property marketing",
-      "DC.title":
-        "Sell luxury property Algarve, Villa sales Carvoeiro, Golden triangle property sales, Western Algarve real estate",
+      classification: metadata.classification,
+      category: metadata.category,
+      "DC.title": metadata.dcTitle,
     },
   };
 }

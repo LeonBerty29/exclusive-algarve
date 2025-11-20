@@ -5,7 +5,13 @@ import React from "react";
 import { NewsletterForm } from "./newsletter-form";
 import { MessageForm } from "./message-us-form";
 import Image from "next/image";
-import { FaFacebook, FaInstagram, FaTwitter } from "react-icons/fa";
+import {
+  FaFacebook,
+  FaInstagram,
+  FaLinkedin,
+  FaTwitter,
+  FaYoutube,
+} from "react-icons/fa";
 import { IconType } from "react-icons/lib";
 import { useTranslations } from "next-intl";
 
@@ -64,19 +70,29 @@ const resources: { name: string; link: any }[] = [
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const socialMediaplatforms: { name: string; link: any; icon: IconType }[] = [
   {
-    name: "facebook",
-    link: "#",
+    name: "Facebook",
+    link: "https://www.facebook.com/ExclusiveAlgarveVillasPortugal",
     icon: FaFacebook,
   },
   {
-    name: "instagram",
-    link: "#",
+    name: "Instagram",
+    link: "https://www.instagram.com/exclusive_algarve_villas/",
     icon: FaInstagram,
   },
   {
-    name: "twitter",
-    link: "#",
+    name: "Twitter",
+    link: "https://x.com/algarveproperty",
     icon: FaTwitter,
+  },
+  {
+    name: "Linkedin",
+    link: "https://www.linkedin.com/company/exclusive-algarve-villas",
+    icon: FaLinkedin,
+  },
+  {
+    name: "Youtube",
+    link: "https://www.youtube.com/channel/UCXFReDINqebE_sikwPg9Ung",
+    icon: FaYoutube,
   },
 ];
 
@@ -84,19 +100,17 @@ const socialMediaplatforms: { name: string; link: any; icon: IconType }[] = [
 const locations: { name: string; address: string; link: any }[] = [
   {
     name: "vilamoura",
-    address: "[translate:Av.Tivoli, B, Bloco 3, R/C Esq8125-410 Vilamoura]",
+    address: "Av.Tivoli, B, Bloco 3, R/C Esq8125-410 Vilamoura",
     link: "https://www.google.com/maps/place/Exclusive+Algarve+Villas+-+VILAMOURA+-+Luxury+real+estate+agency/@37.0807699,-8.1157467,570m/data=!3m2!1e3!4b1!4m6!3m5!1s0xd1ab5bd0de9a74d:0x365a6c5338873b2!8m2!3d37.0807699!4d-8.1157467!16s%2Fg%2F11wqrdr6q6?entry=ttu&g_ep=EgoyMDI1MDgxNy4wIKXMDSoASAFQAw%3D%3D",
   },
   {
     name: "lagoa",
-    address:
-      "[translate:R. Ernesto Cabrita, Edif. Vales, Loja A8400-387 Lagoa]",
+    address: "R. Ernesto Cabrita, Edif. Vales, Loja A8400-387 Lagoa",
     link: "https://www.google.com/maps/place/Exclusive+Algarve+Villas+-+Lagoa+(Carvoeiro)+-+Luxury+real+estate+agency/@37.1351626,-8.4588553,570m/data=!3m2!1e3!4b1!4m6!3m5!1s0xd1ad7b9f6406fad:0x1faa9a9dd838f5ba!8m2!3d37.1351626!4d-8.4588553!16s%2Fg%2F11yhj8sl2?entry=ttu&g_ep=EgoyMDI1MDgxNy4wIKXMDSoASAFQAw%3D%3D",
   },
   {
     name: "lagos",
-    address:
-      "[translate:R. Ernesto Cabrita, Edif. Vales, Loja A8400-387 Lagoa]",
+    address: "R. Ernesto Cabrita, Edif. Vales, Loja A8400-387 Lagoa",
     link: "https://www.google.com/maps/place/Exclusive+Algarve+Villas+-+LAGOS+-+Luxury+real+estate+agency/@37.1110648,-8.6814324,570m/data=!3m2!1e3!4b1!4m6!3m5!1s0xd1b31418b50f1e7:0xcff931dc671940b!8m2!3d37.1110648!4d-8.6814324!16s%2Fg%2F11wn7pk_fy?entry=ttu&g_ep=EgoyMDI1MDgxNy4wIKXMDSoASAFQAw%3D%3D",
   },
 ];
@@ -177,7 +191,7 @@ const Footer = () => {
                           className="text-xs font-light flex items-center gap-2"
                         >
                           <socialMediaplatform.icon />
-                          {t(socialMediaplatform.name)}
+                          {socialMediaplatform.name}
                         </Link>
                       </li>
                     ))}

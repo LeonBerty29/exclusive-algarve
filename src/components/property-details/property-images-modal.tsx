@@ -10,21 +10,19 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "../ui/button";
 import { Camera } from "lucide-react";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "../ui/carousel";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import Image from "next/image";
 import { PropertyImage } from "@/types/property";
 import { getTranslations } from "next-intl/server";
 import { RequestFloorPlan } from "../property/request-floor-plan";
+import PropertyImageCarousel from "./images-carousel";
 
-
-const PropertyImagesModal = async ({ images, propertyReference }: { images: PropertyImage[], propertyReference: string }) => {
+const PropertyImagesModal = async ({
+  images,
+  propertyReference,
+}: {
+  images: PropertyImage[];
+  propertyReference: string;
+}) => {
   const t = await getTranslations("propertyImagesModal");
   const totalImages = images.length;
   const remainingPhotos = totalImages - 3;
@@ -71,7 +69,7 @@ const PropertyImagesModal = async ({ images, propertyReference }: { images: Prop
             </TabsList>
 
             <TabsContent value="images" className="mt-0">
-              <div className="flex items-center justify-center min-h-[60vh] p-4">
+              {/* <div className="flex items-center justify-center min-h-[60vh] p-4">
                 <Carousel className="w-full max-w-4xl">
                   <CarouselContent>
                     {images.map((image, index) => (
@@ -90,7 +88,9 @@ const PropertyImagesModal = async ({ images, propertyReference }: { images: Prop
                   <CarouselPrevious className="-left-4" />
                   <CarouselNext className="-right-4" />
                 </Carousel>
-              </div>
+              </div> */}
+
+              <PropertyImageCarousel images={images} />
             </TabsContent>
 
             <TabsContent value="floorplan" className="mt-0">
