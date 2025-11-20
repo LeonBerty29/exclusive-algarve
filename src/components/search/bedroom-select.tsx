@@ -1,183 +1,115 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+
 import { useRouter, useSearchParams } from "next/navigation";
-import { ChevronsUpDown } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Ranges } from "@/types/property";
 import { useTranslations } from "next-intl";
 
-export function BedroomsDropdown({
-  bedroomRange,
-  modal = true,
-}: {
-  bedroomRange: Ranges["bedrooms"];
-  modal?: boolean;
-}) {
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+interface BedroomOption {
+  value: string;
+  label: string;
+  min: number;
+}
+
+export function BedroomsDropdown() {
   const t = useTranslations("bedroomSelect");
   const router = useRouter();
   const searchParams = useSearchParams();
-  const previousValuesRef = useRef<[number, number] | undefined>(undefined);
-  const [open, setOpen] = useState(false);
 
-  const [selectedValues, setSelectedValues] = useState<[number, number]>(() => {
+  // Static bedroom options
+  const bedroomOptions: BedroomOption[] = [
+    { value: "1", label: "1+", min: 1 },
+    { value: "2", label: "2+", min: 2 },
+    { value: "3", label: "3+", min: 3 },
+    { value: "4", label: "4+", min: 4 },
+    { value: "5", label: "5+", min: 5 },
+    { value: "6", label: "6+", min: 6 },
+    { value: "7", label: "7+", min: 7 },
+    { value: "8", label: "8+", min: 8 },
+    { value: "9", label: "9+", min: 9 },
+    { value: "10", label: "10+", min: 10 },
+  ];
+
+  // Get current selected value from URL
+  const getCurrentValue = () => {
     const minBedrooms = searchParams.get("min_bedrooms");
-    const maxBedrooms = searchParams.get("max_bedrooms");
 
-    return [
-      minBedrooms ? parseInt(minBedrooms) : bedroomRange.min,
-      maxBedrooms ? parseInt(maxBedrooms) : bedroomRange.max,
-    ];
-  });
+    if (minBedrooms) {
+      const matchingOption = bedroomOptions.find(
+        (option) => option.min === parseInt(minBedrooms)
+      );
+      return matchingOption?.value || "";
+    }
 
-  const handleMinChange = (value: number) => {
-    const newMax = Math.max(value, selectedValues[1]);
-    const newValues: [number, number] = [value, newMax];
-    setSelectedValues(newValues);
-    updateURL(newValues);
-    setOpen(false);
+    return "";
   };
 
-  const handleMaxChange = (value: number) => {
-    const newMin = Math.min(selectedValues[0], value);
-    const newValues: [number, number] = [newMin, value];
-    setSelectedValues(newValues);
-    updateURL(newValues);
-    setOpen(false);
+  // Format display text for selected value
+  const getDisplayText = () => {
+    const currentValue = getCurrentValue();
+    if (!currentValue) return t("bedrooms");
+
+    const selectedOption = bedroomOptions.find(
+      (option) => option.value === currentValue
+    );
+
+    return selectedOption
+      ? `${selectedOption.label} ${t("bedrooms").toLowerCase()}`
+      : t("bedrooms");
   };
 
-  const updateURL = (newValues: [number, number]) => {
+  const handleSelection = (value: string) => {
     const params = new URLSearchParams(searchParams.toString());
+    const currentValue = getCurrentValue();
 
-    if (newValues[0] !== bedroomRange.min) {
-      params.set("min_bedrooms", newValues[0].toString());
-    } else {
+    // If clicking the same value, unselect it
+    if (value === currentValue) {
       params.delete("min_bedrooms");
-    }
-
-    if (newValues[1] !== bedroomRange.max) {
-      params.set("max_bedrooms", newValues[1].toString());
-    } else {
       params.delete("max_bedrooms");
+    } else {
+      const selectedOption = bedroomOptions.find(
+        (option) => option.value === value
+      );
+
+      if (selectedOption) {
+        params.set("min_bedrooms", selectedOption.min.toString());
+        params.delete("max_bedrooms");
+      }
     }
 
-    const previousValues = previousValuesRef.current;
-    const valuesChanged =
-      !previousValues ||
-      previousValues[0] !== newValues[0] ||
-      previousValues[1] !== newValues[1];
-
-    if (valuesChanged && previousValues) {
-      params.delete("page");
-    }
-
-    previousValuesRef.current = newValues;
+    // Reset to first page when filter changes
+    params.delete("page");
 
     router.replace(`?${params.toString()}`, { scroll: false });
   };
 
-  useEffect(() => {
-    const minBedrooms = searchParams.get("min_bedrooms");
-    const maxBedrooms = searchParams.get("max_bedrooms");
-
-    const newValues: [number, number] = [
-      minBedrooms ? parseInt(minBedrooms) : bedroomRange.min,
-      maxBedrooms ? parseInt(maxBedrooms) : bedroomRange.max,
-    ];
-
-    setSelectedValues(newValues);
-  }, [searchParams, bedroomRange.min, bedroomRange.max]);
-
-  const generateOptions = () => {
-    const options = [];
-    for (let i = bedroomRange.min; i <= bedroomRange.max; i++) {
-      options.push(i);
-    }
-    return options;
-  };
-
-  const isFiltered =
-    selectedValues[0] !== bedroomRange.min ||
-    selectedValues[1] !== bedroomRange.max;
-
-  const getDisplayText = () => {
-    if (!isFiltered) {
-      return t("bedrooms");
-    }
-    if (selectedValues[0] === selectedValues[1]) {
-      return `${selectedValues[0]} ${t("bedroom", {
-        count: selectedValues[0],
-      })}`; // count used only in UI, not in translations string
-    }
-    return `${selectedValues[0]} - ${selectedValues[1]} ${t("bedrooms")}`;
-  };
-
   return (
-    <div className="space-y-4">
-      <DropdownMenu modal={modal} open={open} onOpenChange={setOpen}>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="outline"
-            className="w-full min-h-[40px] justify-between text-left font-normal overflow-hidden text-muted-foreground text-sm md:text-base"
+    <Select value={getCurrentValue()}>
+      <SelectTrigger className="w-full min-h-[40px] text-left text-muted-foreground text-sm md:text-base font-normal bg-white">
+        <SelectValue placeholder={t("bedrooms")}>
+          {getDisplayText()}
+        </SelectValue>
+      </SelectTrigger>
+      <SelectContent>
+        {bedroomOptions.map((option) => (
+          <SelectItem
+            key={option.value}
+            value={option.value}
+            onPointerDown={(e) => {
+              e.preventDefault();
+              handleSelection(option.value);
+            }}
           >
-            {getDisplayText()}
-            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-80 p-4" align="start">
-          <Tabs defaultValue="min" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="min">{t("min")}</TabsTrigger>
-              <TabsTrigger value="max">{t("max")}</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="min" className="space-y-2 mt-4">
-              <div className="grid grid-cols-3 gap-2">
-                {generateOptions().map((value) => (
-                  <Button
-                    key={value}
-                    variant={
-                      selectedValues[0] === value ? "default" : "outline"
-                    }
-                    size="sm"
-                    onClick={() => handleMinChange(value)}
-                    className="w-full"
-                    disabled={value > selectedValues[1]}
-                  >
-                    {value}
-                  </Button>
-                ))}
-              </div>
-            </TabsContent>
-
-            <TabsContent value="max" className="space-y-2 mt-4">
-              <div className="grid grid-cols-3 gap-2">
-                {generateOptions()
-                  .toReversed()
-                  .map((value) => (
-                    <Button
-                      key={value}
-                      variant={
-                        selectedValues[1] === value ? "default" : "outline"
-                      }
-                      size="sm"
-                      onClick={() => handleMaxChange(value)}
-                      className="w-full"
-                      disabled={value < selectedValues[0]}
-                    >
-                      {value}
-                    </Button>
-                  ))}
-              </div>
-            </TabsContent>
-          </Tabs>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </div>
+            {option.label}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
   );
 }

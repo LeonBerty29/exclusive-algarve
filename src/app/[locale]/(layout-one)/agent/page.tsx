@@ -9,6 +9,7 @@ import {
   EAV_TWITTER_CREATOR_HANDLE,
 } from "@/config/constants";
 import { routing } from "@/i18n/routing";
+import { agentMetadata } from "@/seo-metadata/agent";
 
 interface Props {
   params: Promise<{ locale: string }>;
@@ -16,6 +17,10 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
+
+  // Get localized metadata
+  const metadata =
+    agentMetadata[locale as keyof typeof agentMetadata] || agentMetadata.en;
 
   // Get the localized path for the partnership request page
   const partnershipPath = routing.pathnames["/agent"];
@@ -45,31 +50,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       : partnershipPath[routing.defaultLocale as keyof typeof partnershipPath];
   languages["x-default"] = `${BASE_URL}/${routing.defaultLocale}${defaultPath}`;
 
-  const description =
-    "Partner with Exclusive Algarve Villas. Real estate agents and property professionals can request a partnership to collaborate on luxury property sales in the Algarve region.";
-
-  const keywords = [
-    "partnership request",
-    "real estate partnership algarve",
-    "agent partnership",
-    "property collaboration algarve",
-    "exclusive algarve villas partners",
-    "real estate agent collaboration",
-    "luxury property partnership portugal",
-    "algarve real estate network",
-    "property agent partnership",
-    "join exclusive algarve villas",
-    "real estate professional network",
-    "algarve property collaboration",
-  ];
+  // ICBM coordinates
+  const ICBM = `${GEO_POSITION.lat}, ${GEO_POSITION.lng}`;
 
   return {
-    title: `Partnership Request | ${WEBSITE_NAME}`,
-    description: description,
-    keywords: keywords,
+    title: `${metadata.title} | ${WEBSITE_NAME}`,
+    description: metadata.description,
+    keywords: [...metadata.keywords],
     openGraph: {
-      title: "Partnership Request - Exclusive Algarve Villas",
-      description: description,
+      title: metadata.ogTitle,
+      description: metadata.ogDescription,
       url: canonicalUrl,
       siteName: WEBSITE_NAME,
       locale: locale,
@@ -80,14 +70,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
           secureUrl: `${BASE_URL}/images/about/about-img-2.png`,
           width: 1200,
           height: 630,
-          alt: "Partnership Request - Exclusive Algarve Villas",
+          alt: `${metadata.title} - ${WEBSITE_NAME}`,
         },
       ],
     },
     twitter: {
       card: "summary_large_image",
-      title: "Partnership Request - Exclusive Algarve Villas",
-      description: description,
+      title: metadata.ogTitle,
+      description: metadata.ogDescription,
       creator: EAV_TWITTER_CREATOR_HANDLE,
     },
     robots: {
@@ -109,11 +99,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     other: {
       "geo.region": "PT",
       "geo.position": `${GEO_POSITION.lat};${GEO_POSITION.lng}`,
-      classification:
-        "Real estate partnership, Agent collaboration, Algarve property network, Luxury property partnerships",
-      category:
-        "Real estate partnerships, Property agent network, Algarve real estate collaboration",
-      "DC.title": "Partnership Request - Join Exclusive Algarve Villas Network",
+      ICBM: ICBM,
+      classification: metadata.classification,
+      category: metadata.category,
+      "DC.title": metadata.dcTitle,
     },
   };
 }

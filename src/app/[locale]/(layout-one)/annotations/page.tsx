@@ -14,6 +14,7 @@ import { getTranslations } from "next-intl/server";
 import { Metadata } from "next";
 import { BASE_URL, GEO_POSITION, WEBSITE_NAME } from "@/config/constants";
 import { routing } from "@/i18n/routing";
+import { annotationsMetadata } from "@/seo-metadata/annotations";
 
 interface Props {
   params: Promise<{ locale: string }>;
@@ -22,6 +23,11 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
+
+  // Get localized metadata
+  const metadata =
+    annotationsMetadata[locale as keyof typeof annotationsMetadata] ||
+    annotationsMetadata.en;
 
   // Get the localized path for the annotations page
   const annotationsPath = routing.pathnames["/annotations"];
@@ -51,25 +57,21 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       : annotationsPath[routing.defaultLocale as keyof typeof annotationsPath];
   languages["x-default"] = `${BASE_URL}/${routing.defaultLocale}${defaultPath}`;
 
-  const description =
-    "View and manage your property annotations. Keep track of your notes, comments, and observations on luxury properties in the Algarve.";
-
-  const keywords = [
-    "property annotations",
-    "property notes",
-    "saved property notes",
-    "algarve property annotations",
-    "luxury property notes",
-    "property comments",
-    "real estate notes",
-    "property observations",
-    "saved property information",
-  ];
+  // ICBM coordinates
+  const ICBM = `${GEO_POSITION.lat}, ${GEO_POSITION.lng}`;
 
   return {
-    title: `Your Property Annotations | ${WEBSITE_NAME}`,
-    description: description,
-    keywords: keywords,
+    title: `${metadata.title} | ${WEBSITE_NAME}`,
+    description: metadata.description,
+    keywords: [...metadata.keywords],
+    openGraph: {
+      title: metadata.ogTitle,
+      description: metadata.ogDescription,
+      url: canonicalUrl,
+      siteName: WEBSITE_NAME,
+      locale: locale,
+      type: "website",
+    },
     robots: {
       index: false,
       follow: false,
@@ -87,6 +89,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     other: {
       "geo.region": "PT",
       "geo.position": `${GEO_POSITION.lat};${GEO_POSITION.lng}`,
+      ICBM: ICBM,
+      classification: metadata.classification,
+      category: metadata.category,
+      "DC.title": metadata.dcTitle,
     },
   };
 }

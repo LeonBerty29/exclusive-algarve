@@ -32,7 +32,7 @@ export const PropertiesFilter = ({ suspenseKey }: { suspenseKey: string }) => {
 
       <div className="relative">
         <Suspense
-          key={`${suspenseKey} --price-slider`}
+          // key={`${suspenseKey} --price-slider`}
           fallback={<Skeleton className="h-10 w-full" />}
         >
           <ListPricesDesktop />
@@ -42,7 +42,7 @@ export const PropertiesFilter = ({ suspenseKey }: { suspenseKey: string }) => {
       {/* Additional filters that will be hidden initially */}
       <div className="relative">
         <Suspense
-          key={`${suspenseKey} --bedrooms-slider`}
+          // key={`${suspenseKey} --bedrooms-slider`}
           fallback={<Skeleton className="h-10 w-full" />}
         >
           <ListBedroomsRangeSelectDesktop />
@@ -51,7 +51,7 @@ export const PropertiesFilter = ({ suspenseKey }: { suspenseKey: string }) => {
 
       <div className="relative">
         <Suspense
-          key={`${suspenseKey} --bathrooms-slider`}
+          // key={`${suspenseKey} --bathrooms-slider`}
           fallback={<Skeleton className="h-10 w-full" />}
         >
           <ListBathroomsRangeSelectDesktop />

@@ -9,11 +9,6 @@ import {
   CommandGroup,
 } from "@/components/ui/command";
 import { CommandItem } from "@/components/ui/command-two";
-// import {
-//   Popover,
-//   PopoverContent,
-//   PopoverTrigger,
-// } from "@/components/ui/popover";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -33,11 +28,9 @@ import { useTranslations } from "next-intl";
 interface LocationOption {
   id: number;
   name: string;
-  type: "area" | "municipality" | "zone";
+  type: "area" | "zone";
   displayName: string;
-  parentId?: number;
-  municipalityId?: number; // For zones to track their municipality
-  areaId?: number; // For municipalities and zones to track their area
+  areaId?: number; // For zones to track their area
 }
 
 interface RegionSelectProps {
@@ -45,13 +38,16 @@ interface RegionSelectProps {
   modal?: boolean;
 }
 
-export default function RegionSelect({ metadata, modal=true }: RegionSelectProps) {
+export default function RegionSelect({
+  metadata,
+  modal = true,
+}: RegionSelectProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [open, setOpen] = useState(false);
   const t = useTranslations("regionSelect");
 
-  // Build flattened location options from metadata with parent relationships
+  // Build flattened location options from metadata (areas and zones only)
   const buildLocationOptions = (): LocationOption[] => {
     const options: LocationOption[] = [];
 
@@ -64,26 +60,14 @@ export default function RegionSelect({ metadata, modal=true }: RegionSelectProps
         displayName: `${area.name} (${area.property_count})`,
       });
 
-      // Add municipalities
+      // Add zones from all municipalities
       area.municipalities?.forEach((municipality: Municipality) => {
-        options.push({
-          id: municipality.id,
-          name: municipality.name,
-          type: "municipality",
-          displayName: `  ${municipality.name} (${municipality.property_count})`,
-          parentId: area.id,
-          areaId: area.id,
-        });
-
-        // Add zones
         municipality.zones?.forEach((zone: Zone) => {
           options.push({
             id: zone.id,
             name: zone.name,
             type: "zone",
-            displayName: `    ${zone.name} (${zone.property_count})`,
-            parentId: municipality.id,
-            municipalityId: municipality.id,
+            displayName: `  ${zone.name} (${zone.property_count})`,
             areaId: area.id,
           });
         });
@@ -98,7 +82,6 @@ export default function RegionSelect({ metadata, modal=true }: RegionSelectProps
   // Get initial selected locations from URL
   const getInitialSelections = (): {
     areas: number[];
-    municipalities: number[];
     zones: number[];
   } => {
     const areas =
@@ -107,67 +90,42 @@ export default function RegionSelect({ metadata, modal=true }: RegionSelectProps
         ?.split(",")
         .map(Number)
         .filter(Boolean) || [];
-    const municipalities =
-      searchParams
-        .get("municipality")
-        ?.split(",")
-        .map(Number)
-        .filter(Boolean) || [];
     const zones =
       searchParams.get("zone")?.split(",").map(Number).filter(Boolean) || [];
 
-    return { areas, municipalities, zones };
+    return { areas, zones };
   };
 
   const [selectedLocations, setSelectedLocations] =
     useState(getInitialSelections);
 
-  // Helper functions to get children and check completeness
-  const getAreaMunicipalities = (areaId: number): LocationOption[] => {
+  // Get all zones for an area
+  const getAreaZones = (areaId: number): LocationOption[] => {
     return locationOptions.filter(
-      (option) => option.type === "municipality" && option.areaId === areaId
+      (option) => option.type === "zone" && option.areaId === areaId
     );
   };
 
-  const getMunicipalityZones = (municipalityId: number): LocationOption[] => {
-    return locationOptions.filter(
-      (option) =>
-        option.type === "zone" && option.municipalityId === municipalityId
+  // Check if all zones in an area are selected
+  const areAllZonesSelected = (areaId: number): boolean => {
+    const zones = getAreaZones(areaId);
+    return (
+      zones.length > 0 &&
+      zones.every((zone) => selectedLocations.zones.includes(zone.id))
     );
   };
 
-  const areAllMunicipalitiesSelected = (areaId: number): boolean => {
-    const municipalities = getAreaMunicipalities(areaId);
-    return municipalities.every((mun) =>
-      selectedLocations.municipalities.includes(mun.id)
-    );
-  };
-
-  const areAllZonesSelected = (municipalityId: number): boolean => {
-    const zones = getMunicipalityZones(municipalityId);
-    return zones.every((zone) => selectedLocations.zones.includes(zone.id));
-  };
-
-  // Check if a location should appear selected (including hierarchical selections)
+  // Check if a location should appear selected
   const isLocationEffectivelySelected = (option: LocationOption): boolean => {
     switch (option.type) {
       case "area":
         return (
           selectedLocations.areas.includes(option.id) ||
-          areAllMunicipalitiesSelected(option.id)
-        );
-      case "municipality":
-        return (
-          selectedLocations.municipalities.includes(option.id) ||
-          (option.areaId !== undefined &&
-            selectedLocations.areas.includes(option.areaId)) ||
           areAllZonesSelected(option.id)
         );
       case "zone":
         return (
           selectedLocations.zones.includes(option.id) ||
-          (option.municipalityId !== undefined &&
-            selectedLocations.municipalities.includes(option.municipalityId)) ||
           (option.areaId !== undefined &&
             selectedLocations.areas.includes(option.areaId))
         );
@@ -176,84 +134,34 @@ export default function RegionSelect({ metadata, modal=true }: RegionSelectProps
     }
   };
 
-  // Optimize selections by consolidating children into parents when all are selected
+  // Optimize selections by consolidating zones into areas when all are selected
   const optimizeSelections = (selections: {
     areas: number[];
-    municipalities: number[];
     zones: number[];
-  }): { areas: number[]; municipalities: number[]; zones: number[] } => {
+  }): { areas: number[]; zones: number[] } => {
     const optimized = { ...selections };
-    let hasChanges = true;
 
-    // Keep optimizing until no more changes are made (recursive optimization)
-    while (hasChanges) {
-      hasChanges = false;
-      const previousState = JSON.stringify(optimized);
-
-      // First pass: Check each municipality - if all zones are selected, consolidate to municipality
-      locationOptions
-        .filter((option) => option.type === "municipality")
-        .forEach((municipality) => {
-          const zones = getMunicipalityZones(municipality.id);
-          if (
-            zones.length > 0 &&
-            zones.every((zone) => optimized.zones.includes(zone.id)) &&
-            !optimized.municipalities.includes(municipality.id) &&
-            municipality.areaId !== undefined &&
-            !optimized.areas.includes(municipality.areaId)
-          ) {
-            // All zones selected and municipality not already selected and area not selected
-            optimized.municipalities = [
-              ...optimized.municipalities,
-              municipality.id,
-            ];
-            optimized.zones = optimized.zones.filter(
-              (id) => !zones.some((zone) => zone.id === id)
-            );
-          }
-        });
-
-      // Second pass: Check each area - if all municipalities are selected, consolidate to area
-      metadata.areas?.forEach((area) => {
-        const municipalities = getAreaMunicipalities(area.id);
-        if (
-          municipalities.length > 0 &&
-          municipalities.every((mun) =>
-            optimized.municipalities.includes(mun.id)
-          ) &&
-          !optimized.areas.includes(area.id)
-        ) {
-          // All municipalities selected and area not already selected, consolidate to area
-          optimized.areas = [...optimized.areas, area.id];
-          optimized.municipalities = optimized.municipalities.filter(
-            (id) => !municipalities.some((mun) => mun.id === id)
-          );
-
-          // Also remove any remaining zones from those municipalities
-          municipalities.forEach((mun) => {
-            const zones = getMunicipalityZones(mun.id);
-            optimized.zones = optimized.zones.filter(
-              (id) => !zones.some((zone) => zone.id === id)
-            );
-          });
-        }
-      });
-
-      // Check if any changes were made in this iteration
-      if (JSON.stringify(optimized) !== previousState) {
-        hasChanges = true;
+    // Check each area - if all zones are selected, consolidate to area
+    metadata.areas?.forEach((area) => {
+      const zones = getAreaZones(area.id);
+      if (
+        zones.length > 0 &&
+        zones.every((zone) => optimized.zones.includes(zone.id)) &&
+        !optimized.areas.includes(area.id)
+      ) {
+        // All zones selected, consolidate to area
+        optimized.areas = [...optimized.areas, area.id];
+        optimized.zones = optimized.zones.filter(
+          (id) => !zones.some((zone) => zone.id === id)
+        );
       }
-    }
+    });
 
     return optimized;
   };
 
   // Update URL with optimized selections
-  const updateURL = (newSelections: {
-    areas: number[];
-    municipalities: number[];
-    zones: number[];
-  }) => {
+  const updateURL = (newSelections: { areas: number[]; zones: number[] }) => {
     const optimizedSelections = optimizeSelections(newSelections);
     const params = new URLSearchParams(searchParams.toString());
 
@@ -264,13 +172,6 @@ export default function RegionSelect({ metadata, modal=true }: RegionSelectProps
       params.delete("location_area");
     }
 
-    // Update municipality parameter
-    if (optimizedSelections.municipalities.length > 0) {
-      params.set("municipality", optimizedSelections.municipalities.join(","));
-    } else {
-      params.delete("municipality");
-    }
-
     // Update zone parameter
     if (optimizedSelections.zones.length > 0) {
       params.set("zone", optimizedSelections.zones.join(","));
@@ -278,80 +179,36 @@ export default function RegionSelect({ metadata, modal=true }: RegionSelectProps
       params.delete("zone");
     }
 
+    // Remove municipality parameter as we're no longer using it
+    params.delete("municipality");
+
     // Reset to first page when location changes
     params.delete("page");
 
     router.replace(`?${params.toString()}`);
   };
 
-  // Handle location selection/deselection with hierarchical logic
+  // Handle location selection/deselection
   const handleLocationSelect = (option: LocationOption): void => {
     const newSelections = { ...selectedLocations };
     const isCurrentlySelected = isLocationEffectivelySelected(option);
 
     if (isCurrentlySelected) {
-      // Deselecting - handle hierarchical deselection
+      // Deselecting
       switch (option.type) {
         case "area":
-          // Remove area and all its children
+          // Remove area
           newSelections.areas = newSelections.areas.filter(
             (id) => id !== option.id
           );
-
-          // Add back individual municipalities/zones if they were implicitly selected
-          const municipalities = getAreaMunicipalities(option.id);
-          municipalities.forEach((mun) => {
-            if (!newSelections.municipalities.includes(mun.id)) {
-              // Check if this municipality should remain selected via its zones
-              const zones = getMunicipalityZones(mun.id);
-              if (zones.some((zone) => newSelections.zones.includes(zone.id))) {
-                // Some zones are selected, so add the municipality if all zones were selected
-                if (
-                  zones.every((zone) => newSelections.zones.includes(zone.id))
-                ) {
-                  newSelections.municipalities.push(mun.id);
-                  // Remove the individual zones since we now have the municipality
-                  newSelections.zones = newSelections.zones.filter(
-                    (id) => !zones.some((zone) => zone.id === id)
-                  );
-                }
-              }
-            }
-          });
-          break;
-
-        case "municipality":
-          if (
-            option.areaId !== undefined &&
-            selectedLocations.areas.includes(option.areaId)
-          ) {
-            // Parent area is selected, need to deselect area and select remaining municipalities
-            newSelections.areas = newSelections.areas.filter(
-              (id) => id !== option.areaId
-            );
-
-            const siblings = getAreaMunicipalities(option.areaId);
-            siblings.forEach((sibling) => {
-              if (sibling.id !== option.id) {
-                newSelections.municipalities.push(sibling.id);
-              }
-            });
-          } else {
-            // Just remove the municipality
-            newSelections.municipalities = newSelections.municipalities.filter(
-              (id) => id !== option.id
-            );
-          }
-
-          // Remove all zones of this municipality
-          const zones = getMunicipalityZones(option.id);
+          // Remove all zones from this area
+          const zones = getAreaZones(option.id);
           newSelections.zones = newSelections.zones.filter(
             (id) => !zones.some((zone) => zone.id === id)
           );
           break;
 
         case "zone":
-          const parentMunicipality = option.municipalityId;
           const parentArea = option.areaId;
 
           if (
@@ -363,32 +220,9 @@ export default function RegionSelect({ metadata, modal=true }: RegionSelectProps
               (id) => id !== parentArea
             );
 
-            const areaMunicipalities = getAreaMunicipalities(parentArea);
-            areaMunicipalities.forEach((mun) => {
-              if (mun.id === parentMunicipality) {
-                // Add all zones except the one being deselected
-                const munZones = getMunicipalityZones(mun.id);
-                munZones.forEach((zone) => {
-                  if (zone.id !== option.id) {
-                    newSelections.zones.push(zone.id);
-                  }
-                });
-              } else {
-                // Add the municipality
-                newSelections.municipalities.push(mun.id);
-              }
-            });
-          } else if (
-            parentMunicipality !== undefined &&
-            selectedLocations.municipalities.includes(parentMunicipality)
-          ) {
-            // Parent municipality is selected, need to break it down
-            newSelections.municipalities = newSelections.municipalities.filter(
-              (id) => id !== parentMunicipality
-            );
-
-            const munZones = getMunicipalityZones(parentMunicipality);
-            munZones.forEach((zone) => {
+            // Add all zones from this area except the one being deselected
+            const areaZones = getAreaZones(parentArea);
+            areaZones.forEach((zone) => {
               if (zone.id !== option.id) {
                 newSelections.zones.push(zone.id);
               }
@@ -402,31 +236,12 @@ export default function RegionSelect({ metadata, modal=true }: RegionSelectProps
           break;
       }
     } else {
-      // Selecting - add to appropriate array
+      // Selecting
       switch (option.type) {
         case "area":
           newSelections.areas = [...newSelections.areas, option.id];
-          // Remove any individual municipalities and zones from this area
-          const municipalities = getAreaMunicipalities(option.id);
-          municipalities.forEach((mun) => {
-            newSelections.municipalities = newSelections.municipalities.filter(
-              (id) => id !== mun.id
-            );
-            const zones = getMunicipalityZones(mun.id);
-            zones.forEach((zone) => {
-              newSelections.zones = newSelections.zones.filter(
-                (id) => id !== zone.id
-              );
-            });
-          });
-          break;
-        case "municipality":
-          newSelections.municipalities = [
-            ...newSelections.municipalities,
-            option.id,
-          ];
-          // Remove any individual zones from this municipality
-          const zones = getMunicipalityZones(option.id);
+          // Remove any individual zones from this area
+          const zones = getAreaZones(option.id);
           zones.forEach((zone) => {
             newSelections.zones = newSelections.zones.filter(
               (id) => id !== zone.id
@@ -454,13 +269,6 @@ export default function RegionSelect({ metadata, modal=true }: RegionSelectProps
       if (area) selected.push(area);
     });
 
-    selectedLocations.municipalities.forEach((munId) => {
-      const municipality = locationOptions.find(
-        (option) => option.type === "municipality" && option.id === munId
-      );
-      if (municipality) selected.push(municipality);
-    });
-
     selectedLocations.zones.forEach((zoneId) => {
       const zone = locationOptions.find(
         (option) => option.type === "zone" && option.id === zoneId
@@ -470,11 +278,6 @@ export default function RegionSelect({ metadata, modal=true }: RegionSelectProps
 
     return selected;
   };
-
-  // Remove a specific selection
-  // const removeSelection = (item: LocationOption) => {
-  //   handleLocationSelect(item);
-  // };
 
   // Sync with URL params when they change externally
   useEffect(() => {
@@ -499,7 +302,9 @@ export default function RegionSelect({ metadata, modal=true }: RegionSelectProps
                   {t("selectLocations")}
                 </span>
               ) : (
-                <span className="text-sm md:text-base font-normal">{t("selectedLocations")}</span>
+                <span className="text-sm md:text-base font-normal">
+                  {t("selectedLocations")}
+                </span>
               )}
             </div>
             <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -521,22 +326,13 @@ export default function RegionSelect({ metadata, modal=true }: RegionSelectProps
                   return (
                     <CommandItem
                       key={optionKey}
-                      value={optionKey} // Use unique key as value to fix hover issue
+                      value={optionKey}
                       onSelect={() => {
                         handleLocationSelect(option);
-                        // Don't close the DropdownMenu to allow multiple selections
                       }}
                       className={cn(
                         "flex items-center justify-between cursor-pointer",
-                        isSelected && "font-medium",
-                        option.type === "area" && "font-semibold",
-                        option.type === "area" &&
-                          !isSelected &&
-                          "bg-neutral-200",
-                        option.type === "area" && isSelected && "bg-amber-50",
-                        option.type === "municipality" && "text-lg underline",
-                        option.type === "area" && "text-lg uppercase",
-                        option.type === "zone" && "text-base text-gray-700"
+                        isSelected && "font-medium"
                       )}
                     >
                       <span className="whitespace-pre">

@@ -25,10 +25,12 @@ export async function ListPrices() {
 // }
 
 export async function ListBedroomsRangeSelect() {
-  const ranges = await getRanges();
-  const bedroomRange = ranges.bedrooms; // Fixed: was using ranges.price
+  // const ranges = await getRanges();
+  // const bedroomRange = ranges.bedrooms; // Fixed: was using ranges.price
   // return <BedroomsRangeSelect bedroomRange={bedroomRange} />;
-  return <BedroomsDropdown bedroomRange={bedroomRange} />;
+  return <BedroomsDropdown 
+  // bedroomRange={bedroomRange} 
+  />;
 }
 
 export async function ListRegionSelect() {
@@ -37,8 +39,12 @@ export async function ListRegionSelect() {
 }
 
 export async function ListBathroomsRangeSelect() {
-  const ranges = await getRanges();
-  const bathroomRange = ranges.bathrooms;
+  // const ranges = await getRanges();
+  // const bathroomRange = ranges.bathrooms;
   // return <BathroomsRangeSelect bathroomRange={bathroomRange} />;
-  return <BathroomsDropdown bathroomRange={bathroomRange} />;
+  return (
+    <BathroomsDropdown
+    // bathroomRange={bathroomRange}
+    />
+  );
 }

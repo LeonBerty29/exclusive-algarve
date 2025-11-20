@@ -5,7 +5,12 @@ import { TbBulbFilled } from "react-icons/tb";
 import { getTranslations } from "next-intl/server";
 import { Metadata } from "next";
 import { routing } from "@/i18n/routing";
-import { EAV_TWITTER_CREATOR_HANDLE, GEO_POSITION, WEBSITE_NAME } from "@/config/constants";
+import {
+  EAV_TWITTER_CREATOR_HANDLE,
+  GEO_POSITION,
+  WEBSITE_NAME,
+} from "@/config/constants";
+import { buyingProcessMetadata } from "@/seo-metadata/buying-process";
 
 interface Props {
   params: Promise<{ locale: string }>;
@@ -14,9 +19,13 @@ interface Props {
 const BASE_URL =
   process.env.BASE_URL || "https://www.exclusivealgarvevillas.com";
 
-
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
+
+  // Get metadata for the current locale
+  const metadata =
+    buyingProcessMetadata[locale as keyof typeof buyingProcessMetadata] ||
+    buyingProcessMetadata.en;
 
   // Get the localized path for the buying process page
   const buyingProcessPath = routing.pathnames["/buying-process"];
@@ -51,38 +60,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   // ICBM coordinates
   const ICBM = `${GEO_POSITION.lat}, ${GEO_POSITION.lng}`;
 
-  const description =
-    "Complete guide to buying property in the Algarve, Portugal. Learn about the step-by-step process, legal requirements, documentation, registration, and expert tips for purchasing luxury real estate in Portugal's Golden Triangle.";
-
-  const keywords = [
-    "buying property algarve",
-    "buying process portugal",
-    "how to buy property algarve",
-    "algarve property purchase guide",
-    "portugal real estate buying",
-    "luxury property purchase algarve",
-    "property buying steps portugal",
-    "algarve property legal process",
-    "buying villa algarve",
-    "portugal property documentation",
-    "property registration portugal",
-    "golden triangle property buying",
-    "carvoeiro property purchase",
-    "algarve buyer guide",
-    "portugal property lawyer",
-    "buying real estate portugal",
-    "algarve property investment",
-    "foreign property buyer portugal",
-  ];
-
   return {
-    title: `Buying Process - Complete Guide to Purchasing Property in the Algarve | ${WEBSITE_NAME}`,
-    description: description,
-    keywords: keywords,
+    title: `${metadata.title} | ${WEBSITE_NAME}`,
+    description: metadata.description,
+    keywords: [...metadata.keywords],
     openGraph: {
-      title:
-        "Complete Guide to Buying Luxury Property in the Algarve, Portugal",
-      description: description,
+      title: metadata.ogTitle,
+      description: metadata.ogDescription,
       url: canonicalUrl,
       siteName: WEBSITE_NAME,
       locale: locale,
@@ -99,9 +83,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     },
     twitter: {
       card: "summary_large_image",
-      title:
-        "Complete Guide to Buying Luxury Property in the Algarve, Portugal",
-      description: description,
+      title: metadata.ogTitle,
+      description: metadata.ogDescription,
       creator: EAV_TWITTER_CREATOR_HANDLE,
     },
     robots: {
@@ -124,12 +107,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       "geo.region": "PT",
       "geo.position": `${GEO_POSITION.lat};${GEO_POSITION.lng}`,
       ICBM: ICBM,
-      classification:
-        "Property buying guide, Algarve real estate purchase, Portugal property process, Luxury property acquisition",
-      category:
-        "Buying guide, Property purchase, Real estate process, Legal documentation, Investment guide",
-      "DC.title":
-        "Algarve property buying guide, Portugal real estate purchase steps, Golden triangle property acquisition, Western Algarve buying process",
+      classification: metadata.classification,
+      category: metadata.category,
+      "DC.title": metadata.dcTitle,
     },
   };
 }

@@ -31,7 +31,7 @@ export const HomepageSearchEngine = async({
   const suspenseKey = generateSuspenseKey(apiParams);
   return (
     <>
-      <h1 className="text-2xl sm:text-4xl lg:text-6xl leading-snug font-extralight text-white mb-6 text-center">
+      <h1 className="text-2xl sm:text-4xl lg:text-6xl leading-tight font-extralight text-white mb-6 text-center">
         {t("findYourDreamHome")} <br />
         {t("propertyInAlgarve")}
       </h1>
@@ -62,7 +62,7 @@ export const HomepageSearchEngine = async({
 
             <div className="relative">
               <Suspense
-                key={`${suspenseKey} --price-slider`}
+                // key={`${suspenseKey} --price-slider`}
                 fallback={<Skeleton className="h-10 w-full" />}
               >
                 <ListPrices />
@@ -72,7 +72,7 @@ export const HomepageSearchEngine = async({
             {/* Additional filters that will be hidden initially */}
             <div className="relative">
               <Suspense
-                key={`${suspenseKey} --bedrooms-slider`}
+                // key={`${suspenseKey} --bedrooms-slider`}
                 fallback={<Skeleton className="h-10 w-full" />}
               >
                 <ListBedroomsRangeSelect />
@@ -81,7 +81,7 @@ export const HomepageSearchEngine = async({
 
             <div className="relative">
               <Suspense
-                key={`${suspenseKey} --bathrooms-slider`}
+                // key={`${suspenseKey} --bathrooms-slider`}
                 fallback={<Skeleton className="h-10 w-full" />}
               >
                 <ListBathroomsRangeSelect />
