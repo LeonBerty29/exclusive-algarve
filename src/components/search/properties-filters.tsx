@@ -5,7 +5,7 @@ import { Skeleton } from "../ui/skeleton";
 import { CollapsibleFilters } from "./collapsible-filters";
 import { ListBathroomsRangeSelectDesktop, ListBedroomsRangeSelectDesktop, ListPricesDesktop, ListPropertyTypesDesktop, ListRegionSelectDesktop } from "./listing-filters-desktop";
 
-export const PropertiesFilter = ({ suspenseKey }: { suspenseKey: string }) => {
+export const PropertiesFilter = () => {
   return (
     <CollapsibleFilters visibleCount={4}>
       <div className="relative">
@@ -14,7 +14,7 @@ export const PropertiesFilter = ({ suspenseKey }: { suspenseKey: string }) => {
 
       <div className="relative">
         <Suspense
-          key={`${suspenseKey} --region-select`}
+          // key={`${suspenseKey} --region-select`}
           fallback={<Skeleton className="h-10 w-full" />}
         >
           <ListRegionSelectDesktop />
@@ -23,7 +23,7 @@ export const PropertiesFilter = ({ suspenseKey }: { suspenseKey: string }) => {
 
       <div className="relative">
         <Suspense
-          key={`${suspenseKey} --property-types`}
+          // key={`${suspenseKey} --property-types`}
           fallback={<Skeleton className="h-10 w-full" />}
         >
           <ListPropertyTypesDesktop />

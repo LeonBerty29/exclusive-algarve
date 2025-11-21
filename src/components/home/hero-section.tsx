@@ -79,7 +79,7 @@ export default function HeroSection({
         <div className="absolute inset-0">
           <div className="relative h-full w-full">
             <Image
-              src="/images/house-view.png"
+              src="/images/eav-mobile-banner.jpg"
               alt="House view"
               fill
               className="object-cover"
@@ -165,10 +165,13 @@ export default function HeroSection({
         </div>
       )}
 
-      <div className="absolute left-1/2 top-1/2 -translate-y-1/2 w-full max-w-7xl -translate-x-1/2 px-6">
-        <div className="glassmorphism rounded-xl pt-16 pb-6">{children}</div>
+      <div className="relative z-10 w-full max-w-7xl py-14 px-6">
+        <div className="glassmorphism rounded-xl pt-14 pb-6">{children}</div>
 
-        <Button className="bg-white text-black hover:bg-black hover:text-white transition-all !mx-auto block">
+        <Button
+          asChild
+          className="bg-white text-black hover:bg-black hover:text-white transition-all !mx-auto flex w-fit"
+        >
           <Link href="/properties">{t("allProperties")}</Link>
         </Button>
       </div>

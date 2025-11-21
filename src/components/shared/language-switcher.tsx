@@ -12,7 +12,7 @@ import { usePathname, useRouter } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
 
-export const LanguageSwitcher = () => {
+export const LanguageSwitcher = ({ className }: { className?: string }) => {
   const locale = useLocale();
   const pathname = usePathname();
   const router = useRouter();
@@ -35,7 +35,7 @@ export const LanguageSwitcher = () => {
           <Button
             variant="ghost"
             size="sm"
-            className="flex items-center space-x-1"
+            className={cn("flex items-center space-x-1", className)}
           >
             <Globe className="h-4 w-4" />
             <span className="text-sm">{locale}</span>

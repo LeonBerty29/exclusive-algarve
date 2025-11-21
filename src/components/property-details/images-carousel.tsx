@@ -79,7 +79,7 @@ const PropertyImageCarousel: React.FC<PropertyImageCarouselProps> = ({
                     src={image.url}
                     alt={`Property image ${index + 1}`}
                     fill
-                    className="max-w-full max-h-full object-contain object-top"
+                    className="max-w-full max-h-full h-auto object-contain object-top"
                   />
                 </div>
               </CarouselItem>
