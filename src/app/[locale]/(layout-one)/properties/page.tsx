@@ -190,7 +190,6 @@ export default async function PropertiesPage(props: PageProps) {
         <div className="w-full">
           <Suspense fallback={<SearchHeaderSkeleton />}>
             <SearchHeader
-              suspenseKey={suspenseKey}
               // totalResults={propertiesResponse.meta.total}
               // currentPage={propertiesResponse.meta.current_page}
               // totalPages={propertiesResponse.meta.last_page}

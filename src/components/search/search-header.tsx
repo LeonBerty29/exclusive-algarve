@@ -29,7 +29,7 @@ import {
 } from "./listing-filters";
 import { getTranslations } from "next-intl/server";
 
-const SearchHeader = async({ suspenseKey }: { suspenseKey: string }) => {
+const SearchHeader = async() => {
   const t = await getTranslations("searchHeader");
 
   const propertiesCount = 3550;
@@ -69,7 +69,7 @@ const SearchHeader = async({ suspenseKey }: { suspenseKey: string }) => {
 
       <div>
         <div>
-          <PropertiesFilter suspenseKey={suspenseKey} />
+          <PropertiesFilter />
         </div>
       </div>
 
@@ -92,7 +92,7 @@ const SearchHeader = async({ suspenseKey }: { suspenseKey: string }) => {
 
               <div className="relative">
                 <Suspense
-                  key={`${suspenseKey} --region-select`}
+                  // key={`${suspenseKey} --region-select`}
                   fallback={<Skeleton className="h-10 w-full" />}
                 >
                   <ListRegionSelect />
@@ -101,7 +101,7 @@ const SearchHeader = async({ suspenseKey }: { suspenseKey: string }) => {
 
               <div className="relative">
                 <Suspense
-                  key={`${suspenseKey} --property-types`}
+                  // key={`${suspenseKey} --property-types`}
                   fallback={<Skeleton className="h-10 w-full" />}
                 >
                   <ListPropertyTypes />
@@ -110,7 +110,7 @@ const SearchHeader = async({ suspenseKey }: { suspenseKey: string }) => {
 
               <div className="relative">
                 <Suspense
-                  key={`${suspenseKey} --price-slider`}
+                  // key={`${suspenseKey} --price-slider`}
                   fallback={<Skeleton className="h-10 w-full" />}
                 >
                   <ListPrices />
@@ -119,7 +119,7 @@ const SearchHeader = async({ suspenseKey }: { suspenseKey: string }) => {
 
               <div className="relative">
                 <Suspense
-                  key={`${suspenseKey} --bedrooms-slider`}
+                  // key={`${suspenseKey} --bedrooms-slider`}
                   fallback={<Skeleton className="h-10 w-full" />}
                 >
                   <ListBedroomsRangeSelect />
@@ -128,7 +128,7 @@ const SearchHeader = async({ suspenseKey }: { suspenseKey: string }) => {
 
               <div className="relative">
                 <Suspense
-                  key={`${suspenseKey} --bathrooms-slider`}
+                  // key={`${suspenseKey} --bathrooms-slider`}
                   fallback={<Skeleton className="h-10 w-full" />}
                 >
                   <ListBathroomsRangeSelect />

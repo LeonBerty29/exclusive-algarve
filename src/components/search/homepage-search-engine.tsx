@@ -21,7 +21,7 @@ import {
 } from "./listing-filters";
 import { getTranslations } from "next-intl/server";
 
-export const HomepageSearchEngine = async({
+export const HomepageSearchEngine = async ({
   searchParams,
 }: {
   searchParams: PropertySearchParams;
@@ -44,7 +44,7 @@ export const HomepageSearchEngine = async({
 
             <div className="relative">
               <Suspense
-                key={`${suspenseKey} --region-select`}
+                // key={`${suspenseKey} --region-select`}
                 fallback={<Skeleton className="h-10 w-full" />}
               >
                 <ListRegionSelect />
@@ -53,7 +53,7 @@ export const HomepageSearchEngine = async({
 
             <div className="relative">
               <Suspense
-                key={`${suspenseKey} --property-types`}
+                // key={`${suspenseKey} --property-types`}
                 fallback={<Skeleton className="h-10 w-full" />}
               >
                 <ListPropertyTypes />

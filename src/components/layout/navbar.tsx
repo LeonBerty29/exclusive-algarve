@@ -163,19 +163,47 @@ export default function NavBar({
 
           {/* Mobile/Tablet Right Section */}
           <div className="flex lg:hidden items-center space-x-3">
-            {children ? children : <LanguageSwitcher />}
+            {children ? (
+              children
+            ) : (
+              <LanguageSwitcher
+                className={
+                  scrolled
+                    ? "text-gray-600"
+                    : colorChange
+                    ? "text-white"
+                    : "text-gray-600"
+                }
+              />
+            )}
 
             <Button
               variant="ghost"
               size="sm"
               onClick={toggleMobileMenu}
-              className="p-2"
+              className={cn(
+                "p-2",
+                scrolled
+                  ? "text-gray-600"
+                  : colorChange
+                  ? "text-white"
+                  : "text-gray-600"
+              )}
               aria-label="Toggle menu"
             >
               {isMobileMenuOpen ? (
-                <X className="h-5 w-5" />
+                <X className={cn("h-5 w-5")} />
               ) : (
-                <Menu className="h-5 w-5" />
+                <Menu
+                  className={cn(
+                    "h-5 w-5",
+                    scrolled
+                      ? "text-gray-600"
+                      : colorChange
+                      ? "text-white"
+                      : "text-gray-600"
+                  )}
+                />
               )}
             </Button>
           </div>
