@@ -8,7 +8,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Button } from "../ui/button";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { Button } from "@/components/ui/button";
 import { Camera } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PropertyImage } from "@/types/property";
@@ -38,7 +44,7 @@ const PropertyImagesModal = async ({
             </Button>
           </div>
         </DialogTrigger>
-        <DialogContent className="w-full mx-auto !max-w-full !top-0 !bottom-0 !left-0 !right-0 !translate-x-0 !translate-y-0 overflow-y-auto !bg-white p-0">
+        <DialogContent className="w-full mx-auto !max-w-full !top-0 !bottom-0 !left-0 !right-0 !translate-x-0 !translate-y-0 overflow-y-auto !bg-white p-0 pt-10">
           <DialogHeader className="sr-only">
             <DialogTitle>{t("propertyImagesGallery")}</DialogTitle>
             <DialogDescription>
@@ -46,71 +52,100 @@ const PropertyImagesModal = async ({
             </DialogDescription>
           </DialogHeader>
 
-          <Tabs defaultValue="images" className="w-full">
-            <TabsList className="w-full justify-start rounded-none border-b bg-white sticky top-0 z-10 h-auto p-0">
-              <TabsTrigger
-                value="images"
-                className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-black px-6 py-4"
-              >
-                Images
-              </TabsTrigger>
-              <TabsTrigger
-                value="floorplan"
-                className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-black px-6 py-4"
-              >
-                Floor Plan
-              </TabsTrigger>
-              <TabsTrigger
-                value="brochure"
-                className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-black px-6 py-4"
-              >
-                Request Brochure
-              </TabsTrigger>
-            </TabsList>
+          {/* Desktop Tabs - Hidden on mobile */}
+          <div className="hidden md:block">
+            <Tabs defaultValue="images" className="w-full">
+              <TabsList className="w-full justify-start rounded-none border-b bg-white sticky top-0 z-10 h-auto p-0">
+                <TabsTrigger
+                  value="images"
+                  className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-black px-6 py-4"
+                >
+                  Images
+                </TabsTrigger>
+                <TabsTrigger
+                  value="floorplan"
+                  className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-black px-6 py-4"
+                >
+                  Floor Plan
+                </TabsTrigger>
+                <TabsTrigger
+                  value="brochure"
+                  className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-black px-6 py-4"
+                >
+                  Request Brochure
+                </TabsTrigger>
+              </TabsList>
 
-            <TabsContent value="images" className="mt-0">
-              {/* <div className="flex items-center justify-center min-h-[60vh] p-4">
-                <Carousel className="w-full max-w-4xl">
-                  <CarouselContent>
-                    {images.map((image, index) => (
-                      <CarouselItem key={index}>
-                        <div className="relative w-full h-[500px] md:h-[600px]">
-                          <Image
-                            src={image.url}
-                            alt={`${t("propertyImageAltPrefix")} ${index + 1}`}
-                            fill
-                            className="object-contain w-auto h-auto"
-                          />
-                        </div>
-                      </CarouselItem>
-                    ))}
-                  </CarouselContent>
-                  <CarouselPrevious className="-left-4" />
-                  <CarouselNext className="-right-4" />
-                </Carousel>
-              </div> */}
+              <TabsContent value="images" className="mt-0">
+                <PropertyImageCarousel images={images} />
+              </TabsContent>
 
-              <PropertyImageCarousel images={images} />
-            </TabsContent>
+              <TabsContent value="floorplan" className="mt-0">
+                <div className="flex items-center justify-center min-h-[60vh] p-8">
+                  <RequestFloorPlan propertyReference={propertyReference} />
+                </div>
+              </TabsContent>
 
-            <TabsContent value="floorplan" className="mt-0">
-              <div className="flex items-center justify-center min-h-[60vh] p-8">
-                <RequestFloorPlan propertyReference={propertyReference} />
-              </div>
-            </TabsContent>
+              <TabsContent value="brochure" className="mt-0">
+                <div className="flex items-center justify-center min-h-[60vh] p-8">
+                  <Button className="text-xs rounded-none bg-black text-white px-6">
+                    Download Brochure
+                  </Button>
+                </div>
+              </TabsContent>
+            </Tabs>
+          </div>
 
-            <TabsContent value="brochure" className="mt-0">
-              <div className="flex items-center justify-center min-h-[60vh] p-8">
-                <Button className="text-xs rounded-none bg-black text-white px-6">
-                  Download Brochure
-                </Button>
-              </div>
-            </TabsContent>
-          </Tabs>
+          {/* Mobile Accordion - Hidden on desktop */}
+          <div className="block md:hidden">
+            <Accordion
+              type="single"
+              collapsible
+              defaultValue="images"
+              className="w-full"
+            >
+              <AccordionItem value="images" className="border-b">
+                <AccordionTrigger className="px-4 py-4 hover:no-underline">
+                  Images
+                </AccordionTrigger>
+                <AccordionContent className="px-0 pb-0">
+                  <PropertyImageCarousel images={images} />
+                </AccordionContent>
+              </AccordionItem>
 
-          <DialogFooter className="sm:justify-start px-4 pb-4">
+              <AccordionItem value="floorplan" className="border-b">
+                <AccordionTrigger className="px-4 py-4 hover:no-underline">
+                  Floor Plan
+                </AccordionTrigger>
+                <AccordionContent className="px-4 pb-4">
+                  <div className="flex items-center justify-center min-h-[40vh]">
+                    <RequestFloorPlan propertyReference={propertyReference} />
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="brochure" className="border-b-0">
+                <AccordionTrigger className="px-4 py-4 hover:no-underline">
+                  Request Brochure
+                </AccordionTrigger>
+                <AccordionContent className="px-4 pb-4">
+                  <div className="flex items-center justify-center min-h-[40vh]">
+                    <Button className="text-xs rounded-none bg-black text-white px-6">
+                      Download Brochure
+                    </Button>
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </div>
+
+          <DialogFooter className="sm:justify-start px-4 pb-4 pt-2">
             <DialogClose asChild>
-              <Button type="button" variant="secondary">
+              <Button
+                type="button"
+                variant="secondary"
+                className="w-full sm:w-auto"
+              >
                 {t("close")}
               </Button>
             </DialogClose>

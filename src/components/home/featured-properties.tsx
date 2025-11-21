@@ -61,7 +61,7 @@ export default function FeaturedProperties({
                 viewport={{ once: true }}
                 transition={{ delay: 0.2, duration: 0.8 }}
               >
-                <h2 className="text-4xl font-semibold text-center max-w-[850px] line-clamp-2 leading-snug">
+                <h2 className="text-2xl md:text-3xl lg:text-4xl font-semibold text-center max-w-[850px] line-clamp-2 leading-snug">
                   {property.title}
                 </h2>
                 <p className="text-lg font-light max-w-[350px] text-center leading-tight">
