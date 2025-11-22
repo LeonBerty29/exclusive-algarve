@@ -44,7 +44,7 @@ const PropertyImagesModal = async ({
             </Button>
           </div>
         </DialogTrigger>
-        <DialogContent className="w-full mx-auto !max-w-full !top-0 !bottom-0 !left-0 !right-0 !translate-x-0 !translate-y-0 overflow-y-auto !bg-white p-0 pt-10">
+        <DialogContent className="w-full mx-auto !max-w-full !top-0 !bottom-0 !left-0 !right-0 !translate-x-0 !translate-y-0 overflow-y-auto !bg-white p-0 pt-10  ">
           <DialogHeader className="sr-only">
             <DialogTitle>{t("propertyImagesGallery")}</DialogTitle>
             <DialogDescription>
