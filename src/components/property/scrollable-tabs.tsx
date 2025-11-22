@@ -9,6 +9,7 @@ import { PropertyFeatures } from "../property-details/property-features";
 import { Property } from "@/types/property";
 import { Button } from "../ui/button";
 import { useTranslations } from "next-intl";
+import Link from "next/link";
 
 interface ScrollableTabsProps {
   property: Property;
@@ -26,20 +27,10 @@ const ScrollableTabs = ({ property }: ScrollableTabsProps) => {
   const checkScroll = useCallback(() => {
     if (tabsListRef.current) {
       const { scrollLeft, scrollWidth, clientWidth } = tabsListRef.current;
-      setShowLeftArrow(scrollLeft > 5); // Show left arrow if scrolled more than 5px
-      setShowRightArrow(scrollLeft < scrollWidth - clientWidth - 5); // Hide right arrow when near the end
+      setShowLeftArrow(scrollLeft > 5);
+      setShowRightArrow(scrollLeft < scrollWidth - clientWidth - 5);
     }
   }, []);
-
-  const handleDownload = () => {
-    const link = document.createElement("a");
-    link.href = property.assets.pdf_brochure;
-    link.download = "property-floor-plan.pdf";
-    link.style.display = "none";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
 
   useEffect(() => {
     // Initial check
@@ -119,12 +110,15 @@ const ScrollableTabs = ({ property }: ScrollableTabsProps) => {
                     {t("floorPlan")}
                   </TabsTrigger>
                 )}
-                <Button
-                  onClick={handleDownload}
-                  className="text-xs rounded-none bg-black text-white px-6"
+                <Link
+                  href={property.assets.pdf_brochure}
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
-                  {t("downloadBrochure")}
-                </Button>
+                  <Button className="text-xs rounded-none bg-black text-white px-6">
+                    {t("downloadBrochure")}
+                  </Button>
+                </Link>
 
                 <TabsTrigger
                   value={"location"}
@@ -187,7 +181,7 @@ const ScrollableTabs = ({ property }: ScrollableTabsProps) => {
               <LocationTab
                 latitude={property.location.latitude}
                 longitude={property.location.longitude}
-                drivingDistances={property.driving_distances}
+                propertyReference={property.reference}
               />
             </div>
           </TabsContent>
