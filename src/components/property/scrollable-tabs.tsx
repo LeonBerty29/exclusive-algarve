@@ -1,7 +1,7 @@
 "use client";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Download } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { FloorPlanTab } from "./floor-plan";
 import { LocationTab } from "./location-tab";
@@ -116,7 +116,7 @@ const ScrollableTabs = ({ property }: ScrollableTabsProps) => {
                   rel="noopener noreferrer"
                 >
                   <Button className="text-xs rounded-none bg-black text-white px-6">
-                    {t("downloadBrochure")}
+                    <Download className="size-4" /> {t("downloadBrochure")}
                   </Button>
                 </Link>
 

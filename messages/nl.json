@@ -754,6 +754,9 @@
     "buttonClose": "Sluiten"
   },
   "navbar": {
+    "contact": "Contact",
+    "exclusiveAlgarveVillasLogo": "Exclusive Algarve Villas-logo",
+    "toggleMenu": "Menu wisselen",
     "signIn": "INLOGGEN"
   },
   "newsletterForm": {
@@ -878,7 +881,7 @@
   },
   "floorPlan": {
     "propertyFloorPlan": "Woning plattegrond",
-    "downloadBrochure": "Download brochure"
+    "downloadBrochure": "Brochure"
   },
   "locationTab": {
     "drivingDistance": "RIJAFSTAND",
@@ -919,7 +922,7 @@
     "description": "Beschrijving",
     "features": "Kenmerken",
     "floorPlan": "Plattegrond",
-    "downloadBrochure": "Download brochure",
+    "downloadBrochure": "Brochure",
     "location": "Locatie",
     "ariaLabelScrollLeft": "Scroll naar links",
     "ariaLabelScrollRight": "Scroll naar rechts"
@@ -1538,5 +1541,15 @@
   },
   "footerPropertyLinks": {
     "realEstateInText": "Onroerend goed in"
+  },
+  "nearbyPlaces": {
+    "nearbyPlacesDrivingDistances": "Rijtijden naar locaties in de buurt",
+    "searchingForNearbyPlaces": "Zoeken naar locaties in de buurt...",
+    "noPlacesFoundNearby": "Geen locaties in de buurt gevonden",
+    "restaurant": "Restaurant",
+    "beach": "Strand",
+    "busStation": "Busstation",
+    "airport": "Luchthaven",
+    "hospital": "Ziekenhuis"
   }
 }

@@ -17,6 +17,7 @@ import {
   GEO_POSITION,
   WEBSITE_NAME,
 } from "@/config/constants";
+import { favoritesMetadata } from "@/seo-metadata/favorites";
 
 type PageProps = {
   params: Promise<{ locale: string }>;
@@ -64,33 +65,18 @@ export async function generateMetadata({
   // ICBM coordinates
   const ICBM = `${GEO_POSITION.lat}, ${GEO_POSITION.lng}`;
 
-  const description =
-    "View and manage your saved favorite luxury properties in the Algarve, Portugal. Access your personalized collection of villas and estates in Carvoeiro, Vale do Lobo, Quinta do Lago, and the Golden Triangle.";
-
-  const keywords = [
-    "saved properties algarve",
-    "favorite villas portugal",
-    "saved luxury properties",
-    "algarve property favorites",
-    "my saved properties",
-    "favorite algarve villas",
-    "saved luxury estates portugal",
-    "property watchlist algarve",
-    "saved properties golden triangle",
-    "favorite properties carvoeiro",
-    "vale do lobo saved properties",
-    "quinta do lago favorites",
-    "my property collection algarve",
-    "saved villa listings portugal",
-  ];
+  // Get metadata for current locale
+  const metadata =
+    favoritesMetadata[locale as keyof typeof favoritesMetadata] ||
+    favoritesMetadata.en;
 
   return {
-    title: `My Favorite Properties - Saved Luxury Villas in the Algarve | ${WEBSITE_NAME}`,
-    description: description,
-    keywords: keywords,
+    title: `${metadata.title} | ${WEBSITE_NAME}`,
+    description: metadata.description,
+    keywords: [...metadata.keywords],
     openGraph: {
-      title: "My Favorite Properties - Saved Luxury Algarve Villas Collection",
-      description: description,
+      title: metadata.ogTitle,
+      description: metadata.description,
       url: canonicalUrl,
       siteName: WEBSITE_NAME,
       locale: locale,
@@ -98,8 +84,8 @@ export async function generateMetadata({
     },
     twitter: {
       card: "summary",
-      title: "My Favorite Properties - Saved Luxury Algarve Villas Collection",
-      description: description,
+      title: metadata.ogTitle,
+      description: metadata.description,
       creator: EAV_TWITTER_CREATOR_HANDLE,
     },
     robots: {
@@ -124,12 +110,9 @@ export async function generateMetadata({
       "geo.region": "PT",
       "geo.position": `${GEO_POSITION.lat};${GEO_POSITION.lng}`,
       ICBM: ICBM,
-      classification:
-        "User favorites, Saved properties, Property collection, Personal property list",
-      category:
-        "User account, Saved items, Favorites list, Property management, User collection",
-      "DC.title":
-        "Saved favorite properties Algarve, User property collection Portugal, Personal villa watchlist Golden Triangle",
+      classification: metadata.classification,
+      category: metadata.category,
+      "DC.title": metadata.dcTitle,
     },
   };
 }

@@ -35,10 +35,12 @@ import { Metadata } from "next";
 import {
   BASE_URL,
   EAV_TWITTER_CREATOR_HANDLE,
+  GEO_POSITION,
   WEBSITE_NAME,
 } from "@/config/constants";
 import { routing } from "@/i18n/routing";
 import { GoogleMapsProvider } from "@/providers/google-maps-provider";
+import { propertyDetailsPageMetadata } from "@/seo-metadata/property-details-page";
 
 interface Props {
   params: Promise<{ propertyId: string; locale: string }>;
@@ -49,10 +51,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const propertyResponse = await getProperty(propertyId);
   const property = propertyResponse.data;
 
+  // Get metadata for current locale
+  const metadata =
+    propertyDetailsPageMetadata[
+      locale as keyof typeof propertyDetailsPageMetadata
+    ] || propertyDetailsPageMetadata.en;
+
   if (!property) {
     return {
-      title: "Property Not Found",
-      description: "The requested property could not be found",
+      title: metadata.notFoundTitle,
+      description: metadata.notFoundDescription,
     };
   }
 
@@ -104,10 +112,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     routing.defaultLocale
   }${defaultPath.replace("[slug]", defaultSlug)}`;
 
+  // ICBM coordinates
+  const ICBM = `${GEO_POSITION.lat}, ${GEO_POSITION.lng}`;
+
   const primaryImage = property.assets.images.gallery[0];
 
+  // Build enhanced title with property details
+  const enhancedTitle = `${property.title} ${metadata.titleSuffix}`;
+
   return {
-    title: `${property.title} | ${WEBSITE_NAME}`,
+    title: `${enhancedTitle} | ${WEBSITE_NAME}`,
     description: property.seo.description,
     keywords: [
       ...property.seo.keywords,
@@ -116,7 +130,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       property.location.zone,
     ],
     openGraph: {
-      title: `${property.title} | ${WEBSITE_NAME}`,
+      title: `${enhancedTitle} | ${WEBSITE_NAME}`,
       description: property.seo.description,
       url: canonicalUrl,
       siteName: WEBSITE_NAME,
@@ -135,7 +149,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     },
     twitter: {
       card: "summary_large_image",
-      title: `${property.title} | ${WEBSITE_NAME}`,
+      title: `${enhancedTitle} | ${WEBSITE_NAME}`,
       description: property.seo.description,
       creator: EAV_TWITTER_CREATOR_HANDLE,
       images: property.assets.images.gallery.map((image) => image.url),
@@ -155,6 +169,25 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     alternates: {
       canonical: canonicalUrl,
       languages: languages,
+    },
+    other: {
+      "geo.region": "PT",
+      "geo.position": `${GEO_POSITION.lat};${GEO_POSITION.lng}`,
+      ICBM: ICBM,
+      classification: metadata.classification,
+      category: metadata.category,
+      "DC.title": `${metadata.dcTitlePrefix} - ${property.title}, ${property.location.municipality}, ${property.location.zone}`,
+      audience: metadata.audience,
+      "article:section": metadata.articleSection,
+      // Property-specific metadata
+      "property:price": property.price?.toString(),
+      "property:currency": property.currency,
+      "property:bedrooms": property.features.bedrooms?.toString() as string,
+      "property:bathrooms": property.features.bathrooms?.toString() as string,
+      "property:area": property.features.private_area?.toString() as string,
+      "property:plot": property.features.plot_size?.toString() as string,
+      "property:type": property.typology.name,
+      "property:location": `${property.location.municipality}, ${property.location.zone}`,
     },
   };
 }
