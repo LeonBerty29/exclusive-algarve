@@ -13,6 +13,7 @@ import {
   RelatedArticlesLoader,
 } from "@/components/blog/blog-loading-states";
 import { getLocale, getTranslations } from "next-intl/server";
+import { ScrollToTopWrapper } from "@/components/scroll-to-top-wrapper";
 
 type Params = {
   [x: string]: string | string[];
@@ -37,18 +38,20 @@ const BlogPage = async (props: PageProps) => {
 
   return (
     <>
-      <Suspense
-        fallback={
-          <div className="2xl:container w-full mx-auto px-6 sm:px-8 md:px-10 lg:px-14 py-10">
-            <div className="flex flex-col gap-6 lg:flex-row">
-              <BlogContentLoader />
-              <RecentPostsLoader />
+      <ScrollToTopWrapper>
+        <Suspense
+          fallback={
+            <div className="2xl:container w-full mx-auto px-6 sm:px-8 md:px-10 lg:px-14 py-10">
+              <div className="flex flex-col gap-6 lg:flex-row">
+                <BlogContentLoader />
+                <RecentPostsLoader />
+              </div>
             </div>
-          </div>
-        }
-      >
-        <BlogPageContent slug={params.slug as string} />
-      </Suspense>
+          }
+        >
+          <BlogPageContent slug={params.slug as string} />
+        </Suspense>
+      </ScrollToTopWrapper>
     </>
   );
 };

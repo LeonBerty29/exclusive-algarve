@@ -41,6 +41,7 @@ import {
 import { routing } from "@/i18n/routing";
 import { GoogleMapsProvider } from "@/providers/google-maps-provider";
 import { propertyDetailsPageMetadata } from "@/seo-metadata/property-details-page";
+import { ScrollToTopWrapper } from "@/components/scroll-to-top-wrapper";
 
 interface Props {
   params: Promise<{ propertyId: string; locale: string }>;
@@ -202,9 +203,11 @@ export default async function page(props: Props) {
   return (
     <GoogleMapsProvider>
       <div className="py-14">
-        <Suspense fallback={<PropertyDetailsPageLoading />}>
-          <PageContent {...props} />
-        </Suspense>
+        <ScrollToTopWrapper>
+          <Suspense fallback={<PropertyDetailsPageLoading />}>
+            <PageContent {...props} />
+          </Suspense>
+        </ScrollToTopWrapper>
       </div>
     </GoogleMapsProvider>
   );

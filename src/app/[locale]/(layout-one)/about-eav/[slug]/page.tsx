@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { fetchAboutUsResourcePage } from "@/data/resources";
 import { Skeleton } from "@/components/ui/skeleton";
+import { ScrollToTopWrapper } from "@/components/scroll-to-top-wrapper";
 
 type Params = {
   [x: string]: string | string[];
@@ -29,15 +30,17 @@ const AboutUsResourcePage = async (props: PageProps) => {
   return (
     <>
       <div className="lg:container w-full mx-auto px-6 sm:px-8 md:px-10 lg:px-14 py-10 pt-24">
-        <Suspense
-          fallback={
-            <div className="lg:container w-full mx-auto px-6 sm:px-8 md:px-10 lg:px-14 py-10">
-              <Skeleton className="min-h-[80vh] w-full" />
-            </div>
-          }
-        >
-          <AboutUsResourceContent slug={params.slug as string} />
-        </Suspense>
+        <ScrollToTopWrapper>
+          <Suspense
+            fallback={
+              <div className="lg:container w-full mx-auto px-6 sm:px-8 md:px-10 lg:px-14 py-10">
+                <Skeleton className="min-h-[80vh] w-full" />
+              </div>
+            }
+          >
+            <AboutUsResourceContent slug={params.slug as string} />
+          </Suspense>
+        </ScrollToTopWrapper>
       </div>
     </>
   );
