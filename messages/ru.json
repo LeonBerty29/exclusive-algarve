@@ -754,6 +754,9 @@
     "buttonClose": "Закрыть"
   },
   "navbar": {
+    "contact": "Контакты",
+    "exclusiveAlgarveVillasLogo": "Логотип Exclusive Algarve Villas",
+    "toggleMenu": "Переключить меню",
     "signIn": "ВОЙТИ"
   },
   "newsletterForm": {
@@ -878,7 +881,7 @@
   },
   "floorPlan": {
     "propertyFloorPlan": "План этажей объекта",
-    "downloadBrochure": "Скачать брошюру"
+    "downloadBrochure": "Брошюра"
   },
   "locationTab": {
     "drivingDistance": "РАССТОЯНИЕ НА МАШИНЕ",
@@ -919,7 +922,7 @@
     "description": "Описание",
     "features": "Особенности",
     "floorPlan": "План этажей",
-    "downloadBrochure": "Скачать брошюру",
+    "downloadBrochure": "Брошюра",
     "location": "Местоположение",
     "ariaLabelScrollLeft": "Прокрутить влево",
     "ariaLabelScrollRight": "Прокрутить вправо"
@@ -1538,5 +1541,15 @@
   },
   "footerPropertyLinks": {
     "realEstateInText": "Объекты недвижимости в"
+  },
+  "nearbyPlaces": {
+    "nearbyPlacesDrivingDistances": "Время в пути до ближайших мест",
+    "searchingForNearbyPlaces": "Поиск ближайших мест...",
+    "noPlacesFoundNearby": "Рядом ничего не найдено",
+    "restaurant": "Ресторан",
+    "beach": "Пляж",
+    "busStation": "Автовокзал",
+    "airport": "Аэропорт",
+    "hospital": "Больница"
   }
 }

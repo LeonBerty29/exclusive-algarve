@@ -11,6 +11,7 @@ import {
   GEO_POSITION,
   WEBSITE_NAME,
 } from "@/config/constants";
+import { goldenVisaProgramMetadata } from "@/seo-metadata/golden-visa-program";
 
 interface Props {
   params: Promise<{ locale: string }>;
@@ -53,40 +54,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   // ICBM coordinates
   const ICBM = `${GEO_POSITION.lat}, ${GEO_POSITION.lng}`;
 
-  const description =
-    "Complete guide to Portugal's Golden Visa Program. Learn about investment requirements, eligibility criteria, residence permits, and pathways to citizenship through property investment in the Algarve. Expert guidance for obtaining Portuguese residency.";
-
-  const keywords = [
-    "portugal golden visa",
-    "golden visa program portugal",
-    "portugal residence permit investment",
-    "algarve golden visa",
-    "portugal investment visa",
-    "golden visa requirements portugal",
-    "portugal citizenship by investment",
-    "portuguese golden visa eligibility",
-    "portugal residence visa",
-    "golden visa property investment",
-    "portugal permanent residence",
-    "algarve investment residency",
-    "portugal investor visa",
-    "golden visa application portugal",
-    "portugal residency by investment",
-    "schengen visa portugal",
-    "portugal golden visa 2024",
-    "invest portugal residency",
-    "portuguese citizenship investment",
-    "algarve property golden visa",
-  ];
+  // Get metadata for current locale
+  const metadata =
+    goldenVisaProgramMetadata[
+      locale as keyof typeof goldenVisaProgramMetadata
+    ] || goldenVisaProgramMetadata.en;
 
   return {
-    title: `Portugal Golden Visa Program - Complete Investment & Residency Guide | ${WEBSITE_NAME}`,
-    description: description,
-    keywords: keywords,
+    title: `${metadata.title} | ${WEBSITE_NAME}`,
+    description: metadata.description,
+    keywords: [...metadata.keywords],
     openGraph: {
-      title:
-        "Portugal Golden Visa Program - Residency Through Investment in the Algarve",
-      description: description,
+      title: metadata.ogTitle,
+      description: metadata.description,
       url: canonicalUrl,
       siteName: WEBSITE_NAME,
       locale: locale,
@@ -97,15 +77,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
           secureUrl: `${BASE_URL}/images/become-a-vendor/marketing.png`,
           width: 1200,
           height: 630,
-          alt: "Portugal Golden Visa Program - Investment Residency Guide",
+          alt: metadata.ogTitle,
         },
       ],
     },
     twitter: {
       card: "summary_large_image",
-      title:
-        "Portugal Golden Visa Program - Residency Through Investment in the Algarve",
-      description: description,
+      title: metadata.ogTitle,
+      description: metadata.description,
       creator: EAV_TWITTER_CREATOR_HANDLE,
     },
     robots: {
@@ -128,15 +107,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       "geo.region": "PT",
       "geo.position": `${GEO_POSITION.lat};${GEO_POSITION.lng}`,
       ICBM: ICBM,
-      classification:
-        "Golden visa information, Portugal investment visa, Residence permit guide, Citizenship by investment",
-      category:
-        "Immigration guide, Investment visa, Residency program, Citizenship pathway, Legal requirements, Property investment visa",
-      "DC.title":
-        "Portugal golden visa program guide, Algarve investment residency, Portuguese citizenship by investment, Golden triangle residence permit",
-      audience:
-        "International investors, Property buyers, Residency seekers, Non-EU citizens",
-      "article:section": "Immigration & Investment",
+      classification: metadata.classification,
+      category: metadata.category,
+      "DC.title": metadata.dcTitle,
+      audience: metadata.audience,
+      "article:section": metadata.articleSection,
     },
   };
 }

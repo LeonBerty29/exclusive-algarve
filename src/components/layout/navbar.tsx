@@ -32,19 +32,9 @@ export default function NavBar({
   const t = useTranslations("navbar");
 
   const navLinks = [
-    // { href: "/", label: "Home" },
-    // { href: "/properties", label: "Properties" },
-    // { href: "/about-eav", label: "About Us" },
-    // { href: "/blogs", label: "Blog" },
-    // { href: "/buying-process", label: "Buy" },
-    // { href: "/become-a-vendor", label: "Sell" },
-    // {
-    //   href: Object.keys(routing.pathnames).find((key) => key === "/about-eav"),
-    //   label: "About Us",
-    // },
     {
       href: Object.keys(routing.pathnames).find((key) => key === "/contact"),
-      label: "Contact",
+      label: t("contact"),
     },
   ];
 
@@ -136,7 +126,7 @@ export default function NavBar({
                     ? "/images/eav-logo-dark.svg"
                     : "/images/eav-logo.png"
                 }
-                alt="Exclusive Algarve Villas Logo"
+                alt={t("exclusiveAlgarveVillasLogo")}
                 width={70}
                 height={50}
                 className="object-contain h-15 w-20"
@@ -189,7 +179,7 @@ export default function NavBar({
                   ? "text-white"
                   : "text-gray-600"
               )}
-              aria-label="Toggle menu"
+              aria-label={t("toggleMenu")}
             >
               {isMobileMenuOpen ? (
                 <X className={cn("h-5 w-5")} />

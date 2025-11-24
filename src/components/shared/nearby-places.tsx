@@ -1,5 +1,6 @@
 "use client";
 import React, { useCallback, useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 
 interface NearbyPlace {
   name: string;
@@ -9,11 +10,11 @@ interface NearbyPlace {
 }
 
 const placeTypes = [
-  { type: "restaurant", label: "Restaurant" },
-  { type: "beach", label: "Beach" },
-  { type: "bus_station", label: "Bus Station" },
-  { type: "airport", label: "Airport" },
-  { type: "hospital", label: "Hospital" },
+  { type: "restaurant", label: "restaurant" },
+  { type: "beach", label: "beach" },
+  { type: "bus_station", label: "busStation" },
+  { type: "airport", label: "airport" },
+  { type: "hospital", label: "hospital" },
 ];
 
 export const NearbyPlacesList = ({
@@ -23,6 +24,8 @@ export const NearbyPlacesList = ({
   latitude: number;
   longitude: number;
 }) => {
+  const t = useTranslations("nearbyPlaces");
+
   const [nearbyPlaces, setNearbyPlaces] = useState<NearbyPlace[]>([]);
   const [loading, setLoading] = useState(true);
   const [map, setMap] = useState<google.maps.Map | null>(null);
@@ -45,7 +48,7 @@ export const NearbyPlacesList = ({
     async (
       location: { lat: number; lng: number },
       placeType: string,
-      label: string
+      labelKey: string
     ) => {
       if (!map) return null;
 
@@ -114,18 +117,20 @@ export const NearbyPlacesList = ({
           );
         });
 
+        const fallbackLabel = t(labelKey);
+
         return {
-          name: result.name || label,
-          type: label,
+          name: result.name || fallbackLabel,
+          type: fallbackLabel,
           distance: distanceResult.distance,
           duration: distanceResult.duration,
         };
       } catch (error) {
-        console.error(`Error searching for ${label}:`, error);
+        console.error(`Error searching for ${t(labelKey)}:`, error);
         return null;
       }
     },
-    [map]
+    [map, t]
   );
 
   useEffect(() => {
@@ -147,7 +152,7 @@ export const NearbyPlacesList = ({
         if (place) {
           foundPlaces.push(place);
           console.log(
-            `✅ ${label}: ${place.name} - ${place.duration} (${place.distance})`
+            `✅ ${place.type}: ${place.name} - ${place.duration} (${place.distance})`
           );
         } else {
           console.log(`❌ ${label}: Not found`);
@@ -163,9 +168,11 @@ export const NearbyPlacesList = ({
 
   return (
     <div className="bg-white p-4 mt-4">
-      <h3 className="font-bold text-lg mb-3 text-primary">Nearby Places Driving Distances</h3>
+      <h3 className="font-bold text-lg mb-3 text-primary">
+        {t("nearbyPlacesDrivingDistances")}
+      </h3>
       {loading ? (
-        <p className="text-gray-500">Searching for nearby places...</p>
+        <p className="text-gray-500">{t("searchingForNearbyPlaces")}</p>
       ) : nearbyPlaces.length > 0 ? (
         <div className="space-y-2">
           {nearbyPlaces.map((place, index) => (
@@ -185,7 +192,7 @@ export const NearbyPlacesList = ({
           ))}
         </div>
       ) : (
-        <p className="text-gray-500">No places found nearby</p>
+        <p className="text-gray-500">{t("noPlacesFoundNearby")}</p>
       )}
     </div>
   );

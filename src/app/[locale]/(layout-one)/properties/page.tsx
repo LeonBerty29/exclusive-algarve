@@ -7,6 +7,7 @@ import { Suspense } from "react";
 import {
   BASE_URL,
   EAV_TWITTER_CREATOR_HANDLE,
+  GEO_POSITION,
   PROPERTIES_PER_PAGE,
   WEBSITE_NAME,
 } from "@/config/constants";
@@ -27,6 +28,7 @@ import { getNote } from "@/data/notes";
 import { getTranslations } from "next-intl/server";
 import { Metadata } from "next";
 import { routing } from "@/i18n/routing";
+import { propertiesMetadata } from "@/seo-metadata/properties";
 
 type Params = {
   [x: string]: string | string[];
@@ -36,6 +38,7 @@ interface PageProps {
   params?: Promise<Params>;
   searchParams: Promise<PropertySearchParams>;
 }
+
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
@@ -71,33 +74,27 @@ export async function generateMetadata({
       : propertiesPath[routing.defaultLocale as keyof typeof propertiesPath];
   languages["x-default"] = `${BASE_URL}/${routing.defaultLocale}${defaultPath}`;
 
+  // ICBM coordinates
+  const ICBM = `${GEO_POSITION.lat}, ${GEO_POSITION.lng}`;
+
+  // Get metadata for current locale
+  const metadata =
+    propertiesMetadata[locale as keyof typeof propertiesMetadata] ||
+    propertiesMetadata.en;
+
   return {
-    title:
-      "Luxury properties for sale in algarve portugal - Exclusive Algarve Villas",
-    description:
-      "Browse premium Algarve properties for sale including luxury villas in Vale do Lobo, Quinta do Lago, Lagos, and Carvoeiro.",
-    keywords: [
-      "algarve luxury property for sale",
-      "algarve villa for sale",
-      "luxury villa algarve for sale",
-      "algarve home for sale",
-      "algarve properties for sale",
-      "golden triangle properties",
-      "vale do lobo property",
-      "frontline algarve property",
-      "quinta do lago properties",
-      "lagos villa",
-      "carvoeiro villa for sale",
-    ],
+    title: `${metadata.title} | ${WEBSITE_NAME}`,
+    description: metadata.description,
+    keywords: [...metadata.keywords],
     openGraph: {
-      title: "Live the Algarve dream. Browse luxury properties for sale",
-      description:
-        "Explore premium Algarve properties for sale - luxury villas, modern apartments, elegant townhouse and plots.",
+      title: metadata.ogTitle,
+      description: metadata.ogDescription,
       url: canonicalUrl,
       siteName: WEBSITE_NAME,
       images: [
         {
           url: `${BASE_URL}/images/eav-logo-dark.svg`,
+          secureUrl: `${BASE_URL}/images/eav-logo-dark.svg`,
           width: 1200,
           height: 800,
           alt: "Exclusive Algarve Villas Logo",
@@ -108,9 +105,8 @@ export async function generateMetadata({
     },
     twitter: {
       card: "summary_large_image",
-      title: "Live the Algarve dream. Browse luxury properties for sale",
-      description:
-        "Explore premium Algarve properties for sale - luxury villas, modern apartments, elegant townhouse and plots.",
+      title: metadata.ogTitle,
+      description: metadata.ogDescription,
       creator: EAV_TWITTER_CREATOR_HANDLE,
       images: [`${BASE_URL}/images/eav-logo-dark.svg`],
     },
@@ -129,6 +125,16 @@ export async function generateMetadata({
     alternates: {
       canonical: canonicalUrl,
       languages: languages,
+    },
+    other: {
+      "geo.region": "PT",
+      "geo.position": `${GEO_POSITION.lat};${GEO_POSITION.lng}`,
+      ICBM: ICBM,
+      classification: metadata.classification,
+      category: metadata.category,
+      "DC.title": metadata.dcTitle,
+      audience: metadata.audience,
+      "article:section": metadata.articleSection,
     },
   };
 }
@@ -190,9 +196,9 @@ export default async function PropertiesPage(props: PageProps) {
         <div className="w-full">
           <Suspense fallback={<SearchHeaderSkeleton />}>
             <SearchHeader
-              // totalResults={propertiesResponse.meta.total}
-              // currentPage={propertiesResponse.meta.current_page}
-              // totalPages={propertiesResponse.meta.last_page}
+            // totalResults={propertiesResponse.meta.total}
+            // currentPage={propertiesResponse.meta.current_page}
+            // totalPages={propertiesResponse.meta.last_page}
             />
           </Suspense>
         </div>

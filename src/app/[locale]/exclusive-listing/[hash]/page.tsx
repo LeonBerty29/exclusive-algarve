@@ -21,6 +21,7 @@ import { ExclusivePropertiesPagination } from "./exlcusive-properties-pagination
 import { HashLanguageSwitcherDropdown } from "@/components/shared/hash-language-switcher-dropdown";
 import { Metadata } from "next";
 import { routing } from "@/i18n/routing";
+import { ScrollToTopWrapper } from "@/components/scroll-to-top-wrapper";
 
 type Params = {
   [x: string]: string | string[];
@@ -157,67 +158,69 @@ export default async function ExclusiveListing(props: PageProps) {
 
   return (
     <>
-      <div className="2xl:container px-6 sm:px-8 md:px-10 lg:px-14 mx-auto bg-inherit z-20">
-        <div className="flex items-center justify-between gap-6 flex-wrap py-6">
-          <Link href="/">
-            <Image
-              src={"/images/eav-logo-dark.svg"}
-              alt="Exclusive Algarve Villas Logo"
-              width={70}
-              height={50}
-              className="object-contain h-20 w-35 hidden lg:block"
-            />
-            <Image
-              src={"/images/eav-logo-dark.svg"}
-              alt="Exclusive Algarve Villas Logo"
-              width={70}
-              height={50}
-              className="object-contain h-15 w-20 lg:hidden"
-            />
-          </Link>
+      <ScrollToTopWrapper>
+        <div className="2xl:container px-6 sm:px-8 md:px-10 lg:px-14 mx-auto bg-inherit z-20">
+          <div className="flex items-center justify-between gap-6 flex-wrap py-6">
+            <Link href="/">
+              <Image
+                src={"/images/eav-logo-dark.svg"}
+                alt="Exclusive Algarve Villas Logo"
+                width={70}
+                height={50}
+                className="object-contain h-20 w-35 hidden lg:block"
+              />
+              <Image
+                src={"/images/eav-logo-dark.svg"}
+                alt="Exclusive Algarve Villas Logo"
+                width={70}
+                height={50}
+                className="object-contain h-15 w-20 lg:hidden"
+              />
+            </Link>
 
-          <div className="">
-            <HashLanguageSwitcherDropdown />
-          </div>
-        </div>
-      </div>
-      <div className="w-full">
-        <div className="2xl:container px-6 sm:px-8 md:px-10 lg:px-14 mx-auto">
-          <div className="mx-auto sm:max-w-full sm:mx-0 flex items-start flex-wrap pb-8">
-            <div className="flex-1 md:min-w-[400px] mt-6">
-              <Suspense
-                key={`${suspenseKey} --properties`}
-                fallback={<PropertiesGridSkeleton />}
-              >
-                <PropertieList hash={hash as string} apiParams={apiParams} />
-              </Suspense>
-              <Suspense
-                key={`${suspenseKey} --pagination`}
-                fallback={<PaginationSkeleton />}
-              >
-                <ExclusivePropertiesPagination
-                  apiParams={apiParams}
-                  hash={hash as string}
-                />
-              </Suspense>
+            <div className="">
+              <HashLanguageSwitcherDropdown />
             </div>
           </div>
         </div>
-      </div>
-      <div className="py-8 w-full bg-black">
-        <div className="2xl:container px-6 sm:px-8 md:px-10 lg:px-14 mx-auto flex items-center justify-center gap-4">
-          <p className="text-white text-sm">{t("poweredBy")}</p>
-          <Link href="/">
-            <Image
-              src={"/images/eav-logo.png"}
-              alt="Exclusive Algarve Villas Logo"
-              width={70}
-              height={50}
-              className="object-contain h-10 w-20"
-            />
-          </Link>
+        <div className="w-full">
+          <div className="2xl:container px-6 sm:px-8 md:px-10 lg:px-14 mx-auto">
+            <div className="mx-auto sm:max-w-full sm:mx-0 flex items-start flex-wrap pb-8">
+              <div className="flex-1 md:min-w-[400px] mt-6">
+                <Suspense
+                  key={`${suspenseKey} --properties`}
+                  fallback={<PropertiesGridSkeleton />}
+                >
+                  <PropertieList hash={hash as string} apiParams={apiParams} />
+                </Suspense>
+                <Suspense
+                  key={`${suspenseKey} --pagination`}
+                  fallback={<PaginationSkeleton />}
+                >
+                  <ExclusivePropertiesPagination
+                    apiParams={apiParams}
+                    hash={hash as string}
+                  />
+                </Suspense>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
+        <div className="py-8 w-full bg-black">
+          <div className="2xl:container px-6 sm:px-8 md:px-10 lg:px-14 mx-auto flex items-center justify-center gap-4">
+            <p className="text-white text-sm">{t("poweredBy")}</p>
+            <Link href="/">
+              <Image
+                src={"/images/eav-logo.png"}
+                alt="Exclusive Algarve Villas Logo"
+                width={70}
+                height={50}
+                className="object-contain h-10 w-20"
+              />
+            </Link>
+          </div>
+        </div>
+      </ScrollToTopWrapper>
     </>
   );
 }

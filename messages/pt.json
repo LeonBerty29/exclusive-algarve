@@ -754,6 +754,9 @@
     "buttonClose": "Fechar"
   },
   "navbar": {
+    "contact": "Contacto",
+    "exclusiveAlgarveVillasLogo": "Logótipo Exclusive Algarve Villas",
+    "toggleMenu": "Alternar menu",
     "signIn": "ENTRAR"
   },
   "newsletterForm": {
@@ -878,7 +881,7 @@
   },
   "floorPlan": {
     "propertyFloorPlan": "Planta da Propriedade",
-    "downloadBrochure": "Descarregar Brochura"
+    "downloadBrochure": "Brochura"
   },
   "locationTab": {
     "drivingDistance": "DISTÂNCIA DE CONDUÇÃO",
@@ -919,7 +922,7 @@
     "description": "Descrição",
     "features": "Características",
     "floorPlan": "Planta",
-    "downloadBrochure": "Descarregar Brochura",
+    "downloadBrochure": "Brochura",
     "location": "Localização",
     "ariaLabelScrollLeft": "Rolar para a esquerda",
     "ariaLabelScrollRight": "Rolar para a direita"
@@ -1538,5 +1541,15 @@
   },
   "footerPropertyLinks": {
     "realEstateInText": "Propriedades imobiliárias em"
+  },
+  "nearbyPlaces": {
+    "nearbyPlacesDrivingDistances": "Tempos de viagem para locais próximos",
+    "searchingForNearbyPlaces": "A procurar locais próximos...",
+    "noPlacesFoundNearby": "Nenhum local encontrado nas proximidades",
+    "restaurant": "Restaurante",
+    "beach": "Praia",
+    "busStation": "Estação de autocarros",
+    "airport": "Aeroporto",
+    "hospital": "Hospital"
   }
 }

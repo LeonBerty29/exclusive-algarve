@@ -754,6 +754,9 @@
     "buttonClose": "Stäng"
   },
   "navbar": {
+    "contact": "Kontakt",
+    "exclusiveAlgarveVillasLogo": "Exclusive Algarve Villas-logotyp",
+    "toggleMenu": "Växla meny",
     "signIn": "LOGGA IN"
   },
   "newsletterForm": {
@@ -878,7 +881,7 @@
   },
   "floorPlan": {
     "propertyFloorPlan": "Fastighetsplanlösning",
-    "downloadBrochure": "Ladda ner broschyr"
+    "downloadBrochure": "Broschyr"
   },
   "locationTab": {
     "drivingDistance": "KÖRAVSTÅND",
@@ -919,7 +922,7 @@
     "description": "Beskrivning",
     "features": "Funktioner",
     "floorPlan": "Planlösning",
-    "downloadBrochure": "Ladda ner broschyr",
+    "downloadBrochure": "Broschyr",
     "location": "Plats",
     "ariaLabelScrollLeft": "Scrolla vänster",
     "ariaLabelScrollRight": "Scrolla höger"
@@ -1538,5 +1541,15 @@
   },
   "footerPropertyLinks": {
     "realEstateInText": "Fastigheter i"
+  },
+  "nearbyPlaces": {
+    "nearbyPlacesDrivingDistances": "Körtider till platser i närheten",
+    "searchingForNearbyPlaces": "Söker efter platser i närheten...",
+    "noPlacesFoundNearby": "Inga platser hittades i närheten",
+    "restaurant": "Restaurang",
+    "beach": "Strand",
+    "busStation": "Busstation",
+    "airport": "Flygplats",
+    "hospital": "Sjukhus"
   }
 }

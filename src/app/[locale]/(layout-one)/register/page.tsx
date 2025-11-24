@@ -2,7 +2,12 @@ import { RegisterForm } from "@/components/auth/register-form";
 import React from "react";
 import { Metadata } from "next";
 import { routing } from "@/i18n/routing";
-import { EAV_TWITTER_CREATOR_HANDLE, GEO_POSITION, WEBSITE_NAME } from "@/config/constants";
+import {
+  EAV_TWITTER_CREATOR_HANDLE,
+  GEO_POSITION,
+  WEBSITE_NAME,
+} from "@/config/constants";
+import { registerMetadata } from "@/types/register";
 
 interface SearchParams {
   callbackUrl: string;
@@ -15,7 +20,6 @@ interface RegisterPageProps {
 
 const BASE_URL =
   process.env.BASE_URL || "https://www.exclusivealgarvevillas.com";
-
 
 export async function generateMetadata({
   params,
@@ -55,29 +59,18 @@ export async function generateMetadata({
   // ICBM coordinates
   const ICBM = `${GEO_POSITION.lat}, ${GEO_POSITION.lng}`;
 
-  const description =
-    "Create your Exclusive Algarve Villas account to save favorite properties, receive personalized property alerts, track inquiries, and get exclusive access to luxury real estate listings in the Algarve.";
-
-  const keywords = [
-    "exclusive algarve villas register",
-    "create account algarve properties",
-    "sign up luxury properties",
-    "property alerts registration",
-    "algarve real estate account",
-    "client registration portal",
-    "property buyer registration",
-    "luxury villa account creation",
-    "real estate client signup",
-    "save favorite properties algarve",
-  ];
+  // Get metadata for current locale
+  const metadata =
+    registerMetadata[locale as keyof typeof registerMetadata] ||
+    registerMetadata.en;
 
   return {
-    title: `Register - Create Your Account | ${WEBSITE_NAME}`,
-    description: description,
-    keywords: keywords,
+    title: `${metadata.title} | ${WEBSITE_NAME}`,
+    description: metadata.description,
+    keywords: [...metadata.keywords],
     openGraph: {
-      title: "Create Your Exclusive Algarve Villas Account",
-      description: description,
+      title: metadata.ogTitle,
+      description: metadata.description,
       url: canonicalUrl,
       siteName: WEBSITE_NAME,
       locale: locale,
@@ -88,14 +81,14 @@ export async function generateMetadata({
           secureUrl: `${BASE_URL}/images/eav-dark-logo.png`,
           width: 1200,
           height: 630,
-          alt: "Register - Create Your Exclusive Algarve Villas Account",
+          alt: metadata.ogTitle,
         },
       ],
     },
     twitter: {
       card: "summary_large_image",
-      title: "Create Your Exclusive Algarve Villas Account",
-      description: description,
+      title: metadata.ogTitle,
+      description: metadata.description,
       creator: EAV_TWITTER_CREATOR_HANDLE,
     },
     robots: {
@@ -118,11 +111,11 @@ export async function generateMetadata({
       "geo.region": "PT",
       "geo.position": `${GEO_POSITION.lat};${GEO_POSITION.lng}`,
       ICBM: ICBM,
-      classification:
-        "Account creation, User registration, Client signup, Property portal access",
-      category: "Registration, Account signup, Client onboarding, User access",
-      "DC.title":
-        "Exclusive Algarve Villas registration, Create property account, Luxury real estate signup",
+      classification: metadata.classification,
+      category: metadata.category,
+      "DC.title": metadata.dcTitle,
+      audience: metadata.audience,
+      "article:section": metadata.articleSection,
     },
   };
 }

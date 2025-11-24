@@ -188,7 +188,9 @@ const Footer = () => {
                       <li key={`social--media--key--${index}`}>
                         <Link
                           href={socialMediaplatform.link}
+                          prefetch={false}
                           className="text-xs font-light flex items-center gap-2"
+                          target="_blank"
                         >
                           <socialMediaplatform.icon />
                           {socialMediaplatform.name}

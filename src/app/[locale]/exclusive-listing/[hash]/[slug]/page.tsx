@@ -20,12 +20,13 @@ import { setRequestLocale } from "next-intl/server";
 import Image from "next/image";
 import { HashSlugLocales } from "../hash-slug-language-switcher";
 import { Metadata } from "next";
-import { 
-  BASE_URL, 
-  EAV_TWITTER_CREATOR_HANDLE, 
-  WEBSITE_NAME 
+import {
+  BASE_URL,
+  EAV_TWITTER_CREATOR_HANDLE,
+  WEBSITE_NAME,
 } from "@/config/constants";
 import { routing } from "@/i18n/routing";
+import { ScrollToTopWrapper } from "@/components/scroll-to-top-wrapper";
 
 interface Props {
   params: Promise<{ slug: string; locale: string; hash: string }>;
@@ -44,7 +45,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   // Get the localized path for exclusive property details from routing config
-  const exclusivePropertyPath = routing.pathnames["/exclusive-listing/[hash]/[slug]"];
+  const exclusivePropertyPath =
+    routing.pathnames["/exclusive-listing/[hash]/[slug]"];
   const localizedExclusivePropertyPath =
     typeof exclusivePropertyPath === "string"
       ? exclusivePropertyPath
@@ -71,12 +73,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         : exclusivePropertyPath[loc as keyof typeof exclusivePropertyPath];
 
     // Get the slug for this locale
-    const localeSlug = property.seo.slugs[loc as keyof typeof property.seo.slugs];
+    const localeSlug =
+      property.seo.slugs[loc as keyof typeof property.seo.slugs];
 
     // Replace [hash] and [slug] with actual values
-    const fullPath = path
-      .replace("[hash]", hash)
-      .replace("[slug]", localeSlug);
+    const fullPath = path.replace("[hash]", hash).replace("[slug]", localeSlug);
 
     // All locales are prefixed
     languages[loc] = `${BASE_URL}/${loc}${fullPath}`;
@@ -86,7 +87,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const defaultPath =
     typeof exclusivePropertyPath === "string"
       ? exclusivePropertyPath
-      : exclusivePropertyPath[routing.defaultLocale as keyof typeof exclusivePropertyPath];
+      : exclusivePropertyPath[
+          routing.defaultLocale as keyof typeof exclusivePropertyPath
+        ];
   const defaultSlug =
     property.seo.slugs[
       routing.defaultLocale as keyof typeof property.seo.slugs
@@ -126,19 +129,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       images: property.assets.images.gallery.map((image) => image.url),
     },
     robots: {
-      index: false,          // Don't index exclusive/private listings
-      follow: false,         // Don't follow links (private content)
-      noarchive: true,       // Don't cache this page
-      nocache: true,         // Don't cache
-      noimageindex: true,    // Don't index images
+      index: false, // Don't index exclusive/private listings
+      follow: false, // Don't follow links (private content)
+      noarchive: true, // Don't cache this page
+      nocache: true, // Don't cache
+      noimageindex: true, // Don't index images
       googleBot: {
         index: false,
         follow: false,
         noarchive: true,
         nocache: true,
         noimageindex: true,
-        "max-snippet": 0,    // No snippets
-        "max-image-preview": "none",  // No image previews
+        "max-snippet": 0, // No snippets
+        "max-image-preview": "none", // No image previews
         "max-video-preview": 0,
       },
     },
@@ -148,7 +151,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     },
     other: {
       "X-Robots-Tag": "noindex, nofollow, noarchive, nocache",
-      referrer: "no-referrer",  // Don't leak referrer information
+      referrer: "no-referrer", // Don't leak referrer information
     },
   };
 }
@@ -191,23 +194,25 @@ export default async function page(props: Props) {
         </div>
       </div>
       <div className="pt-6">
-        <Suspense fallback={<PropertyDetailsPageLoading />}>
-          <PageContent {...props} />
-          <div className="py-8 w-full bg-black">
-            <div className="2xl:container px-6 sm:px-8 md:px-10 lg:px-14 mx-auto flex items-center justify-center gap-4">
-              <p className="text-white text-sm">{t("poweredBy")}</p>
-              <Link href="/">
-                <Image
-                  src={"/images/eav-logo.png"}
-                  alt="Exclusive Algarve Villas Logo"
-                  width={70}
-                  height={50}
-                  className="object-contain h-10 w-20"
-                />
-              </Link>
+        <ScrollToTopWrapper>
+          <Suspense fallback={<PropertyDetailsPageLoading />}>
+            <PageContent {...props} />
+            <div className="py-8 w-full bg-black">
+              <div className="2xl:container px-6 sm:px-8 md:px-10 lg:px-14 mx-auto flex items-center justify-center gap-4">
+                <p className="text-white text-sm">{t("poweredBy")}</p>
+                <Link href="/">
+                  <Image
+                    src={"/images/eav-logo.png"}
+                    alt="Exclusive Algarve Villas Logo"
+                    width={70}
+                    height={50}
+                    className="object-contain h-10 w-20"
+                  />
+                </Link>
+              </div>
             </div>
-          </div>
-        </Suspense>
+          </Suspense>
+        </ScrollToTopWrapper>
       </div>
     </>
   );

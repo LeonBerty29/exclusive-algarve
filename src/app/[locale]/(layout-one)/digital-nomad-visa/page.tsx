@@ -11,6 +11,7 @@ import {
 } from "@/config/constants";
 import { routing } from "@/i18n/routing";
 import { Metadata } from "next";
+import { digitalNomadVisaMetadata } from "@/seo-metadata/digital-nomad-visa";
 
 interface Props {
   params: Promise<{ locale: string }>;
@@ -55,38 +56,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   // ICBM coordinates
   const ICBM = `${GEO_POSITION.lat}, ${GEO_POSITION.lng}`;
 
-  const description =
-    "Complete guide to Portugal's Digital Nomad Visa. Learn about requirements, application process, residency benefits, and living in the Algarve as a digital nomad. Remote work in Portugal's Golden Triangle - Vale do Lobo, Quinta do Lago, and Carvoeiro.";
-
-  const keywords = [
-    "portugal digital nomad visa",
-    "algarve digital nomad",
-    "portugal remote work visa",
-    "digital nomad portugal requirements",
-    "portugal visa for remote workers",
-    "algarve remote work",
-    "portugal nomad visa application",
-    "digital nomad carvoeiro",
-    "golden triangle digital nomad",
-    "portugal temporary stay visa",
-    "algarve expat visa",
-    "work remotely portugal",
-    "portugal visa non-eu",
-    "digital nomad residency portugal",
-    "algarve remote workers",
-    "portugal visa income requirement",
-    "live and work portugal",
-    "portugal digital nomad property",
-  ];
+  // Get metadata for current locale
+  const metadata =
+    digitalNomadVisaMetadata[locale as keyof typeof digitalNomadVisaMetadata] ||
+    digitalNomadVisaMetadata.en;
 
   return {
-    title: `Digital Nomad Visa Portugal - Complete Guide to Remote Work in the Algarve | ${WEBSITE_NAME}`,
-    description: description,
-    keywords: keywords,
+    title: `${metadata.title} | ${WEBSITE_NAME}`,
+    description: metadata.description,
+    keywords: [...metadata.keywords],
     openGraph: {
-      title:
-        "Digital Nomad Visa Portugal - Live & Work Remotely in the Algarve",
-      description: description,
+      title: metadata.ogTitle,
+      description: metadata.description,
       url: canonicalUrl,
       siteName: WEBSITE_NAME,
       locale: locale,
@@ -97,15 +78,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
           secureUrl: `${BASE_URL}/images/become-a-vendor/marketing.png`,
           width: 1200,
           height: 630,
-          alt: "Digital Nomad Visa Portugal - Remote Work in the Algarve",
+          alt: metadata.ogTitle,
         },
       ],
     },
     twitter: {
       card: "summary_large_image",
-      title:
-        "Digital Nomad Visa Portugal - Live & Work Remotely in the Algarve",
-      description: description,
+      title: metadata.ogTitle,
+      description: metadata.description,
       creator: EAV_TWITTER_CREATOR_HANDLE,
     },
     robots: {
@@ -128,12 +108,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       "geo.region": "PT",
       "geo.position": `${GEO_POSITION.lat};${GEO_POSITION.lng}`,
       ICBM: ICBM,
-      classification:
-        "Digital nomad visa guide, Portugal remote work visa, Algarve digital nomad information, Portugal visa requirements",
-      category:
-        "Visa information, Immigration guide, Remote work, Digital nomad, Portugal residency, Legal requirements",
-      "DC.title":
-        "Portugal digital nomad visa guide, Algarve remote work visa, Golden triangle digital nomad, Western Algarve visa information",
+      classification: metadata.classification,
+      category: metadata.category,
+      "DC.title": metadata.dcTitle,
     },
   };
 }

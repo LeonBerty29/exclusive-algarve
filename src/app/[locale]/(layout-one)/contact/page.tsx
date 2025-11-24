@@ -13,6 +13,7 @@ import {
   GEO_POSITION,
   WEBSITE_NAME,
 } from "@/config/constants";
+import { contactMetadata } from "@/seo-metadata/contact";
 
 interface Props {
   params: Promise<{ locale: string }>;
@@ -23,6 +24,11 @@ const BASE_URL =
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
+
+  // Get localized metadata
+  const metadata =
+    contactMetadata[locale as keyof typeof contactMetadata] ||
+    contactMetadata.en;
 
   // Get the localized path for the contact page
   const contactPath = routing.pathnames["/contact"];
@@ -55,42 +61,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   // ICBM coordinates
   const ICBM = `${GEO_POSITION.lat}, ${GEO_POSITION.lng}`;
 
-  const description =
-    "Contact Exclusive Algarve Villas - Get in touch with our luxury property experts in the Algarve, Portugal. Book a meeting, request agent partnership, or inquire about luxury villas in Carvoeiro, Vale do Lobo, and Quinta do Lago.";
-
-  const keywords = [
-    "real estate agency",
-    "marcela boturao",
-    "bart van linden",
-    "real estate agents algarve",
-    "real estate carvoeiro",
-    "algarve real estate agency",
-    "vilamoura real estate agents",
-    "experienced real estate agency to sell luxury house",
-    "contact algarve villas",
-    "luxury property contact portugal",
-    "algarve real estate inquiry",
-    "book meeting property algarve",
-    "contact property agent algarve",
-    "luxury villa inquiry portugal",
-    "carvoeiro property contact",
-    "golden triangle real estate contact",
-    "vale do lobo property inquiry",
-    "quinta do lago villa contact",
-    "algarve property consultation",
-    "portugal luxury real estate contact",
-    "agent partnership algarve",
-    "property expert contact portugal",
-  ];
-
   return {
-    title: `Contact - Exclusive Algarve Villas Luxury real estate agency | ${WEBSITE_NAME}`,
-    description: description,
-    keywords: keywords,
+    title: `${metadata.title} | ${WEBSITE_NAME}`,
+    description: metadata.description,
+    keywords: [...metadata.keywords],
     openGraph: {
-      title:
-        "Contact - Exclusive Algarve Villas Luxury real estate agency",
-      description: description,
+      title: metadata.ogTitle,
+      description: metadata.ogDescription,
       url: canonicalUrl,
       siteName: WEBSITE_NAME,
       locale: locale,
@@ -101,15 +78,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
           secureUrl: `${BASE_URL}/images/about/about-img-2.png`,
           width: 1200,
           height: 630,
-          alt: "Contact Exclusive Algarve Villas - Property Consultation",
+          alt: `${metadata.title} - ${WEBSITE_NAME}`,
         },
       ],
     },
     twitter: {
       card: "summary_large_image",
-      title:
-        "Contact Exclusive Algarve Villas - Luxury Property Experts in Portugal",
-      description: description,
+      title: metadata.ogTitle,
+      description: metadata.ogDescription,
       creator: EAV_TWITTER_CREATOR_HANDLE,
     },
     robots: {
@@ -132,12 +108,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       "geo.region": "PT",
       "geo.position": `${GEO_POSITION.lat};${GEO_POSITION.lng}`,
       ICBM: ICBM,
-      classification:
-        "Contact information, Luxury property inquiry, Algarve real estate consultation, Property expert contact",
-      category:
-        "Contact page, Property consultation, Real estate inquiry, Agent partnership, Customer service",
-      "DC.title":
-        "Contact Algarve property experts, Luxury villa inquiry Portugal, Golden triangle real estate consultation, Western Algarve property contact",
+      classification: metadata.classification,
+      category: metadata.category,
+      "DC.title": metadata.dcTitle,
     },
   };
 }

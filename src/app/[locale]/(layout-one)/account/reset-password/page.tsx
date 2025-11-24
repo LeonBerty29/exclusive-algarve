@@ -5,7 +5,7 @@ import { ResetPasswordForm } from "@/components/reset-password/reset-password-fo
 import { Metadata } from "next";
 import { BASE_URL, GEO_POSITION, WEBSITE_NAME } from "@/config/constants";
 import { routing } from "@/i18n/routing";
-import { accountForgotPasswordMetadata } from "@/seo-metadata/account-forgot-password";
+import { resetPasswordMetadata } from "@/seo-metadata/reset-password";
 
 interface Props {
   params: Promise<{ locale: string }>;
@@ -15,39 +15,37 @@ interface Props {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
 
-  // Get localized metadata
   const metadata =
-    accountForgotPasswordMetadata[
-      locale as keyof typeof accountForgotPasswordMetadata
-    ] || accountForgotPasswordMetadata.en;
+    resetPasswordMetadata[locale as keyof typeof resetPasswordMetadata] ||
+    resetPasswordMetadata.en;
 
-  // Get the localized path for the forgot password page
-  const forgotPasswordPath = routing.pathnames["/account/forgot-password"];
-  const localizedForgotPasswordPath =
-    typeof forgotPasswordPath === "string"
-      ? forgotPasswordPath
-      : forgotPasswordPath[locale as keyof typeof forgotPasswordPath];
+  // Get the localized path for the reset password page
+  const resetPasswordPath = routing.pathnames["/account/reset-password"];
+  const localizedResetPasswordPath =
+    typeof resetPasswordPath === "string"
+      ? resetPasswordPath
+      : resetPasswordPath[locale as keyof typeof resetPasswordPath];
 
   // Build canonical URL for current locale
-  const canonicalUrl = `${BASE_URL}/${locale}${localizedForgotPasswordPath}`;
+  const canonicalUrl = `${BASE_URL}/${locale}${localizedResetPasswordPath}`;
 
   // Build alternate language URLs
   const languages: Record<string, string> = {};
   routing.locales.forEach((loc) => {
     const path =
-      typeof forgotPasswordPath === "string"
-        ? forgotPasswordPath
-        : forgotPasswordPath[loc as keyof typeof forgotPasswordPath];
+      typeof resetPasswordPath === "string"
+        ? resetPasswordPath
+        : resetPasswordPath[loc as keyof typeof resetPasswordPath];
 
     languages[loc] = `${BASE_URL}/${loc}${path}`;
   });
 
   // Add x-default using default locale
   const defaultPath =
-    typeof forgotPasswordPath === "string"
-      ? forgotPasswordPath
-      : forgotPasswordPath[
-          routing.defaultLocale as keyof typeof forgotPasswordPath
+    typeof resetPasswordPath === "string"
+      ? resetPasswordPath
+      : resetPasswordPath[
+          routing.defaultLocale as keyof typeof resetPasswordPath
         ];
   languages["x-default"] = `${BASE_URL}/${routing.defaultLocale}${defaultPath}`;
 

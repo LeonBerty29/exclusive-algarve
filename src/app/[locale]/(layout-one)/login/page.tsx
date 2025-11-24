@@ -5,6 +5,7 @@ import {
   WEBSITE_NAME,
 } from "@/config/constants";
 import { routing } from "@/i18n/routing";
+import { loginMetadata } from "@/seo-metadata/login";
 import { Metadata } from "next";
 import React from "react";
 
@@ -57,28 +58,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   // ICBM coordinates
   const ICBM = `${GEO_POSITION.lat}, ${GEO_POSITION.lng}`;
 
-  const description =
-    "Login to your Exclusive Algarve Villas account to access saved properties, manage your profile, track property inquiries, and receive personalized luxury real estate updates in the Algarve.";
-
-  const keywords = [
-    "exclusive algarve villas login",
-    "client portal login",
-    "property account access",
-    "algarve real estate login",
-    "saved properties access",
-    "luxury property portal",
-    "client account algarve",
-    "property management login",
-    "real estate client portal",
-  ];
+  // Get metadata for current locale
+  const metadata =
+    loginMetadata[locale as keyof typeof loginMetadata] || loginMetadata.en;
 
   return {
-    title: `Login - Client Portal Access | ${WEBSITE_NAME}`,
-    description: description,
-    keywords: keywords,
+    title: `${metadata.title} | ${WEBSITE_NAME}`,
+    description: metadata.description,
+    keywords: [...metadata.keywords],
     openGraph: {
-      title: "Login to Your Exclusive Algarve Villas Account",
-      description: description,
+      title: metadata.ogTitle,
+      description: metadata.description,
       url: canonicalUrl,
       siteName: WEBSITE_NAME,
       locale: locale,
@@ -89,14 +79,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
           secureUrl: `${BASE_URL}/images/eav-dark-logo`,
           width: 1200,
           height: 630,
-          alt: "Login - Exclusive Algarve Villas Client Portal",
+          alt: metadata.ogTitle,
         },
       ],
     },
     twitter: {
       card: "summary_large_image",
-      title: "Login to Your Exclusive Algarve Villas Account",
-      description: description,
+      title: metadata.ogTitle,
+      description: metadata.description,
       creator: EAV_TWITTER_CREATOR_HANDLE,
     },
     robots: {
@@ -119,11 +109,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       "geo.region": "PT",
       "geo.position": `${GEO_POSITION.lat};${GEO_POSITION.lng}`,
       ICBM: ICBM,
-      classification:
-        "Client portal, Account access, Property management, User login",
-      category: "Client login, Account portal, User access, Property tracking",
-      "DC.title":
-        "Exclusive Algarve Villas client login, Property portal access, Luxury real estate account",
+      classification: metadata.classification,
+      category: metadata.category,
+      "DC.title": metadata.dcTitle,
+      audience: metadata.audience,
+      "article:section": metadata.articleSection,
     },
   };
 }
