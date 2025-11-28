@@ -22,6 +22,7 @@ import { HashLanguageSwitcherDropdown } from "@/components/shared/hash-language-
 import { Metadata } from "next";
 import { routing } from "@/i18n/routing";
 import { ScrollToTopWrapper } from "@/components/scroll-to-top-wrapper";
+import { exclusiveListingHashMetadata } from "@/seo-metadata/exclusive-listing-metadata-hash";
 
 type Params = {
   [x: string]: string | string[];
@@ -80,15 +81,18 @@ export async function generateMetadata({
     routing.defaultLocale
   }${defaultPath.replace("[hash]", hash)}`;
 
-  const description =
-    "View your exclusive selection of luxury Algarve properties. This private collection features handpicked villas and estates in Vale do Lobo, Quinta do Lago, and Carvoeiro, curated specifically for you.";
+  // Get metadata for current locale
+  const metadata =
+    exclusiveListingHashMetadata[
+      locale as keyof typeof exclusiveListingHashMetadata
+    ] || exclusiveListingHashMetadata.en;
 
   return {
-    title: `Exclusive Property Selection - Private Luxury Listings | ${WEBSITE_NAME}`,
-    description: description,
+    title: `${metadata.title} | ${WEBSITE_NAME}`,
+    description: metadata.description,
     openGraph: {
-      title: "Your Exclusive Property Selection - Private Luxury Listings",
-      description: description,
+      title: metadata.ogTitle,
+      description: metadata.description,
       url: canonicalUrl,
       siteName: WEBSITE_NAME,
       locale: locale,
@@ -98,14 +102,14 @@ export async function generateMetadata({
           url: `${BASE_URL}/images/eav-logo-dark.svg`,
           width: 1200,
           height: 630,
-          alt: "Exclusive Algarve Villas - Private Selection",
+          alt: metadata.ogTitle,
         },
       ],
     },
     twitter: {
       card: "summary_large_image",
-      title: "Your Exclusive Property Selection - Private Luxury Listings",
-      description: description,
+      title: metadata.ogTitle,
+      description: metadata.description,
       creator: EAV_TWITTER_CREATOR_HANDLE,
       images: [`${BASE_URL}/images/eav-logo-dark.svg`],
     },

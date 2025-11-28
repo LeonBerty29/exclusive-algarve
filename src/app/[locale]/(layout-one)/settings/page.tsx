@@ -12,6 +12,7 @@ import {
   GEO_POSITION,
   WEBSITE_NAME,
 } from "@/config/constants";
+import { settingsMetadata } from "@/seo-metadata/settings";
 
 interface Props {
   params: Promise<{ locale: string }>;
@@ -22,6 +23,11 @@ const BASE_URL =
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
+
+  // Get localized metadata
+  const metadata =
+    settingsMetadata[locale as keyof typeof settingsMetadata] ||
+    settingsMetadata.en;
 
   // Get the localized path for the settings page
   const settingsPath = routing.pathnames["/settings"];
@@ -54,59 +60,43 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   // ICBM coordinates
   const ICBM = `${GEO_POSITION.lat}, ${GEO_POSITION.lng}`;
 
-  const description =
-    "Manage your Exclusive Algarve Villas account settings, update your profile information, adjust notification preferences, and customize your luxury property search experience.";
-
-  const keywords = [
-    "account settings",
-    "profile management",
-    "user preferences",
-    "notification settings",
-    "account information",
-    "profile update",
-    "privacy settings",
-    "user account management",
-  ];
-
   return {
-    title: `Account Settings - Manage Your Profile | ${WEBSITE_NAME}`,
-    description: description,
-    keywords: keywords,
+    title: `${metadata.title} | ${WEBSITE_NAME}`,
+    description: metadata.description,
+    keywords: [...metadata.keywords],
     openGraph: {
-      title: "Account Settings - Exclusive Algarve Villas",
-      description: description,
+      title: metadata.ogTitle,
+      description: metadata.ogDescription,
       url: canonicalUrl,
       siteName: WEBSITE_NAME,
       locale: locale,
       type: "website",
       images: [
         {
-          url: `${BASE_URL}/images/eav-dark-logo`,
-          secureUrl: `${BASE_URL}/images/eav-dark-logo`,
+          url: `${BASE_URL}/images/account/settings.png`,
+          secureUrl: `${BASE_URL}/images/account/settings.png`,
           width: 1200,
           height: 630,
-          alt: "Account Settings - Exclusive Algarve Villas",
+          alt: `${metadata.title} - ${WEBSITE_NAME}`,
         },
       ],
     },
     twitter: {
       card: "summary_large_image",
-      title: "Account Settings - Exclusive Algarve Villas",
-      description: description,
+      title: metadata.ogTitle,
+      description: metadata.ogDescription,
       creator: EAV_TWITTER_CREATOR_HANDLE,
     },
     robots: {
-      index: false, // Settings pages are private and should not be indexed
-      follow: false, // Don't follow links from settings pages
-      noarchive: true, // Don't cache this page
+      index: false,
+      follow: false,
+      noarchive: true,
       nocache: true,
+      nosnippet: true,
       googleBot: {
         index: false,
         follow: false,
         noarchive: true,
-        "max-snippet": -1,
-        "max-image-preview": "large",
-        "max-video-preview": -1,
       },
     },
     alternates: {
@@ -117,12 +107,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       "geo.region": "PT",
       "geo.position": `${GEO_POSITION.lat};${GEO_POSITION.lng}`,
       ICBM: ICBM,
-      classification:
-        "Account management, User settings, Profile preferences, Privacy settings",
-      category:
-        "Settings, Profile management, User preferences, Account configuration",
-      "DC.title":
-        "User account settings, Profile management, Account preferences",
+      classification: metadata.classification,
+      category: metadata.category,
+      "DC.title": metadata.dcTitle,
     },
   };
 }

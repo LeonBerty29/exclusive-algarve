@@ -1,4 +1,6 @@
+// import { redirect } from "@/i18n/navigation";
 import { FavoritesResponse } from "@/types";
+// import { getLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 
 function createBasicAuthHeader(): string {
@@ -137,6 +139,15 @@ export const getFavorites = async (
   token: string
 ): Promise<FavoritesResponse> => {
   const endpoint = `/v1/client/favorites`;
+
+  // const locale = await getLocale();
+
+  // const isTokenValid = await verifyTokenValidity()
+
+  // redirect({
+  //   href: "/login",
+  //   locale: locale,
+  // });
 
   return apiRequest<FavoritesResponse>(
     endpoint,

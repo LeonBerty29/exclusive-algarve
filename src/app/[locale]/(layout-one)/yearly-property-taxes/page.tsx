@@ -9,6 +9,7 @@ import {
   GEO_POSITION,
   WEBSITE_NAME,
 } from "@/config/constants";
+import { yearlyPropertyTaxesMetadata } from "@/seo-metadata/yearly-property-taxes";
 
 interface Props {
   params: Promise<{ locale: string }>;
@@ -51,39 +52,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   // ICBM coordinates
   const ICBM = `${GEO_POSITION.lat}, ${GEO_POSITION.lng}`;
 
-  const description =
-    "Complete guide to yearly property taxes in Portugal. Learn about IMI (Municipal Property Tax) and AIMI (Additional Property Tax) rates, calculation methods, payment schedules, and tax obligations for property owners in the Algarve.";
-
-  const keywords = [
-    "portugal property taxes",
-    "algarve property tax",
-    "IMI tax portugal",
-    "AIMI tax portugal",
-    "municipal property tax algarve",
-    "portugal real estate taxes",
-    "annual property tax portugal",
-    "property tax rates algarve",
-    "IMI calculation portugal",
-    "property ownership costs portugal",
-    "algarve villa taxes",
-    "portugal property tax guide",
-    "yearly property costs algarve",
-    "real estate tax obligations portugal",
-    "property tax payment portugal",
-    "carvoeiro property taxes",
-    "vale do lobo property tax",
-    "quinta do lago taxes",
-    "golden triangle property taxes",
-  ];
+  // Get metadata for current locale
+  const metadata =
+    yearlyPropertyTaxesMetadata[locale as keyof typeof yearlyPropertyTaxesMetadata] ||
+    yearlyPropertyTaxesMetadata.en;
 
   return {
-    title: `Yearly Property Taxes in Portugal - Complete IMI & AIMI Guide | ${WEBSITE_NAME}`,
-    description: description,
-    keywords: keywords,
+    title: `${metadata.title} | ${WEBSITE_NAME}`,
+    description: metadata.description,
+    keywords: [...metadata.keywords],
     openGraph: {
-      title:
-        "Yearly Property Taxes in Portugal - IMI & AIMI Guide for Algarve Property Owners",
-      description: description,
+      title: metadata.ogTitle,
+      description: metadata.description,
       url: canonicalUrl,
       siteName: WEBSITE_NAME,
       locale: locale,
@@ -94,15 +74,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
           secureUrl: `${BASE_URL}/images/property-taxes-banner.png`,
           width: 1200,
           height: 630,
-          alt: "Portugal Property Taxes Guide - IMI and AIMI Information",
+          alt: metadata.ogTitle,
         },
       ],
     },
     twitter: {
       card: "summary_large_image",
-      title:
-        "Yearly Property Taxes in Portugal - IMI & AIMI Guide for Algarve Property Owners",
-      description: description,
+      title: metadata.ogTitle,
+      description: metadata.description,
       creator: EAV_TWITTER_CREATOR_HANDLE,
     },
     robots: {
@@ -125,16 +104,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       "geo.region": "PT",
       "geo.position": `${GEO_POSITION.lat};${GEO_POSITION.lng}`,
       ICBM: ICBM,
-      classification:
-        "Property tax information, IMI tax guide, AIMI tax guide, Portugal tax obligations",
-      category:
-        "Tax guide, Property ownership costs, Real estate taxes, Financial information, Property maintenance costs",
-      "DC.title":
-        "Portugal property taxes guide, Algarve IMI tax information, AIMI tax rates Portugal, Property ownership costs Golden Triangle",
-      "DC.type": "Text.Financial",
-      "article:section": "Property Finance & Taxes",
-      audience:
-        "Property owners, Property buyers, International investors, Real estate investors",
+      classification: metadata.classification,
+      category: metadata.category,
+      "DC.title": metadata.dcTitle,
+      "DC.type": metadata.dcType,
+      "article:section": metadata.articleSection,
+      audience: metadata.audience,
     },
   };
 }

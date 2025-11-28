@@ -69,8 +69,8 @@ const PropertyImageCarousel: React.FC<PropertyImageCarouselProps> = ({
       </div>
 
       {/* Main Carousel */}
-      <div className="flex-1 relative">
-        <Carousel setApi={setApi} className="w-full h-full">
+      <div className="flex-1 relative h-fit">
+        <Carousel setApi={setApi} className="w-full">
           <CarouselContent className="h-[300px] md:h-[600px]">
             {images.map((image, index) => (
               <CarouselItem key={index}>
@@ -85,12 +85,14 @@ const PropertyImageCarousel: React.FC<PropertyImageCarouselProps> = ({
               </CarouselItem>
             ))}
           </CarouselContent>
-          <CarouselPrevious className="left-4" />
-          <CarouselNext className="right-4" />
+          <div className="relative max-w-[600px] h-fit flex justify-center items-center gap-10 w-full mx-auto pt-3">
+            <CarouselPrevious className="static translate-0" />
+            <CarouselNext className="static translate-0" />
+          </div>
         </Carousel>
 
         {/* Image Counter */}
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/70 text-white px-4 py-2 rounded-full text-sm z-10">
+        <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-black/70 text-white px-4 py-2 rounded-full text-sm z-10">
           {current + 1} / {images.length}
         </div>
       </div>

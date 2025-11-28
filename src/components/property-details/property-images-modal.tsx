@@ -76,6 +76,20 @@ const PropertyImagesModal = async ({
                 </TabsTrigger>
               </TabsList>
 
+              <DialogFooter className="sm:justify-start px-4 pb-4 pt-2">
+                <DialogClose asChild>
+                  <div className="w-fit ml-auto">
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      className="w-full sm:w-auto"
+                    >
+                      {t("close")}
+                    </Button>
+                  </div>
+                </DialogClose>
+              </DialogFooter>
+
               <TabsContent value="images" className="mt-0">
                 <PropertyImageCarousel images={images} />
               </TabsContent>
@@ -137,19 +151,19 @@ const PropertyImagesModal = async ({
                 </AccordionContent>
               </AccordionItem>
             </Accordion>
-          </div>
 
-          <DialogFooter className="sm:justify-start px-4 pb-4 pt-2">
-            <DialogClose asChild>
-              <Button
-                type="button"
-                variant="secondary"
-                className="w-full sm:w-auto"
-              >
-                {t("close")}
-              </Button>
-            </DialogClose>
-          </DialogFooter>
+            <DialogFooter className="sm:justify-start px-4 pb-4 pt-2">
+              <DialogClose asChild>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  className="w-full sm:w-auto"
+                >
+                  {t("close")}
+                </Button>
+              </DialogClose>
+            </DialogFooter>
+          </div>
         </DialogContent>
       </Dialog>
     </>

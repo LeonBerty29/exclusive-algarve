@@ -165,7 +165,7 @@ export default function HeroSection({
         </div>
       )}
 
-      <div className="relative z-10 w-full max-w-7xl py-14 px-6">
+      <div className="relative z-10 w-full max-w-7xl py-14 px-6 min-h-screen mx-auto flex w-full flex-col justify-center">
         <div className="glassmorphism rounded-xl pt-14 pb-6">{children}</div>
 
         <Button

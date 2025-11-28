@@ -17,6 +17,10 @@ import { HomepageSearchEngine } from "@/components/search/homepage-search-engine
 import { HomepageSearchResult } from "@/components/search/homepage-search-result";
 import { PropertySearchParams } from "@/types/property";
 import { FooterPropertiesLink } from "@/components/layout/footer-properties-link";
+import { BASE_URL, EAV_TWITTER_CREATOR_HANDLE, GEO_POSITION, WEBSITE_NAME } from "@/config/constants";
+import { routing } from "@/i18n/routing";
+import { homeMetadata } from "@/seo-metadata/home-page";
+import { Metadata } from "next";
 
 type Params = {
   [x: string]: string | string[];
@@ -25,6 +29,110 @@ type Params = {
 interface PageProps {
   params?: Promise<Params>;
   searchParams: Promise<PropertySearchParams>;
+}
+
+interface Props {
+  params: Promise<{ locale: string }>;
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+
+  // Get localized metadata
+  const metadata =
+    homeMetadata[locale as keyof typeof homeMetadata] || homeMetadata.en;
+
+  // Get the localized path for the homepage
+  const homePath = routing.pathnames["/"];
+  const localizedHomePath =
+    typeof homePath === "string"
+      ? homePath
+      : homePath[locale as keyof typeof homePath];
+
+  // Build canonical URL for current locale
+  const canonicalUrl = `${BASE_URL}/${locale}${localizedHomePath}`;
+
+  // Build alternate language URLs
+  const languages: Record<string, string> = {};
+  routing.locales.forEach((loc) => {
+    const path =
+      typeof homePath === "string"
+        ? homePath
+        : homePath[loc as keyof typeof homePath];
+
+    languages[loc] = `${BASE_URL}/${loc}${path}`;
+  });
+
+  // Add x-default using default locale
+  const defaultPath =
+    typeof homePath === "string"
+      ? homePath
+      : homePath[routing.defaultLocale as keyof typeof homePath];
+  languages["x-default"] = `${BASE_URL}/${routing.defaultLocale}${defaultPath}`;
+
+  // ICBM coordinates
+  const ICBM = `${GEO_POSITION.lat}, ${GEO_POSITION.lng}`;
+
+  return {
+    title: `${metadata.title} | ${WEBSITE_NAME}`,
+    description: metadata.description,
+    keywords: [...metadata.keywords],
+    openGraph: {
+      title: metadata.ogTitle,
+      description: metadata.ogDescription,
+      url: canonicalUrl,
+      siteName: WEBSITE_NAME,
+      locale: locale,
+      type: "website",
+      images: [
+        {
+          url: `${BASE_URL}/images/eav-dark-logo.png`,
+          secureUrl: `${BASE_URL}/images/eav-dark-logo.png`,
+          width: 1200,
+          height: 630,
+          alt: `${WEBSITE_NAME} - Luxury Real Estate Algarve`,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: metadata.ogTitle,
+      description: metadata.ogDescription,
+      creator: EAV_TWITTER_CREATOR_HANDLE,
+      images: [`${BASE_URL}/images/eav-dark-logo.png`],
+    },
+    robots: {
+      index: true,
+      follow: true,
+      nocache: false,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-snippet": -1,
+        "max-image-preview": "large",
+        "max-video-preview": -1,
+      },
+    },
+    alternates: {
+      canonical: canonicalUrl,
+      languages: languages,
+    },
+    verification: {
+      google: process.env.GOOGLE_SITE_VERIFICATION,
+    },
+    other: {
+      "geo.region": "PT-08", // Faro District (Algarve)
+      "geo.placename": "Algarve",
+      "geo.position": `${GEO_POSITION.lat};${GEO_POSITION.lng}`,
+      ICBM: ICBM,
+      classification: metadata.classification,
+      category: metadata.category,
+      "DC.title": metadata.dcTitle,
+      "DC.subject": "Luxury Real Estate",
+      "DC.language": locale,
+      "DC.coverage": "Algarve, Portugal",
+    },
+  };
 }
 
 export default async function Home(props: PageProps) {
