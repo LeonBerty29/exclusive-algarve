@@ -70,7 +70,7 @@ const PropertyImageCarousel: React.FC<PropertyImageCarouselProps> = ({
 
       {/* Main Carousel */}
       <div className="flex-1 relative h-fit">
-        <Carousel setApi={setApi} className="w-full">
+        <Carousel opts={{ loop: true }} setApi={setApi} className="w-full">
           <CarouselContent className="h-[300px] md:h-[600px]">
             {images.map((image, index) => (
               <CarouselItem key={index}>
