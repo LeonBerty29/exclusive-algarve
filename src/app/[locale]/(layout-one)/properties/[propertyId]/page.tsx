@@ -39,7 +39,6 @@ import {
   WEBSITE_NAME,
 } from "@/config/constants";
 import { routing } from "@/i18n/routing";
-import { GoogleMapsProvider } from "@/providers/google-maps-provider";
 import { propertyDetailsPageMetadata } from "@/seo-metadata/property-details-page";
 import { ScrollToTopWrapper } from "@/components/scroll-to-top-wrapper";
 
@@ -201,7 +200,6 @@ export default async function page(props: Props) {
   setRequestLocale(locale);
 
   return (
-    <GoogleMapsProvider>
       <div className="py-14">
         <ScrollToTopWrapper>
           <Suspense fallback={<PropertyDetailsPageLoading />}>
@@ -209,7 +207,6 @@ export default async function page(props: Props) {
           </Suspense>
         </ScrollToTopWrapper>
       </div>
-    </GoogleMapsProvider>
   );
 }
 

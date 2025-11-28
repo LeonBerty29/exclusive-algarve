@@ -138,7 +138,7 @@ export const NearbyPlacesList = ({
 
     const fetchAllPlaces = async () => {
       setLoading(true);
-      console.log("\n🔍 Searching for nearby places...");
+      // console.log("\n🔍 Searching for nearby places...");
 
       const foundPlaces: NearbyPlace[] = [];
 
@@ -151,11 +151,11 @@ export const NearbyPlacesList = ({
 
         if (place) {
           foundPlaces.push(place);
-          console.log(
-            `✅ ${place.type}: ${place.name} - ${place.duration} (${place.distance})`
-          );
+          // console.log(
+          //   `✅ ${place.type}: ${place.name} - ${place.duration} (${place.distance})`
+          // );
         } else {
-          console.log(`❌ ${label}: Not found`);
+          // console.log(`❌ ${label}: Not found`);
         }
       }
 
