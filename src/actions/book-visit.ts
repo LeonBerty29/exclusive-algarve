@@ -42,7 +42,7 @@ export async function bookVisitAction(
     const validationResult = bookVisitSchema.safeParse(rawData);
 
     if (!validationResult.success) {
-      console.log("Validation errors:", validationResult.error.errors); // Debug log
+      // console.log("Validation errors:", validationResult.error.errors); // Debug log
 
       // Convert Zod errors to field errors with proper typing
       const fieldErrors: { [key: string]: string } = {};
@@ -81,13 +81,13 @@ export async function bookVisitAction(
     const verification = await verificationResponse.json();
 
     if (verification.success && verification.score > 0.5) {
-      console.log({ success: true, score: verification.score });
+      // console.log({ success: true, score: verification.score });
     } else {
-      console.log({
-        success: false,
-        score: verification.score,
-        errorCodes: verification["error-codes"],
-      });
+      // console.log({
+      //   success: false,
+      //   score: verification.score,
+      //   errorCodes: verification["error-codes"],
+      // });
       return {
         success: false,
         message: t("recaptchaFailed"),

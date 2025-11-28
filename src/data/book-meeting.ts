@@ -21,7 +21,6 @@ export async function bookMeetingWithDetailedErrors(
     const basicAuth =
       "Basic " + Buffer.from(`${username}:${password}`).toString("base64");
 
-    console.log("api call");
     const response = await fetch(`${process.env.API_BASE_URL}${endpoint}`, {
       method: "POST",
       headers: {
@@ -33,21 +32,15 @@ export async function bookMeetingWithDetailedErrors(
       body: JSON.stringify(data),
     });
 
-    console.log({ response });
+    // console.log({ response });
 
     if (!response.ok) {
-      console.log("This is a not ok response");
-
-      console.log(`response type is ${typeof response.status}`);
 
       if (response.status == 401 || response.status == 404) {
-        console.log("This is a 401 error");
         return {
           success: false,
           error: t("unauthorizedInvalidOrMissingInternalToken"),
         };
-      } else {
-        console.log("This is a different error");
       }
 
       const errorData: BookMeetingError = await response.json();

@@ -41,7 +41,7 @@ const PropertyImageCarousel: React.FC<PropertyImageCarouselProps> = ({
   return (
     <div className="flex gap-4 w-full h-fit">
       {/* Sidebar Thumbnails */}
-      <div className="w-64 flex-shrink-0 overflow-y-auto hidden lg:block max-h-screen">
+      <div className="w-64 flex-shrink-0 overflow-y-auto hidden lg:block max-h-screen [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:hover:bg-gray-400">
         <div className="flex flex-col gap-2 h-full">
           {images.map((image, index) => (
             <Button
@@ -85,16 +85,16 @@ const PropertyImageCarousel: React.FC<PropertyImageCarouselProps> = ({
               </CarouselItem>
             ))}
           </CarouselContent>
-          <div className="relative max-w-[600px] h-fit flex justify-center items-center gap-10 w-full mx-auto pt-3">
+          <div className="relative max-w-[600px] h-fit flex justify-center items-center gap-10 w-full mx-auto py-3">
             <CarouselPrevious className="static translate-0" />
             <CarouselNext className="static translate-0" />
           </div>
         </Carousel>
 
         {/* Image Counter */}
-        <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-black/70 text-white px-4 py-2 rounded-full text-sm z-10">
+        {/* <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-black/70 text-white px-4 py-2 rounded-full text-sm z-10 hidden lg:block">
           {current + 1} / {images.length}
-        </div>
+        </div> */}
       </div>
     </div>
   );

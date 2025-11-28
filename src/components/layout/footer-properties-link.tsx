@@ -6,8 +6,6 @@ import { Skeleton } from "../ui/skeleton";
 import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 
-// Fetch areas from /api/search/regions and console.log the response we need to fetch it once when the component mounts
-
 export const FooterPropertiesLink = () => {
   const t = useTranslations("footerPropertyLinks");
 

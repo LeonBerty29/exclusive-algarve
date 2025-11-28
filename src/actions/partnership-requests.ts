@@ -89,13 +89,13 @@ export async function PartnershipRequestFormAction(
     const verification = await verificationResponse.json();
 
     if (verification.success && verification.score > 0.5) {
-      console.log({ success: true, score: verification.score });
+      // console.log({ success: true, score: verification.score });
     } else {
-      console.log({
-        success: false,
-        score: verification.score,
-        errorCodes: verification["error-codes"],
-      });
+      // console.log({
+      //   success: false,
+      //   score: verification.score,
+      //   errorCodes: verification["error-codes"],
+      // });
       return {
         success: false,
         message: t("recaptchaVerificationFailed"),

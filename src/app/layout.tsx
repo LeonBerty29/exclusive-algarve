@@ -8,6 +8,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { routing } from "@/i18n/routing";
 import { getMessages, setRequestLocale } from "next-intl/server";
 import RecaptchaProvider from "@/components/recaptcha-provider";
+import { GoogleMapsProvider } from "@/providers/google-maps-provider";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -44,8 +45,10 @@ export default async function RootLayout({
           <body className={`${poppins.className} antialiased`}>
             <NextIntlClientProvider messages={messages}>
               <RecaptchaProvider>
-                <main className="w-full">{children}</main>
-                <Toaster />
+                <GoogleMapsProvider>
+                  <main className="w-full">{children}</main>
+                  <Toaster />
+                </GoogleMapsProvider>
               </RecaptchaProvider>
             </NextIntlClientProvider>
           </body>
