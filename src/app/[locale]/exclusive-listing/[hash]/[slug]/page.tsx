@@ -27,6 +27,7 @@ import {
 } from "@/config/constants";
 import { routing } from "@/i18n/routing";
 import { ScrollToTopWrapper } from "@/components/scroll-to-top-wrapper";
+import { exclusiveListingHashSlugMetadata } from "@/seo-metadata/exclusive-listing-hash-slug";
 
 interface Props {
   params: Promise<{ slug: string; locale: string; hash: string }>;
@@ -43,6 +44,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: "The requested property could not be found",
     };
   }
+
+  // Get localized fallback metadata (used for robots and other static fields)
+  const metadata =
+    exclusiveListingHashSlugMetadata[
+      locale as keyof typeof exclusiveListingHashSlugMetadata
+    ] || exclusiveListingHashSlugMetadata.en;
 
   // Get the localized path for exclusive property details from routing config
   const exclusivePropertyPath =
@@ -103,6 +110,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `${property.title} - Exclusive Selection | ${WEBSITE_NAME}`,
     description: property.seo.description,
+    keywords: [...metadata.keywords], // Use localized keywords from metadata
     openGraph: {
       title: `${property.title} - Exclusive Property`,
       description: property.seo.description,
@@ -134,6 +142,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       noarchive: true, // Don't cache this page
       nocache: true, // Don't cache
       noimageindex: true, // Don't index images
+      nosnippet: true, // Don't show snippets
       googleBot: {
         index: false,
         follow: false,
@@ -152,6 +161,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     other: {
       "X-Robots-Tag": "noindex, nofollow, noarchive, nocache",
       referrer: "no-referrer", // Don't leak referrer information
+      classification: metadata.classification,
+      category: metadata.category,
+      "DC.title": metadata.dcTitle,
     },
   };
 }
