@@ -768,7 +768,9 @@
     "successDialogTitle": "Successfully Subscribed!",
     "buttonClose": "Close",
     "errorFailedSubscribe": "Failed to subscribe to newsletter. Please try again.",
-    "errorUnexpected": "An unexpected error occurred. Please try again."
+    "errorUnexpected": "An unexpected error occurred. Please try again.",
+    "checkEmailTitle": "Check Your Email",
+    "checkEmailMessage": "We've sent a confirmation link to your email address. Please check your inbox and click the link to confirm your subscription."
   },
   "ownResourcesDropdown": {
     "own": "Own",
@@ -1551,5 +1553,15 @@
     "busStation": "Bus Station",
     "airport": "Airport",
     "hospital": "Hospital"
+  },
+  "newsletterConfirmPage": {
+    "successTitle": "Subscription Confirmed!",
+    "confirmationSuccessMessage": "Thank you for confirming your subscription. You'll now receive our newsletter updates.",
+    "errorTitle": "Confirmation Failed",
+    "confirmationErrorMessage": "We couldn't confirm your subscription. The link may have expired or is invalid.",
+    "tryAgainButton": "Try Again",
+    "homeButton": "Go to Homepage",
+    "confirmingSubscriptionText": "Confirming your subscription",
+    "pleaseWaitText": "Please wait a moment..."
   }
 }

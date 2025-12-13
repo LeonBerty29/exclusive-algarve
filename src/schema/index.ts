@@ -113,6 +113,18 @@ export function getCreatedPageSearchParamsSchema(t?: (key: string) => string) {
   });
 }
 
+export function getNewsletterConfirmPageSearchParamsSchema(
+  t: (key: string) => string
+) {
+  return z.object({
+    token: z
+      .string({
+        required_error: t("tokenRequired"),
+      })
+      .min(1, t("tokenRequired")),
+  });
+}
+
 // Type exports for convenience
 export type LoginFormData = z.infer<ReturnType<typeof getLoginSchema>>;
 export type RegisterFormData = z.infer<ReturnType<typeof getRegisterSchema>>;

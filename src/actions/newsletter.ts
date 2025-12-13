@@ -3,7 +3,7 @@
 import { ZodIssue } from "zod";
 import { getTranslations } from "next-intl/server";
 import { submitNewsletterFormWithDetailedErrors } from "@/data/newsletter";
-import { getMessageFormSchema } from "@/types/message-us";
+import { getNewsletterFormSchema } from "@/types/newsletter";
 
 export interface NewsletterFormActionResult {
   success: boolean;
@@ -19,7 +19,7 @@ export async function newsletterFormAction(
   const newsletterFormSchemaTranslation = await getTranslations(
     "newsletterFormSchema"
   );
-  const newsletterFormSchema = getMessageFormSchema(
+  const newsletterFormSchema = getNewsletterFormSchema(
     newsletterFormSchemaTranslation
   );
 
@@ -73,13 +73,13 @@ export async function newsletterFormAction(
     const verification = await verificationResponse.json();
 
     if (verification.success && verification.score > 0.5) {
-      console.log({ success: true, score: verification.score });
+      // console.log({ success: true, score: verification.score });
     } else {
-      console.log({
-        success: false,
-        score: verification.score,
-        errorCodes: verification["error-codes"],
-      });
+      // console.log({
+      //   success: false,
+      //   score: verification.score,
+      //   errorCodes: verification["error-codes"],
+      // });
       return {
         success: false,
         message: t("recaptchaVerificationFailed"),

@@ -29,6 +29,7 @@ import { getTranslations } from "next-intl/server";
 import { Metadata } from "next";
 import { routing } from "@/i18n/routing";
 import { propertiesMetadata } from "@/seo-metadata/properties";
+import { TokenValidity } from "@/actions/token-validity";
 
 type Params = {
   [x: string]: string | string[];
@@ -216,7 +217,9 @@ export default async function PropertiesPage(props: PageProps) {
                 key={`${suspenseKey} --properties`}
                 fallback={<PropertiesGridSkeleton />}
               >
-                <PropertieList apiParams={apiParams} />
+                {/* <SessionValidator> */}
+                  <PropertieList apiParams={apiParams} />
+                {/* </SessionValidator> */}
               </Suspense>
               <Suspense
                 key={`${suspenseKey} --pagination`}
@@ -239,7 +242,15 @@ async function PropertieList({
 }) {
   const t = await getTranslations("propertiesPage");
   const session = await auth();
-  const token = session?.accessToken;
+  let token = session?.accessToken;
+
+  // Validate token on the server before fetching
+  if (token) {
+    const { valid } = await TokenValidity(token); // Use the helper function
+    if (!valid) {
+      token = undefined; // Don't use invalid token
+    }
+  }
 
   // Fetch all data concurrently using Promise.all
   const [propertiesResponse, favoritesResponse, notesResponse] =

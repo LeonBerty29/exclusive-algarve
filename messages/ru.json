@@ -768,7 +768,9 @@
     "successDialogTitle": "Успешно подписаны!",
     "buttonClose": "Закрыть",
     "errorFailedSubscribe": "Не удалось подписаться на рассылку. Попробуйте снова.",
-    "errorUnexpected": "Произошла непредвиденная ошибка. Попробуйте снова."
+    "errorUnexpected": "Произошла непредвиденная ошибка. Попробуйте снова.",
+    "checkEmailTitle": "Проверьте свою электронную почту",
+    "checkEmailMessage": "Мы отправили ссылку для подтверждения на ваш адрес электронной почты. Пожалуйста, проверьте свой почтовый ящик и нажмите на ссылку, чтобы подтвердить подписку."
   },
   "ownResourcesDropdown": {
     "own": "Владеть",
@@ -1275,7 +1277,8 @@
     "validationFailed": "Проверка не удалась",
     "unauthorizedTryAgain": "Не авторизован - попробуйте снова",
     "serverError": "Ошибка сервера:",
-    "networkErrorOccurred": "Произошла ошибка сети"
+    "networkErrorOccurred": "Произошла ошибка сети",
+    "errorConfirmingSubscription": "Ошибка при подтверждении вашей подписки"
   },
   "partnershipRequestData": {
     "validationFailed": "Проверка не удалась",
@@ -1551,5 +1554,15 @@
     "busStation": "Автовокзал",
     "airport": "Аэропорт",
     "hospital": "Больница"
+  },
+  "newsletterConfirmPage": {
+    "successTitle": "Подписка подтверждена!",
+    "confirmationSuccessMessage": "Спасибо за подтверждение подписки. Теперь вы будете получать обновления нашей рассылки.",
+    "errorTitle": "Ошибка подтверждения",
+    "confirmationErrorMessage": "Не удалось подтвердить вашу подписку. Возможно, срок действия ссылки истек или она недействительна.",
+    "tryAgainButton": "Попробовать снова",
+    "homeButton": "На главную страницу",
+    "confirmingSubscriptionText": "Подтверждение вашей подписки",
+    "pleaseWaitText": "Пожалуйста, подождите..."
   }
 }

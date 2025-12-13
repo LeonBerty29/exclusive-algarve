@@ -768,7 +768,9 @@
     "successDialogTitle": "Erfolgreich abonniert!",
     "buttonClose": "Schließen",
     "errorFailedSubscribe": "Newsletter-Abonnement fehlgeschlagen. Bitte versuchen Sie es erneut.",
-    "errorUnexpected": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es erneut."
+    "errorUnexpected": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
+    "checkEmailTitle": "Überprüfen Sie Ihre E-Mail",
+    "checkEmailMessage": "Wir haben einen Bestätigungslink an Ihre E-Mail-Adresse gesendet. Bitte überprüfen Sie Ihren Posteingang und klicken Sie auf den Link, um Ihr Abonnement zu bestätigen."
   },
   "ownResourcesDropdown": {
     "own": "Besitzen",
@@ -1275,7 +1277,8 @@
     "validationFailed": "Validierung fehlgeschlagen",
     "unauthorizedTryAgain": "Nicht autorisiert - bitte versuchen Sie es erneut",
     "serverError": "Serverfehler:",
-    "networkErrorOccurred": "Netzwerkfehler aufgetreten"
+    "networkErrorOccurred": "Netzwerkfehler aufgetreten",
+    "errorConfirmingSubscription": "Fehler beim Bestätigen Ihres Abonnements"
   },
   "partnershipRequestData": {
     "validationFailed": "Validierung fehlgeschlagen",
@@ -1551,5 +1554,15 @@
     "busStation": "Bushaltestelle",
     "airport": "Flughafen",
     "hospital": "Krankenhaus"
+  },
+  "newsletterConfirmPage": {
+    "successTitle": "Abonnement bestätigt!",
+    "confirmationSuccessMessage": "Vielen Dank für die Bestätigung Ihres Abonnements. Sie erhalten nun unsere Newsletter-Updates.",
+    "errorTitle": "Bestätigung fehlgeschlagen",
+    "confirmationErrorMessage": "Wir konnten Ihr Abonnement nicht bestätigen. Der Link ist möglicherweise abgelaufen oder ungültig.",
+    "tryAgainButton": "Erneut versuchen",
+    "homeButton": "Zur Startseite",
+    "confirmingSubscriptionText": "Ihr Abonnement wird bestätigt",
+    "pleaseWaitText": "Bitte warten Sie einen Moment..."
   }
 }
