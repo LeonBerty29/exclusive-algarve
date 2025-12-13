@@ -768,7 +768,9 @@
     "successDialogTitle": "Subscrito Com Sucesso!",
     "buttonClose": "Fechar",
     "errorFailedSubscribe": "Falha ao subscrever newsletter. Por favor tente novamente.",
-    "errorUnexpected": "Ocorreu um erro inesperado. Por favor tente novamente."
+    "errorUnexpected": "Ocorreu um erro inesperado. Por favor tente novamente.",
+    "checkEmailTitle": "Verifique seu e-mail",
+    "checkEmailMessage": "Enviamos um link de confirmação para o seu endereço de e-mail. Por favor, verifique sua caixa de entrada e clique no link para confirmar sua assinatura."
   },
   "ownResourcesDropdown": {
     "own": "Proprietário",
@@ -1275,7 +1277,8 @@
     "validationFailed": "Validação falhou",
     "unauthorizedTryAgain": "Não autorizado - por favor tente novamente",
     "serverError": "Erro do servidor:",
-    "networkErrorOccurred": "Ocorreu erro de rede"
+    "networkErrorOccurred": "Ocorreu erro de rede",
+    "errorConfirmingSubscription": "Erro ao confirmar sua assinatura"
   },
   "partnershipRequestData": {
     "validationFailed": "Validação falhou",
@@ -1551,5 +1554,15 @@
     "busStation": "Estação de autocarros",
     "airport": "Aeroporto",
     "hospital": "Hospital"
+  },
+  "newsletterConfirmPage": {
+    "successTitle": "Assinatura confirmada!",
+    "confirmationSuccessMessage": "Obrigado por confirmar sua assinatura. Agora você receberá nossas atualizações de newsletter.",
+    "errorTitle": "Falha na confirmação",
+    "confirmationErrorMessage": "Não foi possível confirmar sua assinatura. O link pode ter expirado ou é inválido.",
+    "tryAgainButton": "Tentar novamente",
+    "homeButton": "Ir para a página inicial",
+    "confirmingSubscriptionText": "Confirmando sua assinatura",
+    "pleaseWaitText": "Por favor, aguarde um momento..."
   }
 }

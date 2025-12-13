@@ -768,7 +768,9 @@
     "successDialogTitle": "Abonnement réussi !",
     "buttonClose": "Fermer",
     "errorFailedSubscribe": "Échec de l'abonnement à la newsletter. Veuillez réessayer.",
-    "errorUnexpected": "Une erreur inattendue s'est produite. Veuillez réessayer."
+    "errorUnexpected": "Une erreur inattendue s'est produite. Veuillez réessayer.",
+    "checkEmailTitle": "Vérifiez votre e-mail",
+    "checkEmailMessage": "Nous avons envoyé un lien de confirmation à votre adresse e-mail. Veuillez consulter votre boîte de réception et cliquer sur le lien pour confirmer votre abonnement."
   },
   "ownResourcesDropdown": {
     "own": "Posséder",
@@ -1275,7 +1277,8 @@
     "validationFailed": "Échec de la validation",
     "unauthorizedTryAgain": "Non autorisé - veuillez réessayer",
     "serverError": "Erreur du serveur :",
-    "networkErrorOccurred": "Une erreur réseau s'est produite"
+    "networkErrorOccurred": "Une erreur réseau s'est produite",
+    "errorConfirmingSubscription": "Erreur lors de la confirmation de votre abonnement"
   },
   "partnershipRequestData": {
     "validationFailed": "Échec de la validation",
@@ -1551,5 +1554,15 @@
     "busStation": "Gare routière",
     "airport": "Aéroport",
     "hospital": "Hôpital"
-  }
+  },
+  "newsletterConfirmPage": {
+      "successTitle": "Abonnement confirmé !",
+      "confirmationSuccessMessage": "Merci d'avoir confirmé votre abonnement. Vous recevrez désormais nos mises à jour de newsletter.",
+      "errorTitle": "Échec de la confirmation",
+      "confirmationErrorMessage": "Nous n'avons pas pu confirmer votre abonnement. Le lien a peut-être expiré ou n'est pas valide.",
+      "tryAgainButton": "Réessayer",
+      "homeButton": "Aller à la page d'accueil",
+      "confirmingSubscriptionText": "Confirmation de votre abonnement",
+      "pleaseWaitText": "Veuillez patienter un instant..."
+    }
 }

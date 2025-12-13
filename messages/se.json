@@ -768,7 +768,9 @@
     "successDialogTitle": "Framgångsrikt prenumererat!",
     "buttonClose": "Stäng",
     "errorFailedSubscribe": "Misslyckades prenumerera på nyhetsbrev. Vänligen försök igen.",
-    "errorUnexpected": "Ett oväntat fel uppstod. Vänligen försök igen."
+    "errorUnexpected": "Ett oväntat fel uppstod. Vänligen försök igen.",
+    "checkEmailTitle": "Kontrollera din e-post",
+    "checkEmailMessage": "Vi har skickat en bekräftelselänk till din e-postadress. Vänligen kontrollera din inkorg och klicka på länken för att bekräfta din prenumeration."
   },
   "ownResourcesDropdown": {
     "own": "Äga",
@@ -1275,7 +1277,8 @@
     "validationFailed": "Validering misslyckades",
     "unauthorizedTryAgain": "Obehörig - vänligen försök igen",
     "serverError": "Serverfel:",
-    "networkErrorOccurred": "Nätverksfel uppstod"
+    "networkErrorOccurred": "Nätverksfel uppstod",
+    "errorConfirmingSubscription": "Fel vid bekräftelse av din prenumeration"
   },
   "partnershipRequestData": {
     "validationFailed": "Validering misslyckades",
@@ -1551,5 +1554,15 @@
     "busStation": "Busstation",
     "airport": "Flygplats",
     "hospital": "Sjukhus"
+  },
+  "newsletterConfirmPage": {
+    "successTitle": "Prenumeration bekräftad!",
+    "confirmationSuccessMessage": "Tack för att du bekräftade din prenumeration. Du kommer nu att få våra nyhetsbrevsuppdateringar.",
+    "errorTitle": "Bekräftelsen misslyckades",
+    "confirmationErrorMessage": "Vi kunde inte bekräfta din prenumeration. Länken kan ha gått ut eller är ogiltig.",
+    "tryAgainButton": "Försök igen",
+    "homeButton": "Gå till startsidan",
+    "confirmingSubscriptionText": "Bekräftar din prenumeration",
+    "pleaseWaitText": "Vänligen vänta ett ögonblick..."
   }
 }

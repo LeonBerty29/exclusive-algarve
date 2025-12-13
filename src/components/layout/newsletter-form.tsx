@@ -21,7 +21,7 @@ import {
 import { cn } from "@/lib/utils";
 import * as z from "zod";
 import { newsletterFormAction } from "@/actions/newsletter";
-import { CheckCircle } from "lucide-react";
+import { Mail } from "lucide-react";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
@@ -33,11 +33,14 @@ interface NewsletterFormProps {
 
 export function NewsletterForm({ className = "" }: NewsletterFormProps) {
   const t = useTranslations("newsletterForm");
-  const newsletterFormSchemaTranslation = useTranslations("newsletterFormSchema");
-  const newsletterFormSchema = getNewsletterFormSchema(newsletterFormSchemaTranslation);
+  const newsletterFormSchemaTranslation = useTranslations(
+    "newsletterFormSchema"
+  );
+  const newsletterFormSchema = getNewsletterFormSchema(
+    newsletterFormSchemaTranslation
+  );
   const [isPending, startTransition] = useTransition();
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
   const [error, setError] = useState<string | undefined>("");
 
   const { executeRecaptcha } = useGoogleReCaptcha();
@@ -79,7 +82,6 @@ export function NewsletterForm({ className = "" }: NewsletterFormProps) {
         const result = await newsletterFormAction(formDataToSubmit);
 
         if (result.success) {
-          setSuccessMessage(result.message || t("successDialogTitle"));
           setShowSuccessDialog(true);
 
           form.reset({
@@ -198,13 +200,13 @@ export function NewsletterForm({ className = "" }: NewsletterFormProps) {
         <DialogContent className="sm:max-w-md rounded-2xl">
           <DialogHeader>
             <div className="flex items-center justify-center mb-4">
-              <CheckCircle className="h-12 w-12 text-green-500" />
+              <Mail className="h-12 w-12 text-primary" />
             </div>
             <DialogTitle className="text-center text-xl font-semibold">
-              {t("successDialogTitle")}
+              {t("checkEmailTitle")}
             </DialogTitle>
             <DialogDescription className="text-center text-gray-600 mt-2">
-              {successMessage}
+              {t("checkEmailMessage")}
             </DialogDescription>
           </DialogHeader>
           <div className="flex justify-center mt-6">

@@ -1,5 +1,5 @@
 import type { NextConfig } from "next";
-import createNextIntlPlugin from "next-intl/plugin"
+import createNextIntlPlugin from "next-intl/plugin";
 
 const nextConfig: NextConfig = {
   /* config options here */
@@ -17,6 +17,11 @@ const nextConfig: NextConfig = {
         port: "",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "media.webpacksolutions.com",
+        pathname: "/properties/**",
+      },
     ],
   },
   webpack: (config, { isServer }) => {
@@ -32,6 +37,6 @@ const nextConfig: NextConfig = {
   transpilePackages: ["@react-pdf/renderer"],
 };
 
-const withNextIntl = createNextIntlPlugin()
+const withNextIntl = createNextIntlPlugin();
 
 export default withNextIntl(nextConfig);

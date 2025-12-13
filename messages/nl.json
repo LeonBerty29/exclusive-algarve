@@ -768,7 +768,9 @@
     "successDialogTitle": "Succesvol geabonneerd!",
     "buttonClose": "Sluiten",
     "errorFailedSubscribe": "Abonneren op nieuwsbrief mislukt. Probeer het opnieuw.",
-    "errorUnexpected": "Er is een onverwachte fout opgetreden. Probeer het opnieuw."
+    "errorUnexpected": "Er is een onverwachte fout opgetreden. Probeer het opnieuw.",
+    "checkEmailTitle": "Controleer uw e-mail",
+    "checkEmailMessage": "We hebben een bevestigingslink naar uw e-mailadres gestuurd. Controleer uw inbox en klik op de link om uw abonnement te bevestigen."
   },
   "ownResourcesDropdown": {
     "own": "Bezitten",
@@ -1275,7 +1277,8 @@
     "validationFailed": "Validatie mislukt",
     "unauthorizedTryAgain": "Ongeautoriseerd - probeer het opnieuw",
     "serverError": "Serverfout:",
-    "networkErrorOccurred": "Netwerkfout opgetreden"
+    "networkErrorOccurred": "Netwerkfout opgetreden",
+    "errorConfirmingSubscription": "Fout bij het bevestigen van uw abonnement"
   },
   "partnershipRequestData": {
     "validationFailed": "Validatie mislukt",
@@ -1551,5 +1554,15 @@
     "busStation": "Busstation",
     "airport": "Luchthaven",
     "hospital": "Ziekenhuis"
+  },
+  "newsletterConfirmPage": {
+    "successTitle": "Abonnement bevestigd!",
+    "confirmationSuccessMessage": "Bedankt voor het bevestigen van uw abonnement. U ontvangt nu onze nieuwsbrief updates.",
+    "errorTitle": "Bevestiging mislukt",
+    "confirmationErrorMessage": "We konden uw abonnement niet bevestigen. De link is mogelijk verlopen of ongeldig.",
+    "tryAgainButton": "Opnieuw proberen",
+    "homeButton": "Ga naar startpagina",
+    "confirmingSubscriptionText": "Uw abonnement wordt bevestigd",
+    "pleaseWaitText": "Een moment geduld alstublieft..."
   }
 }

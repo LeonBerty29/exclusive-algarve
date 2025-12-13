@@ -332,5 +332,23 @@ export const routing = defineRouting({
       nl: "/exclusieve-vermelding/[hash]/[slug]",
       ru: "/eksklyuzivnoe-predlozhenie/[hash]/[slug]",
     },
+    "/logout": {
+      en: "/logout",
+      pt: "/sair",
+      de: "/abmelden",
+      fr: "/deconnexion",
+      se: "/logga-ut",
+      nl: "/uitloggen",
+      ru: "/выход",
+    },
+    "/newsletter/confirmation": {
+      en: "/newsletter/confirmation",
+      pt: "/confirmação-do-newsletter",
+      de: "/newsletter-bestätigung",
+      fr: "/confirmation-newsletter",
+      se: "/nyhetsbrevsbekräftelse",
+      nl: "/nieuwsbrief-bevestiging",
+      ru: "/подтверждение-новостной-рассылки",
+    },
   },
 });

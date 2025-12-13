@@ -2,6 +2,9 @@
 import { FavoritesResponse } from "@/types";
 // import { getLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
+// import { ValidateToken } from "./token";
+// import { isRedirectError } from "next/dist/client/components/redirect-error";
+
 
 function createBasicAuthHeader(): string {
   const credentials = btoa(
@@ -24,7 +27,6 @@ async function apiRequest<T>(
   token?: string
 ): Promise<T> {
   const url = `${process.env.API_BASE_URL}${endpoint}`;
-
   const authHeader =
     useBearer && token
       ? createBearerAuthHeader(token)
@@ -76,6 +78,7 @@ async function apiRequest<T>(
 
     return response.json();
   } catch (error: unknown) {
+
     const errorStatus = getErrorStatus(error);
 
     // console.log({ errorStatus });

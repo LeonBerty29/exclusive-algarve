@@ -15,6 +15,7 @@ import { Metadata } from "next";
 import { BASE_URL, GEO_POSITION, WEBSITE_NAME } from "@/config/constants";
 import { routing } from "@/i18n/routing";
 import { annotationsMetadata } from "@/seo-metadata/annotations";
+import { ValidateToken } from "@/data/token";
 
 interface Props {
   params: Promise<{ locale: string }>;
@@ -294,6 +295,20 @@ async function ListAnnotations({ currentPage }: { currentPage: number }) {
   if (!token || !session) {
     return redirect({
       href: { pathname: "/login", query: { callbackUrl: "/annotations" } },
+      locale: locale,
+    });
+  }
+
+  // Validate token before proceeding
+  const { logout } = await ValidateToken(token);
+
+  if (logout) {
+    // Redirect to logout page with callback URL
+    return redirect({
+      href: {
+        pathname: "/logout",
+        query: { callbackUrl: "/annotations" },
+      },
       locale: locale,
     });
   }
