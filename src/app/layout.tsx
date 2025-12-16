@@ -9,6 +9,7 @@ import { routing } from "@/i18n/routing";
 import { getMessages, setRequestLocale } from "next-intl/server";
 import RecaptchaProvider from "@/components/recaptcha-provider";
 import { GoogleMapsProvider } from "@/providers/google-maps-provider";
+import { FloatingContact } from "@/components/shared/floating-contact";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -47,6 +48,7 @@ export default async function RootLayout({
               <RecaptchaProvider>
                 <GoogleMapsProvider>
                   <main className="w-full">{children}</main>
+                  <FloatingContact /> {/* Add this component */}
                   <Toaster />
                 </GoogleMapsProvider>
               </RecaptchaProvider>

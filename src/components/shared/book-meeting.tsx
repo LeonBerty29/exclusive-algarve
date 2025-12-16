@@ -310,7 +310,7 @@ const BookMeetingDialog = ({ buttonStyle }: { buttonStyle?: string }) => {
           <Button
             variant="outline"
             className={cn(
-              "rounded-none border-gray-300 bg-transparent hover:bg-gray-50 text-sm font-light",
+              "rounded-none border-gray-400 bg-gray-200 hover:bg-gray-100 text-sm text-gray-800 font-light",
               buttonStyle
             )}
           >
