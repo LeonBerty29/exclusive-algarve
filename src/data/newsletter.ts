@@ -22,7 +22,7 @@ export async function submitNewsletterFormWithDetailedErrors(
 ): Promise<DetailedResult> {
   const t = await getTranslations("newsletterData");
   try {
-    const endpoint = "/v1/forms/newsletter/subscribe";
+    const endpoint = "/v1/newsletter/subscribe";
     const response = await fetch(`${process.env.API_BASE_URL}${endpoint}`, {
       method: "POST",
       headers: {

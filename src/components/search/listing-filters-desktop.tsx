@@ -17,7 +17,7 @@ export async function ListBedroomsRangeSelectDesktop() {
   // const bedroomRange = ranges.bedrooms; // Fixed: was using ranges.price
   // return <BedroomsRangeSelect bedroomRange={bedroomRange} />;
   return <BedroomsDropdown 
-  // modal={false} 
+  modal={false} 
   // bedroomRange={bedroomRange} 
   />;
 }
@@ -39,7 +39,7 @@ export async function ListBathroomsRangeSelectDesktop() {
   // return <BathroomsRangeSelect bathroomRange={bathroomRange} />;
   return (
     <BathroomsDropdown
-    // modal={false}
+    modal={false}
     // bathroomRange={bathroomRange}
     />
   );
