@@ -12,6 +12,8 @@ function createBasicAuthHeader(): string {
   );
   return `Basic ${credentials}`;
 }
+import { unstable_cache } from 'next/cache';
+
 
 /**
  * Generic fetch wrapper with Basic Auth
@@ -95,15 +97,36 @@ function buildQueryString(params: PropertySearchParams): string {
 /**
  * Fetches a paginated list of properties with optional filtering and sorting
  */
-export const getProperties = cache(
-  async (params: PropertySearchParams = {}): Promise<PropertyListResponse> => {
-    const queryString = buildQueryString(params);
-    const locale = await getLocale();
-    const endpoint = `/v1/properties${queryString}&language=${locale}`;
+// export const getProperties = cache(
+//   async (params: PropertySearchParams = {}): Promise<PropertyListResponse> => {
+//     const queryString = buildQueryString(params);
+//     const locale = await getLocale();
+//     const endpoint = `/v1/properties${queryString}&language=${locale}`;
 
-    return apiRequest<PropertyListResponse>(endpoint);
-  }
-);
+//     return apiRequest<PropertyListResponse>(endpoint);
+//   }
+// );
+
+
+/**
+ * Fetches a paginated list of properties with optional filtering and sorting
+ */
+export const getProperties = async (params: PropertySearchParams = {}): Promise<PropertyListResponse> => {
+  const queryString = buildQueryString(params);
+  const locale = await getLocale();
+  const endpoint = `/v1/properties${queryString}&language=${locale}`;
+
+  const cachedFetch = unstable_cache(
+    async () => apiRequest<PropertyListResponse>(endpoint),
+    [endpoint], // Cache key
+    {
+      revalidate: 600, // 10 minutes in seconds
+      tags: ['properties']
+    }
+  );
+
+  return cachedFetch();
+};
 
 export const getFeaturedProperties = cache(
   async (params: PropertySearchParams = {}): Promise<PropertyListResponse> => {

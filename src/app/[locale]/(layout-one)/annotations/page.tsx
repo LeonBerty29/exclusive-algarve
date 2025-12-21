@@ -15,7 +15,7 @@ import { Metadata } from "next";
 import { BASE_URL, GEO_POSITION, WEBSITE_NAME } from "@/config/constants";
 import { routing } from "@/i18n/routing";
 import { annotationsMetadata } from "@/seo-metadata/annotations";
-import { ValidateToken } from "@/data/token";
+import { fetchUserProfile, ValidateToken } from "@/data/token";
 
 interface Props {
   params: Promise<{ locale: string }>;
@@ -102,6 +102,19 @@ const page = async (props: Props) => {
   const t = await getTranslations("annotationsPage");
   const searchParams = await props.searchParams;
   const currentPage = parseInt((searchParams?.page as string) || "1", 10);
+
+  const session = await auth();
+    const token = session?.accessToken;
+    const locale = await getLocale();
+  
+    const result = await fetchUserProfile(token as string);
+  
+    if (result.logout) {
+      redirect({
+        href: "/logout",
+        locale,
+      });
+    }
 
   return (
     <div className="xl:container mx-auto px-6 md:px-12 lg:px-14 pt-24 pb-12">

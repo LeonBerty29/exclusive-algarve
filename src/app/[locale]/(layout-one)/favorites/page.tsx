@@ -18,6 +18,7 @@ import {
   WEBSITE_NAME,
 } from "@/config/constants";
 import { favoritesMetadata } from "@/seo-metadata/favorites";
+import { fetchUserProfile } from "@/data/token";
 
 type PageProps = {
   params: Promise<{ locale: string }>;
@@ -129,6 +130,18 @@ const page = async (props: PageProps) => {
 
 async function PageContent({ currentPage }: { currentPage: number }) {
   const t = await getTranslations("favoritesPage");
+  const session = await auth();
+  const token = session?.accessToken;
+  const locale = await getLocale();
+
+  const result = await fetchUserProfile(token as string);
+
+  if (result.logout) {
+    redirect({
+      href: { pathname: "/logout", query: { callbackUrl: "/favorites" } },
+      locale,
+    });
+  }
 
   return (
     <>

@@ -13,24 +13,8 @@ export default function LogoutPage() {
 
   useEffect(() => {
     const handleLogout = async () => {
-      try {
-        // Sign out the user
-        await signOut({ redirect: false });
+        signOut({redirectTo:"/login"})
 
-        // Redirect to login with callback URL if provided
-        const loginUrl = callbackUrl
-          ? `/login?callbackUrl=${encodeURIComponent(callbackUrl)}`
-          : "/login";
-
-        // @ts-expect-error -- Typescript will validate only known `params`
-        // are used in combination with a given `pathname`. Since the two will
-        // always match for the current route, we can skip runtime checks
-        router.push(loginUrl);
-      } catch (error) {
-        console.error("Logout error:", error);
-        // Fallback: redirect to login even if logout fails
-        router.push("/login");
-      }
     };
 
     handleLogout();

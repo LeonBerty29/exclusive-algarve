@@ -1,5 +1,4 @@
 import { auth } from "@/auth";
-import { ProtectedRoute } from "@/components/protected/protected-route";
 import { UserProfileDisplay } from "@/components/settings/user-profile-display";
 import { getUserProfile } from "@/data/user";
 import { redirect } from "@/i18n/navigation";
@@ -13,6 +12,7 @@ import {
   WEBSITE_NAME,
 } from "@/config/constants";
 import { settingsMetadata } from "@/seo-metadata/settings";
+import { fetchUserProfile } from "@/data/token";
 
 interface Props {
   params: Promise<{ locale: string }>;
@@ -124,27 +124,35 @@ const SettingsPage = async () => {
       locale: locale,
     });
   }
+  const token = session?.accessToken;
+
+  const result = await fetchUserProfile(token as string);
+
+  if (result.logout) {
+    redirect({
+      href: { pathname: "/logout", query: { callbackUrl: "/settings" } },
+      locale,
+    });
+  }
 
   const accessToken = session?.accessToken;
   const userProfileResponse = await getUserProfile(accessToken);
   const userProfile = userProfileResponse.data.client;
 
   return (
-    <ProtectedRoute>
-      <div className="pt-24 container mx-auto max-w-5xl px-4 min-h-screen flex justify-center">
-        <div className="space-y-6 h-fit w-full my-auto">
-          <UserProfileDisplay
-            userProfile={{
-              firstName: userProfile.first_name,
-              lastName: userProfile.last_name,
-              phoneNumber: userProfile.phone,
-              newsletter: userProfile.newsletter,
-            }}
-            accessToken={accessToken}
-          />
-        </div>
+    <div className="pt-24 container mx-auto max-w-5xl px-4 min-h-screen flex justify-center">
+      <div className="space-y-6 h-fit w-full my-auto">
+        <UserProfileDisplay
+          userProfile={{
+            firstName: userProfile.first_name,
+            lastName: userProfile.last_name,
+            phoneNumber: userProfile.phone,
+            newsletter: userProfile.newsletter,
+          }}
+          accessToken={accessToken}
+        />
       </div>
-    </ProtectedRoute>
+    </div>
   );
 };
 
