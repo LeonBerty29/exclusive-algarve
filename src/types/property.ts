@@ -66,6 +66,10 @@ export interface Property {
   similar_properties: number[];
   created_at: string;
   updated_at: string;
+  banner: {
+    color: string | null;
+    name: string | null;
+  }
 }
 
 export interface DrivingDistance {

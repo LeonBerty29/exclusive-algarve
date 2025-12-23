@@ -13,6 +13,7 @@ import { getLocale } from "next-intl/server";
 import { AddPropertyNote } from "./add-property-notes";
 import { getTranslations } from "next-intl/server";
 import { NoteObject } from "@/types";
+import { cn } from "@/lib/utils";
 
 interface Props {
   property: Property;
@@ -20,7 +21,7 @@ interface Props {
   notes: NoteObject[];
 }
 
-export const ProductCard = async ({
+export const PropertyCard = async ({
   property,
   favorites = [],
   notes,
@@ -37,7 +38,7 @@ export const ProductCard = async ({
   // Hardcoded placeholders for missing fields (adjust as needed)
   const favorite = favorites.includes(property.id);
   const reference = property.reference;
-  const exclusive = property.agency.name === "EAV";
+  // const exclusive = property.agency.name === "EAV";
 
   const grossArea = property.features.private_area;
   const plotSize = property.features.plot_size;
@@ -83,9 +84,15 @@ export const ProductCard = async ({
           </>
         </div>
 
-        {exclusive && (
-          <div className="bg-primary h-6 text-center text-xs font-bold text-white absolute bottom-0 w-full flex items-center justify-center z-10">
-            {t("exclusiveListingByEav")}
+        {property.banner.color && property.banner.name && (
+          <div
+            className={cn(
+              "min-h-6 py-1 text-center text-sm font-bold text-white absolute bottom-0 w-full flex items-center justify-center z-10"            )}
+            style={{
+              backgroundColor: property.banner.color,
+            }}
+          >
+            {property.banner.name}
           </div>
         )}
       </CardHeader>

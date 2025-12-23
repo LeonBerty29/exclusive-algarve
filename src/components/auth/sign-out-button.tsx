@@ -4,7 +4,6 @@
 import { signOut } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import React from "react";
-import { toast } from "sonner";
 
 export const SignOutButton = ({ className }: { className?: string }) => {
 
@@ -20,9 +19,7 @@ export const SignOutButton = ({ className }: { className?: string }) => {
     if (response.success) {
       signOut({redirectTo:"/login"})
     } else {
-      toast.error(response.message, {
-        duration: 1000
-      })
+     signOut({redirectTo:"/login"})
     }
   }
 

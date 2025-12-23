@@ -91,12 +91,12 @@ export const LoginForm = ({
           // link.href = callbackUrl || DEFAULT_LOGIN_REDIRECT;
           // link.click();
           await update();
-          router.refresh();
-
+          
           // @ts-expect-error -- Typescript will validate only known `params`
           // are used in combination with a given `pathname`. Since the two will
           // always match for the current route, we can skip runtime checks
           router.push(callbackUrl || DEFAULT_LOGIN_REDIRECT);
+          router.refresh();
         }
 
         if (data.response?.responseStatus === 403) {

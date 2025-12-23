@@ -1,4 +1,4 @@
-import { ProductCard } from "@/components/product/product-card";
+import { PropertyCard } from "@/components/product/property-card";
 import { PropertiesPagination } from "@/components/property/properties-pagination";
 import SearchHeader from "@/components/search/search-header";
 import { getPropertiesWithAllPaginated } from "@/data/properties";
@@ -272,7 +272,7 @@ async function PropertieList({
       {properties.length > 0 ? (
         properties.map((property) => (
           <div key={property.id} className="">
-            <ProductCard
+            <PropertyCard
               property={property}
               favorites={favorites}
               notes={notes}
