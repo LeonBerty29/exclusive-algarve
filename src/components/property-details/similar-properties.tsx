@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/carousel";
 import { Button } from "../ui/button";
 import { getListOfProperties } from "@/data/property";
-import { ProductCard } from "../product/product-card";
+import { PropertyCard } from "../product/property-card";
 import { Link } from "@/i18n/navigation";
 import { getNote } from "@/data/notes";
 import { auth } from "@/auth";
@@ -72,7 +72,7 @@ const SimilarProperties = async ({
             {properties.map((property, index) => (
               <CarouselItem key={index} className="pl-1 md:basis-1/2 h-full">
                 <div className="p-1 py-0 max-w-[400px] mx-auto sm:max-w-full block h-full">
-                  <ProductCard
+                  <PropertyCard
                     property={property}
                     notes={notes || []}
                     favorites={favorites || []}
