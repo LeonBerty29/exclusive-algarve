@@ -87,9 +87,10 @@ export const PropertyCard = async ({
         {property.banner.color && property.banner.name && (
           <div
             className={cn(
-              "h-6 text-center text-xs font-bold text-white absolute bottom-0 w-full flex items-center justify-center z-10",
-              property.banner.color && `bg-${property.banner.color}`
-            )}
+              "min-h-6 py-1 text-center text-sm font-bold text-white absolute bottom-0 w-full flex items-center justify-center z-10"            )}
+            style={{
+              backgroundColor: property.banner.color,
+            }}
           >
             {property.banner.name}
           </div>
