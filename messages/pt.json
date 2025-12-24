@@ -1041,7 +1041,8 @@
     "moreFilters": "Mais Filtros"
   },
   "filterTags": {
-    "clearAll": "Limpar tudo"
+    "clearAll": "Limpar tudo",
+    "resetFilters": "Redefinir filtros"
   },
   "homepageSearchEngine": {
     "findYourDreamHome": "ENCONTRE A SUA CASA DE SONHO",

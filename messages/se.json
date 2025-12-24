@@ -1041,7 +1041,8 @@
     "moreFilters": "Fler filter"
   },
   "filterTags": {
-    "clearAll": "Rensa alla"
+    "clearAll": "Rensa alla",
+    "resetFilters": "Återställ filter"
   },
   "homepageSearchEngine": {
     "findYourDreamHome": "HITTA DITT DRÖMHEM",
