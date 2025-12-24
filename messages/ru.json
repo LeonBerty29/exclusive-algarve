@@ -1041,7 +1041,8 @@
     "moreFilters": "Больше фильтров"
   },
   "filterTags": {
-    "clearAll": "Очистить все"
+    "clearAll": "Очистить все",
+    "resetFilters": "Сбросить фильтры"
   },
   "homepageSearchEngine": {
     "findYourDreamHome": "НАЙДИТЕ ДОМ ВАШЕЙ МЕЧТЫ",

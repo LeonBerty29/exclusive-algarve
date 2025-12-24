@@ -1041,7 +1041,8 @@
     "moreFilters": "Meer filters"
   },
   "filterTags": {
-    "clearAll": "Wis alles"
+    "clearAll": "Wis alles",
+    "resetFilters": "Filters resetten"
   },
   "homepageSearchEngine": {
     "findYourDreamHome": "VIND UW DROOMHUIS",
