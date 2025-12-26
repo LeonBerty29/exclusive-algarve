@@ -1565,5 +1565,13 @@
     "homeButton": "Zur Startseite",
     "confirmingSubscriptionText": "Ihr Abonnement wird bestätigt",
     "pleaseWaitText": "Bitte warten Sie einen Moment..."
+  },
+  "phoneNumberFormSchema": {
+    "phoneRequired": "Telefonnummer ist erforderlich",
+    "phoneInvalid": "Bitte geben Sie eine gültige Telefonnummer ein",
+    "invalidCountryCode": "Ungültiger Ländercode",
+    "tooShort": "Telefonnummer ist zu kurz",
+    "tooLong": "Telefonnummer ist zu lang",
+    "invalidFormat": "Ungültiges Telefonnummernformat"
   }
 }

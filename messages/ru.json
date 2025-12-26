@@ -1565,5 +1565,13 @@
     "homeButton": "На главную страницу",
     "confirmingSubscriptionText": "Подтверждение вашей подписки",
     "pleaseWaitText": "Пожалуйста, подождите..."
+  },
+  "phoneNumberFormSchema": {
+    "phoneRequired": "Требуется номер телефона",
+    "phoneInvalid": "Пожалуйста, введите действительный номер телефона",
+    "invalidCountryCode": "Неверный код страны",
+    "tooShort": "Номер телефона слишком короткий",
+    "tooLong": "Номер телефона слишком длинный",
+    "invalidFormat": "Неверный формат номера телефона"
   }
 }

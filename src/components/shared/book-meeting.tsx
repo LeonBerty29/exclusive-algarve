@@ -35,6 +35,8 @@ import {
 import { cn } from "@/lib/utils";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { useTranslations } from "next-intl";
+import { validatePhoneNumber } from "./phone-number-input";
+import { PhoneNumberInputTwo } from "./phone-number-input-2";
 
 interface FormErrors {
   first_name?: string;
@@ -55,6 +57,7 @@ type FormField = keyof ClientBookMeetingFormData;
 const BookMeetingDialog = ({ buttonStyle }: { buttonStyle?: string }) => {
   const t = useTranslations("bookMeeting");
   const clientBookingSchemaJson = useTranslations("clientBookMeetingSchema");
+  const phoneNumberSchema = useTranslations("phoneNumberFormSchema");
   const clientBookMeetingSchema = getClientBookMeetingSchema(
     clientBookingSchemaJson
   );
@@ -62,6 +65,10 @@ const BookMeetingDialog = ({ buttonStyle }: { buttonStyle?: string }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
+
+  // Phone validation states
+  const [phoneNumber, setPhoneNumber] = useState<string>("");
+  const [isPhoneValid, setIsPhoneValid] = useState<boolean>(false);
 
   // Separate state for meeting type selection (onsite/virtual)
   const [meetingTypeSelection, setMeetingTypeSelection] = useState<
@@ -132,9 +139,31 @@ const BookMeetingDialog = ({ buttonStyle }: { buttonStyle?: string }) => {
   };
 
   const validateClientForm = (): boolean => {
-    const validationResult = clientBookMeetingSchema.safeParse(formData);
+    // Validate phone number before form validation
+    const phoneValidation = validatePhoneNumber(phoneNumber, isPhoneValid, {
+      phoneRequired: phoneNumberSchema("phoneRequired"),
+      phoneInvalid: phoneNumberSchema("phoneInvalid"),
+    });
+
+    if (!phoneValidation.isValid) {
+      setErrors((prev) => ({
+        ...prev,
+        phone: phoneValidation.message,
+      }));
+      return false;
+    }
+
+    // Update formData with validated phone number
+    const dataToValidate = {
+      ...formData,
+      phone: phoneNumber,
+    };
+
+    const validationResult = clientBookMeetingSchema.safeParse(dataToValidate);
     setErrors({});
+
     if (validationResult.success) return true;
+
     const newErrors: FormErrors = {};
     validationResult.error.errors.forEach((err: ZodIssue) => {
       const fieldName = err.path[0] as keyof FormErrors;
@@ -160,7 +189,7 @@ const BookMeetingDialog = ({ buttonStyle }: { buttonStyle?: string }) => {
     const formDataToSubmit = new FormData();
     formDataToSubmit.append("first_name", formData.first_name);
     formDataToSubmit.append("last_name", formData.last_name);
-    formDataToSubmit.append("phone", formData.phone);
+    formDataToSubmit.append("phone", phoneNumber); // Use validated phone number
     formDataToSubmit.append("email", formData.email);
     formDataToSubmit.append(
       "meeting_date",
@@ -195,7 +224,9 @@ const BookMeetingDialog = ({ buttonStyle }: { buttonStyle?: string }) => {
             accept_terms: false,
             source_url: formData.source_url,
           });
-          setMeetingTypeSelection("onsite");
+          setPhoneNumber("");
+          setIsPhoneValid(false);
+          setMeetingTypeSelection("");
           setErrors({});
           setIsOpen(false);
           setShowSuccessDialog(true);
@@ -262,8 +293,8 @@ const BookMeetingDialog = ({ buttonStyle }: { buttonStyle?: string }) => {
 
   const handleMeetingTypeChange = (type: "onsite" | "virtual"): void => {
     setMeetingTypeSelection(type);
-    // Reset meeting_type when switching
     handleInputChange("meeting_type", type);
+    handleInputChange("meeting_location", "");
   };
 
   const handleMeetingLocationSelect = (value: string): void => {
@@ -370,18 +401,23 @@ const BookMeetingDialog = ({ buttonStyle }: { buttonStyle?: string }) => {
                 <Label className="sr-only" htmlFor="phone">
                   {t("phone")}
                 </Label>
-                <Input
-                  id="phone"
-                  type="tel"
-                  value={formData.phone}
-                  onChange={handleInputChangeEvent("phone")}
-                  placeholder={t("phonePlaceholder")}
-                  className={errors.phone ? "border-red-500" : ""}
+                <PhoneNumberInputTwo
+                  value={phoneNumber}
                   disabled={isPending}
+                  error={errors.phone}
+                  onValidityChange={(isValid, number) => {
+                    setIsPhoneValid(isValid);
+                    setPhoneNumber(number);
+                  }}
+                  translations={{
+                    phoneRequired: phoneNumberSchema("phoneRequired"),
+                    phoneInvalid: phoneNumberSchema("phoneInvalid"),
+                    invalidCountryCode: phoneNumberSchema("invalidCountryCode"),
+                    tooShort: phoneNumberSchema("tooShort"),
+                    tooLong: phoneNumberSchema("tooLong"),
+                    invalidFormat: phoneNumberSchema("invalidFormat"),
+                  }}
                 />
-                {errors.phone && (
-                  <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
-                )}
               </div>
 
               <div>
@@ -513,13 +549,19 @@ const BookMeetingDialog = ({ buttonStyle }: { buttonStyle?: string }) => {
                     {t("officeLocation")}
                   </Label>
                   <Select
-                    value={onsiteLocations.includes(formData.meeting_location) ? formData.meeting_location : ""}
+                    value={
+                      onsiteLocations.includes(formData.meeting_location)
+                        ? formData.meeting_location
+                        : ""
+                    }
                     onValueChange={handleMeetingLocationSelect}
                     disabled={isPending}
                   >
                     <SelectTrigger
                       className={
-                        errors.meeting_location ? "border-red-500 w-full" : "w-full"
+                        errors.meeting_location
+                          ? "border-red-500 w-full"
+                          : "w-full"
                       }
                     >
                       <SelectValue placeholder={t("selectOfficeLocation")} />
@@ -532,7 +574,7 @@ const BookMeetingDialog = ({ buttonStyle }: { buttonStyle?: string }) => {
                       ))}
                     </SelectContent>
                   </Select>
-                  {errors.meeting_type && (
+                  {errors.meeting_location && (
                     <p className="text-red-500 text-sm mt-1">
                       {errors.meeting_location}
                     </p>
@@ -546,13 +588,19 @@ const BookMeetingDialog = ({ buttonStyle }: { buttonStyle?: string }) => {
                     {t("virtualPlatform")}
                   </Label>
                   <Select
-                    value={virtualPlatforms.includes(formData.meeting_location) ? formData.meeting_location : ""}
+                    value={
+                      virtualPlatforms.includes(formData.meeting_location)
+                        ? formData.meeting_location
+                        : ""
+                    }
                     onValueChange={handleMeetingLocationSelect}
                     disabled={isPending}
                   >
                     <SelectTrigger
                       className={
-                        errors.meeting_type ? "border-red-500 w-full" : "w-full"
+                        errors.meeting_location
+                          ? "border-red-500 w-full"
+                          : "w-full"
                       }
                     >
                       <SelectValue placeholder={t("selectVirtualPlatform")} />
@@ -565,9 +613,9 @@ const BookMeetingDialog = ({ buttonStyle }: { buttonStyle?: string }) => {
                       ))}
                     </SelectContent>
                   </Select>
-                  {errors.meeting_type && (
+                  {errors.meeting_location && (
                     <p className="text-red-500 text-sm mt-1">
-                      {errors.meeting_type}
+                      {errors.meeting_location}
                     </p>
                   )}
                 </div>
