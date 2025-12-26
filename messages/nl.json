@@ -1565,5 +1565,13 @@
     "homeButton": "Ga naar startpagina",
     "confirmingSubscriptionText": "Uw abonnement wordt bevestigd",
     "pleaseWaitText": "Een moment geduld alstublieft..."
+  },
+  "phoneNumberFormSchema": {
+    "phoneRequired": "Telefoonnummer is verplicht",
+    "phoneInvalid": "Voer een geldig telefoonnummer in",
+    "invalidCountryCode": "Ongeldige landcode",
+    "tooShort": "Telefoonnummer is te kort",
+    "tooLong": "Telefoonnummer is te lang",
+    "invalidFormat": "Ongeldig telefoonnummerformaat"
   }
 }

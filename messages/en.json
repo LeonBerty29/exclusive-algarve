@@ -1564,5 +1564,13 @@
     "homeButton": "Go to Homepage",
     "confirmingSubscriptionText": "Confirming your subscription",
     "pleaseWaitText": "Please wait a moment..."
+  },
+  "phoneNumberFormSchema": {
+    "phoneRequired": "Phone number is required",
+    "phoneInvalid": "Please enter a valid phone number",
+    "invalidCountryCode": "Invalid country code",
+    "tooShort": "Phone number is too short",
+    "tooLong": "Phone number is too long",
+    "invalidFormat": "Invalid phone number format"
   }
 }

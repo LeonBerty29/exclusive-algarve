@@ -1557,13 +1557,21 @@
     "hospital": "Hôpital"
   },
   "newsletterConfirmPage": {
-      "successTitle": "Abonnement confirmé !",
-      "confirmationSuccessMessage": "Merci d'avoir confirmé votre abonnement. Vous recevrez désormais nos mises à jour de newsletter.",
-      "errorTitle": "Échec de la confirmation",
-      "confirmationErrorMessage": "Nous n'avons pas pu confirmer votre abonnement. Le lien a peut-être expiré ou n'est pas valide.",
-      "tryAgainButton": "Réessayer",
-      "homeButton": "Aller à la page d'accueil",
-      "confirmingSubscriptionText": "Confirmation de votre abonnement",
-      "pleaseWaitText": "Veuillez patienter un instant..."
-    }
+    "successTitle": "Abonnement confirmé !",
+    "confirmationSuccessMessage": "Merci d'avoir confirmé votre abonnement. Vous recevrez désormais nos mises à jour de newsletter.",
+    "errorTitle": "Échec de la confirmation",
+    "confirmationErrorMessage": "Nous n'avons pas pu confirmer votre abonnement. Le lien a peut-être expiré ou n'est pas valide.",
+    "tryAgainButton": "Réessayer",
+    "homeButton": "Aller à la page d'accueil",
+    "confirmingSubscriptionText": "Confirmation de votre abonnement",
+    "pleaseWaitText": "Veuillez patienter un instant..."
+  },
+  "phoneNumberFormSchema": {
+    "phoneRequired": "Le numéro de téléphone est requis",
+    "phoneInvalid": "Veuillez entrer un numéro de téléphone valide",
+    "invalidCountryCode": "Code pays invalide",
+    "tooShort": "Le numéro de téléphone est trop court",
+    "tooLong": "Le numéro de téléphone est trop long",
+    "invalidFormat": "Format de numéro de téléphone invalide"
+  }
 }

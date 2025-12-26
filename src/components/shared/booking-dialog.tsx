@@ -29,9 +29,16 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { bookVisitAction } from "@/actions/book-visit";
-import { BookVisitFormData, getClientBookVisitSchema } from "@/types/book-a-visit";
+import {
+  BookVisitFormData,
+  getClientBookVisitSchema,
+} from "@/types/book-a-visit";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { useTranslations } from "next-intl";
+import {
+  PhoneNumberInputTwo,
+  validatePhoneNumber,
+} from "./phone-number-input-2";
 
 interface FormErrors {
   first_name?: string;
@@ -54,6 +61,7 @@ const BookVisitDialog = ({
 }) => {
   const t = useTranslations("bookVisitDialog");
   const schemaTranslation = useTranslations("bookVisitSchema");
+  const phoneNumberSchema = useTranslations("phoneNumberFormSchema");
   const bookVisitSchema = getClientBookVisitSchema(schemaTranslation);
 
   const [isPending, startTransition] = useTransition();
@@ -61,6 +69,10 @@ const BookVisitDialog = ({
   const [isSuccessDialogOpen, setIsSuccessDialogOpen] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const today = new Date();
+
+  // Phone validation states
+  const [phoneNumber, setPhoneNumber] = useState<string>("");
+  const [isPhoneValid, setIsPhoneValid] = useState<boolean>(false);
 
   // Use useRef to capture the source URL once
   const sourceUrlRef = useRef(
@@ -115,7 +127,27 @@ const BookVisitDialog = ({
   };
 
   const validateClientForm = (): boolean => {
-    const validationResult = bookVisitSchema.safeParse(formData);
+    // Validate phone number before form validation
+    const phoneValidation = validatePhoneNumber(phoneNumber, isPhoneValid, {
+      phoneRequired: phoneNumberSchema("phoneRequired"),
+      phoneInvalid: phoneNumberSchema("phoneInvalid"),
+    });
+
+    if (!phoneValidation.isValid) {
+      setErrors((prev) => ({
+        ...prev,
+        phone: phoneValidation.message,
+      }));
+      return false;
+    }
+
+    // Update formData with validated phone number
+    const dataToValidate = {
+      ...formData,
+      phone: phoneNumber,
+    };
+
+    const validationResult = bookVisitSchema.safeParse(dataToValidate);
     setErrors({});
 
     if (validationResult.success) return true;
@@ -155,7 +187,7 @@ const BookVisitDialog = ({
     const formDataToSubmit = new FormData();
     formDataToSubmit.append("first_name", formData.first_name);
     formDataToSubmit.append("last_name", formData.last_name);
-    formDataToSubmit.append("phone", formData.phone);
+    formDataToSubmit.append("phone", phoneNumber); // Use validated phone number
     formDataToSubmit.append("email", formData.email);
     formDataToSubmit.append(
       "visit_date",
@@ -169,7 +201,10 @@ const BookVisitDialog = ({
     formDataToSubmit.append("source_url", sourceUrlRef.current);
     formDataToSubmit.append("recaptcha_token", token || "");
     formDataToSubmit.append("property_reference", propertyReference);
-    formDataToSubmit.append("accept_terms", JSON.stringify(formData.accept_terms));
+    formDataToSubmit.append(
+      "accept_terms",
+      JSON.stringify(formData.accept_terms)
+    );
 
     startTransition(async () => {
       try {
@@ -190,6 +225,8 @@ const BookVisitDialog = ({
             source_url: sourceUrlRef.current,
             property_reference: propertyReference,
           });
+          setPhoneNumber("");
+          setIsPhoneValid(false);
           setErrors({});
           setIsOpen(false);
           setIsSuccessDialogOpen(true);
@@ -310,18 +347,24 @@ const BookVisitDialog = ({
                 <Label className="sr-only" htmlFor="phone">
                   {t("phone")}
                 </Label>
-                <Input
-                  id="phone"
-                  type="tel"
-                  value={formData.phone}
-                  onChange={handleInputChangeEvent("phone")}
-                  placeholder={`${t("phone")}*`}
-                  className={errors.phone ? "border-red-500" : ""}
+                <PhoneNumberInputTwo
+                  value={phoneNumber}
                   disabled={isPending}
+                  error={errors.phone}
+                  theme="light"
+                  onValidityChange={(isValid, number) => {
+                    setIsPhoneValid(isValid);
+                    setPhoneNumber(number);
+                  }}
+                  translations={{
+                    phoneRequired: phoneNumberSchema("phoneRequired"),
+                    phoneInvalid: phoneNumberSchema("phoneInvalid"),
+                    invalidCountryCode: phoneNumberSchema("invalidCountryCode"),
+                    tooShort: phoneNumberSchema("tooShort"),
+                    tooLong: phoneNumberSchema("tooLong"),
+                    invalidFormat: phoneNumberSchema("invalidFormat"),
+                  }}
                 />
-                {errors.phone && (
-                  <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
-                )}
               </div>
 
               <div>
