@@ -287,13 +287,19 @@ const PropertyInventoryGenerator: React.FC = () => {
     return Promise.all(
       imageUrls.map(
         (url) =>
-          new Promise<void>((resolve) => {
+          new Promise<void>((resolve, reject) => {
             const img = new Image();
             img.onload = () => resolve();
             img.onerror = () => resolve(); // Don't fail on single image error
             img.src = url;
           })
       )
+    );
+  };
+
+  const isMobile = (): boolean => {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+      navigator.userAgent
     );
   };
 
@@ -319,8 +325,13 @@ const PropertyInventoryGenerator: React.FC = () => {
       requestAnimationFrame(() => {
         const printContainer = document.createElement("div");
         printContainer.id = "print-container";
-        printContainer.style.cssText =
-          "position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; background: white; overflow: auto;";
+
+        // Better mobile support
+        const containerStyles = isMobile()
+          ? "position: fixed; top: 0; left: 0; width: 100vw; height: auto; z-index: 9999; background: white; overflow: visible;"
+          : "position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; background: white; overflow: auto;";
+
+        printContainer.style.cssText = containerStyles;
 
         // Create all pages
         const fragment = document.createDocumentFragment();
@@ -332,14 +343,16 @@ const PropertyInventoryGenerator: React.FC = () => {
         printContainer.appendChild(fragment);
         document.body.appendChild(printContainer);
 
-        // Print with better timing
+        // Longer delay for mobile to ensure images load
+        const printDelay = isMobile() ? 800 : 300;
+
         setTimeout(() => {
           window.print();
           setTimeout(() => {
             document.body.removeChild(printContainer);
             setIsGenerating(false);
           }, 500);
-        }, 300);
+        }, printDelay);
       });
     } catch (error) {
       console.error("Error generating PDF:", error);
@@ -755,10 +768,11 @@ const PropertyInventoryGenerator: React.FC = () => {
           }
           #print-container {
             position: absolute !important;
-            left: 0;
-            top: 0;
+            left: 0 !important;
+            top: 0 !important;
             overflow: visible !important;
             height: auto !important;
+            width: 100% !important;
           }
           @page {
             size: A4 portrait;
@@ -771,6 +785,20 @@ const PropertyInventoryGenerator: React.FC = () => {
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
             color-adjust: exact !important;
+          }
+          img {
+            max-width: 100% !important;
+            height: auto !important;
+            display: block !important;
+            -webkit-print-color-adjust: exact !important;
+          }
+        }
+        
+        /* Mobile specific styles */
+        @media screen and (max-width: 768px) {
+          #print-container {
+            transform: scale(1) !important;
+            transform-origin: top left !important;
           }
         }
       `}</style>
@@ -786,37 +814,66 @@ const PropertyInventoryGenerator: React.FC = () => {
               features, and driving distances.
             </p>
 
-            <button
-              onClick={() => generatePDF(mockProperty)}
-              disabled={isGenerating}
-              className="bg-yellow-600 hover:bg-yellow-700 disabled:bg-yellow-400 disabled:cursor-not-allowed text-white font-bold py-3 px-6 rounded-lg flex items-center gap-2 transition-colors"
-            >
-              {isGenerating ? (
-                <>
-                  <svg
-                    className="animate-spin h-5 w-5"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
+            <div className="flex gap-3">
+              <button
+                onClick={() => generatePDF(mockProperty)}
+                disabled={isGenerating}
+                className="bg-yellow-600 hover:bg-yellow-700 disabled:bg-yellow-400 disabled:cursor-not-allowed text-white font-bold py-3 px-6 rounded-lg flex items-center gap-2 transition-colors"
+              >
+                {isGenerating ? (
+                  <>
+                    <svg
+                      className="animate-spin h-5 w-5"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
+                    </svg>
+                    <span>Generating PDF...</span>
+                  </>
+                ) : (
+                  <>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5"
+                      fill="none"
+                      viewBox="0 0 24 24"
                       stroke="currentColor"
-                      strokeWidth="4"
-                    ></circle>
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    ></path>
-                  </svg>
-                  <span>Generating PDF...</span>
-                </>
-              ) : (
-                <>
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                      />
+                    </svg>
+                    <span>Generate PDF</span>
+                  </>
+                )}
+              </button>
+
+              {isMobile() && (
+                <button
+                  onClick={() =>
+                    alert(
+                      "Mobile PDF generation tip: For best results, use 'Print to PDF' option in your browser's print dialog. If pages appear blank, try switching to landscape orientation or use a desktop browser."
+                    )
+                  }
+                  className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg flex items-center gap-2 transition-colors"
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-5 w-5"
@@ -828,13 +885,13 @@ const PropertyInventoryGenerator: React.FC = () => {
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       strokeWidth={2}
-                      d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                     />
                   </svg>
-                  <span>Generate PDF</span>
-                </>
+                  <span>Mobile Tips</span>
+                </button>
               )}
-            </button>
+            </div>
           </div>
 
           <div className="bg-white rounded-lg shadow-lg p-6">
