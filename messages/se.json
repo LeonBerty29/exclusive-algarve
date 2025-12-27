@@ -1567,11 +1567,11 @@
     "pleaseWaitText": "Vänligen vänta ett ögonblick..."
   },
   "phoneNumberFormSchema": {
-      "phoneRequired": "Telefonnummer krävs",
-      "phoneInvalid": "Vänligen ange ett giltigt telefonnummer",
-      "invalidCountryCode": "Ogiltig landskod",
-      "tooShort": "Telefonnumret är för kort",
-      "tooLong": "Telefonnumret är för långt",
-      "invalidFormat": "Ogiltigt telefonnummerformat"
-    }
+    "phoneRequired": "Telefonnummer krävs",
+    "phoneInvalid": "Vänligen ange ett giltigt telefonnummer",
+    "invalidCountryCode": "Ogiltig landskod",
+    "tooShort": "Telefonnumret är för kort",
+    "tooLong": "Telefonnumret är för långt",
+    "invalidFormat": "Ogiltigt telefonnummerformat"
+  }
 }
