@@ -287,7 +287,7 @@ const PropertyInventoryGenerator: React.FC = () => {
     return Promise.all(
       imageUrls.map(
         (url) =>
-          new Promise<void>((resolve, reject) => {
+          new Promise<void>((resolve) => {
             const img = new Image();
             img.onload = () => resolve();
             img.onerror = () => resolve(); // Don't fail on single image error
