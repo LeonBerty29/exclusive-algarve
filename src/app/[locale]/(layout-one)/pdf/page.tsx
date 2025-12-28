@@ -361,14 +361,24 @@ const PropertyInventoryGenerator: React.FC = () => {
     }
   };
 
+  const createImage = (src: string, styles: string): HTMLImageElement => {
+    const img = document.createElement("img");
+    img.src = src;
+    img.style.cssText = styles;
+    img.loading = "eager";
+    img.crossOrigin = "anonymous";
+    return img;
+  };
+
   const createPage1 = (
     property: Property,
     images: string[],
     description: string
   ): HTMLDivElement => {
     const page = document.createElement("div");
+    page.className = "page-break";
     page.style.cssText =
-      "width: 210mm; height: 297mm; margin: 0 auto; position: relative; background: white; padding: 0; page-break-after: always; box-sizing: border-box;";
+      "width: 210mm; height: 297mm; margin: 0 auto; position: relative; background: white; padding: 0; box-sizing: border-box;";
 
     const header = createHeader(property);
     page.appendChild(header);
@@ -377,15 +387,16 @@ const PropertyInventoryGenerator: React.FC = () => {
     imageContainer.style.cssText =
       "position: absolute; top: 20mm; left: 0; width: 100%; height: 108.675mm;";
 
-    const mainImage = document.createElement("img");
-    mainImage.src = images[0];
-    mainImage.style.cssText = "width: 100%; height: 100%; object-fit: cover;";
+    const mainImage = createImage(
+      images[0],
+      "width: 100%; height: 100%; object-fit: cover;"
+    );
     imageContainer.appendChild(mainImage);
 
-    const awardsOnImage = document.createElement("img");
-    awardsOnImage.src = property.sales_consultant.profile_picture;
-    awardsOnImage.style.cssText =
-      "position: absolute; bottom: 10px; right: 10px; width: 60px; height: 60px; object-fit: cover; border: 3px solid white;";
+    const awardsOnImage = createImage(
+      property.sales_consultant.profile_picture,
+      "position: absolute; bottom: 10px; right: 10px; width: 60px; height: 60px; object-fit: cover; border: 3px solid white;"
+    );
     imageContainer.appendChild(awardsOnImage);
 
     page.appendChild(imageContainer);
@@ -399,9 +410,10 @@ const PropertyInventoryGenerator: React.FC = () => {
       "font-size: 25px; font-weight: bold; color: #1a1a1a; margin: 0;";
     title.textContent = property.title;
 
-    const awardsSmall = document.createElement("img");
-    awardsSmall.src = property.sales_consultant.profile_picture;
-    awardsSmall.style.cssText = "width: 50px; height: 50px; object-fit: cover;";
+    const awardsSmall = createImage(
+      property.sales_consultant.profile_picture,
+      "width: 50px; height: 50px; object-fit: cover;"
+    );
 
     titleSection.appendChild(title);
     titleSection.appendChild(awardsSmall);
@@ -479,8 +491,9 @@ const PropertyInventoryGenerator: React.FC = () => {
     description: string
   ): HTMLDivElement => {
     const page = document.createElement("div");
+    page.className = "page-break";
     page.style.cssText =
-      "width: 210mm; height: 297mm; margin: 0 auto; position: relative; background: white; padding: 0; page-break-after: always; box-sizing: border-box;";
+      "width: 210mm; height: 297mm; margin: 0 auto; position: relative; background: white; padding: 0; box-sizing: border-box;";
 
     const header = createHeader(property);
     page.appendChild(header);
@@ -489,15 +502,16 @@ const PropertyInventoryGenerator: React.FC = () => {
     imageContainer.style.cssText =
       "position: absolute; top: 20mm; left: 0; width: 100%; height: 108.675mm;";
 
-    const mainImage = document.createElement("img");
-    mainImage.src = images[1];
-    mainImage.style.cssText = "width: 100%; height: 100%; object-fit: cover;";
+    const mainImage = createImage(
+      images[1],
+      "width: 100%; height: 100%; object-fit: cover;"
+    );
     imageContainer.appendChild(mainImage);
 
-    const awardsOnImage = document.createElement("img");
-    awardsOnImage.src = property.sales_consultant.profile_picture;
-    awardsOnImage.style.cssText =
-      "position: absolute; bottom: 10px; right: 10px; width: 60px; height: 60px; object-fit: cover; border: 3px solid white;";
+    const awardsOnImage = createImage(
+      property.sales_consultant.profile_picture,
+      "position: absolute; bottom: 10px; right: 10px; width: 60px; height: 60px; object-fit: cover; border: 3px solid white;"
+    );
     imageContainer.appendChild(awardsOnImage);
 
     page.appendChild(imageContainer);
@@ -510,15 +524,15 @@ const PropertyInventoryGenerator: React.FC = () => {
     leftSection.style.cssText =
       "flex: 1; display: flex; flex-direction: column; gap: 10px; padding-left: 25px;";
 
-    const leftImage1 = document.createElement("img");
-    leftImage1.src = images[2];
-    leftImage1.style.cssText =
-      "width: 100%; height: calc(50% - 5px); object-fit: cover;";
+    const leftImage1 = createImage(
+      images[2],
+      "width: 100%; height: calc(50% - 5px); object-fit: cover;"
+    );
 
-    const leftImage2 = document.createElement("img");
-    leftImage2.src = images[3];
-    leftImage2.style.cssText =
-      "width: 100%; height: calc(50% - 5px); object-fit: cover;";
+    const leftImage2 = createImage(
+      images[3],
+      "width: 100%; height: calc(50% - 5px); object-fit: cover;"
+    );
 
     leftSection.appendChild(leftImage1);
     leftSection.appendChild(leftImage2);
@@ -528,10 +542,10 @@ const PropertyInventoryGenerator: React.FC = () => {
       "flex: 1; display: flex; flex-direction: column; gap: 10px; padding-right: 25px;";
 
     if (description.length > 0) {
-      const awardsBadge = document.createElement("img");
-      awardsBadge.src = property.sales_consultant.profile_picture;
-      awardsBadge.style.cssText =
-        "width: 60%; height: 80px; object-fit: cover; align-self: center;";
+      const awardsBadge = createImage(
+        property.sales_consultant.profile_picture,
+        "width: 60%; height: 80px; object-fit: cover; align-self: center;"
+      );
       rightSection.appendChild(awardsBadge);
     }
 
@@ -557,8 +571,9 @@ const PropertyInventoryGenerator: React.FC = () => {
     images: string[]
   ): HTMLDivElement => {
     const page = document.createElement("div");
+    page.className = "page-break";
     page.style.cssText =
-      "width: 210mm; height: 297mm; margin: 0 auto; position: relative; background: white; padding: 0; page-break-after: always; box-sizing: border-box;";
+      "width: 210mm; height: 297mm; margin: 0 auto; position: relative; background: white; padding: 0; box-sizing: border-box;";
 
     const header = createHeader(property);
     page.appendChild(header);
@@ -567,9 +582,10 @@ const PropertyInventoryGenerator: React.FC = () => {
     imageContainer.style.cssText =
       "position: absolute; top: 20mm; left: 0; width: 100%; height: 108.675mm;";
 
-    const mainImage = document.createElement("img");
-    mainImage.src = images[4];
-    mainImage.style.cssText = "width: 100%; height: 100%; object-fit: cover;";
+    const mainImage = createImage(
+      images[4],
+      "width: 100%; height: 100%; object-fit: cover;"
+    );
     imageContainer.appendChild(mainImage);
 
     page.appendChild(imageContainer);
@@ -582,15 +598,15 @@ const PropertyInventoryGenerator: React.FC = () => {
     leftSection.style.cssText =
       "flex: 1; display: flex; flex-direction: column; gap: 10px; padding-left: 25px;";
 
-    const leftImage1 = document.createElement("img");
-    leftImage1.src = images[5];
-    leftImage1.style.cssText =
-      "width: 100%; height: calc(50% - 5px); object-fit: cover;";
+    const leftImage1 = createImage(
+      images[5],
+      "width: 100%; height: calc(50% - 5px); object-fit: cover;"
+    );
 
-    const leftImage2 = document.createElement("img");
-    leftImage2.src = images[6];
-    leftImage2.style.cssText =
-      "width: 100%; height: calc(50% - 5px); object-fit: cover;";
+    const leftImage2 = createImage(
+      images[6],
+      "width: 100%; height: calc(50% - 5px); object-fit: cover;"
+    );
 
     leftSection.appendChild(leftImage1);
     leftSection.appendChild(leftImage2);
@@ -599,15 +615,15 @@ const PropertyInventoryGenerator: React.FC = () => {
     rightSection.style.cssText =
       "flex: 1; display: flex; flex-direction: column; gap: 10px; padding-right: 25px;";
 
-    const rightImage1 = document.createElement("img");
-    rightImage1.src = images[7];
-    rightImage1.style.cssText =
-      "width: 100%; height: calc(50% - 5px); object-fit: cover;";
+    const rightImage1 = createImage(
+      images[7],
+      "width: 100%; height: calc(50% - 5px); object-fit: cover;"
+    );
 
-    const rightImage2 = document.createElement("img");
-    rightImage2.src = images[8];
-    rightImage2.style.cssText =
-      "width: 100%; height: calc(50% - 5px); object-fit: cover;";
+    const rightImage2 = createImage(
+      images[8],
+      "width: 100%; height: calc(50% - 5px); object-fit: cover;"
+    );
 
     rightSection.appendChild(rightImage1);
     rightSection.appendChild(rightImage2);
@@ -628,8 +644,9 @@ const PropertyInventoryGenerator: React.FC = () => {
     description: string
   ): HTMLDivElement => {
     const page = document.createElement("div");
+    page.className = "page-break";
     page.style.cssText =
-      "width: 210mm; height: 297mm; margin: 0 auto; position: relative; background: white; padding: 0; page-break-after: always; box-sizing: border-box;";
+      "width: 210mm; height: 297mm; margin: 0 auto; position: relative; background: white; padding: 0; box-sizing: border-box;";
 
     const header = createHeader(property);
     page.appendChild(header);
@@ -638,9 +655,10 @@ const PropertyInventoryGenerator: React.FC = () => {
     imageContainer.style.cssText =
       "position: absolute; top: 20mm; left: 0; width: 100%; height: 108.675mm;";
 
-    const mainImage = document.createElement("img");
-    mainImage.src = images[9];
-    mainImage.style.cssText = "width: 100%; height: 100%; object-fit: cover;";
+    const mainImage = createImage(
+      images[9],
+      "width: 100%; height: 100%; object-fit: cover;"
+    );
     imageContainer.appendChild(mainImage);
 
     page.appendChild(imageContainer);
@@ -688,9 +706,10 @@ const PropertyInventoryGenerator: React.FC = () => {
       '<span style="font-weight: normal;">Location:</span> ' +
       property.location.zone;
 
-    const logo = document.createElement("img");
-    logo.src = "/images/eav-dark-logo.png";
-    logo.style.cssText = "height: 60px; object-fit: contain;";
+    const logo = createImage(
+      "/images/eav-dark-logo.png",
+      "height: 60px; object-fit: contain;"
+    );
 
     const price = document.createElement("div");
     price.style.cssText = "font-size: 15px; font-weight: bold; color: #D4A017;";
@@ -760,20 +779,27 @@ const PropertyInventoryGenerator: React.FC = () => {
     <>
       <style>{`
         @media print {
-          body * {
-            visibility: hidden;
+          body > *:not(#print-container) {
+            display: none !important;
           }
-          #print-container, #print-container * {
-            visibility: visible;
-          }
+          
           #print-container {
+            display: block !important;
             position: absolute !important;
             left: 0 !important;
             top: 0 !important;
-            overflow: visible !important;
+            width: 210mm !important;
             height: auto !important;
-            width: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            overflow: visible !important;
           }
+          
+          #print-container * {
+            visibility: visible !important;
+            display: block !important;
+          }
+          
           @page {
             size: A4 portrait;
             margin: 0;
@@ -781,25 +807,28 @@ const PropertyInventoryGenerator: React.FC = () => {
             print-color-adjust: exact !important;
             color-adjust: exact !important;
           }
+          
           * {
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
             color-adjust: exact !important;
           }
+          
           img {
             max-width: 100% !important;
-            height: auto !important;
             display: block !important;
+            page-break-inside: avoid !important;
             -webkit-print-color-adjust: exact !important;
+          }
+          
+          .page-break {
+            page-break-after: always !important;
+            break-after: page !important;
           }
         }
         
-        /* Mobile specific styles */
-        @media screen and (max-width: 768px) {
-          #print-container {
-            transform: scale(1) !important;
-            transform-origin: top left !important;
-          }
+        #print-container {
+          display: none;
         }
       `}</style>
 
