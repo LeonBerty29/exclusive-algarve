@@ -311,6 +311,7 @@ export interface PropertyMetadata {
   typologies: { id: number; name: string }[];
   features: FeatureCategory[];
   areas: LocationArea[];
+  active_property_count: number;
 }
 
 export interface PropertyMetadata {
