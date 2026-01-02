@@ -28,11 +28,10 @@ import {
   ListRegionSelect,
 } from "./listing-filters";
 import { getTranslations } from "next-intl/server";
+import { getMetadata } from "@/data/properties-metada";
 
-const SearchHeader = async() => {
+const SearchHeader = async () => {
   const t = await getTranslations("searchHeader");
-
-  const propertiesCount = 3550;
 
   return (
     <>
@@ -58,7 +57,10 @@ const SearchHeader = async() => {
 
           <div className="flex-col items-center gap-2 sm:flex">
             <p className="text-sm lg:text-base text-center">
-              <b>{propertiesCount}</b> {t("propertiesForSaleWith")}{" "}
+              <Suspense fallback={<Skeleton className="w-6 h-4" />}>
+                <PropertiesCount />
+              </Suspense>{" "}
+              {t("propertiesForSaleWith")}{" "}
               <span className="text-primary font-semibold">
                 {t("exclusiveAlgarveVillas")}
               </span>
@@ -149,3 +151,9 @@ const SearchHeader = async() => {
 };
 
 export default SearchHeader;
+
+async function PropertiesCount() {
+  const metadata = await getMetadata();
+
+  return <b>{metadata.active_property_count}</b>;
+}
