@@ -218,7 +218,7 @@ export default async function PropertiesPage(props: PageProps) {
                 fallback={<PropertiesGridSkeleton />}
               >
                 {/* <SessionValidator> */}
-                  <PropertieList apiParams={apiParams} />
+                <PropertieList apiParams={apiParams} />
                 {/* </SessionValidator> */}
               </Suspense>
               <Suspense

@@ -393,7 +393,8 @@
   "propertyDetailsPage": {
     "home": "Início",
     "properties": "Propriedades",
-    "poweredBy": "DESENVOLVIDO POR"
+    "poweredBy": "DESENVOLVIDO POR",
+    "contactForPrice": "Contacte para preço"
   },
   "propertyDetailsErrorPage": {
     "propertyNotFoundTitle": "Propriedade Não Encontrada",

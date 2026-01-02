@@ -326,7 +326,7 @@ export default function RegionSelect({
                   return (
                     <CommandItem
                       key={optionKey}
-                      value={optionKey}
+                      value={option.name}
                       onSelect={() => {
                         handleLocationSelect(option);
                       }}
