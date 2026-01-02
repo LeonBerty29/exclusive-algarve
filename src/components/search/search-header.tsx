@@ -56,15 +56,15 @@ const SearchHeader = async () => {
           </Button>
 
           <div className="flex-col items-center gap-2 sm:flex">
-            <p className="text-sm lg:text-base text-center">
+            <div className="text-sm lg:text-base text-center">
               <Suspense fallback={<Skeleton className="w-6 h-4" />}>
                 <PropertiesCount />
               </Suspense>{" "}
               {t("propertiesForSaleWith")}{" "}
-              <span className="text-primary font-semibold">
+              <p className="text-primary font-semibold">
                 {t("exclusiveAlgarveVillas")}
-              </span>
-            </p>
+              </p>
+            </div>
           </div>
         </div>
       </div>
