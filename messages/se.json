@@ -393,7 +393,8 @@
   "propertyDetailsPage": {
     "home": "Hem",
     "properties": "Fastigheter",
-    "poweredBy": "DRIVS AV"
+    "poweredBy": "DRIVS AV",
+    "contactForPrice": "Kontakta för pris"
   },
   "propertyDetailsErrorPage": {
     "propertyNotFoundTitle": "Fastighet hittades inte",

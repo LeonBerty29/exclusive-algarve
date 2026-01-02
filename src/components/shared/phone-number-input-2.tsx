@@ -47,8 +47,8 @@ export const PhoneNumberInputTwo: React.FC<PhoneNumberInputTwoProps> = ({
 
   const phoneInputClasses =
     theme === "dark"
-      ? "indent-4 bg-white text-black placeholder:text-gray-500 border-none rounded-none p-3 h-9 focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 placeholder:text-sm w-full"
-      : "indent-4 bg-gray-100 text-black placeholder:text-gray-600 border-none rounded-none p-3 h-9 focus:ring-2 focus:ring-gray-400 placeholder:text-sm w-full";
+      ? "w-full border-b border-b-primary indent-4 bg-black  text-black placeholder:text-gray-500 border-none rounded-none p-3 h-9 focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 placeholder:text-sm w-full"
+      : "w-full indent-4 bg-gray-100 text-black placeholder:text-gray-600 border-none rounded-none p-3 h-9 focus:ring-2 focus:ring-gray-400 placeholder:text-sm w-full";
 
   const handleNumberChange = (number: string | undefined) => {
     const validNumber = number || "";
@@ -121,7 +121,7 @@ export const PhoneNumberInputTwo: React.FC<PhoneNumberInputTwoProps> = ({
   );
 };
 
-// Export validation utility function
+// Validation utility function
 export const validatePhoneNumber = (
   phoneNumber: string,
   isValid: boolean,

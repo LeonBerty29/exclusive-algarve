@@ -28,14 +28,11 @@ export const PropertyCard = async ({
 }: Props) => {
   const t = await getTranslations("productCard");
 
-  // Extract image URLs from assets.images.gallery
   const imagePaths =
     property.assets?.images?.gallery?.map((img) => img.url) || [];
 
-  // Compose location string
   const location = `${property.location.district}, ${property.location.municipality}, ${property.location.zone}`;
 
-  // Hardcoded placeholders for missing fields (adjust as needed)
   const favorite = favorites.includes(property.id);
   const reference = property.reference;
   // const exclusive = property.agency.name === "EAV";
@@ -48,7 +45,6 @@ export const PropertyCard = async ({
     garage: property.features.garage || 0,
   };
 
-  // Use property.currency for price formatting
   const currency = property.currency || "EUR";
 
   // Show price only if show_price is true, else display "Contact for price"

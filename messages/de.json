@@ -393,7 +393,8 @@
   "propertyDetailsPage": {
     "home": "Startseite",
     "properties": "Immobilien",
-    "poweredBy": "UNTERSTÜTZT VON"
+    "poweredBy": "UNTERSTÜTZT VON",
+    "contactForPrice": "Preis auf Anfrage"
   },
   "propertyDetailsErrorPage": {
     "propertyNotFoundTitle": "Immobilie nicht gefunden",

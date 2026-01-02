@@ -41,6 +41,7 @@ import {
 import { routing } from "@/i18n/routing";
 import { propertyDetailsPageMetadata } from "@/seo-metadata/property-details-page";
 import { ScrollToTopWrapper } from "@/components/scroll-to-top-wrapper";
+import { RequestInformationDialog } from "@/components/property-details/request-information";
 
 interface Props {
   params: Promise<{ propertyId: string; locale: string }>;
@@ -200,13 +201,13 @@ export default async function page(props: Props) {
   setRequestLocale(locale);
 
   return (
-      <div className="py-14">
-        <ScrollToTopWrapper>
-          <Suspense fallback={<PropertyDetailsPageLoading />}>
-            <PageContent {...props} />
-          </Suspense>
-        </ScrollToTopWrapper>
-      </div>
+    <div className="py-14">
+      <ScrollToTopWrapper>
+        <Suspense fallback={<PropertyDetailsPageLoading />}>
+          <PageContent {...props} />
+        </Suspense>
+      </ScrollToTopWrapper>
+    </div>
   );
 }
 
@@ -450,10 +451,20 @@ const PageContent = async (props: Props) => {
               {property.title}
             </h1>
 
-            <p className="font-medium text-primary text-2xl">
-              {getCurrencySymbol(property.currency)}{" "}
-              {property.price.toLocaleString()}
-            </p>
+            {property.show_price ? (
+              <p className="font-medium text-primary text-2xl">
+                {getCurrencySymbol(property.currency)}{" "}
+                {property.price.toLocaleString()}
+              </p>
+            ) : (
+              <RequestInformationDialog
+                salesConsultant={property.sales_consultant}
+              >
+                <p className="font-medium text-primary text-2xl hover:underline cursor-pointer">
+                  {t("contactForPrice")}
+                </p>
+              </RequestInformationDialog>
+            )}
           </div>
 
           <BookVisitDialog propertyReference={property.reference} />

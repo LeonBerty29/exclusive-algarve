@@ -393,7 +393,8 @@
   "propertyDetailsPage": {
     "home": "Home",
     "properties": "Properties",
-    "poweredBy": "POWERED BY"
+    "poweredBy": "POWERED BY",
+    "contactForPrice": "Contact for price"
   },
   "propertyDetailsErrorPage": {
     "propertyNotFoundTitle": "Property Not Found",

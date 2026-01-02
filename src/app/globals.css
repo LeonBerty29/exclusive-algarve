@@ -275,3 +275,11 @@ button {
 .iti__selected-dial-code {
   font-size: 13px;
 }
+
+.iti__tel-input {
+  width: 100%;
+}
+
+.iti input {
+  width: 100%
+}

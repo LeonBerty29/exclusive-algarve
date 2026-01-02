@@ -393,7 +393,8 @@
   "propertyDetailsPage": {
     "home": "Home",
     "properties": "Woningen",
-    "poweredBy": "MOGELIJK GEMAAKT DOOR"
+    "poweredBy": "MOGELIJK GEMAAKT DOOR",
+    "contactForPrice": "Neem contact op voor prijs"
   },
   "propertyDetailsErrorPage": {
     "propertyNotFoundTitle": "Woning niet gevonden",

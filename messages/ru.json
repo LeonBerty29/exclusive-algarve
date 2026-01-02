@@ -393,7 +393,8 @@
   "propertyDetailsPage": {
     "home": "Главная",
     "properties": "Объекты",
-    "poweredBy": "РАБОТАЕТ НА"
+    "poweredBy": "РАБОТАЕТ НА",
+    "contactForPrice": "Свяжитесь для уточнения цены"
   },
   "propertyDetailsErrorPage": {
     "propertyNotFoundTitle": "Объект не найден",

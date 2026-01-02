@@ -30,6 +30,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { PhoneNumberInputTwo, validatePhoneNumber } from "../shared/phone-number-input-2";
 
 interface FormErrors {
   first_name?: string;
@@ -55,10 +56,15 @@ const ContactAgentForm = ({
 }: ContactAgentFormProps) => {
   const t = useTranslations("contactAgentForm");
   const translationSchema = useTranslations("contactAgentSchema");
+  const phoneNumberSchema = useTranslations("phoneNumberFormSchema");
   const contactAgentSchema = getClientContactAgentSchema(translationSchema);
   const [isPending, startTransition] = useTransition();
   const [isSuccessDialogOpen, setIsSuccessDialogOpen] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
+
+  // Phone validation states
+  const [phoneNumber, setPhoneNumber] = useState<string>("");
+  const [isPhoneValid, setIsPhoneValid] = useState<boolean>(false);
 
   // Use useRef to capture the source URL once
   const sourceUrlRef = useRef<string>(
@@ -100,7 +106,27 @@ const ContactAgentForm = ({
   };
 
   const validateClientForm = (): boolean => {
-    const validationResult = contactAgentSchema.safeParse(formData);
+    // Validate phone number before form validation
+    const phoneValidation = validatePhoneNumber(phoneNumber, isPhoneValid, {
+      phoneRequired: phoneNumberSchema("phoneRequired"),
+      phoneInvalid: phoneNumberSchema("phoneInvalid"),
+    });
+
+    if (!phoneValidation.isValid) {
+      setErrors((prev) => ({
+        ...prev,
+        phone: phoneValidation.message,
+      }));
+      return false;
+    }
+
+    // Update formData with validated phone number
+    const dataToValidate = {
+      ...formData,
+      phone: phoneNumber,
+    };
+
+    const validationResult = contactAgentSchema.safeParse(dataToValidate);
     setErrors({});
 
     if (validationResult.success) return true;
@@ -135,7 +161,7 @@ const ContactAgentForm = ({
     const formDataToSubmit = new FormData();
     formDataToSubmit.append("first_name", formData.first_name);
     formDataToSubmit.append("last_name", formData.last_name);
-    formDataToSubmit.append("phone", formData.phone);
+    formDataToSubmit.append("phone", phoneNumber); // Use validated phone number
     formDataToSubmit.append("email", formData.email);
     formDataToSubmit.append("message", formData.message as string);
     formDataToSubmit.append(
@@ -165,6 +191,8 @@ const ContactAgentForm = ({
             accept_terms: false,
             source_url: sourceUrlRef.current,
           });
+          setPhoneNumber("");
+          setIsPhoneValid(false);
           setErrors({});
           setIsSuccessDialogOpen(true);
           if (onSuccess) onSuccess();
@@ -280,20 +308,32 @@ const ContactAgentForm = ({
           </div>
         </div>
 
-        <div>
-          <Input
-            type="tel"
-            placeholder={t("phoneNumberPlaceholder")}
-            value={formData.phone}
-            onChange={handleInputChangeEvent("phone")}
-            className={`bg-transparent border-0 border-b rounded-none text-white placeholder:text-white/70 focus:border-primary focus-visible:ring-0 focus-visible:ring-offset-0 px-0 pb-2 ${
-              errors.phone ? "border-red-500" : "border-primary"
-            }`}
+        <div className="text-white">
+          <PhoneNumberInputTwo
+            value={phoneNumber}
             disabled={isPending}
+            error={errors.phone}
+            onValidityChange={(isValid, number) => {
+              setIsPhoneValid(isValid);
+              setPhoneNumber(number);
+              // Clear error when user starts typing
+              if (errors.phone) {
+                setErrors((prev) => ({
+                  ...prev,
+                  phone: "",
+                }));
+              }
+            }}
+            translations={{
+              phoneRequired: phoneNumberSchema("phoneRequired"),
+              phoneInvalid: phoneNumberSchema("phoneInvalid"),
+              invalidCountryCode: phoneNumberSchema("invalidCountryCode"),
+              tooShort: phoneNumberSchema("tooShort"),
+              tooLong: phoneNumberSchema("tooLong"),
+              invalidFormat: phoneNumberSchema("invalidFormat"),
+            }}
+            className="bg-transparent border-0 border-b border-b-primary rounded-none text-white placeholder:text-white/70 focus:border-primary focus-visible:ring-0 focus-visible:ring-offset-0 px-0"
           />
-          {errors.phone && (
-            <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
-          )}
         </div>
 
         <div>

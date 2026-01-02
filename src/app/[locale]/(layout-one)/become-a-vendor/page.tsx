@@ -1,7 +1,7 @@
 import Image from "next/image";
 import React from "react";
 import DiscoverSection from "@/components/home/discover-section";
-import { Button } from "@/components/ui/button";
+// import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
 import AnimatedImagesSection from "@/components/shared/animated-image-section";
 import { ContactForm } from "@/components/shared/contact-form";
@@ -225,9 +225,9 @@ const BecomeAVendor = async () => {
                   {t("takeCareOfRepairsBeforeMarket")}
                 </p>
 
-                <Button className="text-white bg-primary hover:bg-black transition-colors mt-4">
+                {/* <Button className="text-white bg-primary hover:bg-black transition-colors mt-4">
                   {t("becomeAVendor")}
-                </Button>
+                </Button> */}
               </div>
             </div>
           </div>
@@ -354,9 +354,9 @@ const BecomeAVendor = async () => {
                 {t("thankYouForTrust")}
               </p>
 
-              <Button className="text-white bg-primary hover:bg-black transition-colors mt-4">
+              {/* <Button className="text-white bg-primary hover:bg-black transition-colors mt-4">
                 {t("discoverOurStrategy")}
-              </Button>
+              </Button> */}
             </div>
           </div>
         </div>
