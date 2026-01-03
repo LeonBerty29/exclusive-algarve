@@ -1,10 +1,10 @@
 "use client"
-import React, { useState, useRef } from 'react';
+import React, { useRef } from 'react';
 import { Download, Printer } from 'lucide-react';
 
 export default function ReceiptGenerator() {
   const receiptRef = useRef<HTMLDivElement>(null);
-  const [receiptData,] = useState({
+  const receiptData = {
     receiptNumber: 'RCP-2026-001',
     date: new Date().toLocaleDateString(),
     customerName: 'John Doe',
@@ -18,7 +18,7 @@ export default function ReceiptGenerator() {
     companyName: 'Your Company Name',
     companyAddress: '123 Business St, City, State 12345',
     companyPhone: '(555) 123-4567'
-  });
+  };
 
   const subtotal = receiptData.items.reduce((sum, item) => sum + (item.quantity * item.price), 0);
   const taxAmount = subtotal * receiptData.tax;
@@ -27,13 +27,165 @@ export default function ReceiptGenerator() {
   const handlePrint = () => {
     if (!receiptRef.current) return;
     
-    const printWindow = window.open('', '_blank');
-    if (!printWindow) {
-      alert('Please allow pop-ups to print the receipt');
-      return;
-    }
+    // Check if we're on mobile
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     
-    const receiptHTML = receiptRef.current.innerHTML;
+    if (isMobile) {
+      // For mobile: use inline styles and direct print
+      const receiptHTML = receiptRef.current.innerHTML;
+      const printContent = document.createElement('div');
+      printContent.innerHTML = receiptHTML;
+      
+      // Hide everything except the print content
+      const originalContents = document.body.innerHTML;
+      document.body.innerHTML = receiptHTML;
+      
+      // Add styles directly to body
+      const styleSheet = document.createElement('style');
+      styleSheet.textContent = `
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+        }
+        body {
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+          padding: 20px;
+          background: white;
+        }
+        .receipt-container {
+          max-width: 800px;
+          margin: 0 auto;
+          padding: 40px;
+          background: white;
+        }
+        .header {
+          border-bottom: 2px solid #333;
+          padding-bottom: 20px;
+          margin-bottom: 30px;
+        }
+        .header h1 {
+          font-size: 28px;
+          font-weight: bold;
+          color: #1f2937;
+          margin-bottom: 10px;
+        }
+        .header p {
+          color: #6b7280;
+          margin: 4px 0;
+        }
+        .receipt-info {
+          display: flex;
+          justify-content: space-between;
+          margin-bottom: 40px;
+        }
+        .info-section h2 {
+          font-size: 20px;
+          font-weight: 600;
+          color: #1f2937;
+          margin-bottom: 12px;
+        }
+        .info-section p {
+          color: #374151;
+          margin: 6px 0;
+        }
+        .bill-to {
+          text-align: right;
+        }
+        .bill-to h3 {
+          font-size: 16px;
+          font-weight: 600;
+          color: #1f2937;
+          margin-bottom: 8px;
+        }
+        table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-bottom: 40px;
+        }
+        thead tr {
+          border-bottom: 2px solid #333;
+        }
+        th {
+          padding: 12px 0;
+          font-weight: 600;
+          color: #374151;
+        }
+        th:first-child { text-align: left; }
+        th:nth-child(2) { text-align: center; }
+        th:nth-child(3), th:nth-child(4) { text-align: right; }
+        tbody tr {
+          border-bottom: 1px solid #e5e7eb;
+        }
+        td {
+          padding: 12px 0;
+          color: #1f2937;
+        }
+        td:first-child { text-align: left; }
+        td:nth-child(2) { text-align: center; color: #374151; }
+        td:nth-child(3) { text-align: right; color: #374151; }
+        td:nth-child(4) { text-align: right; font-weight: 500; }
+        .totals {
+          display: flex;
+          justify-content: flex-end;
+          margin-bottom: 40px;
+        }
+        .totals-table {
+          width: 300px;
+        }
+        .totals-row {
+          display: flex;
+          justify-content: space-between;
+          padding: 8px 0;
+          color: #374151;
+        }
+        .totals-total {
+          display: flex;
+          justify-content: space-between;
+          padding: 12px 0;
+          border-top: 2px solid #333;
+          font-size: 20px;
+          font-weight: bold;
+          color: #1f2937;
+          margin-top: 8px;
+        }
+        .footer {
+          border-top: 2px solid #333;
+          padding-top: 20px;
+          text-align: center;
+          color: #6b7280;
+        }
+        .footer p {
+          margin: 8px 0;
+        }
+        .footer .small {
+          font-size: 14px;
+        }
+        @media print {
+          @page {
+            margin: 0.5in;
+          }
+        }
+      `;
+      document.head.appendChild(styleSheet);
+      
+      window.print();
+      
+      // Restore original content after print dialog closes
+      setTimeout(() => {
+        document.body.innerHTML = originalContents;
+        window.location.reload(); // Reload to restore React functionality
+      }, 100);
+      
+    } else {
+      // For desktop: use popup window approach
+      const printWindow = window.open('', '_blank');
+      if (!printWindow) {
+        alert('Please allow pop-ups to print the receipt');
+        return;
+      }
+      
+      const receiptHTML = receiptRef.current.innerHTML;
     
     printWindow.document.write(`
       <!DOCTYPE html>
@@ -185,6 +337,7 @@ export default function ReceiptGenerator() {
       printWindow.print();
       printWindow.close();
     }, 250);
+    }
   };
 
   return (
