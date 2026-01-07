@@ -37,7 +37,7 @@ interface ContactFormProps {
 }
 
 export function ContactForm({
-  theme = "dark",
+  theme = "light",
   formTitle = true,
   titleStyling = "",
   submitBtnStyling = "",

@@ -1,15 +1,14 @@
 "use client";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ChevronLeft, ChevronRight, Download } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { FloorPlanTab } from "./floor-plan";
 import { LocationTab } from "./location-tab";
 import { PropertyFeatures } from "../property-details/property-features";
 import { Property } from "@/types/property";
-import { Button } from "../ui/button";
 import { useTranslations } from "next-intl";
-import Link from "next/link";
+import { GenerateBrochure } from "./generate-brochure";
 
 interface ScrollableTabsProps {
   property: Property;
@@ -63,12 +62,12 @@ const ScrollableTabs = ({ property }: ScrollableTabsProps) => {
     }
   }, []);
 
-  return (
+   return (
     <>
       <div className="w-full">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <div className="relative w-full flex items-center">
-            {/* Left scroll button - positioned outside TabsList */}
+            {/* Left scroll button */}
             <button
               onClick={scrollLeft}
               className={`flex-shrink-0 p-1 rounded-full shadow-md bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 z-10 mr-1 ${
@@ -79,7 +78,7 @@ const ScrollableTabs = ({ property }: ScrollableTabsProps) => {
               <ChevronLeft className="h-5 w-5" />
             </button>
 
-            {/* TabsList with full width */}
+            {/* TabsList */}
             <div className="flex-grow overflow-hidden">
               <TabsList
                 ref={tabsListRef}
@@ -110,15 +109,12 @@ const ScrollableTabs = ({ property }: ScrollableTabsProps) => {
                     {t("floorPlan")}
                   </TabsTrigger>
                 )}
-                <Link
-                  href={property.assets.pdf_brochure}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Button className="text-xs rounded-none bg-black text-white px-6">
-                    <Download className="size-4" /> {t("downloadBrochure")}
-                  </Button>
-                </Link>
+                
+                <GenerateBrochure 
+                  property={property}
+                  buttonText={t("downloadBrochure")}
+                  className="text-xs rounded-none bg-black text-white px-6"
+                />
 
                 <TabsTrigger
                   value={"location"}
@@ -129,7 +125,7 @@ const ScrollableTabs = ({ property }: ScrollableTabsProps) => {
               </TabsList>
             </div>
 
-            {/* Right scroll button - positioned outside TabsList */}
+            {/* Right scroll button */}
             <button
               onClick={scrollRight}
               className={`flex-shrink-0 p-1 rounded-full shadow-md bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 z-10 ml-1 ${
