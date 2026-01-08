@@ -130,6 +130,7 @@ export interface PropertyListResponse {
     prev: string | null;
     next: string | null;
   };
+  
 }
 
 export interface PropertyResponse {
