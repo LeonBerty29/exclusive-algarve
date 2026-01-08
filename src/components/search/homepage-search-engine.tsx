@@ -29,6 +29,10 @@ export const HomepageSearchEngine = async ({
   const t = await getTranslations("homepageSearchEngine");
   const apiParams = generateApiParams(searchParams);
   const suspenseKey = generateSuspenseKey(apiParams);
+  const response = await getPropertiesWithAllPaginated(apiParams, 12);
+  const total = response.meta.total;
+  
+
   return (
     <>
       <h1 className="text-2xl sm:text-4xl lg:text-6xl leading-tight font-extralight text-white mb-6 text-center">
@@ -94,7 +98,7 @@ export const HomepageSearchEngine = async ({
               key={`${suspenseKey} --show-results-button`}
               fallback={<ShowResultsButtonLoading />}
             >
-              <ShowResultsButton apiParams={apiParams} />
+              <ShowResultsButton apiParams={apiParams} total={total} />
             </Suspense>
 
             <ClearHomeFilters apiParams={apiParams} />
@@ -107,8 +111,10 @@ export const HomepageSearchEngine = async ({
 
 export async function ShowResultsButton({
   apiParams,
+  total,
 }: {
   apiParams: PropertySearchParams;
+  total: number;
 }) {
   const t = await getTranslations("homepageSearchEngine");
   const hasFilters = hasActiveFilters(apiParams);
@@ -122,8 +128,7 @@ export async function ShowResultsButton({
       </Button>
     );
   }
-  const response = await getPropertiesWithAllPaginated(apiParams, 12);
-  const total = response.meta.total;
+  
   return <ScrollToResultsButton total={total} hasFilters={hasFilters} />;
 }
 
