@@ -69,7 +69,7 @@ export interface Property {
   banner: {
     color: string | null;
     name: string | null;
-  }
+  };
 }
 
 export interface DrivingDistance {
@@ -123,6 +123,8 @@ export interface PropertyListResponse {
     total: number;
     from: number;
     to: number;
+  property_aggregates: PropertyAggregates;
+
   };
   links: {
     first: string;
@@ -130,9 +132,7 @@ export interface PropertyListResponse {
     prev: string | null;
     next: string | null;
   };
-  
 }
-
 export interface PropertyResponse {
   data: Property;
   meta: {
@@ -335,5 +335,32 @@ export interface Ranges {
   private_area: {
     min: number;
     max: number;
+  };
+}
+
+// Add this to your existing types file
+
+export interface PropertyAggregates {
+  typologies: Array<{
+    id: number;
+    name: string;
+  }>;
+  areas: LocationArea[];
+  bedrooms: {
+    min: number;
+    max: number;
+  };
+  bathrooms: {
+    min: number;
+    max: number;
+  };
+  price: {
+    min: number;
+    max: number;
+    ranges: Array<{
+      min: number;
+      max: number | null;
+      count: number;
+    }>;
   };
 }

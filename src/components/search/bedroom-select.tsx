@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ChevronDown, Check } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -18,26 +18,38 @@ interface BedroomOption {
   min: number;
 }
 
-// Static bedroom options
-const bedroomOptions: BedroomOption[] = [
-  { value: "1", label: "1+", min: 1 },
-  { value: "2", label: "2+", min: 2 },
-  { value: "3", label: "3+", min: 3 },
-  { value: "4", label: "4+", min: 4 },
-  { value: "5", label: "5+", min: 5 },
-  { value: "6", label: "6+", min: 6 },
-  { value: "7", label: "7+", min: 7 },
-  { value: "8", label: "8+", min: 8 },
-  { value: "9", label: "9+", min: 9 },
-  { value: "10", label: "10+", min: 10 },
-];
+interface BedroomsRange {
+  min: number;
+  max: number;
+}
 
-export function BedroomsDropdown({ modal = true }: { modal?: boolean }) {
+export function BedroomsDropdown({
+  modal = true,
+  bedroomsRange,
+}: {
+  modal?: boolean;
+  bedroomsRange: BedroomsRange;
+}) {
+
+  console.log({bedroomsRange})
   const t = useTranslations("bedroomSelect");
   const router = useRouter();
   const searchParams = useSearchParams();
   const [selectedValue, setSelectedValue] = useState<string>("");
   const [open, setOpen] = useState(false);
+
+  // Generate bedroom options based on the range
+  const bedroomOptions: BedroomOption[] = useMemo(() => {
+    const options: BedroomOption[] = [];
+    for (let i = bedroomsRange.min; i <= bedroomsRange.max; i++) {
+      options.push({
+        value: i.toString(),
+        label: `${i}+`,
+        min: i,
+      });
+    }
+    return options;
+  }, [bedroomsRange]);
 
   // Determine current selected value based on URL params
   useEffect(() => {
@@ -51,7 +63,7 @@ export function BedroomsDropdown({ modal = true }: { modal?: boolean }) {
     } else {
       setSelectedValue("");
     }
-  }, [searchParams]);
+  }, [searchParams, bedroomOptions]);
 
   const handleValueSelect = (value: string) => {
     // If clicking the same value, deselect it

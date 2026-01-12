@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ChevronDown, Check } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -18,26 +18,36 @@ interface BathroomOption {
   min: number;
 }
 
-// Static bathroom options
-const bathroomOptions: BathroomOption[] = [
-  { value: "1", label: "1+", min: 1 },
-  { value: "2", label: "2+", min: 2 },
-  { value: "3", label: "3+", min: 3 },
-  { value: "4", label: "4+", min: 4 },
-  { value: "5", label: "5+", min: 5 },
-  { value: "6", label: "6+", min: 6 },
-  { value: "7", label: "7+", min: 7 },
-  { value: "8", label: "8+", min: 8 },
-  { value: "9", label: "9+", min: 9 },
-  { value: "10", label: "10+", min: 10 },
-];
+interface BathroomsRange {
+  min: number;
+  max: number;
+}
 
-export function BathroomsDropdown({ modal = true }: { modal?: boolean }) {
+export function BathroomsDropdown({
+  modal = true,
+  bathroomsRange,
+}: {
+  modal?: boolean;
+  bathroomsRange: BathroomsRange;
+}) {
   const t = useTranslations("bathroomSelect");
   const router = useRouter();
   const searchParams = useSearchParams();
   const [selectedValue, setSelectedValue] = useState<string>("");
   const [open, setOpen] = useState(false);
+
+  // Generate bathroom options based on the range
+  const bathroomOptions: BathroomOption[] = useMemo(() => {
+    const options: BathroomOption[] = [];
+    for (let i = bathroomsRange.min; i <= bathroomsRange.max; i++) {
+      options.push({
+        value: i.toString(),
+        label: `${i}+`,
+        min: i,
+      });
+    }
+    return options;
+  }, [bathroomsRange]);
 
   // Determine current selected value based on URL params
   useEffect(() => {
@@ -51,7 +61,7 @@ export function BathroomsDropdown({ modal = true }: { modal?: boolean }) {
     } else {
       setSelectedValue("");
     }
-  }, [searchParams]);
+  }, [searchParams, bathroomOptions]);
 
   const handleValueSelect = (value: string) => {
     // If clicking the same value, deselect it

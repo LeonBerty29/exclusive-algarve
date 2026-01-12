@@ -17,12 +17,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Check, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
-import {
-  PropertyMetadata,
-  LocationArea,
-  Municipality,
-  Zone,
-} from "@/types/property";
+import { LocationArea, Municipality, Zone } from "@/types/property";
 import { useTranslations } from "next-intl";
 
 interface LocationOption {
@@ -30,16 +25,16 @@ interface LocationOption {
   name: string;
   type: "area" | "zone";
   displayName: string;
-  areaId?: number; // For zones to track their area
+  areaId?: number;
 }
 
 interface RegionSelectProps {
-  metadata: PropertyMetadata;
+  areas: LocationArea[];
   modal?: boolean;
 }
 
 export default function RegionSelect({
-  metadata,
+  areas,
   modal = true,
 }: RegionSelectProps) {
   const router = useRouter();
@@ -47,12 +42,10 @@ export default function RegionSelect({
   const [open, setOpen] = useState(false);
   const t = useTranslations("regionSelect");
 
-  // Build flattened location options from metadata (areas and zones only)
   const buildLocationOptions = (): LocationOption[] => {
     const options: LocationOption[] = [];
 
-    metadata.areas?.forEach((area: LocationArea) => {
-      // Add area
+    areas?.forEach((area: LocationArea) => {
       options.push({
         id: area.id,
         name: area.name,
@@ -60,7 +53,6 @@ export default function RegionSelect({
         displayName: `${area.name} (${area.property_count})`,
       });
 
-      // Add zones from all municipalities
       area.municipalities?.forEach((municipality: Municipality) => {
         municipality.zones?.forEach((zone: Zone) => {
           options.push({
@@ -79,34 +71,31 @@ export default function RegionSelect({
 
   const locationOptions = buildLocationOptions();
 
-  // Get initial selected locations from URL
   const getInitialSelections = (): {
     areas: number[];
     zones: number[];
   } => {
-    const areas =
+    const areaIds =
       searchParams
         .get("location_area")
         ?.split(",")
         .map(Number)
         .filter(Boolean) || [];
-    const zones =
+    const zoneIds =
       searchParams.get("zone")?.split(",").map(Number).filter(Boolean) || [];
 
-    return { areas, zones };
+    return { areas: areaIds, zones: zoneIds };
   };
 
   const [selectedLocations, setSelectedLocations] =
     useState(getInitialSelections);
 
-  // Get all zones for an area
   const getAreaZones = (areaId: number): LocationOption[] => {
     return locationOptions.filter(
       (option) => option.type === "zone" && option.areaId === areaId
     );
   };
 
-  // Check if all zones in an area are selected
   const areAllZonesSelected = (areaId: number): boolean => {
     const zones = getAreaZones(areaId);
     return (
@@ -115,7 +104,6 @@ export default function RegionSelect({
     );
   };
 
-  // Check if a location should appear selected
   const isLocationEffectivelySelected = (option: LocationOption): boolean => {
     switch (option.type) {
       case "area":
@@ -134,22 +122,19 @@ export default function RegionSelect({
     }
   };
 
-  // Optimize selections by consolidating zones into areas when all are selected
   const optimizeSelections = (selections: {
     areas: number[];
     zones: number[];
   }): { areas: number[]; zones: number[] } => {
     const optimized = { ...selections };
 
-    // Check each area - if all zones are selected, consolidate to area
-    metadata.areas?.forEach((area) => {
+    areas?.forEach((area) => {
       const zones = getAreaZones(area.id);
       if (
         zones.length > 0 &&
         zones.every((zone) => optimized.zones.includes(zone.id)) &&
         !optimized.areas.includes(area.id)
       ) {
-        // All zones selected, consolidate to area
         optimized.areas = [...optimized.areas, area.id];
         optimized.zones = optimized.zones.filter(
           (id) => !zones.some((zone) => zone.id === id)
@@ -160,48 +145,38 @@ export default function RegionSelect({
     return optimized;
   };
 
-  // Update URL with optimized selections
   const updateURL = (newSelections: { areas: number[]; zones: number[] }) => {
     const optimizedSelections = optimizeSelections(newSelections);
     const params = new URLSearchParams(searchParams.toString());
 
-    // Update location_area parameter
     if (optimizedSelections.areas.length > 0) {
       params.set("location_area", optimizedSelections.areas.join(","));
     } else {
       params.delete("location_area");
     }
 
-    // Update zone parameter
     if (optimizedSelections.zones.length > 0) {
       params.set("zone", optimizedSelections.zones.join(","));
     } else {
       params.delete("zone");
     }
 
-    // Remove municipality parameter as we're no longer using it
     params.delete("municipality");
-
-    // Reset to first page when location changes
     params.delete("page");
 
-    router.replace(`?${params.toString()}`);
+    router.replace(`?${params.toString()}`, { scroll: false });
   };
 
-  // Handle location selection/deselection
   const handleLocationSelect = (option: LocationOption): void => {
     const newSelections = { ...selectedLocations };
     const isCurrentlySelected = isLocationEffectivelySelected(option);
 
     if (isCurrentlySelected) {
-      // Deselecting
       switch (option.type) {
         case "area":
-          // Remove area
           newSelections.areas = newSelections.areas.filter(
             (id) => id !== option.id
           );
-          // Remove all zones from this area
           const zones = getAreaZones(option.id);
           newSelections.zones = newSelections.zones.filter(
             (id) => !zones.some((zone) => zone.id === id)
@@ -215,12 +190,10 @@ export default function RegionSelect({
             parentArea !== undefined &&
             selectedLocations.areas.includes(parentArea)
           ) {
-            // Parent area is selected, need to break it down
             newSelections.areas = newSelections.areas.filter(
               (id) => id !== parentArea
             );
 
-            // Add all zones from this area except the one being deselected
             const areaZones = getAreaZones(parentArea);
             areaZones.forEach((zone) => {
               if (zone.id !== option.id) {
@@ -228,7 +201,6 @@ export default function RegionSelect({
               }
             });
           } else {
-            // Just remove the zone
             newSelections.zones = newSelections.zones.filter(
               (id) => id !== option.id
             );
@@ -236,11 +208,9 @@ export default function RegionSelect({
           break;
       }
     } else {
-      // Selecting
       switch (option.type) {
         case "area":
           newSelections.areas = [...newSelections.areas, option.id];
-          // Remove any individual zones from this area
           const zones = getAreaZones(option.id);
           zones.forEach((zone) => {
             newSelections.zones = newSelections.zones.filter(
@@ -258,7 +228,6 @@ export default function RegionSelect({
     updateURL(newSelections);
   };
 
-  // Get selected items for display
   const getSelectedItems = (): LocationOption[] => {
     const selected: LocationOption[] = [];
 
@@ -279,7 +248,6 @@ export default function RegionSelect({
     return selected;
   };
 
-  // Sync with URL params when they change externally
   useEffect(() => {
     setSelectedLocations(getInitialSelections());
   }, [searchParams]);

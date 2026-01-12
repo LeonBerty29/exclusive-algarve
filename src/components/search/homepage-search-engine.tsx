@@ -31,6 +31,7 @@ export const HomepageSearchEngine = async ({
   const suspenseKey = generateSuspenseKey(apiParams);
   const response = await getPropertiesWithAllPaginated(apiParams, 12);
   const total = response.meta.total;
+  const propertyAggregrators = response.meta.property_aggregates
   
 
   return (
@@ -51,7 +52,7 @@ export const HomepageSearchEngine = async ({
                 // key={`${suspenseKey} --region-select`}
                 fallback={<Skeleton className="h-10 w-full" />}
               >
-                <ListRegionSelect />
+                <ListRegionSelect areas={propertyAggregrators.areas} />
               </Suspense>
             </div>
 
@@ -60,7 +61,7 @@ export const HomepageSearchEngine = async ({
                 // key={`${suspenseKey} --property-types`}
                 fallback={<Skeleton className="h-10 w-full" />}
               >
-                <ListPropertyTypes />
+                <ListPropertyTypes typologies={propertyAggregrators.typologies} />
               </Suspense>
             </div>
 
@@ -69,7 +70,7 @@ export const HomepageSearchEngine = async ({
                 // key={`${suspenseKey} --price-slider`}
                 fallback={<Skeleton className="h-10 w-full" />}
               >
-                <ListPrices />
+                <ListPrices priceRange={propertyAggregrators.price} />
               </Suspense>
             </div>
 
@@ -79,7 +80,7 @@ export const HomepageSearchEngine = async ({
                 // key={`${suspenseKey} --bedrooms-slider`}
                 fallback={<Skeleton className="h-10 w-full" />}
               >
-                <ListBedroomsRangeSelect />
+                <ListBedroomsRangeSelect bedroomsRange={propertyAggregrators.bedrooms} />
               </Suspense>
             </div>
 
@@ -88,7 +89,7 @@ export const HomepageSearchEngine = async ({
                 // key={`${suspenseKey} --bathrooms-slider`}
                 fallback={<Skeleton className="h-10 w-full" />}
               >
-                <ListBathroomsRangeSelect />
+                <ListBathroomsRangeSelect bathroomsRange={propertyAggregrators.bathrooms} />
               </Suspense>
             </div>
           </div>
