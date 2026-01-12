@@ -3,23 +3,34 @@ import React, { Suspense } from "react";
 import { SearchInput } from "./search-input";
 import { Skeleton } from "../ui/skeleton";
 import { CollapsibleFilters } from "./collapsible-filters";
-import { ListBathroomsRangeSelectDesktop, ListBedroomsRangeSelectDesktop, ListPricesDesktop, ListPropertyTypesDesktop, ListRegionSelectDesktop } from "./listing-filters-desktop";
+import {
+  ListBathroomsRangeSelectDesktop,
+  ListBedroomsRangeSelectDesktop,
+  ListPricesDesktop,
+  ListPropertyTypesDesktop,
+  ListRegionSelectDesktop,
+} from "./listing-filters-desktop";
 import { PropertySearchParams } from "@/types/property";
 import { getPropertiesWithAllPaginated } from "@/data/properties";
 import { PROPERTIES_PER_PAGE } from "@/config/constants";
 
-export const PropertiesFilter = async (
-  {
-    apiParams,
-  }: {
-    apiParams?: PropertySearchParams;
-  }
-) => {
+export const PropertiesFilter = async ({
+  apiParams,
+}: {
+  apiParams: PropertySearchParams;
+}) => {
   // Fetch properties to get aggregates
-    // Fetch properties to get aggregates
-      const response = await getPropertiesWithAllPaginated(apiParams, PROPERTIES_PER_PAGE)
-      const propertyAggregates = response.meta.property_aggregates;
-    
+  // Fetch properties to get aggregates
+  const response = await getPropertiesWithAllPaginated(
+    apiParams,
+    PROPERTIES_PER_PAGE
+  );
+
+  console.log({apiParams})
+  // console.log({ response });
+  const propertyAggregates = response.meta.property_aggregates;
+  console.log({propertyAggregates})
+
   return (
     <CollapsibleFilters visibleCount={4}>
       <div className="relative">
@@ -40,7 +51,9 @@ export const PropertiesFilter = async (
           // key={`${suspenseKey} --property-types`}
           fallback={<Skeleton className="h-10 w-full" />}
         >
-          <ListPropertyTypesDesktop typologies={propertyAggregates.typologies} />
+          <ListPropertyTypesDesktop
+            typologies={propertyAggregates.typologies}
+          />
         </Suspense>
       </div>
 
@@ -59,7 +72,9 @@ export const PropertiesFilter = async (
           // key={`${suspenseKey} --bedrooms-slider`}
           fallback={<Skeleton className="h-10 w-full" />}
         >
-          <ListBedroomsRangeSelectDesktop bedroomsRange={propertyAggregates.bedrooms} />
+          <ListBedroomsRangeSelectDesktop
+            bedroomsRange={propertyAggregates.bedrooms}
+          />
         </Suspense>
       </div>
 
@@ -68,10 +83,11 @@ export const PropertiesFilter = async (
           // key={`${suspenseKey} --bathrooms-slider`}
           fallback={<Skeleton className="h-10 w-full" />}
         >
-          <ListBathroomsRangeSelectDesktop bathroomsRange={propertyAggregates.bathrooms} />
+          <ListBathroomsRangeSelectDesktop
+            bathroomsRange={propertyAggregates.bathrooms}
+          />
         </Suspense>
       </div>
-
     </CollapsibleFilters>
   );
 };

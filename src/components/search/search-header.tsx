@@ -36,7 +36,7 @@ import { PROPERTIES_PER_PAGE } from "@/config/constants";
 const SearchHeader = async ({
   apiParams,
 }: {
-  apiParams?: PropertySearchParams;
+  apiParams: PropertySearchParams;
 }) => {
   const t = await getTranslations("searchHeader");
 
@@ -82,7 +82,7 @@ const SearchHeader = async ({
 
       <div>
         <div>
-          <PropertiesFilter />
+          <PropertiesFilter apiParams={apiParams} />
         </div>
       </div>
 
