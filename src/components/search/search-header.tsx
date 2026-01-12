@@ -29,9 +29,20 @@ import {
 } from "./listing-filters";
 import { getTranslations } from "next-intl/server";
 import { getMetadata } from "@/data/properties-metada";
+import { getPropertiesWithAllPaginated } from "@/data/properties";
+import { PropertySearchParams } from "@/types/property";
+import { PROPERTIES_PER_PAGE } from "@/config/constants";
 
-const SearchHeader = async () => {
+const SearchHeader = async ({
+  apiParams,
+}: {
+  apiParams?: PropertySearchParams;
+}) => {
   const t = await getTranslations("searchHeader");
+
+  // Fetch properties to get aggregates
+  const response = await getPropertiesWithAllPaginated(apiParams, PROPERTIES_PER_PAGE)
+  const propertyAggregates = response.meta.property_aggregates;
 
   return (
     <>
@@ -93,47 +104,38 @@ const SearchHeader = async () => {
               </div>
 
               <div className="relative">
-                <Suspense
-                  // key={`${suspenseKey} --region-select`}
-                  fallback={<Skeleton className="h-10 w-full" />}
-                >
-                  <ListRegionSelect />
+                <Suspense fallback={<Skeleton className="h-10 w-full" />}>
+                  <ListRegionSelect areas={propertyAggregates.areas} />
                 </Suspense>
               </div>
 
               <div className="relative">
-                <Suspense
-                  // key={`${suspenseKey} --property-types`}
-                  fallback={<Skeleton className="h-10 w-full" />}
-                >
-                  <ListPropertyTypes />
+                <Suspense fallback={<Skeleton className="h-10 w-full" />}>
+                  <ListPropertyTypes
+                    typologies={propertyAggregates.typologies}
+                  />
                 </Suspense>
               </div>
 
               <div className="relative">
-                <Suspense
-                  // key={`${suspenseKey} --price-slider`}
-                  fallback={<Skeleton className="h-10 w-full" />}
-                >
-                  <ListPrices />
+                <Suspense fallback={<Skeleton className="h-10 w-full" />}>
+                  <ListPrices priceRange={propertyAggregates.price} />
                 </Suspense>
               </div>
 
               <div className="relative">
-                <Suspense
-                  // key={`${suspenseKey} --bedrooms-slider`}
-                  fallback={<Skeleton className="h-10 w-full" />}
-                >
-                  <ListBedroomsRangeSelect />
+                <Suspense fallback={<Skeleton className="h-10 w-full" />}>
+                  <ListBedroomsRangeSelect
+                    bedroomsRange={propertyAggregates.bedrooms}
+                  />
                 </Suspense>
               </div>
 
               <div className="relative">
-                <Suspense
-                  // key={`${suspenseKey} --bathrooms-slider`}
-                  fallback={<Skeleton className="h-10 w-full" />}
-                >
-                  <ListBathroomsRangeSelect />
+                <Suspense fallback={<Skeleton className="h-10 w-full" />}>
+                  <ListBathroomsRangeSelect
+                    bathroomsRange={propertyAggregates.bathrooms}
+                  />
                 </Suspense>
               </div>
             </div>

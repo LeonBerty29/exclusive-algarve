@@ -196,11 +196,7 @@ export default async function PropertiesPage(props: PageProps) {
       <div className="pt-24 w-full">
         <div className="w-full">
           <Suspense fallback={<SearchHeaderSkeleton />}>
-            <SearchHeader
-            // totalResults={propertiesResponse.meta.total}
-            // currentPage={propertiesResponse.meta.current_page}
-            // totalPages={propertiesResponse.meta.last_page}
-            />
+            <SearchHeader apiParams={apiParams} />
           </Suspense>
         </div>
 
@@ -217,9 +213,7 @@ export default async function PropertiesPage(props: PageProps) {
                 key={`${suspenseKey} --properties`}
                 fallback={<PropertiesGridSkeleton />}
               >
-                {/* <SessionValidator> */}
                 <PropertieList apiParams={apiParams} />
-                {/* </SessionValidator> */}
               </Suspense>
               <Suspense
                 key={`${suspenseKey} --pagination`}

@@ -1,46 +1,52 @@
-import { getMetadata, getRanges } from "@/data/properties-metada";
 import { PropertyTypes } from "./property-types";
 import { BedroomsDropdown } from "./bedroom-select";
 import { PriceSelect } from "./price-select";
 import RegionSelect from "./region-select";
 import { BathroomsDropdown } from "./bathroom-select";
+import { LocationArea } from "@/types/property";
 
-export async function ListPropertyTypesDesktop() {
-  // const language = "";
-  const metadata = await getMetadata();
-  const typologies = metadata.typologies;
-  return <PropertyTypes modal={false} typologies={typologies} />;
+interface Typology {
+  id: number;
+  name: string;
 }
 
-export async function ListBedroomsRangeSelectDesktop() {
-  // const ranges = await getRanges();
-  // const bedroomRange = ranges.bedrooms; // Fixed: was using ranges.price
-  // return <BedroomsRangeSelect bedroomRange={bedroomRange} />;
-  return <BedroomsDropdown 
-  modal={false} 
-  // bedroomRange={bedroomRange} 
-  />;
+interface PriceRange {
+  min: number;
+  max: number;
+  ranges?: Array<{
+    min: number;
+    max: number | null;
+    count: number;
+  }>;
 }
 
-export async function ListPricesDesktop() {
-  const ranges = await getRanges();
-  const priceRange = ranges.price;
+interface BedroomsRange {
+  min: number;
+  max: number;
+}
+
+interface BathroomsRange {
+  min: number;
+  max: number;
+}
+
+export async function ListPropertyTypesDesktop({ typologies }: { typologies: Typology[] }) {
+ return <PropertyTypes typologies={typologies} modal={false} />;
+}
+
+export async function ListBedroomsRangeSelectDesktop({ bedroomsRange }: { bedroomsRange: BedroomsRange }) {
+  return <BedroomsDropdown bedroomsRange={bedroomsRange} modal={false} />;
+}
+
+export async function ListPricesDesktop({ priceRange }: { priceRange: PriceRange }) {
   return <PriceSelect modal={false} priceRange={priceRange} />;
 }
 
-export async function ListRegionSelectDesktop() {
-  const metadata = await getMetadata();
-  return <RegionSelect modal={false} metadata={metadata} />;
+export async function ListRegionSelectDesktop({ areas }: { areas: LocationArea[] }) {
+  return <RegionSelect areas={areas} modal={false} />;
 }
 
-export async function ListBathroomsRangeSelectDesktop() {
-  // const ranges = await getRanges();
-  // const bathroomRange = ranges.bathrooms;
-  // return <BathroomsRangeSelect bathroomRange={bathroomRange} />;
-  return (
-    <BathroomsDropdown
-    modal={false}
-    // bathroomRange={bathroomRange}
-    />
-  );
+export async function ListBathroomsRangeSelectDesktop({ bathroomsRange }: { bathroomsRange: BathroomsRange }) {
+  
+  return <BathroomsDropdown bathroomsRange={bathroomsRange} modal={false} />;
 }
