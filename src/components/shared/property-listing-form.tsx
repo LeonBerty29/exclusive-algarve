@@ -70,17 +70,17 @@ const PropertyListingForm = () => {
   const [errors, setErrors] = useState<FormErrors>({});
 
   const propertyTypes = [
-    { value: "Villa", label: t("propertyTypeVilla") },
-    { value: "Apartment", label: t("propertyTypeApartment") },
-    { value: "Townhouse", label: t("propertyTypeTownhouse") },
-    { value: "Land/Plot", label: t("propertyTypeLand") },
-    { value: "Commercial", label: t("propertyTypeCommercial") },
-    { value: "Other", label: t("propertyTypeOther") },
+    { value: "villa", label: t("propertyTypeVilla") },
+    { value: "apartment", label: t("propertyTypeApartment") },
+    { value: "townhouse", label: t("propertyTypeTownhouse") },
+    { value: "land_plot", label: t("propertyTypeLand") },
+    { value: "commercial", label: t("propertyTypeCommercial") },
+    { value: "other", label: t("propertyTypeOther") },
   ];
 
   const handleInputChange = <T extends FormField>(
     field: T,
-    value: ClientPropertyListingFormData[T]
+    value: ClientPropertyListingFormData[T],
   ): void => {
     setFormData((prev) => ({
       ...prev,
@@ -120,7 +120,10 @@ const PropertyListingForm = () => {
 
     const formDataToSubmit = new FormData();
     Object.entries(formData).forEach(([key, value]) => {
-      formDataToSubmit.append(key, value);
+      if (value) {
+        // Only append non-empty values
+        formDataToSubmit.append(key, value);
+      }
     });
 
     startTransition(async () => {
@@ -166,7 +169,7 @@ const PropertyListingForm = () => {
     (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
       handleInputChange(
         field,
-        e.target.value as ClientPropertyListingFormData[typeof field]
+        e.target.value as ClientPropertyListingFormData[typeof field],
       );
     };
 
@@ -200,7 +203,9 @@ const PropertyListingForm = () => {
       <div className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <Label className="mb-1.5" htmlFor="first_name">{t("firstName")}</Label>
+            <Label className="mb-1.5" htmlFor="first_name">
+              {t("firstName")} <span className="text-red-500">*</span>
+            </Label>
             <Input
               id="first_name"
               type="text"
@@ -216,7 +221,9 @@ const PropertyListingForm = () => {
           </div>
 
           <div>
-            <Label className="mb-1.5" htmlFor="last_name">{t("lastName")}</Label>
+            <Label className="mb-1.5" htmlFor="last_name">
+              {t("lastName")} <span className="text-red-500">*</span>
+            </Label>
             <Input
               id="last_name"
               type="text"
@@ -232,7 +239,9 @@ const PropertyListingForm = () => {
           </div>
 
           <div>
-            <Label className="mb-1.5" htmlFor="email">{t("email")}</Label>
+            <Label className="mb-1.5" htmlFor="email">
+              {t("email")} <span className="text-red-500">*</span>
+            </Label>
             <Input
               id="email"
               type="email"
@@ -248,7 +257,9 @@ const PropertyListingForm = () => {
           </div>
 
           <div>
-            <Label className="mb-1.5" htmlFor="phone">{t("phone")}</Label>
+            <Label className="mb-1.5" htmlFor="phone">
+              {t("phone")} <span className="text-red-500">*</span>
+            </Label>
             <Input
               id="phone"
               type="tel"
@@ -270,7 +281,9 @@ const PropertyListingForm = () => {
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <Label className="mb-1.5" htmlFor="property_type">{t("propertyType")}</Label>
+              <Label className="mb-1.5" htmlFor="property_type">
+                {t("propertyType")}
+              </Label>
               <Select
                 value={formData.property_type}
                 onValueChange={(value) =>
@@ -301,7 +314,9 @@ const PropertyListingForm = () => {
             </div>
 
             <div>
-              <Label className="mb-1.5" htmlFor="approximate_value">{t("approximateValue")}</Label>
+              <Label className="mb-1.5" htmlFor="approximate_value">
+                {t("approximateValue")} <span className="text-red-500">*</span>
+              </Label>
               <Input
                 id="approximate_value"
                 type="text"
@@ -319,7 +334,9 @@ const PropertyListingForm = () => {
             </div>
 
             <div className="md:col-span-2">
-              <Label className="mb-1.5" htmlFor="full_address">{t("fullAddress")}</Label>
+              <Label className="mb-1.5" htmlFor="full_address">
+                {t("fullAddress")}
+              </Label>
               <Input
                 id="full_address"
                 type="text"
@@ -337,7 +354,9 @@ const PropertyListingForm = () => {
             </div>
 
             <div>
-              <Label className="mb-1.5" htmlFor="bedrooms">{t("bedrooms")}</Label>
+              <Label className="mb-1.5" htmlFor="bedrooms">
+                {t("bedrooms")}
+              </Label>
               <Input
                 id="bedrooms"
                 type="text"
@@ -353,7 +372,9 @@ const PropertyListingForm = () => {
             </div>
 
             <div>
-              <Label className="mb-1.5" htmlFor="build_size">{t("buildSize")}</Label>
+              <Label className="mb-1.5" htmlFor="build_size">
+                {t("buildSize")}
+              </Label>
               <Input
                 id="build_size"
                 type="text"
@@ -369,7 +390,9 @@ const PropertyListingForm = () => {
             </div>
 
             <div>
-              <Label className="mb-1.5" htmlFor="plot_size">{t("plotSize")}</Label>
+              <Label className="mb-1.5" htmlFor="plot_size">
+                {t("plotSize")}
+              </Label>
               <Input
                 id="plot_size"
                 type="text"
@@ -411,7 +434,9 @@ const PropertyListingForm = () => {
             {t("propertyDescription")}
           </h3>
           <div>
-            <Label className="mb-1.5" htmlFor="comments">{t("comments")}</Label>
+            <Label className="mb-1.5" htmlFor="comments">
+              {t("comments")}
+            </Label>
             <Textarea
               id="comments"
               value={formData.comments}

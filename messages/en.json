@@ -1628,7 +1628,14 @@
     "bedroomsRequired": "Number of bedrooms is required",
     "buildSizeRequired": "Build size is required",
     "plotSizeRequired": "Plot size is required",
-    "energyCertRequired": "Energy certificate number is required"
+    "energyCertRequired": "Energy certificate number is required",
+    "firstNameTooLong": "First name must not exceed 255 characters",
+    "lastNameTooLong": "Last name must not exceed 255 characters",
+    "emailTooLong": "Email must not exceed 255 characters",
+    "phoneTooLong": "Phone number must not exceed 255 characters",
+    "approximateValueTooLong": "Approximate value must not exceed 255 characters",
+    "fullAddressTooLong": "Full address must not exceed 255 characters",
+    "commentsTooLong": "Comments must not exceed 1000 characters"
   },
   "submitPropertyListingAction": {
     "checkFormForErrors": "Please check the form for errors",
@@ -1652,5 +1659,17 @@
     "localPresenceDescription": "With offices strategically located throughout the Algarve and a strong international network, we ensure your property receives maximum visibility to qualified buyers worldwide while maintaining the personal, local touch that makes all the difference.",
     "formSectionTitle": "List Your Property With Us",
     "formSectionDescription": "Fill out the form below and one of our expert agents will contact you within 24 hours to discuss your property sale."
+  },
+  "propertyListingAction": {
+    "checkFormForErrors": "Please check the form for errors",
+    "failedToSubmitForm": "Failed to submit form. Please try again.",
+    "formSubmittedSuccessfully": "Form submitted successfully",
+    "unexpectedError": "An unexpected error occurred. Please try again."
+  },
+  "propertyListingData": {
+    "unauthorizedInvalidOrMissingInternalToken": "Unauthorized: Invalid or missing internal token",
+    "validationFailed": "Validation failed",
+    "httpRequestFailed": "HTTP request failed with status: {status}",
+    "unExpectedError": "An unexpected error occurred while processing your request"
   }
 }
