@@ -1627,9 +1627,16 @@
     "approximateValueRequired": "Ungefärligt värde krävs",
     "fullAddressRequired": "Fullständig adress krävs",
     "bedroomsRequired": "Antal sovrum krävs",
-    "buildSizeRequired": "Byggyta krävs",
+    "buildSizeRequired": "Byggnadsstorlek krävs",
     "plotSizeRequired": "Tomtstorlek krävs",
-    "energyCertRequired": "Energicertifikatnummer krävs"
+    "energyCertRequired": "Energicertifikatnummer krävs",
+    "firstNameTooLong": "Förnamn får inte överstiga 255 tecken",
+    "lastNameTooLong": "Efternamn får inte överstiga 255 tecken",
+    "emailTooLong": "E-post får inte överstiga 255 tecken",
+    "phoneTooLong": "Telefonnummer får inte överstiga 255 tecken",
+    "approximateValueTooLong": "Ungefärligt värde får inte överstiga 255 tecken",
+    "fullAddressTooLong": "Fullständig adress får inte överstiga 255 tecken",
+    "commentsTooLong": "Kommentarer får inte överstiga 1000 tecken"
   },
   "submitPropertyListingAction": {
     "checkFormForErrors": "Vänligen kontrollera formuläret för fel",
@@ -1653,5 +1660,17 @@
     "localPresenceDescription": "Med kontor strategiskt placerade i hela Algarve och ett starkt internationellt nätverk säkerställer vi att din fastighet får maximal synlighet för kvalificerade köpare världen över samtidigt som vi behåller den personliga, lokala touchen som gör all skillnad.",
     "formSectionTitle": "Lista din fastighet hos oss",
     "formSectionDescription": "Fyll i formuläret nedan så kontaktar en av våra expertmäklare dig inom 24 timmar för att diskutera din fastighetsförsäljning."
+  },
+  "propertyListingAction": {
+    "checkFormForErrors": "Vänligen kontrollera formuläret för fel",
+    "failedToSubmitForm": "Misslyckades skicka formulär. Vänligen försök igen.",
+    "formSubmittedSuccessfully": "Formuläret skickades framgångsrikt",
+    "unexpectedError": "Ett oväntat fel inträffade. Vänligen försök igen."
+  },
+  "propertyListingData": {
+    "unauthorizedInvalidOrMissingInternalToken": "Obehörig: Ogiltig eller saknad intern token",
+    "validationFailed": "Validering misslyckades",
+    "httpRequestFailed": "HTTP-begäran misslyckades med status: {status}",
+    "unExpectedError": "Ett oväntat fel inträffade vid behandling av din begäran"
   }
 }

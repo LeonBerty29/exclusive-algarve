@@ -4,39 +4,56 @@ export function getClientPropertyListingSchema(t: (key: string) => string) {
   return z.object({
     first_name: z
       .string()
-      .min(1, t("firstNameRequired")),
+      .min(1, t("firstNameRequired"))
+      .max(255, t("firstNameTooLong")),
     last_name: z
       .string()
-      .min(1, t("lastNameRequired")),
+      .min(1, t("lastNameRequired"))
+      .max(255, t("lastNameTooLong")),
     email: z
       .string()
       .min(1, t("emailRequired"))
-      .email(t("emailInvalid")),
+      .email(t("emailInvalid"))
+      .max(255, t("emailTooLong")),
     phone: z
       .string()
-      .min(1, t("phoneRequired")),
-    property_type: z
-      .string()
-      .min(1, t("propertyTypeRequired")),
+      .min(1, t("phoneRequired"))
+      .max(255, t("phoneTooLong")),
     approximate_value: z
       .string()
-      .min(1, t("approximateValueRequired")),
+      .min(1, t("approximateValueRequired"))
+      .max(255, t("approximateValueTooLong")),
+    property_type: z
+      .string()
+      .max(255)
+      .optional()
+      .or(z.literal("")),
     full_address: z
       .string()
-      .min(1, t("fullAddressRequired")),
+      .max(255, t("fullAddressTooLong"))
+      .optional()
+      .or(z.literal("")),
     bedrooms: z
       .string()
-      .min(1, t("bedroomsRequired")),
+      .optional()
+      .or(z.literal("")),
     build_size: z
       .string()
-      .min(1, t("buildSizeRequired")),
+      .optional()
+      .or(z.literal("")),
     plot_size: z
       .string()
-      .min(1, t("plotSizeRequired")),
+      .optional()
+      .or(z.literal("")),
     energy_cert_number: z
       .string()
-      .min(1, t("energyCertRequired")),
-    comments: z.string().optional(),
+      .optional()
+      .or(z.literal("")),
+    comments: z
+      .string()
+      .max(1000, t("commentsTooLong"))
+      .optional()
+      .or(z.literal("")),
   });
 }
 

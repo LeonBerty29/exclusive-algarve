@@ -1618,18 +1618,25 @@
     "propertyTypeOther": "Outro"
   },
   "propertyListingTypes": {
-    "firstNameRequired": "Primeiro nome é obrigatório",
-    "lastNameRequired": "Último nome é obrigatório",
-    "emailRequired": "E-mail é obrigatório",
-    "emailInvalid": "Por favor, digite um endereço de e-mail válido",
-    "phoneRequired": "Número de telefone é obrigatório",
-    "propertyTypeRequired": "Tipo de imóvel é obrigatório",
-    "approximateValueRequired": "Valor aproximado é obrigatório",
-    "fullAddressRequired": "Endereço completo é obrigatório",
-    "bedroomsRequired": "Número de quartos é obrigatório",
-    "buildSizeRequired": "Área de construção é obrigatória",
-    "plotSizeRequired": "Área do terreno é obrigatória",
-    "energyCertRequired": "Número do certificado energético é obrigatório"
+    "firstNameRequired": "O primeiro nome é obrigatório",
+    "lastNameRequired": "O sobrenome é obrigatório",
+    "emailRequired": "O email é obrigatório",
+    "emailInvalid": "Por favor, insira um endereço de email válido",
+    "phoneRequired": "O número de telefone é obrigatório",
+    "propertyTypeRequired": "O tipo de propriedade é obrigatório",
+    "approximateValueRequired": "O valor aproximado é obrigatório",
+    "fullAddressRequired": "O endereço completo é obrigatório",
+    "bedroomsRequired": "O número de quartos é obrigatório",
+    "buildSizeRequired": "O tamanho da construção é obrigatório",
+    "plotSizeRequired": "O tamanho do terreno é obrigatório",
+    "energyCertRequired": "O número do certificado energético é obrigatório",
+    "firstNameTooLong": "O primeiro nome não deve exceder 255 caracteres",
+    "lastNameTooLong": "O sobrenome não deve exceder 255 caracteres",
+    "emailTooLong": "O email não deve exceder 255 caracteres",
+    "phoneTooLong": "O número de telefone não deve exceder 255 caracteres",
+    "approximateValueTooLong": "O valor aproximado não deve exceder 255 caracteres",
+    "fullAddressTooLong": "O endereço completo não deve exceder 255 caracteres",
+    "commentsTooLong": "Os comentários não devem exceder 1000 caracteres"
   },
   "submitPropertyListingAction": {
     "checkFormForErrors": "Por favor, verifique os erros do formulário",
@@ -1653,5 +1660,17 @@
     "localPresenceDescription": "Com escritórios estrategicamente localizados em todo o Algarve e uma forte rede internacional, garantimos que o seu imóvel recebe visibilidade máxima para compradores qualificados em todo o mundo, mantendo o toque pessoal e local que faz toda a diferença.",
     "formSectionTitle": "Liste o seu imóvel connosco",
     "formSectionDescription": "Preencha o formulário abaixo e um dos nossos agentes especialistas entrará em contacto consigo dentro de 24 horas para discutir a venda do seu imóvel."
+  },
+  "propertyListingAction": {
+    "checkFormForErrors": "Por favor, verifique o formulário para erros",
+    "failedToSubmitForm": "Falha ao enviar o formulário. Por favor, tente novamente.",
+    "formSubmittedSuccessfully": "Formulário enviado com sucesso",
+    "unexpectedError": "Ocorreu um erro inesperado. Por favor, tente novamente."
+  },
+  "propertyListingData": {
+    "unauthorizedInvalidOrMissingInternalToken": "Não autorizado: Token interno inválido ou ausente",
+    "validationFailed": "Validação falhou",
+    "httpRequestFailed": "Solicitação HTTP falhou com status: {status}",
+    "unExpectedError": "Ocorreu um erro inesperado ao processar sua solicitação"
   }
 }

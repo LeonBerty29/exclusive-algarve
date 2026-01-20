@@ -1623,13 +1623,20 @@
     "emailRequired": "E-mail is verplicht",
     "emailInvalid": "Voer een geldig e-mailadres in",
     "phoneRequired": "Telefoonnummer is verplicht",
-    "propertyTypeRequired": "Type onroerend goed is verplicht",
+    "propertyTypeRequired": "Type woning is verplicht",
     "approximateValueRequired": "Geschatte waarde is verplicht",
     "fullAddressRequired": "Volledig adres is verplicht",
     "bedroomsRequired": "Aantal slaapkamers is verplicht",
     "buildSizeRequired": "Bebouwde oppervlakte is verplicht",
     "plotSizeRequired": "Perceelgrootte is verplicht",
-    "energyCertRequired": "Energiecertificaatnummer is verplicht"
+    "energyCertRequired": "Energiecertificaatnummer is verplicht",
+    "firstNameTooLong": "Voornaam mag niet meer dan 255 tekens bevatten",
+    "lastNameTooLong": "Achternaam mag niet meer dan 255 tekens bevatten",
+    "emailTooLong": "E-mail mag niet meer dan 255 tekens bevatten",
+    "phoneTooLong": "Telefoonnummer mag niet meer dan 255 tekens bevatten",
+    "approximateValueTooLong": "Geschatte waarde mag niet meer dan 255 tekens bevatten",
+    "fullAddressTooLong": "Volledig adres mag niet meer dan 255 tekens bevatten",
+    "commentsTooLong": "Opmerkingen mogen niet meer dan 1000 tekens bevatten"
   },
   "submitPropertyListingAction": {
     "checkFormForErrors": "Controleer het formulier op fouten",
@@ -1653,5 +1660,17 @@
     "localPresenceDescription": "Met kantoren die strategisch verspreid zijn over de Algarve en een sterk internationaal netwerk, zorgen we ervoor dat uw onroerend goed maximale zichtbaarheid krijgt bij gekwalificeerde kopers wereldwijd, terwijl we de persoonlijke, lokale touch behouden die het verschil maakt.",
     "formSectionTitle": "Vermeld uw onroerend goed bij ons",
     "formSectionDescription": "Vul het onderstaande formulier in en een van onze expert-makelaars neemt binnen 24 uur contact met u op om uw onroerend goed verkoop te bespreken."
+  },
+  "propertyListingAction": {
+    "checkFormForErrors": "Controleer het formulier op fouten",
+    "failedToSubmitForm": "Formulier verzenden mislukt. Probeer het opnieuw.",
+    "formSubmittedSuccessfully": "Formulier succesvol verzonden",
+    "unexpectedError": "Er is een onverwachte fout opgetreden. Probeer het opnieuw."
+  },
+  "propertyListingData": {
+    "unauthorizedInvalidOrMissingInternalToken": "Ongeautoriseerd: Ongeldige of ontbrekende interne token",
+    "validationFailed": "Validatie mislukt",
+    "httpRequestFailed": "HTTP-verzoek mislukt met status: {status}",
+    "unExpectedError": "Er is een onverwachte fout opgetreden bij het verwerken van uw verzoek"
   }
 }

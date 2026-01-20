@@ -1629,7 +1629,14 @@
     "bedroomsRequired": "Anzahl der Schlafzimmer ist erforderlich",
     "buildSizeRequired": "Wohnfläche ist erforderlich",
     "plotSizeRequired": "Grundstücksgröße ist erforderlich",
-    "energyCertRequired": "Energieausweisnummer ist erforderlich"
+    "energyCertRequired": "Energieausweisnummer ist erforderlich",
+    "firstNameTooLong": "Vorname darf 255 Zeichen nicht überschreiten",
+    "lastNameTooLong": "Nachname darf 255 Zeichen nicht überschreiten",
+    "emailTooLong": "E-Mail darf 255 Zeichen nicht überschreiten",
+    "phoneTooLong": "Telefonnummer darf 255 Zeichen nicht überschreiten",
+    "approximateValueTooLong": "Ungefährer Wert darf 255 Zeichen nicht überschreiten",
+    "fullAddressTooLong": "Vollständige Adresse darf 255 Zeichen nicht überschreiten",
+    "commentsTooLong": "Kommentare dürfen 1000 Zeichen nicht überschreiten"
   },
   "submitPropertyListingAction": {
     "checkFormForErrors": "Bitte überprüfen Sie das Formular auf Fehler",
@@ -1653,5 +1660,17 @@
     "localPresenceDescription": "Mit strategisch in der gesamten Algarve gelegenen Büros und einem starken internationalen Netzwerk stellen wir sicher, dass Ihre Immobilie maximale Sichtbarkeit bei qualifizierten Käufern weltweit erhält, während wir die persönliche, lokale Note bewahren, die den entscheidenden Unterschied macht.",
     "formSectionTitle": "Listen Sie Ihre Immobilie bei uns",
     "formSectionDescription": "Füllen Sie das untenstehende Formular aus und einer unserer Experten-Agenten wird Sie innerhalb von 24 Stunden kontaktieren, um Ihren Immobilienverkauf zu besprechen."
+  },
+  "propertyListingAction": {
+    "checkFormForErrors": "Bitte überprüfen Sie das Formular auf Fehler",
+    "failedToSubmitForm": "Formular konnte nicht gesendet werden. Bitte versuchen Sie es erneut.",
+    "formSubmittedSuccessfully": "Formular erfolgreich gesendet",
+    "unexpectedError": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es erneut."
+  },
+  "propertyListingData": {
+    "unauthorizedInvalidOrMissingInternalToken": "Nicht autorisiert: Ungültiges oder fehlendes internes Token",
+    "validationFailed": "Validierung fehlgeschlagen",
+    "httpRequestFailed": "HTTP-Anfrage fehlgeschlagen mit Status: {status}",
+    "unExpectedError": "Bei der Verarbeitung Ihrer Anfrage ist ein unerwarteter Fehler aufgetreten"
   }
 }
