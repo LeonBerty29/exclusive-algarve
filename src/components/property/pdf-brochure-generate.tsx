@@ -169,6 +169,7 @@ const styles = StyleSheet.create({
     lineHeight: 1.2,
     textAlign: "justify",
     marginBottom: 7,
+    color: "#2D2D2D",
   },
   notice: {
     fontSize: 8,
@@ -237,6 +238,7 @@ const styles = StyleSheet.create({
     lineHeight: 1.6,
     textAlign: "justify",
     marginLeft: 10,
+    color: "#2D2D2D",
   },
   companyInfo: {
     textAlign: "center",
@@ -259,6 +261,7 @@ const styles = StyleSheet.create({
     fontSize: 11,
     lineHeight: 1.6,
     textAlign: "justify",
+    color: "#2D2D2D",
   },
   contentWrapper: {
     flex: 1,
