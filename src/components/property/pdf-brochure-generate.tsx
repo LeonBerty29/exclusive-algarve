@@ -184,6 +184,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 15,
     right: 15,
+    color: "#2D2D2D",
   },
   footerTop: {
     flexDirection: "row",
@@ -192,7 +193,6 @@ const styles = StyleSheet.create({
     paddingBottom: 8,
     borderBottom: "2px solid #AE8C2F",
     fontSize: 11,
-    fontWeight: "bold",
     color: GOLD_TEXT_COLOR,
   },
   footerOffices: {
@@ -251,11 +251,11 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     fontSize: 11,
     lineHeight: 1.5,
+    color: "#2D2D2D",
   },
   companyTagline: {
     fontSize: 12,
-    fontWeight: "bold",
-    color: GOLD_TEXT_COLOR,
+    color: "#2D2D2D",
   },
   flowingContent: {
     fontSize: 11,
