@@ -7,6 +7,8 @@ import {
   View,
   Image as ReactPdfImage,
   StyleSheet,
+  Svg,
+  Path,
 } from "@react-pdf/renderer";
 import { Property } from "@/types/property";
 
@@ -28,21 +30,30 @@ interface PropertyBrochurePDFProps {
   distances: DrivingDistanceResult[];
 }
 
+const GOLD_TEXT_COLOR = "#AE8C2F";
+
 const styles = StyleSheet.create({
   page: {
     backgroundColor: "#ffffff",
     fontFamily: "Helvetica",
     padding: "0 15px",
+    paddingTop: 60,
+    paddingBottom: 100,
   },
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     padding: "10px 0",
+    fontWeight: "bold",
+    position: "absolute",
+    top: 0,
+    left: 15,
+    right: 15,
   },
   headerLocation: {
-    fontSize: 15,
-    color: "#1a1a1a",
+    fontSize: 12,
+    color: GOLD_TEXT_COLOR,
   },
   headerLogo: {
     width: 105,
@@ -50,9 +61,9 @@ const styles = StyleSheet.create({
     objectFit: "contain",
   },
   headerPrice: {
-    fontSize: 15,
+    fontSize: 12,
     fontWeight: "bold",
-    color: "#D4A017",
+    color: "#424242",
   },
   heroContainer: {
     position: "relative",
@@ -62,20 +73,24 @@ const styles = StyleSheet.create({
     height: 300,
     objectFit: "cover",
   },
-  badge: {
+  badgeContainer: {
     position: "absolute",
-    bottom: 25,
-    right: 10,
+    bottom: 0,
+    right: 0,
+    backgroundColor: "white",
+    padding: 10,
+  },
+  badge: {
     width: 37,
     height: 50,
     objectFit: "cover",
-    border: "3px solid white",
   },
   content: {
     flex: 1,
     padding: "5px 0",
     display: "flex",
     flexDirection: "column",
+    flexGrow: 1,
   },
   titleSection: {
     flexDirection: "row",
@@ -87,7 +102,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 16,
     fontWeight: "semibold",
-    color: "#1a1a1a",
+    color: "#000",
     flex: 1,
   },
   titleBadge: {
@@ -115,30 +130,34 @@ const styles = StyleSheet.create({
     fontSize: 11,
     lineHeight: 1.4,
     flexDirection: "row",
-    flexWrap: "wrap", 
-    gap: 5,
+    flexWrap: "wrap",
+    gap: 15,
+    justifyContent: "space-between",
   },
   featureItem: {
     marginBottom: 0,
   },
   featureLabel: {
-    color: "#ffffff",
+    color: "#424242",
   },
   featureValue: {
-    color: "#cccccc",
+    color: GOLD_TEXT_COLOR,
   },
   distanceItems: {
     fontSize: 10,
     lineHeight: 1.3,
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 5,
+    gap: 8,
   },
   distanceItem: {
-    marginBottom: 0,
+    marginBottom: 5,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
   },
   distanceLabel: {
-    color: "#000",
+    color: "#444444",
   },
   distanceValue: {
     color: "#444444",
@@ -159,16 +178,20 @@ const styles = StyleSheet.create({
   },
   footer: {
     padding: "15px 0",
+    position: "absolute",
+    bottom: 0,
+    left: 15,
+    right: 15,
   },
   footerTop: {
     flexDirection: "row",
     justifyContent: "space-between",
     marginBottom: 8,
     paddingBottom: 8,
-    borderBottom: "2px solid #D4A017",
+    borderBottom: "2px solid #AE8C2F",
     fontSize: 11,
     fontWeight: "bold",
-    color: "#1a1a1a",
+    color: GOLD_TEXT_COLOR,
   },
   footerOffices: {
     flexDirection: "row",
@@ -180,7 +203,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   officeTitle: {
-    fontWeight: "bold",
+    color: GOLD_TEXT_COLOR,
     marginBottom: 3,
   },
   imageGrid: {
@@ -212,6 +235,7 @@ const styles = StyleSheet.create({
     fontSize: 11,
     lineHeight: 1.6,
     textAlign: "justify",
+    marginLeft: 10,
   },
   companyInfo: {
     textAlign: "center",
@@ -228,7 +252,7 @@ const styles = StyleSheet.create({
   companyTagline: {
     fontSize: 12,
     fontWeight: "bold",
-    color: "#1a1a1a",
+    color: GOLD_TEXT_COLOR,
   },
   flowingContent: {
     fontSize: 11,
@@ -246,45 +270,79 @@ const styles = StyleSheet.create({
     flexGrow: 0,
     flexShrink: 1,
   },
-  textOnlyPage: {
-    padding: "20px 0",
-    flex: 1,
-  },
 });
 
-// Helper function to split text into chunks that fit on a page
-const splitTextIntoPages = (text: string, charsPerPage: number): string[] => {
-  if (!text || text.length === 0) return [];
+// Icon components
+const RestaurantIcon = () => (
+  <Svg width="12" height="12" viewBox="0 0 24 24">
+    <Path
+      d="M8.1 13.34l2.83-2.83L3.91 3.5c-1.56 1.56-1.56 4.09 0 5.66l4.19 4.18zm6.78-1.81c1.53.71 3.68.21 5.27-1.38 1.91-1.91 2.28-4.65.81-6.12-1.46-1.46-4.2-1.1-6.12.81-1.59 1.59-2.09 3.74-1.38 5.27L3.7 19.87l1.41 1.41L12 14.41l6.88 6.88 1.41-1.41L13.41 13l1.47-1.47z"
+      fill="#444444"
+    />
+  </Svg>
+);
 
-  const pages: string[] = [];
-  const words = text.split(" ");
-  let currentPage = "";
+const BeachIcon = () => (
+  <Svg width="12" height="12" viewBox="0 0 24 24">
+    <Path
+      d="M13.127 14.56l1.43-1.43 6.44 6.443L19.57 21zm4.293-5.73l2.86-2.86c-3.95-3.95-10.35-3.96-14.3-.02 3.93-1.3 8.31-.25 11.44 2.88zM5.95 5.98c-3.94 3.95-3.93 10.35.02 14.3l2.86-2.86C5.7 14.29 4.65 9.91 5.95 5.98zm.02-.02l-.01.01c-.38 3.01 1.17 6.88 4.3 10.02l5.73-5.73c-3.13-3.13-7.01-4.68-10.02-4.3z"
+      fill="#444444"
+    />
+  </Svg>
+);
 
-  for (const word of words) {
-    const testPage = currentPage ? `${currentPage} ${word}` : word;
+const BusIcon = () => (
+  <Svg width="12" height="12" viewBox="0 0 24 24">
+    <Path
+      d="M4 16c0 .88.39 1.67 1 2.22V20c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h8v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1.78c.61-.55 1-1.34 1-2.22V6c0-3.5-3.58-4-8-4s-8 .5-8 4v10zm3.5 1c-.83 0-1.5-.67-1.5-1.5S6.67 14 7.5 14s1.5.67 1.5 1.5S8.33 17 7.5 17zm9 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm1.5-6H6V6h12v5z"
+      fill="#444444"
+    />
+  </Svg>
+);
 
-    if (testPage.length <= charsPerPage) {
-      currentPage = testPage;
-    } else {
-      if (currentPage) {
-        pages.push(currentPage);
-      }
-      currentPage = word;
-    }
-  }
+const AirportIcon = () => (
+  <Svg width="12" height="12" viewBox="0 0 24 24">
+    <Path
+      d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"
+      fill="#444444"
+    />
+  </Svg>
+);
 
-  if (currentPage) {
-    pages.push(currentPage);
-  }
+const HospitalIcon = () => (
+  <Svg width="12" height="12" viewBox="0 0 24 24">
+    <Path
+      d="M19 3H5c-1.1 0-1.99.9-1.99 2L3 19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 11h-4v4h-4v-4H6v-4h4V6h4v4h4v4z"
+      fill="#444444"
+    />
+  </Svg>
+);
 
-  return pages;
+const ShoppingIcon = () => (
+  <Svg width="12" height="12" viewBox="0 0 24 24">
+    <Path
+      d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"
+      fill="#444444"
+    />
+  </Svg>
+);
+
+// Helper function to get icon by label
+const getIconByLabel = (label: string) => {
+  const lowerLabel = label.toLowerCase();
+  if (lowerLabel.includes("restaurant")) return <RestaurantIcon />;
+  if (lowerLabel.includes("beach")) return <BeachIcon />;
+  if (lowerLabel.includes("bus")) return <BusIcon />;
+  if (lowerLabel.includes("airport")) return <AirportIcon />;
+  if (lowerLabel.includes("hospital")) return <HospitalIcon />;
+  if (lowerLabel.includes("shop")) return <ShoppingIcon />;
+  return null;
 };
 
 // Company info text
 const COMPANY_DESCRIPTION =
   "Exclusive Algarve Villas has been a known name in the sale of luxurious and unique Properties in the Western and Central Algarve since 2006.";
 const COMPANY_TAGLINE = "3 offices to serve you 7 days a week";
-// const COMPANY_INFO_CHARS = COMPANY_DESCRIPTION.length + COMPANY_TAGLINE.length;
 
 export const PropertyBrochurePDF: React.FC<PropertyBrochurePDFProps> = ({
   property,
@@ -294,85 +352,18 @@ export const PropertyBrochurePDF: React.FC<PropertyBrochurePDFProps> = ({
 }) => {
   const formattedPrice = property.price.toLocaleString("en-US");
 
-  // Calculate text chunks for page 4 onwards
-  const CHARS_PER_PAGE_WITH_IMAGE = 1800; // Characters that fit on page 4 with image
-  const CHARS_PER_PAGE_TEXT_ONLY = 3500; // Characters that fit on text-only pages
-  const CHARS_RESERVED_FOR_COMPANY_INFO = 500; // Reserve space for company info on last page
-
-  let page4Text = "";
-  let remainingAfterPage4 = "";
-  let textOnlyPages: string[] = [];
-  let showCompanyInfoOnLastTextPage = false;
-  let showCompanyInfoOnPage4 = false;
-
-  if (descriptionSplit.hasRemainingContent && descriptionSplit.remaining) {
-    // Split for page 4 (has image)
-    if (descriptionSplit.remaining.length <= CHARS_PER_PAGE_WITH_IMAGE) {
-      page4Text = descriptionSplit.remaining;
-
-      // Check if there's space on page 4 for company info
-      const availableSpaceOnPage4 =
-        CHARS_PER_PAGE_WITH_IMAGE - page4Text.length;
-      if (availableSpaceOnPage4 >= CHARS_RESERVED_FOR_COMPANY_INFO) {
-        showCompanyInfoOnPage4 = true;
-      }
-    } else {
-      // Take first portion for page 4
-      const words = descriptionSplit.remaining.split(" ");
-      let temp = "";
-      let remainder = descriptionSplit.remaining;
-
-      for (let i = 0; i < words.length; i++) {
-        const testText = temp ? `${temp} ${words[i]}` : words[i];
-        if (testText.length <= CHARS_PER_PAGE_WITH_IMAGE) {
-          temp = testText;
-        } else {
-          page4Text = temp;
-          remainder = words.slice(i).join(" ");
-          break;
-        }
-      }
-
-      if (!page4Text && temp) {
-        page4Text = temp;
-        remainder = "";
-      }
-
-      remainingAfterPage4 = remainder;
-
-      // Split remaining text into text-only pages
-      if (remainingAfterPage4) {
-        textOnlyPages = splitTextIntoPages(
-          remainingAfterPage4,
-          CHARS_PER_PAGE_TEXT_ONLY,
-        );
-
-        // Check if last page has room for company info
-        if (textOnlyPages.length > 0) {
-          const lastPageLength = textOnlyPages[textOnlyPages.length - 1].length;
-          const availableSpace = CHARS_PER_PAGE_TEXT_ONLY - lastPageLength;
-
-          // If there's enough space, we'll add company info to the last text page
-          if (availableSpace >= CHARS_RESERVED_FOR_COMPANY_INFO) {
-            showCompanyInfoOnLastTextPage = true;
-          }
-        }
-      }
-    }
-  }
-
   const Header = () => (
     <View style={styles.header} fixed>
       <Text style={styles.headerLocation}>
-        Location:{" "}
-        <Text style={{ fontWeight: "bold" }}>{property.location.zone}</Text>
+        Location{" "}
+        <Text style={{ color: "#424242" }}>{property.location.zone}</Text>
       </Text>
       <ReactPdfImage
         src="/images/eav-dark-logo.png"
         style={styles.headerLogo}
       />
       <Text style={styles.headerPrice}>
-        <Text style={{ fontWeight: "normal", color: "#1a1a1a" }}>Price:</Text> €{" "}
+        <Text style={{ color: GOLD_TEXT_COLOR }}>Price </Text> €{" "}
         {formattedPrice}
       </Text>
     </View>
@@ -390,8 +381,9 @@ export const PropertyBrochurePDF: React.FC<PropertyBrochurePDFProps> = ({
           <Text>Av. Tivoli, Conjunto Varandamar,</Text>
           <Text>Corpo B Bloco 3, R/C Esq.</Text>
           <Text>8125-465 Vilamoura</Text>
-          <Text style={{ fontWeight: "bold", marginTop: 3 }}>
-            Tel. +351 289 321 276
+          <Text style={{ marginTop: 3 }}>
+            <Text style={{ color: GOLD_TEXT_COLOR }}>Tel.</Text> +351 289 321
+            276
           </Text>
         </View>
         <View style={styles.office}>
@@ -399,8 +391,9 @@ export const PropertyBrochurePDF: React.FC<PropertyBrochurePDFProps> = ({
           <Text>Rua Ernesto Cabrita,</Text>
           <Text>Edificio Vales Loja A</Text>
           <Text>8400-387 Lagoa</Text>
-          <Text style={{ fontWeight: "bold", marginTop: 3 }}>
-            Tel. +351 282 353 019
+          <Text style={{ marginTop: 3 }}>
+            <Text style={{ color: GOLD_TEXT_COLOR }}>Tel.</Text> +351 282 353
+            019
           </Text>
         </View>
         <View style={styles.office}>
@@ -408,8 +401,9 @@ export const PropertyBrochurePDF: React.FC<PropertyBrochurePDFProps> = ({
           <Text>Rua Dr. José Francisco Tello Queiroz,</Text>
           <Text>Edif. Largo do Rossio de S. João Batista</Text>
           <Text>Lote 3 Loja R, 8600-707 Lagos</Text>
-          <Text style={{ fontWeight: "bold", marginTop: 3 }}>
-            Tel. +351 282 353 019
+          <Text style={{ marginTop: 3 }}>
+            <Text style={{ color: GOLD_TEXT_COLOR }}>Tel.</Text> +351 282 353
+            019
           </Text>
         </View>
       </View>
@@ -448,10 +442,12 @@ export const PropertyBrochurePDF: React.FC<PropertyBrochurePDFProps> = ({
         <Header />
         <View style={styles.heroContainer}>
           <ReactPdfImage src={images[0]} style={styles.heroImage} />
-          <ReactPdfImage
-            src="/images/eav-pdf-awards-1.jpg"
-            style={styles.badge}
-          />
+          <View style={styles.badgeContainer}>
+            <ReactPdfImage
+              src="/images/eav-pdf-awards-1.jpg"
+              style={styles.badge}
+            />
+          </View>
         </View>
         <View style={styles.content}>
           <View style={styles.titleSection}>
@@ -466,11 +462,14 @@ export const PropertyBrochurePDF: React.FC<PropertyBrochurePDFProps> = ({
             <View
               style={{
                 ...styles.featureSection,
-                backgroundColor: "#b78900",
+                backgroundColor: "#C8B175",
                 height: "100%",
-                padding: "10 8",
+                padding: "10 16",
               }}
             >
+              <Text style={{ ...styles.featureTitle, color: "#424242" }}>
+                {property.reference}
+              </Text>
               <Text style={styles.featureTitle}>Main Features</Text>
               <View style={styles.featureItems}>
                 {featureItems.map((item, index) => (
@@ -485,10 +484,13 @@ export const PropertyBrochurePDF: React.FC<PropertyBrochurePDFProps> = ({
               <Text style={styles.featureTitle}>Driving Distances</Text>
               <View style={styles.distanceItems}>
                 {distances.map((d, index) => (
-                  <Text key={index} style={styles.distanceItem}>
-                    <Text style={styles.distanceLabel}>{d.label}:</Text>{" "}
-                    <Text style={styles.distanceValue}>{d.value}</Text>
-                  </Text>
+                  <View key={index} style={styles.distanceItem}>
+                    {getIconByLabel(d.label)}
+                    <Text>
+                      <Text style={styles.distanceLabel}>{d.label} - </Text>
+                      <Text style={styles.distanceValue}>{d.value}</Text>
+                    </Text>
+                  </View>
                 ))}
               </View>
             </View>
@@ -514,19 +516,18 @@ export const PropertyBrochurePDF: React.FC<PropertyBrochurePDFProps> = ({
           </Text>
         </View>
         <Footer />
-      </Page>
 
-      {/* Page 2 */}
-      <Page size="A4" style={styles.page}>
-        <Header />
+        {/* Page 2 */}
         <View style={styles.heroContainer}>
           <ReactPdfImage src={images[1]} style={styles.heroImage} />
-          <ReactPdfImage
-            src="/images/eav-pdf-awards-1.jpg"
-            style={styles.badge}
-          />
+          <View style={styles.badgeContainer}>
+            <ReactPdfImage
+              src="/images/eav-pdf-awards-1.jpg"
+              style={styles.badge}
+            />
+          </View>
         </View>
-        <View style={{ ...styles.imageGrid, gap: 20 }}>
+        <View style={{ ...styles.imageGrid, gap: 8 }}>
           <View style={styles.imageColumn}>
             <ReactPdfImage src={images[2]} style={styles.gridImage} />
             <ReactPdfImage src={images[3]} style={styles.gridImage} />
@@ -554,12 +555,8 @@ export const PropertyBrochurePDF: React.FC<PropertyBrochurePDFProps> = ({
             </View>
           )}
         </View>
-        <Footer />
-      </Page>
 
-      {/* Page 3 */}
-      <Page size="A4" style={styles.page}>
-        <Header />
+        {/* Page 3 */}
         <View style={styles.heroContainer}>
           <ReactPdfImage src={images[4]} style={styles.heroImage} />
         </View>
@@ -573,84 +570,29 @@ export const PropertyBrochurePDF: React.FC<PropertyBrochurePDFProps> = ({
             <ReactPdfImage src={images[8]} style={styles.gridImage} />
           </View>
         </View>
-        <Footer />
-      </Page>
 
-      {/* Page 4 - Last page with image + partial text */}
-      {descriptionSplit.hasRemainingContent ? (
-        <Page size="A4" style={styles.page}>
-          <Header />
-          <View style={styles.heroContainer}>
-            <ReactPdfImage src={images[9]} style={styles.heroImage} />
-          </View>
-          <View style={styles.contentWrapper}>
-            <View style={styles.textContainer}>
-              <Text style={styles.flowingContent}>{page4Text}</Text>
-              {showCompanyInfoOnPage4 && (
-                <View style={{ ...styles.companyInfo, marginTop: 30 }}>
-                  <Text style={styles.companyDescription}>
-                    {COMPANY_DESCRIPTION}
-                  </Text>
-                  <Text style={styles.companyTagline}>{COMPANY_TAGLINE}</Text>
-                </View>
-              )}
-            </View>
-          </View>
-          <Footer />
-        </Page>
-      ) : (
-        <Page size="A4" style={styles.page}>
-          <Header />
-          <View style={styles.heroContainer}>
-            <ReactPdfImage src={images[9]} style={styles.heroImage} />
-          </View>
-          <View style={styles.companyInfo}>
-            <Text style={styles.companyDescription}>{COMPANY_DESCRIPTION}</Text>
-            <Text style={styles.companyTagline}>{COMPANY_TAGLINE}</Text>
-          </View>
-          <Footer />
-        </Page>
-      )}
-
-      {/* Additional text-only pages */}
-      {textOnlyPages.map((pageText, index) => {
-        const isLastPage = index === textOnlyPages.length - 1;
-        const showCompanyInfo = isLastPage && showCompanyInfoOnLastTextPage;
-
-        return (
-          <Page key={`text-page-${index}`} size="A4" style={styles.page}>
-            <Header />
-            <View style={styles.textOnlyPage}>
-              <Text style={styles.flowingContent}>{pageText}</Text>
-              {showCompanyInfo && (
-                <View style={{ ...styles.companyInfo, marginTop: 30 }}>
-                  <Text style={styles.companyDescription}>
-                    {COMPANY_DESCRIPTION}
-                  </Text>
-                  <Text style={styles.companyTagline}>{COMPANY_TAGLINE}</Text>
-                </View>
-              )}
-            </View>
-            <Footer />
-          </Page>
-        );
-      })}
-
-      {/* Final page with company info if there wasn't room on last text page */}
-      {textOnlyPages.length > 0 &&
-        !showCompanyInfoOnLastTextPage &&
-        !showCompanyInfoOnPage4 && (
-          <Page size="A4" style={styles.page}>
-            <Header />
-            <View style={styles.companyInfo}>
+        {/* Page 4 - Last page with image + remaining text as single chunk */}
+        <View style={styles.heroContainer}>
+          <ReactPdfImage src={images[9]} style={styles.heroImage} />
+        </View>
+        <View style={styles.contentWrapper}>
+          <View style={styles.textContainer}>
+            {descriptionSplit.remaining && (
+              <Text style={styles.flowingContent}>
+                {descriptionSplit.remaining}
+              </Text>
+            )}
+            <View style={{ ...styles.companyInfo, marginTop: 30 }}>
               <Text style={styles.companyDescription}>
                 {COMPANY_DESCRIPTION}
               </Text>
               <Text style={styles.companyTagline}>{COMPANY_TAGLINE}</Text>
             </View>
-            <Footer />
-          </Page>
-        )}
+          </View>
+        </View>
+
+        <Footer />
+      </Page>
     </Document>
   );
 };
