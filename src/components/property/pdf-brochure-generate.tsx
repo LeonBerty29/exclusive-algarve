@@ -81,9 +81,9 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   badge: {
-    width: 37,
-    height: 50,
-    objectFit: "cover",
+    width: 111.1,
+    height: 60.4,
+    objectFit: "contain",
   },
   content: {
     flex: 1,
@@ -448,7 +448,7 @@ export const PropertyBrochurePDF: React.FC<PropertyBrochurePDFProps> = ({
           <ReactPdfImage src={images[0]} style={styles.heroImage} />
           <View style={styles.badgeContainer}>
             <ReactPdfImage
-              src="/images/eav-pdf-awards-1.jpg"
+              src="/images/eav-pdf-awards-1.png"
               style={styles.badge}
             />
           </View>
@@ -526,7 +526,7 @@ export const PropertyBrochurePDF: React.FC<PropertyBrochurePDFProps> = ({
           <ReactPdfImage src={images[1]} style={styles.heroImage} />
           <View style={styles.badgeContainer}>
             <ReactPdfImage
-              src="/images/eav-pdf-awards-1.jpg"
+              src="/images/eav-pdf-awards-1.png"
               style={styles.badge}
             />
           </View>
