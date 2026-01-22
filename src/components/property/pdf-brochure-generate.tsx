@@ -131,7 +131,8 @@ const styles = StyleSheet.create({
     lineHeight: 1.4,
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 15,
+    columnGap: 6,
+    rowGap: 6,
     justifyContent: "space-between",
   },
   featureItem: {
@@ -154,7 +155,8 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     flexDirection: "row",
     alignItems: "center",
-    gap: 4,
+    columnGap: 6,
+    rowGap: 6,
   },
   distanceLabel: {
     color: "#444444",
@@ -166,15 +168,14 @@ const styles = StyleSheet.create({
     fontSize: 10,
     lineHeight: 1.2,
     textAlign: "justify",
-    marginBottom: 15,
+    marginBottom: 7,
   },
   notice: {
     fontSize: 8,
     lineHeight: 1.4,
     color: "#666666",
     fontStyle: "italic",
-    marginTop: 15,
-    paddingTop: 10,
+    marginTop: 8,
   },
   footer: {
     padding: "15px 0",
