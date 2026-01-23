@@ -63,7 +63,7 @@ export const GenerateBrochure: React.FC<GenerateBrochureProps> = ({
       const distanceService = new google.maps.DistanceMatrixService();
       const origin = new google.maps.LatLng(
         property.location.latitude,
-        property.location.longitude
+        property.location.longitude,
       );
 
       const distances: DrivingDistanceResult[] = [];
@@ -89,9 +89,9 @@ export const GenerateBrochure: React.FC<GenerateBrochureProps> = ({
                     } else {
                       resolve(null);
                     }
-                  }
+                  },
                 );
-              }
+              },
             );
 
           if (result?.geometry?.location) {
@@ -121,7 +121,7 @@ export const GenerateBrochure: React.FC<GenerateBrochureProps> = ({
                     }
                   }
                   resolve("N/A");
-                }
+                },
               );
             });
 
@@ -164,7 +164,7 @@ export const GenerateBrochure: React.FC<GenerateBrochureProps> = ({
 
     if (!images || images.length === 0) {
       return Array(REQUIRED_IMAGES).fill(
-        "https://via.placeholder.com/1200x600?text=No+Image"
+        "https://via.placeholder.com/1200x600?text=No+Image",
       );
     }
 
@@ -189,43 +189,105 @@ export const GenerateBrochure: React.FC<GenerateBrochureProps> = ({
     const PAGE1_LIMIT = 1000;
     const PAGE2_LIMIT = 800;
 
+    // Step 1: Use DOMParser to properly extract text
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(description, "text/html");
+    const cleanText = doc.body.textContent || doc.body.innerText || "";
+    const normalizedText = cleanText.replace(/\s+/g, " ").trim();
+
+    // Step 2: Split into sentences for better breaking points
+    const sentences = normalizedText.match(/[^.!?]+[.!?]+(?:\s+|$)/g) || [
+      normalizedText,
+    ];
+
     let page1Text = "";
     let page2Text = "";
     let remainingText = "";
 
-    const paragraphs = description
-      .split(/\n\n|<\/p>\s*<p>|<\/div>\s*<div>/)
-      .filter((p) => p.trim());
+    // Helper function to add text to a page with word-level splitting if needed
+    const addToPage = (
+      pageText: string,
+      sentence: string,
+      limit: number,
+    ): { pageText: string; overflow: string } => {
+      const trimmedSentence = sentence.trim();
 
-    let currentLength = 0;
-    let currentPage = 1;
+      // If sentence fits completely, add it
+      if (pageText.length + trimmedSentence.length + 1 <= limit) {
+        return {
+          pageText: pageText + (pageText ? " " : "") + trimmedSentence,
+          overflow: "",
+        };
+      }
 
-    for (let i = 0; i < paragraphs.length; i++) {
-      const para = paragraphs[i];
-      const paraText = para.replace(/<[^>]*>/g, "").trim();
-      const paraLength = paraText.length;
+      // If page is empty or nearly empty, we need to split the sentence
+      const remainingSpace = limit - pageText.length - (pageText ? 1 : 0);
 
-      if (currentPage === 1) {
-        if (currentLength + paraLength <= PAGE1_LIMIT) {
-          page1Text += paraText + "\n\n";
-          currentLength += paraLength;
-        } else {
-          currentPage = 2;
-          page2Text += paraText + "\n\n";
-          currentLength = paraLength;
+      if (remainingSpace > 50) {
+        // Only split if we have meaningful space left
+        const words = trimmedSentence.split(" ");
+        let tempText = pageText ? pageText + " " : "";
+        let usedWords = 0;
+
+        for (let i = 0; i < words.length; i++) {
+          const word = words[i];
+          if (tempText.length + word.length + 1 <= limit) {
+            tempText +=
+              (tempText === pageText + " " || tempText === "" ? "" : " ") +
+              word;
+            usedWords++;
+          } else {
+            break;
+          }
         }
-      } else if (currentPage === 2) {
-        if (currentLength + paraLength <= PAGE2_LIMIT) {
-          page2Text += paraText + "\n\n";
-          currentLength += paraLength;
-        } else {
-          currentPage = 3;
-          remainingText += paraText + "\n\n";
-        }
+
+        const overflow = words.slice(usedWords).join(" ");
+        return {
+          pageText: tempText,
+          overflow: overflow,
+        };
+      }
+
+      // Page is full, entire sentence is overflow
+      return {
+        pageText: pageText,
+        overflow: trimmedSentence,
+      };
+    };
+
+    // Step 3: Fill page 1 to maximum capacity
+    let i = 0;
+    while (i < sentences.length) {
+      const result = addToPage(page1Text, sentences[i], PAGE1_LIMIT);
+      page1Text = result.pageText;
+
+      if (result.overflow) {
+        // If there's overflow, put it back as the next sentence to process
+        sentences[i] = result.overflow;
+        break; // Page 1 is full
       } else {
-        remainingText += paraText + "\n\n";
+        // Sentence was fully added, move to next
+        i++;
       }
     }
+
+    // Step 4: Fill page 2 to maximum capacity
+    while (i < sentences.length) {
+      const result = addToPage(page2Text, sentences[i], PAGE2_LIMIT);
+      page2Text = result.pageText;
+
+      if (result.overflow) {
+        // If there's overflow, put it back for remaining text
+        sentences[i] = result.overflow;
+        break; // Page 2 is full
+      } else {
+        // Sentence was fully added, move to next
+        i++;
+      }
+    }
+
+    // Step 5: Everything else goes to remaining
+    remainingText = sentences.slice(i).join(" ");
 
     return {
       page1: page1Text.trim(),
@@ -246,6 +308,8 @@ export const GenerateBrochure: React.FC<GenerateBrochureProps> = ({
     try {
       const images = prepareImages(property.assets.images.gallery);
       const descriptionSplit = splitDescriptionSmartly(property.description);
+      console.log({ propertyDescription: property.description });
+      console.log({ descriptionSplit });
 
       const distances =
         drivingDistances.length > 0
@@ -261,7 +325,7 @@ export const GenerateBrochure: React.FC<GenerateBrochureProps> = ({
           images={images}
           descriptionSplit={descriptionSplit}
           distances={distances}
-        />
+        />,
       ).toBlob();
 
       const url = URL.createObjectURL(blob);
