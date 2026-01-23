@@ -96,8 +96,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 20,
-    marginTop: 10,
+    marginBottom: 10,
   },
   title: {
     fontSize: 16,
@@ -129,14 +128,14 @@ const styles = StyleSheet.create({
   featureItems: {
     fontSize: 11,
     lineHeight: 1.4,
+    display: "flex",
     flexDirection: "row",
     flexWrap: "wrap",
-    columnGap: 6,
-    rowGap: 6,
     justifyContent: "space-between",
   },
   featureItem: {
-    marginBottom: 0,
+    marginBottom: 3,
+    width: "33.33%",
   },
   featureLabel: {
     color: "#424242",
@@ -147,16 +146,17 @@ const styles = StyleSheet.create({
   distanceItems: {
     fontSize: 10,
     lineHeight: 1.3,
+    display: "flex",
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 8,
+    justifyContent: "space-between",
   },
   distanceItem: {
-    marginBottom: 5,
+    marginBottom: 3,
     flexDirection: "row",
     alignItems: "center",
     columnGap: 6,
-    rowGap: 6,
+    width: "48%",
   },
   distanceLabel: {
     color: "#444444",
@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
     color: "#2D2D2D",
   },
   notice: {
-    fontSize: 8,
+    fontSize: 6,
     lineHeight: 1.4,
     color: "#666666",
     fontStyle: "italic",
@@ -441,9 +441,15 @@ export const PropertyBrochurePDF: React.FC<PropertyBrochurePDFProps> = ({
 
   return (
     <Document>
-      {/* Page 1 */}
       <Page size="A4" style={styles.page}>
         <Header />
+
+        {/* Title Section - BEFORE hero image */}
+        <View style={styles.titleSection}>
+          <Text style={styles.title}>{property.title}</Text>
+        </View>
+
+        {/* Hero Container - AFTER title */}
         <View style={styles.heroContainer}>
           <ReactPdfImage src={images[0]} style={styles.heroImage} />
           <View style={styles.badgeContainer}>
@@ -453,15 +459,8 @@ export const PropertyBrochurePDF: React.FC<PropertyBrochurePDFProps> = ({
             />
           </View>
         </View>
-        <View style={styles.content}>
-          <View style={styles.titleSection}>
-            <Text style={styles.title}>{property.title}</Text>
-            <ReactPdfImage
-              src="/images/eav-pdf-awards-2.jpg"
-              style={styles.titleBadge}
-            />
-          </View>
 
+        <View style={styles.content}>
           <View style={styles.featuresGrid}>
             <View
               style={{
@@ -503,25 +502,24 @@ export const PropertyBrochurePDF: React.FC<PropertyBrochurePDFProps> = ({
           <Text style={styles.description}>{descriptionSplit.page1}</Text>
 
           <Text style={styles.notice}>
-            <Text style={{ fontWeight: "bold" }}>Important notice:</Text> These
-            particulars are not an offer or contract, nor part of one. The
-            photographs show only certain parts of the property as they appeared
-            at the time they were taken. Areas, measurements, layout plans and
-            distances are for guidance only and should not be relied upon as a
-            statement of fact. All property details have been provided by the
-            seller and should not be considered factually accurate about the
-            property, its condition or value. Exclusvie Living Mediaçao
-            Imobiliaria Lda. holds no responsibility to the accuracy of the
-            information and will not be held liable for any errors on any
-            representation on the property. A buyer must not rely on this
-            information without conducting an inspection or hiring professionals
-            for surveys or legal services to verify all details and
-            documentation prior to a property purchase.
+            <Text style={{ fontWeight: "bold" }}>Important notice:</Text>{" "}
+            These particulars are not an offer or contract, nor part of one.
+            The photographs show only certain parts of the property as they
+            appeared at the time they were taken. Areas, measurements, layout
+            plans and distances are for guidance only and should not be relied
+            upon as a statement of fact. All property details have been
+            provided by the seller and should not be considered factually
+            accurate about the property, its condition or value. Exclusvie
+            Living Mediaçao Imobiliaria Lda. holds no responsibility to the
+            accuracy of the information and will not be held liable for any
+            errors on any representation on the property. A buyer must not
+            rely on this information without conducting an inspection or
+            hiring professionals for surveys or legal services to verify all
+            details and documentation prior to a property purchase.
           </Text>
         </View>
-        <Footer />
 
-        {/* Page 2 */}
+        {/* Page 2 content */}
         <View style={styles.heroContainer}>
           <ReactPdfImage src={images[1]} style={styles.heroImage} />
           <View style={styles.badgeContainer}>
@@ -560,7 +558,7 @@ export const PropertyBrochurePDF: React.FC<PropertyBrochurePDFProps> = ({
           )}
         </View>
 
-        {/* Page 3 */}
+        {/* Page 3 content */}
         <View style={styles.heroContainer}>
           <ReactPdfImage src={images[4]} style={styles.heroImage} />
         </View>
@@ -575,7 +573,7 @@ export const PropertyBrochurePDF: React.FC<PropertyBrochurePDFProps> = ({
           </View>
         </View>
 
-        {/* Page 4 - Last page with image + remaining text as single chunk */}
+        {/* Page 4 content */}
         <View style={styles.heroContainer}>
           <ReactPdfImage src={images[9]} style={styles.heroImage} />
         </View>
