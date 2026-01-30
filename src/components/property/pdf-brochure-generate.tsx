@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "center",
     alignItems: "center",
     padding: "10px 0",
     fontWeight: "bold",
@@ -59,6 +59,7 @@ const styles = StyleSheet.create({
     width: 105,
     height: 40,
     objectFit: "contain",
+    margin: "0 auto",
   },
   headerPrice: {
     fontSize: 12,
@@ -126,7 +127,7 @@ const styles = StyleSheet.create({
     textTransform: "uppercase",
   },
   featureItems: {
-    fontSize: 11,
+    fontSize: 10,
     lineHeight: 1.4,
     display: "flex",
     flexDirection: "row",
@@ -155,7 +156,7 @@ const styles = StyleSheet.create({
     marginBottom: 3,
     flexDirection: "row",
     alignItems: "center",
-    columnGap: 6,
+    columnGap: 8,
     width: "48%",
   },
   distanceLabel: {
@@ -358,18 +359,18 @@ export const PropertyBrochurePDF: React.FC<PropertyBrochurePDFProps> = ({
 
   const Header = () => (
     <View style={styles.header} fixed>
-      <Text style={styles.headerLocation}>
+      {/* <Text style={styles.headerLocation}>
         Location{" "}
         <Text style={{ color: "#424242" }}>{property.location.zone}</Text>
-      </Text>
+      </Text> */}
       <ReactPdfImage
         src="/images/eav-dark-logo.png"
         style={styles.headerLogo}
       />
-      <Text style={styles.headerPrice}>
+      {/* <Text style={styles.headerPrice}>
         <Text style={{ color: GOLD_TEXT_COLOR }}>Price </Text> €{" "}
         {formattedPrice}
-      </Text>
+      </Text> */}
     </View>
   );
 
@@ -444,11 +445,6 @@ export const PropertyBrochurePDF: React.FC<PropertyBrochurePDFProps> = ({
       <Page size="A4" style={styles.page}>
         <Header />
 
-        {/* Title Section - BEFORE hero image */}
-        <View style={styles.titleSection}>
-          <Text style={styles.title}>{property.title}</Text>
-        </View>
-
         {/* Hero Container - AFTER title */}
         <View style={styles.heroContainer}>
           <ReactPdfImage src={images[0]} style={styles.heroImage} />
@@ -458,6 +454,10 @@ export const PropertyBrochurePDF: React.FC<PropertyBrochurePDFProps> = ({
               style={styles.badge}
             />
           </View>
+        </View>
+        {/* Title Section - BEFORE hero image */}
+        <View style={{ ...styles.titleSection, marginTop: 10 }}>
+          <Text style={styles.title}>{property.title}</Text>
         </View>
 
         <View style={styles.content}>
@@ -471,7 +471,10 @@ export const PropertyBrochurePDF: React.FC<PropertyBrochurePDFProps> = ({
               }}
             >
               <Text style={{ ...styles.featureTitle, color: "#424242" }}>
-                {property.reference}
+                {property.reference} - {property.location.zone}
+              </Text>
+              <Text style={{ ...styles.featureTitle }}>
+                {formattedPrice}
               </Text>
               <Text style={styles.featureTitle}>Main Features</Text>
               <View style={styles.featureItems}>
@@ -502,20 +505,20 @@ export const PropertyBrochurePDF: React.FC<PropertyBrochurePDFProps> = ({
           <Text style={styles.description}>{descriptionSplit.page1}</Text>
 
           <Text style={styles.notice}>
-            <Text style={{ fontWeight: "bold" }}>Important notice:</Text>{" "}
-            These particulars are not an offer or contract, nor part of one.
-            The photographs show only certain parts of the property as they
-            appeared at the time they were taken. Areas, measurements, layout
-            plans and distances are for guidance only and should not be relied
-            upon as a statement of fact. All property details have been
-            provided by the seller and should not be considered factually
-            accurate about the property, its condition or value. Exclusvie
-            Living Mediaçao Imobiliaria Lda. holds no responsibility to the
-            accuracy of the information and will not be held liable for any
-            errors on any representation on the property. A buyer must not
-            rely on this information without conducting an inspection or
-            hiring professionals for surveys or legal services to verify all
-            details and documentation prior to a property purchase.
+            <Text style={{ fontWeight: "bold" }}>Important notice:</Text> These
+            particulars are not an offer or contract, nor part of one. The
+            photographs show only certain parts of the property as they appeared
+            at the time they were taken. Areas, measurements, layout plans and
+            distances are for guidance only and should not be relied upon as a
+            statement of fact. All property details have been provided by the
+            seller and should not be considered factually accurate about the
+            property, its condition or value. Exclusvie Living Mediaçao
+            Imobiliaria Lda. holds no responsibility to the accuracy of the
+            information and will not be held liable for any errors on any
+            representation on the property. A buyer must not rely on this
+            information without conducting an inspection or hiring professionals
+            for surveys or legal services to verify all details and
+            documentation prior to a property purchase.
           </Text>
         </View>
 

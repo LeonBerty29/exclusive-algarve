@@ -474,9 +474,7 @@ const PageContent = async (props: Props) => {
       <div className="mt-10">
         <div className="2xl:container px-6 sm:px-8 md:px-10 lg:px-14 mx-auto min-h-full">
           <PropertyImageGrid
-            assets={property.assets}
-            salesConsultant={property.sales_consultant}
-            propertyReference={property.reference}
+            property={property}
           />
 
           <div className="gap-x-6 flex flex-col lg:flex-row mb-8">
@@ -485,6 +483,7 @@ const PageContent = async (props: Props) => {
                 features={property.features}
                 propertyType={property.typology.name}
               />
+        
               <ScrollableTabs property={property} />
             </div>
 
