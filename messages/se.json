@@ -967,10 +967,14 @@
   },
   "propertyImagesModal": {
     "morePhotos": "FLER FOTON",
-    "propertyImagesGallery": "Fastighetsgalleri",
+    "propertyImagesGallery": "Fastighetbildgalleri",
     "browseThroughAllPropertyImages": "Bläddra igenom alla fastighetsbilder",
     "propertyImageAltPrefix": "Fastighetsbild",
-    "close": "Stäng"
+    "close": "Stäng",
+    "downloadBrochure": "Broschyr",
+    "images": "Bilder",
+    "floorPlan": "Planlösning",
+    "requestBrochure": "Begär broschyr"
   },
   "propertyVideosModal": {
     "propertyVideoPlayer": "Fastighetsvideospelare",

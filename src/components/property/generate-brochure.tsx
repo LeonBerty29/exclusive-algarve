@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 import { Property } from "@/types/property";
 
 interface GenerateBrochureProps {
@@ -21,50 +22,56 @@ export const GenerateBrochure: React.FC<GenerateBrochureProps> = ({
     setIsGenerating(true);
 
     try {
-      console.log('Sending property data to PDF service...');
-      
-      const response = await fetch(`${process.env.NEXT_PUBLIC_PDF_SERVICE_URL}/api/generate-pdf`, {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
+      console.log("Sending property data to PDF service...");
+
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_PDF_SERVICE_URL}/api/generate-pdf`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            property: property,
+            // token: 'your-secret-token' // Optional: if you add token validation
+          }),
         },
-        body: JSON.stringify({ 
-          property: property,
-          // token: 'your-secret-token' // Optional: if you add token validation
-        })
-      });
+      );
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to generate PDF');
+        throw new Error(errorData.error || "Failed to generate PDF");
       }
-      
-      console.log('PDF generated successfully, downloading...');
-      
+
+      console.log("PDF generated successfully, downloading...");
+
       // Create blob from response
       const blob = await response.blob();
-      
+
       // Create object URL from blob
       const url = URL.createObjectURL(blob);
-      
+
       // Create temporary anchor element
-      const link = document.createElement('a');
+      const link = document.createElement("a");
       link.href = url;
       link.download = `${property.reference}-brochure.pdf`;
-      
+
       // Append to body, click, and remove
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      
+
       // Clean up object URL
       URL.revokeObjectURL(url);
-      
-      console.log('PDF downloaded!');
-      
+
+      console.log("PDF downloaded!");
+
+      toast.success("Brochure downloaded successfully");
     } catch (error) {
-      console.error('PDF generation error:', error);
-      alert(`Failed to generate PDF: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      console.error("PDF generation error:", error);
+      toast.error(
+        `Failed to generate PDF: ${error instanceof Error ? error.message : "Unknown error"}`,
+      );
     } finally {
       setIsGenerating(false);
     }

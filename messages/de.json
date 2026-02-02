@@ -966,11 +966,15 @@
     "propertyImage": "Immobilienbild"
   },
   "propertyImagesModal": {
-    "morePhotos": "MEHR FOTOS",
+    "morePhotos": "WEITERE FOTOS",
     "propertyImagesGallery": "Immobilienbildergalerie",
     "browseThroughAllPropertyImages": "Durchsuchen Sie alle Immobilienbilder",
     "propertyImageAltPrefix": "Immobilienbild",
-    "close": "Schließen"
+    "close": "Schließen",
+    "downloadBrochure": "Broschüre",
+    "images": "Bilder",
+    "floorPlan": "Grundriss",
+    "requestBrochure": "Broschüre anfordern"
   },
   "propertyVideosModal": {
     "propertyVideoPlayer": "Immobilien-Videoplayer",
