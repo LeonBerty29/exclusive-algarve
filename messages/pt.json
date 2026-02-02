@@ -970,7 +970,11 @@
     "propertyImagesGallery": "Galeria de Imagens da Propriedade",
     "browseThroughAllPropertyImages": "Navegue por todas as imagens da propriedade",
     "propertyImageAltPrefix": "Imagem da propriedade",
-    "close": "Fechar"
+    "close": "Fechar",
+    "downloadBrochure": "Brochura",
+    "images": "Imagens",
+    "floorPlan": "Planta",
+    "requestBrochure": "Solicitar brochura"
   },
   "propertyVideosModal": {
     "propertyVideoPlayer": "Reprodutor de Vídeo da Propriedade",

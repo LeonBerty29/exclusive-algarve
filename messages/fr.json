@@ -968,9 +968,13 @@
   "propertyImagesModal": {
     "morePhotos": "PLUS DE PHOTOS",
     "propertyImagesGallery": "Galerie d'images de la propriété",
-    "browseThroughAllPropertyImages": "Parcourir toutes les images de la propriété",
+    "browseThroughAllPropertyImages": "Parcourez toutes les images de la propriété",
     "propertyImageAltPrefix": "Image de la propriété",
-    "close": "Fermer"
+    "close": "Fermer",
+    "downloadBrochure": "Brochure",
+    "images": "Images",
+    "floorPlan": "Plan d'étage",
+    "requestBrochure": "Demander une brochure"
   },
   "propertyVideosModal": {
     "propertyVideoPlayer": "Lecteur vidéo de la propriété",

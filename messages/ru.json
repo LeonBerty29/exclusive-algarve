@@ -967,10 +967,14 @@
   },
   "propertyImagesModal": {
     "morePhotos": "БОЛЬШЕ ФОТО",
-    "propertyImagesGallery": "Галерея изображений объекта",
-    "browseThroughAllPropertyImages": "Просмотрите все изображения объекта",
-    "propertyImageAltPrefix": "Изображение объекта",
-    "close": "Закрыть"
+    "propertyImagesGallery": "Галерея изображений недвижимости",
+    "browseThroughAllPropertyImages": "Просмотрите все изображения недвижимости",
+    "propertyImageAltPrefix": "Изображение недвижимости",
+    "close": "Закрыть",
+    "downloadBrochure": "Брошюра",
+    "images": "Изображения",
+    "floorPlan": "План этажа",
+    "requestBrochure": "Запросить брошюру"
   },
   "propertyVideosModal": {
     "propertyVideoPlayer": "Видео проигрыватель объекта",

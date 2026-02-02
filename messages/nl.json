@@ -967,10 +967,14 @@
   },
   "propertyImagesModal": {
     "morePhotos": "MEER FOTO'S",
-    "propertyImagesGallery": "Woningfoto galerij",
-    "browseThroughAllPropertyImages": "Bekijk alle woningfoto's",
-    "propertyImageAltPrefix": "Woningfoto",
-    "close": "Sluiten"
+    "propertyImagesGallery": "Galerij met vastgoedafbeeldingen",
+    "browseThroughAllPropertyImages": "Bekijk alle vastgoedafbeeldingen",
+    "propertyImageAltPrefix": "Vastgoedafbeelding",
+    "close": "Sluiten",
+    "downloadBrochure": "Brochure",
+    "images": "Afbeeldingen",
+    "floorPlan": "Plattegrond",
+    "requestBrochure": "Brochure aanvragen"
   },
   "propertyVideosModal": {
     "propertyVideoPlayer": "Woningvideospeler",

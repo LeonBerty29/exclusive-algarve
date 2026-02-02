@@ -970,7 +970,11 @@
     "propertyImagesGallery": "Property Images Gallery",
     "browseThroughAllPropertyImages": "Browse through all property images",
     "propertyImageAltPrefix": "Property image",
-    "close": "Close"
+    "close": "Close",
+    "downloadBrochure": "Brochure",
+    "images": "Images",
+    "floorPlan": "Floor Plan",
+    "requestBrochure": "Request Brochure"
   },
   "propertyVideosModal": {
     "propertyVideoPlayer": "Property Video player",
