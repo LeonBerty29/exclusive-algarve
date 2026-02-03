@@ -18,11 +18,74 @@ export const GenerateBrochure: React.FC<GenerateBrochureProps> = ({
 }) => {
   const [isGenerating, setIsGenerating] = useState(false);
 
+  /**
+   * Convert image URL to base64
+   */
+  const urlToBase64 = async (url: string): Promise<string> => {
+    try {
+      const response = await fetch(url);
+      const blob = await response.blob();
+      
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          if (typeof reader.result === 'string') {
+            resolve(reader.result);
+          } else {
+            reject(new Error('Failed to convert image to base64'));
+          }
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+    } catch (error) {
+      console.error(`Failed to convert image ${url} to base64:`, error);
+      // Return a 1x1 gray placeholder if image fails
+      return 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mM0tLf8DwADMQF3yNxGjAAAAABJRU5ErkJggg==';
+    }
+  };
+
+  /**
+   * Prepare images array and convert to base64
+   */
+  const prepareImagesBase64 = async (): Promise<string[]> => {
+    const REQUIRED_IMAGES = 11;
+    const galleryImages = property.assets?.images?.gallery || [];
+    
+    // Get image URLs
+    let imageUrls: string[] = [];
+    
+    if (galleryImages.length === 0) {
+      // Use placeholder if no images
+      const placeholder = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mM0tLf8DwADMQF3yNxGjAAAAABJRU5ErkJggg==';
+      return Array(REQUIRED_IMAGES).fill(placeholder);
+    }
+
+    // Map to URLs
+    imageUrls = galleryImages.map(img => img.url);
+
+    // Ensure we have at least REQUIRED_IMAGES by repeating if necessary
+    const preparedUrls: string[] = [];
+    let index = 0;
+    while (preparedUrls.length < REQUIRED_IMAGES) {
+      preparedUrls.push(imageUrls[index % imageUrls.length]);
+      index++;
+    }
+
+    // Convert all URLs to base64 in parallel
+    const base64Images = await Promise.all(
+      preparedUrls.map(url => urlToBase64(url))
+    );
+    
+    return base64Images;
+  };
+
   const generatePDF = async () => {
     setIsGenerating(true);
+    const startTime = Date.now();
 
     try {
-      console.log("Sending property data to PDF service...");
+      const base64Images = await prepareImagesBase64();
 
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_PDF_SERVICE_URL}/api/generate-pdf`,
@@ -33,17 +96,18 @@ export const GenerateBrochure: React.FC<GenerateBrochureProps> = ({
           },
           body: JSON.stringify({
             property: property,
+            images: base64Images, // Send base64 images directly
             // token: 'your-secret-token' // Optional: if you add token validation
           }),
         },
       );
+
 
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.error || "Failed to generate PDF");
       }
 
-      console.log("PDF generated successfully, downloading...");
 
       // Create blob from response
       const blob = await response.blob();
@@ -64,7 +128,7 @@ export const GenerateBrochure: React.FC<GenerateBrochureProps> = ({
       // Clean up object URL
       URL.revokeObjectURL(url);
 
-      console.log("PDF downloaded!");
+      console.log(`Total PDF generation time: ${Date.now() - startTime}ms`);
 
       toast.success("Brochure downloaded successfully");
     } catch (error) {
