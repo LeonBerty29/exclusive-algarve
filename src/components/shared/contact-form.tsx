@@ -34,6 +34,7 @@ interface ContactFormProps {
   formTitle?: boolean;
   titleStyling?: string;
   submitBtnStyling?: string;
+  acceptConditionsStyling?: string;
 }
 
 export function ContactForm({
@@ -41,6 +42,7 @@ export function ContactForm({
   formTitle = true,
   titleStyling = "",
   submitBtnStyling = "",
+  acceptConditionsStyling = ""
 }: ContactFormProps) {
   const t = useTranslations("contactForm");
   const translationSchema = useTranslations("contactFormSchema");
@@ -329,7 +331,7 @@ export function ContactForm({
                     disabled={isPending}
                   />
                 </FormControl>
-                <label className={checkboxLabelClasses}>
+                <label className={cn(checkboxLabelClasses, acceptConditionsStyling)}>
                   {t("acceptTermsText")}
                 </label>
                 <FormMessage />
