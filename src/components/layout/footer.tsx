@@ -228,10 +228,17 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="bg-gray-200 p-8">
+        <div className="bg-gray-200 p-8 px-4 flex flex-wrap items-center justify-center gap-6">
           <p className="text-center text-xs font-light text-neutral-700">
             © 2025 Exclusive Living Mediaçao Imobiliaria Lda. Ami 7516
           </p>
+
+          <Link
+            href={"/terms-and-conditions"}
+            className="text-xs font-light underline text-primary"
+          >
+            {t("termsAndConditions")}
+          </Link>
         </div>
       </div>
     </>

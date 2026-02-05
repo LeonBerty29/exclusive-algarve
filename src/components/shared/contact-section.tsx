@@ -67,7 +67,7 @@ export async function ContactSection({
                     </div>
 
                     <div className='w-full lg:w-[47%] 2xl:w-[44%] flex justify-end'>
-                        <ContactForm formTitle={formTitle} />
+                        <ContactForm formTitle={formTitle} titleStyling="text-white" acceptConditionsStyling="text-white" />
                     </div>
                 </div>
             </div>
