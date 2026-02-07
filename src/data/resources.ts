@@ -1,55 +1,59 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { getStoryblokApi } from "@/lib/storyblok";
 import { StoryblokError } from "@/types";
 import { getLocale, getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
+import { cache } from "react";
 
-export const fetchBuyResources = async ({
-  per_page,
-  page,
-  tag,
-  sort_by,
-  language,
-}: {
-  per_page?: number;
-  page?: number;
-  tag?: string;
-  sort_by?: string;
-  language: string;
-}) => {
-  const t = await getTranslations("resourcesData");
-  const client = getStoryblokApi();
-  const withTag = tag ? { with_tag: tag } : {};
-  const sortBy = sort_by ? { sort_by: sort_by } : {};
-  try {
-    const response = await client.getStories({
-      content_type: "buyResources",
-      version: process.env.NODE_ENV === "development" ? "draft" : "published",
-      per_page: per_page || 10,
-      page: page || 1,
-      ...withTag,
-      ...sortBy,
-      starts_with: `buy/${language}`,
-    });
+export const fetchBuyResources = cache(
+  async ({
+    per_page,
+    page,
+    tag,
+    sort_by,
+    language,
+  }: {
+    per_page?: number;
+    page?: number;
+    tag?: string;
+    sort_by?: string;
+    language: string;
+  }) => {
+    const t = await getTranslations("resourcesData");
+    const client = getStoryblokApi();
+    const withTag = tag ? { with_tag: tag } : {};
+    const sortBy = sort_by ? { sort_by: sort_by } : {};
+    try {
+      const response = await client.getStories({
+        content_type: "buyResources",
+        version: process.env.NODE_ENV === "development" ? "draft" : "published",
+        per_page: per_page || 10,
+        page: page || 1,
+        ...withTag,
+        ...sortBy,
+        starts_with: `buy/${language}`,
+      });
 
-    // console.log({ fetchBuyResources: response });
+      // console.log({ fetchBuyResources: response });
 
-    return response;
-  } catch (error: unknown) {
-    console.log(error);
+      return response;
+    } catch (error) {
+      console.log(error);
 
-    if (error instanceof Error) {
-      throw error;
-    } else {
-      throw new Error(`${t("failedToFetchBuyResources")} ${String(error)}`);
+      if (error instanceof Error) {
+        throw error;
+      } else {
+        throw new Error(`${t("failedToFetchBuyResources")} ${String(error)}`);
+      }
     }
-  }
-};
+  },
+);
 
-export const fetchBuyResourcePage = async (slug: string) => {
+export const fetchBuyResourcePage = cache(async (slug: string) => {
   const t = await getTranslations("resourcesData");
 
   // Helper function to get error status
-  const getErrorStatus = (error: unknown): number | undefined => {
+  const getErrorStatus = (error: any): number | undefined => {
     if (isStoryblokError(error)) {
       return error.status || error.response?.status;
     }
@@ -57,19 +61,15 @@ export const fetchBuyResourcePage = async (slug: string) => {
   };
 
   // Type guard to check if error is a Storyblok error
-  const isStoryblokError = (error: unknown): error is StoryblokError => {
+  const isStoryblokError = (error: any): error is StoryblokError => {
     return (
       typeof error === "object" &&
       error !== null &&
       ("status" in error ||
         ("response" in error &&
-          typeof (error as Record<string, unknown>).response === "object" &&
-          (error as Record<string, unknown>).response !== null &&
-          "status" in
-            ((error as Record<string, unknown>).response as Record<
-              string,
-              unknown
-            >)))
+          typeof error.response === "object" &&
+          error.response !== null &&
+          "status" in error.response))
     );
   };
 
@@ -83,7 +83,7 @@ export const fetchBuyResourcePage = async (slug: string) => {
       // resolve_level: 0,
     });
     return response.data.story;
-  } catch (error: unknown) {
+  } catch (error) {
     const errorStatus = getErrorStatus(error);
 
     if (errorStatus === 404) {
@@ -98,52 +98,55 @@ export const fetchBuyResourcePage = async (slug: string) => {
       throw new Error(`${t("failedToFetchBuyResourcePage")} ${String(error)}`);
     }
   }
-};
+});
 
-export const fetchSellResources = async ({
-  per_page,
-  page,
-  tag,
-  sort_by,
-  language,
-}: {
-  per_page?: number;
-  page?: number;
-  tag?: string;
-  sort_by?: string;
-  language?: string;
-}) => {
-  const t = await getTranslations("resourcesData");
-  const client = getStoryblokApi();
-  const withTag = tag ? { with_tag: tag } : {};
-  const sortBy = sort_by ? { sort_by: sort_by } : {};
-  try {
-    const response = await client.getStories({
-      content_type: "sellResources",
-      version: process.env.NODE_ENV === "development" ? "draft" : "published",
-      per_page: per_page || 10,
-      starts_with: `sell/${language}`,
-      page: page || 1,
-      ...withTag,
-      ...sortBy,
-    });
+export const fetchSellResources = cache(
+  async ({
+    per_page,
+    page,
+    tag,
+    sort_by,
+    language,
+  }: {
+    per_page?: number;
+    page?: number;
+    tag?: string;
+    sort_by?: string;
+    language?: string;
+  }) => {
+    const t = await getTranslations("resourcesData");
+    const client = getStoryblokApi();
+    const withTag = tag ? { with_tag: tag } : {};
+    const sortBy = sort_by ? { sort_by: sort_by } : {};
+    try {
+      const response = await client.getStories({
+        content_type: "sellResources",
+        version: process.env.NODE_ENV === "development" ? "draft" : "published",
+        per_page: per_page || 10,
+        starts_with: `sell/${language}`,
+        page: page || 1,
+        ...withTag,
+        ...sortBy,
+      });
 
-    return response;
-  } catch (error: unknown) {
-    console.log(error);
+      return response;
+    } catch (error) {
+      console.log(error);
 
-    if (error instanceof Error) {
-      throw error;
-    } else {
-      throw new Error(`${t("failedToFetchSellResources")} ${String(error)}`);
+      if (error instanceof Error) {
+        throw error;
+      } else {
+        throw new Error(`${t("failedToFetchSellResources")} ${String(error)}`);
+      }
     }
-  }
-};
+  },
+);
 
-export const fetchSellResourcePage = async (slug: string) => {
+export const fetchSellResourcePage = cache(async (slug: string) => {
   const t = await getTranslations("resourcesData");
+
   // Helper function to get error status
-  const getErrorStatus = (error: unknown): number | undefined => {
+  const getErrorStatus = (error: any): number | undefined => {
     if (isStoryblokError(error)) {
       return error.status || error.response?.status;
     }
@@ -151,19 +154,15 @@ export const fetchSellResourcePage = async (slug: string) => {
   };
 
   // Type guard to check if error is a Storyblok error
-  const isStoryblokError = (error: unknown): error is StoryblokError => {
+  const isStoryblokError = (error: any): error is StoryblokError => {
     return (
       typeof error === "object" &&
       error !== null &&
       ("status" in error ||
         ("response" in error &&
-          typeof (error as Record<string, unknown>).response === "object" &&
-          (error as Record<string, unknown>).response !== null &&
-          "status" in
-            ((error as Record<string, unknown>).response as Record<
-              string,
-              unknown
-            >)))
+          typeof error.response === "object" &&
+          error.response !== null &&
+          "status" in error.response))
     );
   };
 
@@ -177,7 +176,7 @@ export const fetchSellResourcePage = async (slug: string) => {
       // resolve_level: 0,
     });
     return response.data.story;
-  } catch (error: unknown) {
+  } catch (error) {
     const errorStatus = getErrorStatus(error);
 
     if (errorStatus === 404) {
@@ -192,7 +191,7 @@ export const fetchSellResourcePage = async (slug: string) => {
       throw new Error(`${t("failedToFetchSellResourcePage")} ${String(error)}`);
     }
   }
-};
+});
 
 export const fetchOwnResources = async ({
   per_page,
@@ -234,10 +233,11 @@ export const fetchOwnResources = async ({
   }
 };
 
-export const fetchOwnResourcePage = async (slug: string) => {
+export const fetchOwnResourcePage = cache(async (slug: string) => {
   const t = await getTranslations("resourcesData");
+
   // Helper function to get error status
-  const getErrorStatus = (error: unknown): number | undefined => {
+  const getErrorStatus = (error: any): number | undefined => {
     if (isStoryblokError(error)) {
       return error.status || error.response?.status;
     }
@@ -245,19 +245,15 @@ export const fetchOwnResourcePage = async (slug: string) => {
   };
 
   // Type guard to check if error is a Storyblok error
-  const isStoryblokError = (error: unknown): error is StoryblokError => {
+  const isStoryblokError = (error: any): error is StoryblokError => {
     return (
       typeof error === "object" &&
       error !== null &&
       ("status" in error ||
         ("response" in error &&
-          typeof (error as Record<string, unknown>).response === "object" &&
-          (error as Record<string, unknown>).response !== null &&
-          "status" in
-            ((error as Record<string, unknown>).response as Record<
-              string,
-              unknown
-            >)))
+          typeof error.response === "object" &&
+          error.response !== null &&
+          "status" in error.response))
     );
   };
 
@@ -272,7 +268,7 @@ export const fetchOwnResourcePage = async (slug: string) => {
     });
 
     return response.data.story;
-  } catch (error: unknown) {
+  } catch (error) {
     const errorStatus = getErrorStatus(error);
 
     if (errorStatus === 404) {
@@ -287,52 +283,55 @@ export const fetchOwnResourcePage = async (slug: string) => {
       throw new Error(`${t("failedToFetchOwnResourcePage")} ${String(error)}`);
     }
   }
-};
+});
 
-export const fetchAboutUsResources = async ({
-  per_page,
-  page,
-  tag,
-  sort_by,
-  language,
-}: {
-  per_page?: number;
-  page?: number;
-  tag?: string;
-  sort_by?: string;
-  language?: string;
-}) => {
-  const t = await getTranslations("resourcesData");
-  const client = getStoryblokApi();
-  const withTag = tag ? { with_tag: tag } : {};
-  const sortBy = sort_by ? { sort_by: sort_by } : {};
-  try {
-    const response = await client.getStories({
-      content_type: "aboutResources",
-      version: process.env.NODE_ENV === "development" ? "draft" : "published",
-      per_page: per_page || 10,
-      starts_with: `about-us/${language}`,
-      page: page || 1,
-      ...withTag,
-      ...sortBy,
-    });
+export const fetchAboutUsResources = cache(
+  async ({
+    per_page,
+    page,
+    tag,
+    sort_by,
+    language,
+  }: {
+    per_page?: number;
+    page?: number;
+    tag?: string;
+    sort_by?: string;
+    language?: string;
+  }) => {
+    const t = await getTranslations("resourcesData");
+    const client = getStoryblokApi();
+    const withTag = tag ? { with_tag: tag } : {};
+    const sortBy = sort_by ? { sort_by: sort_by } : {};
+    try {
+      const response = await client.getStories({
+        content_type: "aboutResources",
+        version: process.env.NODE_ENV === "development" ? "draft" : "published",
+        per_page: per_page || 10,
+        starts_with: `about-us/${language}`,
+        page: page || 1,
+        ...withTag,
+        ...sortBy,
+      });
 
-    return response;
-  } catch (error: unknown) {
-    console.log(error);
+      return response;
+    } catch (error: unknown) {
+      console.log(error);
 
-    if (error instanceof Error) {
-      throw error;
-    } else {
-      throw new Error(`${t("failedToFetchAboutResources")} ${String(error)}`);
+      if (error instanceof Error) {
+        throw error;
+      } else {
+        throw new Error(`${t("failedToFetchAboutResources")} ${String(error)}`);
+      }
     }
-  }
-};
+  },
+);
 
-export const fetchAboutUsResourcePage = async (slug: string) => {
+export const fetchAboutUsResourcePage = cache(async (slug: string) => {
   const t = await getTranslations("resourcesData");
+
   // Helper function to get error status
-  const getErrorStatus = (error: unknown): number | undefined => {
+  const getErrorStatus = (error: any): number | undefined => {
     if (isStoryblokError(error)) {
       return error.status || error.response?.status;
     }
@@ -340,19 +339,15 @@ export const fetchAboutUsResourcePage = async (slug: string) => {
   };
 
   // Type guard to check if error is a Storyblok error
-  const isStoryblokError = (error: unknown): error is StoryblokError => {
+  const isStoryblokError = (error: any): error is StoryblokError => {
     return (
       typeof error === "object" &&
       error !== null &&
       ("status" in error ||
         ("response" in error &&
-          typeof (error as Record<string, unknown>).response === "object" &&
-          (error as Record<string, unknown>).response !== null &&
-          "status" in
-            ((error as Record<string, unknown>).response as Record<
-              string,
-              unknown
-            >)))
+          typeof error.response === "object" &&
+          error.response !== null &&
+          "status" in error.response))
     );
   };
 
@@ -363,7 +358,7 @@ export const fetchAboutUsResourcePage = async (slug: string) => {
       version: process.env.NODE_ENV === "development" ? "draft" : "published",
     });
     return response.data.story;
-  } catch (error: unknown) {
+  } catch (error) {
     const errorStatus = getErrorStatus(error);
 
     if (errorStatus === 404) {
@@ -378,4 +373,4 @@ export const fetchAboutUsResourcePage = async (slug: string) => {
       throw new Error(`${t("failedToFetchSellResourcePage")} ${String(error)}`);
     }
   }
-};
+});

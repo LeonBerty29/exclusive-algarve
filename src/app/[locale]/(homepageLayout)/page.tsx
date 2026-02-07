@@ -17,7 +17,12 @@ import { HomepageSearchEngine } from "@/components/search/homepage-search-engine
 import { HomepageSearchResult } from "@/components/search/homepage-search-result";
 import { PropertySearchParams } from "@/types/property";
 import { FooterPropertiesLink } from "@/components/layout/footer-properties-link";
-import { BASE_URL, EAV_TWITTER_CREATOR_HANDLE, GEO_POSITION, WEBSITE_NAME } from "@/config/constants";
+import {
+  BASE_URL,
+  EAV_TWITTER_CREATOR_HANDLE,
+  GEO_POSITION,
+  WEBSITE_NAME,
+} from "@/config/constants";
 import { routing } from "@/i18n/routing";
 import { homeMetadata } from "@/seo-metadata/home-page";
 import { Metadata } from "next";
@@ -74,7 +79,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const ICBM = `${GEO_POSITION.lat}, ${GEO_POSITION.lng}`;
 
   return {
-    title: `${metadata.title} | ${WEBSITE_NAME}`,
+    title: metadata.title,
     description: metadata.description,
     keywords: [...metadata.keywords],
     openGraph: {

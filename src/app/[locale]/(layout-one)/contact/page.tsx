@@ -14,6 +14,7 @@ import {
   WEBSITE_NAME,
 } from "@/config/constants";
 import { contactMetadata } from "@/seo-metadata/contact";
+import { MapPin, Phone, Smartphone, Mail } from "lucide-react";
 
 interface Props {
   params: Promise<{ locale: string }>;
@@ -118,6 +119,90 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 const ContactPage = async () => {
   const t = await getTranslations("contactPage");
 
+  const offices = [
+    {
+      name: t("vilamouraOffice"),
+      address: t("vilamouraAddress"),
+      mapUrl: "https://maps.google.com/?q=Avenida+Tivoli+Conjunto+VarandaMar+B+Bloco+3+8125-410+Vilamoura",
+      findText: t("findVilamouraOffice"),
+    },
+    {
+      name: t("lagoaOffice"),
+      address: t("lagoaAddress"),
+      mapUrl: "https://maps.google.com/?q=Rua+Ernesto+Cabrita+Edificio+Vales+Loja+A+8400+387+Lagoa+Algarve+Portugal",
+      findText: t("findLagoaOffice"),
+    },
+    {
+      name: t("lagosOffice"),
+      address: t("lagosAddress"),
+      mapUrl: "https://maps.google.com/?q=R.+Dr.+José+Francisco+Tello+Queiroz+Lote+3+Loja+R+8600-707+Lagos",
+      findText: t("findLagosOffice"),
+    },
+  ];
+
+  const contactInfo = [
+    {
+      icon: Phone,
+      label: t("telephone"),
+      value: "+351 282 353 019",
+      link: "tel:+351282353019",
+      description: t("localCallLandline"),
+    },
+    {
+      icon: Smartphone,
+      label: t("mobile"),
+      value: "+351 918 024 082",
+      link: "tel:+351918024082",
+      description: t("localCallMobile"),
+    },
+    {
+      icon: Mail,
+      label: t("email"),
+      value: "info@exclusivealgarvevillas.com",
+      link: "mailto:info@exclusivealgarvevillas.com",
+      description: "",
+    },
+  ];
+
+  const galleryImages = [
+    {
+      src: "/images/office/1.jpg",
+    },
+    {
+      src: "/images/office/2.jpg",
+    },
+    {
+      src: "/images/office/3.jpg",
+    },
+    {
+      src: "/images/office/4.jpg",
+    },
+    {
+      src: "/images/office/5.jpg",
+    },
+    {
+      src: "/images/office/6.jpg",
+    },
+    {
+      src: "/images/office/7.jpg",
+    },
+    {
+      src: "/images/office/8.jpg",
+    },
+    {
+      src: "/images/office/9.jpg",
+    },
+    {
+      src: "/images/office/10.jpg",
+    },
+    {
+      src: "/images/office/11.jpg",
+    },
+    {
+      src: "/images/office/12.jpg",
+    },
+  ];
+
   return (
     <>
       <div className="pt-24">
@@ -168,6 +253,85 @@ const ContactPage = async () => {
           >
             <Link href="/agent">{t("request")}</Link>
           </Button>
+        </div>
+      </section>
+
+      {/* Office Locations Grid */}
+      <section className="lg:container mx-auto px-6 md:px-12 lg:px-14 py-14 xl:pb-20">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {offices.map((office, index) => (
+            <div key={index} className="flex flex-col gap-4">
+              <a
+                href={office.mapUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xl font-bold text-primary hover:underline"
+              >
+                {office.name}
+              </a>
+              <a
+                href={office.mapUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-neutral-700 hover:text-primary transition-colors"
+              >
+                {office.address}
+              </a>
+              <a
+                href={office.mapUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 text-primary hover:underline font-medium"
+              >
+                <MapPin className="w-5 h-5" />
+                <span>{office.findText}</span>
+              </a>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Contact Information Grid */}
+      <section className="lg:container mx-auto px-6 md:px-12 lg:px-14 py-14 xl:pb-20">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {contactInfo.map((contact, index) => {
+            const IconComponent = contact.icon;
+            return (
+              <div key={index} className="flex flex-col gap-3">
+                <div className="flex items-center gap-3">
+                  <IconComponent className="w-6 h-6 text-primary" />
+                  <h3 className="text-lg font-semibold">{contact.label}</h3>
+                </div>
+                <a
+                  href={contact.link}
+                  className="text-neutral-700 hover:text-primary transition-colors font-medium"
+                >
+                  {contact.value}
+                </a>
+                {contact.description && (
+                  <p className="text-sm text-neutral-600">
+                    {contact.description}
+                  </p>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* Image Gallery Grid */}
+      <section className="lg:container mx-auto px-6 md:px-12 lg:px-14 py-14 xl:pb-20">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {galleryImages.map((image, index) => (
+            <div key={index} className="relative aspect-video overflow-hidden rounded-lg">
+              <Image
+                src={image.src}
+                alt={`Exclusive algarve villas offices ${index + 1}`}
+                fill
+                className="object-cover hover:scale-105 transition-transform duration-300"
+              />
+            </div>
+          ))}
         </div>
       </section>
 

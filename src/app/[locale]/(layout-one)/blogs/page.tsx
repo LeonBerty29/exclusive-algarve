@@ -9,7 +9,12 @@ import { getLocale } from "next-intl/server";
 import { getTranslations } from "next-intl/server";
 import { Metadata } from "next";
 import { routing } from "@/i18n/routing";
-import { EAV_TWITTER_CREATOR_HANDLE, GEO_POSITION, WEBSITE_NAME } from "@/config/constants";
+import {
+  EAV_TWITTER_CREATOR_HANDLE,
+  GEO_POSITION,
+  WEBSITE_NAME,
+} from "@/config/constants";
+import { blogMetadata } from "@/seo-metadata/blogs";
 
 interface BlogPageProps {
   searchParams: Promise<{ page?: string }>;
@@ -23,9 +28,12 @@ const BLOGS_PER_PAGE = 12;
 const BASE_URL =
   process.env.BASE_URL || "https://www.exclusivealgarvevillas.com";
 
-
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
+
+  // Get metadata for current locale
+  const metadata =
+    blogMetadata[locale as keyof typeof blogMetadata] || blogMetadata.en;
 
   // Get the localized path for the blogs page
   const blogsPath = routing.pathnames["/blogs"];
@@ -58,38 +66,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   // ICBM coordinates
   const ICBM = `${GEO_POSITION.lat}, ${GEO_POSITION.lng}`;
 
-  const description =
-    "Explore our collection of articles about luxury real estate in the Algarve, property investment tips, lifestyle guides, market insights, and expert advice on buying and selling premium properties in Portugal's Golden Triangle.";
-
-  const keywords = [
-    "algarve real estate blog",
-    "luxury property algarve",
-    "algarve property news",
-    "portugal real estate insights",
-    "algarve lifestyle blog",
-    "property investment algarve",
-    "golden triangle real estate",
-    "algarve property market",
-    "luxury villa tips algarve",
-    "buying property portugal",
-    "algarve real estate advice",
-    "carvoeiro property blog",
-    "western algarve news",
-    "portugal property investment",
-    "algarve property guides",
-    "luxury real estate portugal",
-    "algarve housing market",
-    "property trends algarve",
-  ];
-
   return {
-    title: `Blog - Luxury Real Estate Insights & Algarve Property News | ${WEBSITE_NAME}`,
-    description: description,
-    keywords: keywords,
+    title: metadata.title,
+    description: metadata.description,
+    keywords: [...metadata.keywords],
     openGraph: {
-      title:
-        "Luxury Real Estate Blog - Algarve Property Insights & Expert Advice",
-      description: description,
+      title: metadata.title,
+      description: metadata.description,
       url: canonicalUrl,
       siteName: WEBSITE_NAME,
       locale: locale,
@@ -106,9 +89,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     },
     twitter: {
       card: "summary_large_image",
-      title:
-        "Luxury Real Estate Blog - Algarve Property Insights & Expert Advice",
-      description: description,
+      title: metadata.title,
+      description: metadata.description,
       creator: EAV_TWITTER_CREATOR_HANDLE,
     },
     robots: {
@@ -131,12 +113,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       "geo.region": "PT",
       "geo.position": `${GEO_POSITION.lat};${GEO_POSITION.lng}`,
       ICBM: ICBM,
-      classification:
-        "Real estate blog, Algarve property news, Luxury property insights, Property investment guides",
-      category:
-        "Blog, Real estate articles, Property news, Lifestyle guides, Investment advice",
-      "DC.title":
-        "Algarve luxury property blog, Real estate insights Portugal, Golden triangle property news, Western Algarve lifestyle",
+      classification: metadata.classification,
+      category: metadata.category,
+      "DC.title": metadata.dcTitle,
+      audience: metadata.audience,
+      "article:section": metadata.articleSection,
     },
   };
 }
