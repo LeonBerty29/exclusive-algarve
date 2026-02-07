@@ -72,9 +72,9 @@ const SearchHeader = async ({
                 <PropertiesCount />
               </Suspense>{" "}
               {t("propertiesForSaleWith")}{" "}
-              <p className="text-primary font-semibold">
+              <h1 className="text-primary font-semibold">
                 {t("exclusiveAlgarveVillas")}
-              </p>
+              </h1>
             </div>
           </div>
         </div>
