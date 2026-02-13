@@ -39,7 +39,7 @@ export const BlogLanguageSwitcherDropdown = ({
           }
         : "/";
 
-      router.replace(targetPath, { locale: lang });
+      router.push(targetPath, { locale: lang });
       router.refresh();
     }
   };

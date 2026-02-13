@@ -123,19 +123,22 @@ const ContactPage = async () => {
     {
       name: t("vilamouraOffice"),
       address: t("vilamouraAddress"),
-      mapUrl: "https://maps.google.com/?q=Avenida+Tivoli+Conjunto+VarandaMar+B+Bloco+3+8125-410+Vilamoura",
+      mapUrl:
+        "https://maps.google.com/?q=Avenida+Tivoli+Conjunto+VarandaMar+B+Bloco+3+8125-410+Vilamoura",
       findText: t("findVilamouraOffice"),
     },
     {
       name: t("lagoaOffice"),
       address: t("lagoaAddress"),
-      mapUrl: "https://maps.google.com/?q=Rua+Ernesto+Cabrita+Edificio+Vales+Loja+A+8400+387+Lagoa+Algarve+Portugal",
+      mapUrl:
+        "https://maps.google.com/?q=Rua+Ernesto+Cabrita+Edificio+Vales+Loja+A+8400+387+Lagoa+Algarve+Portugal",
       findText: t("findLagoaOffice"),
     },
     {
       name: t("lagosOffice"),
       address: t("lagosAddress"),
-      mapUrl: "https://maps.google.com/?q=R.+Dr.+José+Francisco+Tello+Queiroz+Lote+3+Loja+R+8600-707+Lagos",
+      mapUrl:
+        "https://maps.google.com/?q=R.+Dr.+José+Francisco+Tello+Queiroz+Lote+3+Loja+R+8600-707+Lagos",
       findText: t("findLagosOffice"),
     },
   ];
@@ -257,7 +260,9 @@ const ContactPage = async () => {
       </section>
 
       {/* Office Locations Grid */}
-      <section className="lg:container mx-auto px-6 md:px-12 lg:px-14 py-14 xl:pb-20">
+      <section className="lg:container mx-auto px-6 md:px-12 lg:px-14 py-8">
+        <h4 className="text-3xl font-bold text-black mb-8">{t("howToFindUs")}</h4>
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {offices.map((office, index) => (
             <div key={index} className="flex flex-col gap-4">
@@ -292,7 +297,7 @@ const ContactPage = async () => {
       </section>
 
       {/* Contact Information Grid */}
-      <section className="lg:container mx-auto px-6 md:px-12 lg:px-14 py-14 xl:pb-20">
+      <section className="lg:container mx-auto px-6 md:px-12 lg:px-10 py-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {contactInfo.map((contact, index) => {
             const IconComponent = contact.icon;
@@ -323,7 +328,10 @@ const ContactPage = async () => {
       <section className="lg:container mx-auto px-6 md:px-12 lg:px-14 py-14 xl:pb-20">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {galleryImages.map((image, index) => (
-            <div key={index} className="relative aspect-video overflow-hidden rounded-lg">
+            <div
+              key={index}
+              className="relative aspect-video overflow-hidden rounded-lg"
+            >
               <Image
                 src={image.src}
                 alt={`Exclusive algarve villas offices ${index + 1}`}

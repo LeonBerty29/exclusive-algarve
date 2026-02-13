@@ -38,7 +38,7 @@ export const HashLanguageSwitcherDropdown = () => {
           }
         : "/";
 
-      router.replace(targetPath, { locale: lang });
+      router.push(targetPath, { locale: lang });
       router.refresh();
     }
   };

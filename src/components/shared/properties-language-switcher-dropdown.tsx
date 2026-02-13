@@ -38,7 +38,7 @@ export const PropertiesLanguageSwitcherDropdown = ({
         params: { slug: path },
       };
 
-      router.replace(targetPath, { locale: lang });
+      router.push(targetPath, { locale: lang });
       router.refresh();
     }
   };
