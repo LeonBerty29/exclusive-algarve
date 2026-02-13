@@ -4,6 +4,7 @@ import { Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Property } from "@/types/property";
+import { useLocale } from "next-intl";
 
 interface GenerateBrochureProps {
   property: Property;
@@ -17,6 +18,8 @@ export const GenerateBrochure: React.FC<GenerateBrochureProps> = ({
   className = "text-xs rounded-none bg-black text-white px-6",
 }) => {
   const [isGenerating, setIsGenerating] = useState(false);
+  const locale = useLocale()
+  console.log({locale})
 
   /**
    * Convert image URL to base64
@@ -85,29 +88,25 @@ export const GenerateBrochure: React.FC<GenerateBrochureProps> = ({
     const startTime = Date.now();
 
     try {
+      // Prepare images as base64
       const base64Images = await prepareImagesBase64();
 
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_PDF_SERVICE_URL}/api/generate-pdf`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            property: property,
-            images: base64Images, // Send base64 images directly
-            // token: 'your-secret-token' // Optional: if you add token validation
-          }),
+      const response = await fetch('/api/generate-pdf', {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      );
-
+        body: JSON.stringify({
+          property: property,
+          images: base64Images,
+          language: locale, 
+        }),
+      });
 
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response.json().catch(() => ({}));
         throw new Error(errorData.error || "Failed to generate PDF");
       }
-
 
       // Create blob from response
       const blob = await response.blob();

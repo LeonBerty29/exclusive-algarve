@@ -46,7 +46,7 @@ export const HashErrorPageLanguageSwitcherDropdown = () => {
             }
           : "/";
 
-      router.replace(targetPath, { locale: lang });
+      router.push(targetPath, { locale: lang });
       router.refresh();
     }
   };
