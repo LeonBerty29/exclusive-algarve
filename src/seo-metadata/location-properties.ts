@@ -5,7 +5,7 @@ export const locationPropertiesMetadata = {
   // ============================================================================
   // LAGOS LOCATION METADATA
   // ============================================================================
-  "properties-in-lagos-algarve": {
+  "properties-for-sale-in-lagos-algarve": {
     searchParameters: {
       municipality: "229",
     },
@@ -246,7 +246,7 @@ export const locationPropertiesMetadata = {
   // ============================================================================
   // VILAMOURA LOCATION METADATA
   // ============================================================================
-  // "properties-in-vilamoura-algarve": {
+  // "properties-for-sale-in-vilamoura-algarve": {
   //   searchParameters: {
   //     zone: 16
   //   },
@@ -489,7 +489,7 @@ export const locationPropertiesMetadata = {
   // ============================================================================
   // CARVOEIRO LOCATION METADATA
   // ============================================================================
-  "properties-in-carvoeiro-algarve": {
+  "properties-for-sale-in-carvoeiro-algarve": {
     searchParameters: {
       zone: "4",
     },
@@ -729,7 +729,7 @@ export const locationPropertiesMetadata = {
   // ============================================================================
   // OLHÃO LOCATION METADATA
   // ============================================================================
-  "properties-in-olhao-algarve": {
+  "properties-for-sale-in-olhao-algarve": {
     searchParameters: {
       municipality: "232",
     },
@@ -981,7 +981,7 @@ export const locationPropertiesMetadata = {
   // ============================================================================
   // LOULÉ LOCATION METADATA
   // ============================================================================
-  "properties-in-loule-algarve": {
+  "properties-for-sale-in-loule-algarve": {
     searchParameters: {
       municipality: "230",
     },
@@ -1232,7 +1232,7 @@ export const locationPropertiesMetadata = {
   // ============================================================================
   // ALBUFEIRA LOCATION METADATA
   // ============================================================================
-  "properties-in-albufeira-algarve": {
+  "properties-for-sale-in-albufeira-algarve": {
     searchParameters: {
       municipality: "239",
     },
@@ -1483,7 +1483,7 @@ export const locationPropertiesMetadata = {
   // ============================================================================
   // FARO LOCATION METADATA
   // ============================================================================
-  "properties-in-faro-algarve": {
+  "properties-for-sale-in-faro-algarve": {
     searchParameters: {
       municipality: "243",
     },
@@ -1729,7 +1729,7 @@ export const locationPropertiesMetadata = {
   // ============================================================================
   // LAGOA LOCATION METADATA
   // ============================================================================
-  "properties-in-lagoa-algarve": {
+  "properties-for-sale-in-lagoa-algarve": {
     searchParameters: {
       municipality: "228",
     },
@@ -1971,7 +1971,7 @@ export const locationPropertiesMetadata = {
   // ============================================================================
   // PORTIMÃO LOCATION METADATA
   // ============================================================================
-  "properties-in-portimao-algarve": {
+  "properties-for-sale-in-portimao-algarve": {
     searchParameters: {
       municipality: "223",
     },
@@ -2218,7 +2218,7 @@ export const locationPropertiesMetadata = {
   // ============================================================================
   // SILVES LOCATION METADATA
   // ============================================================================
-  "properties-in-silves-algarve": {
+  "properties-for-sale-in-silves-algarve": {
     searchParameters: {
       municipality: "235",
     },
@@ -3465,7 +3465,7 @@ export const locationPropertiesMetadata = {
   // ============================================================================
   // PLOTS FOR SALE IN ALGARVE METADATA
   // ============================================================================
-  "plot-for-sale-in-algarve": {
+  "plots-for-sale-in-algarve": {
     searchParameters: {
       typology: 4,
     },
