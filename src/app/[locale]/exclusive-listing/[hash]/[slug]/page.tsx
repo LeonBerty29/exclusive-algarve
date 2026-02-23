@@ -1,4 +1,4 @@
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import ScrollableTabs from "@/components/property/scrollable-tabs";
 import PropertyDetailsIcons from "@/components/property/property-details-icons";
 import { ContactSection } from "@/components/shared/contact-section";
@@ -8,7 +8,7 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { Link } from "@/i18n/navigation";
+import { Link, redirect } from "@/i18n/navigation";
 import { PropertyImageGrid } from "@/components/property-details/property-image-grid";
 import ContactAgentForm from "@/components/property-details/contact-agent-form";
 import { getCurrencySymbol } from "@/components/shared/price-format";
@@ -231,6 +231,7 @@ export default async function page(props: Props) {
 }
 
 const PageContent = async (props: Props) => {
+  const locale = await getLocale();
   const t = await getTranslations("propertyDetailsPage");
   const { hash, slug } = await props.params;
   //   const session = await auth();
@@ -245,7 +246,17 @@ const PageContent = async (props: Props) => {
     //   token ? getNote() : Promise.resolve({ data: [] }),
   ]);
 
-  const property = propertyResponse.data;
+  if ("redirect" in propertyResponse && propertyResponse.redirect) {
+      redirect({
+        href: {
+          pathname: "/properties/[slug]",
+          params: { slug: propertyResponse.new_slug! },
+        },
+        locale,
+      });
+    }
+
+  const property = propertyResponse.data!;
   //   const favorites = favoritesResponse.favorite_properties;
   //   const notes = notesResponse.data;
   //   const isFavourite = favorites.includes(property.id);

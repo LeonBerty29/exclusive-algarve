@@ -12,16 +12,16 @@ interface PropertyImageGridProps {
   // salesConsultant: Property["sales_consultant"];
   // propertyReference: string;
 
-  property: Property
+  property: Property;
 }
 
 export const PropertyImageGrid: React.FC<PropertyImageGridProps> = async ({
-  property
+  property,
 }) => {
   const t = await getTranslations("propertyImageGrid");
 
-  const assets = property.assets
-  const salesConsultant = property.sales_consultant
+  const assets = property.assets;
+  const salesConsultant = property.sales_consultant;
 
   const propertyImages = assets.images.gallery;
   const hasVideos = assets.videos && assets.videos.length > 0;
