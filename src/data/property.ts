@@ -2,19 +2,17 @@ import { PropertyListResponse, PropertyResponse } from "@/types/property";
 import { getLocale, getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 
+
 function createBasicAuthHeader(): string {
   const credentials = btoa(
-    `${process.env.API_USERNAME}:${process.env.API_PASSWORD}`
+    `${process.env.API_USERNAME}:${process.env.API_PASSWORD}`,
   );
   return `Basic ${credentials}`;
 }
 
-/**
- * Generic fetch wrapper with Basic Auth
- */
 async function apiRequest<T>(
   endpoint: string,
-  options: RequestInit = {}
+  options: RequestInit = {},
 ): Promise<T> {
   const t = await getTranslations("propertyData");
   const url = `${process.env.API_BASE_URL}${endpoint}`;
@@ -33,7 +31,6 @@ async function apiRequest<T>(
     },
   };
 
-  // Helper function to get error status from Response
   const getErrorStatus = (error: unknown): number | undefined => {
     if (error instanceof Error && error.cause instanceof Response) {
       return error.cause.status;
@@ -44,27 +41,18 @@ async function apiRequest<T>(
   try {
     const response: Response = await fetch(url, config);
 
-    // Check for 404 specifically
     if (response.status === 404) {
-      // console.log(response.status);
       throw new Error(
         `${t("apiError")} ${response.status} ${response.statusText}`,
-        {
-          cause: response,
-        }
+        { cause: response },
       );
     }
 
-    // Check if response is ok
     if (!response.ok) {
       const errorText = await response.text();
       throw new Error(
-        `${t("apiError")} ${response.status} ${
-          response.statusText
-        } - ${errorText}`,
-        {
-          cause: response,
-        }
+        `${t("apiError")} ${response.status} ${response.statusText} - ${errorText}`,
+        { cause: response },
       );
     }
 
@@ -72,14 +60,11 @@ async function apiRequest<T>(
   } catch (error: unknown) {
     const errorStatus = getErrorStatus(error);
 
-    // console.log({ errorStatus });
-
     if (errorStatus === 404) {
       notFound();
     }
 
     console.error(error);
-    // Re-throw the error with proper typing
     if (error instanceof Error) {
       throw error;
     } else {
@@ -89,7 +74,7 @@ async function apiRequest<T>(
 }
 
 export const getProperty = async (
-  propertyId: string
+  propertyId: string,
 ): Promise<PropertyResponse> => {
   const locale = await getLocale();
   const endpoint = `/v1/properties/${propertyId}/?language=${locale}`;
@@ -98,7 +83,7 @@ export const getProperty = async (
 };
 
 export const getListOfProperties = async (
-  propertyIds: number[]
+  propertyIds: number[],
 ): Promise<PropertyListResponse> => {
   const locale = await getLocale();
   const ids = propertyIds.join(",");

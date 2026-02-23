@@ -23,15 +23,13 @@ import { RequestFloorPlan } from "../property/request-floor-plan";
 import PropertyImageCarousel from "./images-carousel";
 import { GenerateBrochure } from "../property/generate-brochure";
 
-const PropertyImagesModal = async ({
-  property
-}: {
-  property: Property
-}) => {
-  const images = property.assets.images.gallery
-  const propertyReference = property.reference
+const PropertyImagesModal = async ({ property }: { property: Property }) => {
+  const images = property.assets.images.gallery;
+  const propertyReference = property.reference;
   const t = await getTranslations("propertyImagesModal");
   const totalImages = images.length;
+
+  // console.log({ totalImages });
   const remainingPhotos = totalImages - 3;
 
   return (

@@ -13,7 +13,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { Link } from "@/i18n/navigation";
+import { Link, redirect } from "@/i18n/navigation";
 import ShareButton from "@/components/property/share-property";
 import { PropertyImageGrid } from "@/components/property-details/property-image-grid";
 import SimilarProperties from "@/components/property-details/similar-properties";
@@ -50,7 +50,13 @@ interface Props {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { propertyId, locale } = await params;
   const propertyResponse = await getProperty(propertyId);
-  const property = propertyResponse.data;
+
+  // If it's a redirect response, return minimal metadata
+  if ("redirect" in propertyResponse && propertyResponse.redirect) {
+    return { title: "Redirecting..." };
+  }
+
+  const property = propertyResponse.data!;
 
   // Get metadata for current locale
   const metadata =
@@ -225,7 +231,18 @@ const PageContent = async (props: Props) => {
       token ? getNote() : Promise.resolve({ data: [] }),
     ]);
 
-  const property = propertyResponse.data;
+  // Handle slug redirect
+  if ("redirect" in propertyResponse && propertyResponse.redirect) {
+    redirect({
+      href: {
+        pathname: "/properties/[slug]",
+        params: { slug: propertyResponse.new_slug! },
+      },
+      locale,
+    });
+  }
+
+  const property = propertyResponse.data!;
   const favorites = favoritesResponse.favorite_properties;
   const notes = notesResponse.data;
   const isFavourite = favorites.includes(property.id);
@@ -470,9 +487,7 @@ const PageContent = async (props: Props) => {
 
       <div className="mt-10">
         <div className="2xl:container px-6 sm:px-8 md:px-10 lg:px-14 mx-auto min-h-full">
-          <PropertyImageGrid
-            property={property}
-          />
+          <PropertyImageGrid property={property} />
 
           <div className="gap-x-6 flex flex-col lg:flex-row mb-8">
             <div className="w-full lg:flex-1 pt-4">
@@ -480,7 +495,7 @@ const PageContent = async (props: Props) => {
                 features={property.features}
                 propertyType={property.typology.name}
               />
-        
+
               <ScrollableTabs property={property} />
             </div>
 

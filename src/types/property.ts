@@ -123,8 +123,7 @@ export interface PropertyListResponse {
     total: number;
     from: number;
     to: number;
-  property_aggregates: PropertyAggregates;
-
+    property_aggregates: PropertyAggregates;
   };
   links: {
     first: string;
@@ -134,15 +133,11 @@ export interface PropertyListResponse {
   };
 }
 export interface PropertyResponse {
-  data: Property;
-  meta: {
-    current_page: number;
-    last_page: number;
-    per_page: number;
-    total: number;
-    from: number;
-    to: number;
-  };
+  data?: Property;
+  message?: string;
+  language?: string;
+  redirect?: boolean;
+  new_slug?: string;
 }
 
 export interface PropertySearchParams {
