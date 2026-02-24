@@ -29,16 +29,72 @@ const searchEngineBots = [
   "twitterbot",
 ];
 
+// Old site property segment per locale (hardcoded - belongs to old site, not in routing.ts)
+const oldPropertySegmentByLocale: Record<string, string> = {
+  en: "property",
+  pt: "propriedade",
+  fr: "propriete",
+  de: "immobilien", // same in old and new
+  nl: "eigendom",
+  se: "fastighet",       // Not available on old site
+  ru: "sobstvennost",    // Not available on old site
+};
+
+// New site properties segment derived from routing.ts (single source of truth)
+// Automatically stays in sync when routing.ts is updated
+const newPropertiesSegmentByLocale = Object.fromEntries(
+  routing.locales.map((locale) => {
+    const localizedPath = routing.pathnames["/properties/[slug]"][locale] as string;
+    const segment = localizedPath.replace("/", "").split("/")[0];
+    return [locale, segment];
+  })
+);
+
+function handleOldPropertyRedirect(req: NextRequest): NextResponse | null {
+  const { pathname } = req.nextUrl;
+
+  // Match: /{locale}/{old-property-segment}/{REF}/{slug}
+  // Example: /en/property/EAV-3646/contemporary-luxury-villa-praia-da-luz
+  // Example: /pt/propriedade/EAV-3646/moradia-de-luxo-praia-da-luz
+  const match = pathname.match(/^\/([^/]+)\/([^/]+)\/([^/]+)\/(.+?)\/?$/);
+  if (!match) return null;
+
+  const lang = match[1];
+  const segment = match[2];
+  const ref = match[3];
+  const slug = match[4];
+
+  const expectedOldSegment = oldPropertySegmentByLocale[lang];
+  const newSegment = newPropertiesSegmentByLocale[lang];
+
+  // Not a known locale
+  if (!expectedOldSegment || !newSegment) return null;
+
+  // Segment doesn't match the old property word for this locale
+  if (segment !== expectedOldSegment) return null;
+
+  // Build new URL: /{locale}/{new-segment}/{slug}-{ref}
+  // Example: /en/properties/contemporary-luxury-villa-praia-da-luz-eav-3646
+  const destination = `/${lang}/${newSegment}/${slug}-${ref.toLowerCase()}`;
+
+  return NextResponse.redirect(new URL(destination, req.url), { status: 301 });
+}
+
 export default auth((req) => {
   const { nextUrl } = req;
   const isLoggedIn = !!req.auth;
+
+  // Handle old property URL redirects first, before auth/intl
+  // This ensures Google bots can follow redirects without hitting Basic Auth
+  const oldPropertyRedirect = handleOldPropertyRedirect(req as NextRequest);
+  if (oldPropertyRedirect) return oldPropertyRedirect;
 
   // CRITICAL: Skip ALL middleware for sitemap and robots files
   // This allows search engines to access them without authentication
   if (
     nextUrl.pathname.includes("/sitemap") ||
     // nextUrl.pathname.includes("/robots") ||
-    nextUrl.pathname.endsWith(".xml") 
+    nextUrl.pathname.endsWith(".xml")
     // ||
     // nextUrl.pathname === "/robots.txt"
   ) {
@@ -170,8 +226,7 @@ export default auth((req) => {
 
 export const config = {
   matcher: [
-    // Skip Next.js internals and all static files, unless found in search params
-    // Added video extensions and XML files (for sitemaps)
+    // Skip Next.js internals and all static files, unless found in search params, video extensions and XML files (for sitemaps)
     "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest|mp4|webm|avi|mov|mkv|flv|wmv|m4v|xml|txt)).*)",
     // Always run for API routes
     "/(api|trpc)(.*)",
