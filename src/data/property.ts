@@ -1,7 +1,7 @@
+import { cache } from "react";
 import { PropertyListResponse, PropertyResponse } from "@/types/property";
 import { getLocale, getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
-
 
 function createBasicAuthHeader(): string {
   const credentials = btoa(
@@ -31,21 +31,11 @@ async function apiRequest<T>(
     },
   };
 
-  const getErrorStatus = (error: unknown): number | undefined => {
-    if (error instanceof Error && error.cause instanceof Response) {
-      return error.cause.status;
-    }
-    return undefined;
-  };
-
   try {
     const response: Response = await fetch(url, config);
 
     if (response.status === 404) {
-      throw new Error(
-        `${t("apiError")} ${response.status} ${response.statusText}`,
-        { cause: response },
-      );
+      notFound();
     }
 
     if (!response.ok) {
@@ -58,12 +48,6 @@ async function apiRequest<T>(
 
     return response.json();
   } catch (error: unknown) {
-    const errorStatus = getErrorStatus(error);
-
-    if (errorStatus === 404) {
-      notFound();
-    }
-
     console.error(error);
     if (error instanceof Error) {
       throw error;
@@ -73,21 +57,25 @@ async function apiRequest<T>(
   }
 }
 
-export const getProperty = async (
-  propertyId: string,
-): Promise<PropertyResponse> => {
-  const locale = await getLocale();
-  const endpoint = `/v1/properties/${propertyId}/?language=${locale}`;
+export const getProperty = cache(
+  async (
+    propertySlug: string,
+    propertyReference: string,
+  ): Promise<PropertyResponse> => {
+    console.log({ propertyReference });
+    const locale = await getLocale();
+    const endpoint = `/v1/properties/${propertySlug}/?language=${locale}`;
 
-  return apiRequest<PropertyResponse>(endpoint);
-};
+    return apiRequest<PropertyResponse>(endpoint);
+  },
+);
 
-export const getListOfProperties = async (
-  propertyIds: number[],
-): Promise<PropertyListResponse> => {
-  const locale = await getLocale();
-  const ids = propertyIds.join(",");
-  const endpoint = `/v1/properties?ids=${ids}&language=${locale}`;
+export const getListOfProperties = cache(
+  async (propertyIds: number[]): Promise<PropertyListResponse> => {
+    const locale = await getLocale();
+    const ids = propertyIds.join(",");
+    const endpoint = `/v1/properties?ids=${ids}&language=${locale}`;
 
-  return apiRequest<PropertyListResponse>(endpoint);
-};
+    return apiRequest<PropertyListResponse>(endpoint);
+  },
+);

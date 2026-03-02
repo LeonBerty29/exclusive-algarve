@@ -44,12 +44,16 @@ import { ScrollToTopWrapper } from "@/components/scroll-to-top-wrapper";
 import { RequestInformationDialog } from "@/components/property-details/request-information";
 
 interface Props {
-  params: Promise<{ propertyId: string; locale: string }>;
+  params: Promise<{
+    locale: string;
+    propertySlug: string;
+    propertyReference: string;
+  }>;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { propertyId, locale } = await params;
-  const propertyResponse = await getProperty(propertyId);
+  const { propertySlug, propertyReference, locale } = await params;
+  const propertyResponse = await getProperty(propertySlug, propertyReference);
 
   // If it's a redirect response, return minimal metadata
   if ("redirect" in propertyResponse && propertyResponse.redirect) {
@@ -72,7 +76,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   // Get the localized path for properties from routing config
-  const propertiesPath = routing.pathnames["/properties/[slug]"];
+  const propertiesPath =
+    routing.pathnames["/properties/[propertySlug]/[propertyReference]"];
   const localizedPropertiesPath =
     typeof propertiesPath === "string"
       ? propertiesPath
@@ -83,10 +88,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     property.seo.slugs[locale as keyof typeof property.seo.slugs];
 
   // Build the localized property path by replacing [slug] with actual slug
-  const localizedPath = localizedPropertiesPath.replace("[slug]", currentSlug);
+  const localizedPath = localizedPropertiesPath.replace(
+    "[propertySlug]",
+    currentSlug,
+  );
 
   // Build canonical URL for current locale (all locales are prefixed)
-  const canonicalUrl = `${BASE_URL}/${locale}${localizedPath}`;
+  const canonicalUrl = `${BASE_URL}/${locale}${localizedPath}/${propertyReference}`;
 
   // Build alternate language URLs using slugs from property.seo.slugs
   const languages: Record<string, string> = {};
@@ -100,10 +108,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const slug = property.seo.slugs[loc as keyof typeof property.seo.slugs];
 
     // Replace [slug] with actual localized slug
-    const fullPath = path.replace("[slug]", slug);
+    const fullPath = path.replace("[propertySlug]", slug);
 
     // All locales are prefixed
-    languages[loc] = `${BASE_URL}/${loc}${fullPath}`;
+    languages[loc] = `${BASE_URL}/${loc}${fullPath}/${propertyReference}`;
   });
 
   // Add x-default using default locale
@@ -216,7 +224,7 @@ export default async function page(props: Props) {
 
 const PageContent = async (props: Props) => {
   const t = await getTranslations("propertyDetailsPage");
-  const { propertyId } = await props.params;
+  const { propertySlug, propertyReference } = await props.params;
   const locale = await getLocale();
   const session = await auth();
   const token = session?.accessToken;
@@ -224,7 +232,7 @@ const PageContent = async (props: Props) => {
   // Use Promise.all to fetch all data concurrently
   const [propertyResponse, favoritesResponse, notesResponse] =
     await Promise.all([
-      getProperty(propertyId),
+      getProperty(propertySlug, propertyReference),
       token
         ? getFavorites(token)
         : Promise.resolve({ favorite_properties: [] }),
@@ -235,8 +243,11 @@ const PageContent = async (props: Props) => {
   if ("redirect" in propertyResponse && propertyResponse.redirect) {
     redirect({
       href: {
-        pathname: "/properties/[slug]",
-        params: { slug: propertyResponse.new_slug! },
+        pathname: "/properties/[propertySlug]/[propertyReference]",
+        params: {
+          propertySlug: propertyResponse.new_slug!,
+          propertyReference: propertyResponse.property_reference!,
+        },
       },
       locale,
     });
@@ -247,7 +258,7 @@ const PageContent = async (props: Props) => {
   const notes = notesResponse.data;
   const isFavourite = favorites.includes(property.id);
 
-  const propertiesPath = routing.pathnames["/properties/[slug]"];
+  const propertiesPath = routing.pathnames["/properties/[propertySlug]/[propertyReference]"];
   const localizedPropertiesPath =
     typeof propertiesPath === "string"
       ? propertiesPath
@@ -255,7 +266,7 @@ const PageContent = async (props: Props) => {
   const currentSlug =
     property.seo.slugs[locale as keyof typeof property.seo.slugs];
   const localizedPath = localizedPropertiesPath.replace("[slug]", currentSlug);
-  const propertyUrl = `${BASE_URL}/${locale}${localizedPath}`;
+  const propertyUrl = `${BASE_URL}/${locale}${localizedPath}/${propertyReference}`;
 
   // Enhanced Structured Data for Real Estate
   const structuredData = {

@@ -138,6 +138,7 @@ export interface PropertyResponse {
   language?: string;
   redirect?: boolean;
   new_slug?: string;
+  property_reference?: string;
 }
 
 export interface PropertySearchParams {

@@ -21,11 +21,13 @@ export const HashSlugLanguageSwitcherDropdown = ({
 }) => {
   const locale = useLocale();
   const pathname = usePathname();
-  const params = useParams()
-  const hash = params.hash as string
+  const params = useParams();
+  const hash = params.hash as string;
+  const propertyReference = params.propertyReference as string;
   const router = useRouter();
 
-  const ishashSlugPage = pathname === "/exclusive-listing/[hash]/[slug]";
+  const ishashSlugPage =
+    pathname === "/exclusive-listing/[hash]/[propertySlug]/[propertyReference]";
 
   if (!ishashSlugPage) {
     return <LanguageSwitcher />;
@@ -37,8 +39,13 @@ export const HashSlugLanguageSwitcherDropdown = ({
       const path = slugs[lang];
       const targetPath = path
         ? {
-            pathname: "/exclusive-listing/[hash]/[slug]" as const,
-            params: { slug: path, hash: hash },
+            pathname:
+              "/exclusive-listing/[hash]/[propertySlug]/[propertyReference]" as const,
+            params: {
+              hash: hash,
+              propertySlug: path,
+              propertyReference: propertyReference,
+            },
           }
         : "/";
 
@@ -73,7 +80,7 @@ export const HashSlugLanguageSwitcherDropdown = ({
               key={`${lang}-${index}`}
               className={cn(
                 "cursor-pointer",
-                lang === locale && "text-primary"
+                lang === locale && "text-primary",
               )}
               onClick={() => handleLanguageChange(lang)}
             >
