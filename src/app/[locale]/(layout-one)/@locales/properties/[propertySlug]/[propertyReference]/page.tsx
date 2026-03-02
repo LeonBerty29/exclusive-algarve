@@ -6,7 +6,7 @@ import { getLocale } from "next-intl/server";
 import React, { Suspense } from "react";
 
 interface Props {
-  params: Promise<{ propertyId: string }>;
+  params: Promise<{ propertySlug: string; propertyReference: string }>;
 }
 
 const PropertyIdLocales = (props: Props) => {
@@ -22,15 +22,18 @@ const PropertyIdLocales = (props: Props) => {
 export default PropertyIdLocales;
 
 async function PropertiesLanguageSwitcher(props: Props) {
-  const { propertyId } = await props.params;
-  const response = await getProperty(propertyId);
+  const { propertySlug, propertyReference } = await props.params;
+  const response = await getProperty(propertySlug, propertyReference);
   const locale = await getLocale();
 
   if ("redirect" in response && response.redirect) {
     redirect({
       href: {
-        pathname: "/properties/[slug]",
-        params: { slug: response.new_slug! },
+        pathname: "/properties/[propertySlug]/[propertyReference]",
+        params: {
+          propertySlug: response.new_slug!,
+          propertyReference: response.property_reference!,
+        },
       },
       locale,
     });
@@ -39,7 +42,10 @@ async function PropertiesLanguageSwitcher(props: Props) {
 
   return (
     <>
-      <PropertiesLanguageSwitcherDropdown slugs={slugs} />
+      <PropertiesLanguageSwitcherDropdown
+        slugs={slugs}
+        propertyReference={propertyReference}
+      />
     </>
   );
 }

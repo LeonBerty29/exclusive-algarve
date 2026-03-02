@@ -17,14 +17,12 @@ import { useLocale } from "next-intl";
 interface ProductImageCarouselProps {
   imagePaths: string[];
   property?: Property;
-  hash: string
+  hash: string;
 }
 
-export const ExclusiveCardProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
-  imagePaths,
-  property,
-  hash
-}) => {
+export const ExclusiveCardProductImageCarousel: React.FC<
+  ProductImageCarouselProps
+> = ({ imagePaths, property, hash }) => {
   // ref for the carousel container
   const carouselContainerRef = useRef<HTMLDivElement>(null);
   const locale = useLocale();
@@ -33,7 +31,7 @@ export const ExclusiveCardProductImageCarousel: React.FC<ProductImageCarouselPro
     Autoplay({
       delay: 4000,
       stopOnMouseEnter: true,
-    })
+    }),
   );
 
   const handleMouseLeave = () => {
@@ -47,7 +45,6 @@ export const ExclusiveCardProductImageCarousel: React.FC<ProductImageCarouselPro
       plugin.current.stop();
     }
   };
-
 
   return (
     <div ref={carouselContainerRef} className="relative w-full h-full">
@@ -68,12 +65,15 @@ export const ExclusiveCardProductImageCarousel: React.FC<ProductImageCarouselPro
                 {property ? (
                   <Link
                     href={{
-                      pathname: "/exclusive-listing/[hash]/[slug]",
+                      pathname:
+                        "/exclusive-listing/[hash]/[propertySlug]/[propertyReference]",
                       params: {
-                        slug: property.seo.slugs[
-                          locale as keyof typeof property.seo.slugs
-                        ],
                         hash: hash,
+                        propertySlug:
+                          property.seo.slugs[
+                            locale as keyof typeof property.seo.slugs
+                          ],
+                        propertyReference: property.reference,
                       },
                     }}
                     className="relative w-full aspect-4/3 overflow-hidden block"

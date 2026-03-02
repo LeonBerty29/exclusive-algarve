@@ -83,7 +83,8 @@ export const PropertyCard = async ({
         {property.banner.color && property.banner.name && (
           <div
             className={cn(
-              "min-h-6 py-1 text-center text-sm font-bold text-white absolute bottom-0 w-full flex items-center justify-center z-10"            )}
+              "min-h-6 py-1 text-center text-sm font-bold text-white absolute bottom-0 w-full flex items-center justify-center z-10",
+            )}
             style={{
               backgroundColor: property.banner.color,
             }}
@@ -95,11 +96,11 @@ export const PropertyCard = async ({
       <CardContent className="p-4 flex-1">
         <Link
           href={{
-            pathname: "/properties/[slug]",
+            pathname: "/properties/[propertySlug]/[propertyReference]",
             params: {
-              slug: property.seo.slugs[
-                locale as keyof typeof property.seo.slugs
-              ],
+              propertySlug:
+                property.seo.slugs[locale as keyof typeof property.seo.slugs],
+              propertyReference: property.reference,
             },
           }}
           className="flex flex-col gap-3 h-full justify-between"

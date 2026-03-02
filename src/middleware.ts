@@ -36,18 +36,20 @@ const oldPropertySegmentByLocale: Record<string, string> = {
   fr: "propriete",
   de: "immobilien", // same in old and new
   nl: "eigendom",
-  se: "fastighet",       // Not available on old site
-  ru: "sobstvennost",    // Not available on old site
+  se: "fastighet", // Not available on old site
+  ru: "sobstvennost", // Not available on old site
 };
 
 // New site properties segment derived from routing.ts (single source of truth)
 // Automatically stays in sync when routing.ts is updated
 const newPropertiesSegmentByLocale = Object.fromEntries(
   routing.locales.map((locale) => {
-    const localizedPath = routing.pathnames["/properties/[slug]"][locale] as string;
+    const localizedPath = routing.pathnames[
+      "/properties/[propertySlug]/[propertyReference]"
+    ][locale] as string;
     const segment = localizedPath.replace("/", "").split("/")[0];
     return [locale, segment];
-  })
+  }),
 );
 
 function handleOldPropertyRedirect(req: NextRequest): NextResponse | null {
@@ -75,7 +77,7 @@ function handleOldPropertyRedirect(req: NextRequest): NextResponse | null {
 
   // Build new URL: /{locale}/{new-segment}/{slug}-{ref}
   // Example: /en/properties/contemporary-luxury-villa-praia-da-luz-eav-3646
-  const destination = `/${lang}/${newSegment}/${slug}-${ref.toLowerCase()}`;
+  const destination = `/${lang}/${newSegment}/${slug}/${ref}`;
 
   return NextResponse.redirect(new URL(destination, req.url), { status: 301 });
 }
@@ -156,7 +158,7 @@ export default auth((req) => {
   const pathnameIsMissingLocale = routing.locales.every(
     (locale) =>
       !nextUrl.pathname.startsWith(`/${locale}/`) &&
-      nextUrl.pathname !== `/${locale}`
+      nextUrl.pathname !== `/${locale}`,
   );
 
   // Get the pathname without locale for route checking
@@ -198,7 +200,7 @@ export default auth((req) => {
         if (
           localeMatch &&
           routing.locales.includes(
-            localeMatch[1] as typeof routing.defaultLocale
+            localeMatch[1] as typeof routing.defaultLocale,
           )
         ) {
           locale = localeMatch[1] as typeof routing.defaultLocale;

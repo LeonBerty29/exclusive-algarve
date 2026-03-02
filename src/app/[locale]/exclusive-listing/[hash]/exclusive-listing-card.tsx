@@ -23,7 +23,7 @@ interface Props {
 
 export const ExclusiveListingCard = async ({
   property,
-  hash
+  hash,
 }: //   favorites = [],
 //   notes,
 
@@ -61,7 +61,11 @@ Props) => {
   return (
     <Card className="flex flex-col gap-0 rounded-none p-0 h-full">
       <CardHeader className="p-0 relative w-full flex flex-col">
-        <ExclusiveCardProductImageCarousel imagePaths={imagePaths} property={property} hash={hash} />
+        <ExclusiveCardProductImageCarousel
+          imagePaths={imagePaths}
+          property={property}
+          hash={hash}
+        />
         <div className="z-10 absolute top-2 left-2 right-2 flex items-center justify-between gap-3">
           <>
             <div className="flex items-center gap-[6px]">
@@ -95,12 +99,13 @@ Props) => {
       <CardContent className="p-4 flex-1">
         <Link
           href={{
-            pathname: "/exclusive-listing/[hash]/[slug]",
+            pathname:
+              "/exclusive-listing/[hash]/[propertySlug]/[propertyReference]",
             params: {
               hash: hash,
-              slug: property.seo.slugs[
-                locale as keyof typeof property.seo.slugs
-              ],
+              propertySlug:
+                property.seo.slugs[locale as keyof typeof property.seo.slugs],
+              propertyReference: property.reference,
             },
           }}
           className="flex flex-col gap-3 h-full justify-between"
